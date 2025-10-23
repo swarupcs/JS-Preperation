@@ -24496,26 +24496,3025 @@ test('form has proper labels', () => {
 These comprehensive examples demonstrate how to implement accessibility features in React applications using ARIA attributes effectively while following best practices!
 ---
 
-### 92. What is internationalization (i18n) in React?
+# 92. What is Internationalization (i18n) in React?
 
-### 93. How do you implement localization (l10n) in a React app?
+**Internationalization (i18n)** is the process of designing and preparing your React application to support multiple languages and regions without requiring engineering changes. The term "i18n" comes from the 18 letters between "i" and "n" in "internationalization."
+
+## Key Concepts:
+
+- **Separating text content** from your code
+- **Supporting multiple locales** (languages, date formats, number formats, currencies)
+- **Dynamic content loading** based on user preferences
+- **Right-to-left (RTL) language support**
+
+## Why i18n Matters:
+
+- Reach global audiences
+- Better user experience for non-English speakers
+- Compliance with regional requirements
+- Increased market penetration
+
+---
+
+# 93. How to Implement Localization (l10n) in React
+
+**Localization (l10n)** is the actual process of adapting your internationalized app for a specific region or language. Here are practical examples using popular libraries:
+
+## Example 1: Using react-i18next (Most Popular)
+
+```javascript
+// 1. Install dependencies
+// npm install i18next react-i18next i18next-browser-languagedetector
+
+// 2. Create translation files
+// locales/en/translation.json
+{
+  "welcome": "Welcome to React",
+  "greeting": "Hello, {{name}}!",
+  "itemCount": "You have {{count}} item",
+  "itemCount_plural": "You have {{count}} items",
+  "description": "This is an internationalized app"
+}
+
+// locales/es/translation.json
+{
+  "welcome": "Bienvenido a React",
+  "greeting": "¡Hola, {{name}}!",
+  "itemCount": "Tienes {{count}} artículo",
+  "itemCount_plural": "Tienes {{count}} artículos",
+  "description": "Esta es una aplicación internacionalizada"
+}
+
+// locales/fr/translation.json
+{
+  "welcome": "Bienvenue à React",
+  "greeting": "Bonjour, {{name}}!",
+  "itemCount": "Vous avez {{count}} article",
+  "itemCount_plural": "Vous avez {{count}} articles",
+  "description": "Ceci est une application internationalisée"
+}
+```
+
+```javascript
+// 3. Configure i18n (i18n.js)
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
+import enTranslation from './locales/en/translation.json';
+import esTranslation from './locales/es/translation.json';
+import frTranslation from './locales/fr/translation.json';
+
+i18n
+  .use(LanguageDetector) // Detects user language
+  .use(initReactI18next) // Passes i18n down to react-i18next
+  .init({
+    resources: {
+      en: { translation: enTranslation },
+      es: { translation: esTranslation },
+      fr: { translation: frTranslation }
+    },
+    fallbackLng: 'en', // Default language
+    interpolation: {
+      escapeValue: false // React already escapes
+    },
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage']
+    }
+  });
+
+export default i18n;
+```
+
+```javascript
+// 4. Wrap your app with I18nextProvider (App.js)
+import React from 'react';
+import './i18n';
+import { useTranslation } from 'react-i18next';
+
+function LanguageSwitcher() {
+  const { i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
+  return (
+    <div style={{ marginBottom: '20px' }}>
+      <button onClick={() => changeLanguage('en')}>English</button>
+      <button onClick={() => changeLanguage('es')}>Español</button>
+      <button onClick={() => changeLanguage('fr')}>Français</button>
+      <span style={{ marginLeft: '10px' }}>
+        Current: {i18n.language}
+      </span>
+    </div>
+  );
+}
+
+function App() {
+  const { t } = useTranslation();
+  const [count, setCount] = React.useState(1);
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <LanguageSwitcher />
+      
+      <h1>{t('welcome')}</h1>
+      <p>{t('greeting', { name: 'John' })}</p>
+      <p>{t('description')}</p>
+      
+      {/* Pluralization */}
+      <div>
+        <button onClick={() => setCount(count - 1)}>-</button>
+        <span style={{ margin: '0 10px' }}>
+          {t('itemCount', { count })}
+        </span>
+        <button onClick={() => setCount(count + 1)}>+</button>
+      </div>
+    </div>
+  );
+}
+
+export default App;
+```
+
+## Example 2: Using react-intl (by FormatJS)
+
+```javascript
+// 1. Install
+// npm install react-intl
+
+// 2. Create message files
+// messages/en.json
+{
+  "app.welcome": "Welcome to React",
+  "app.greeting": "Hello, {name}!",
+  "app.price": "Price: {price, number, USD}",
+  "app.date": "Today is {date, date, long}"
+}
+
+// messages/es.json
+{
+  "app.welcome": "Bienvenido a React",
+  "app.greeting": "¡Hola, {name}!",
+  "app.price": "Precio: {price, number, USD}",
+  "app.date": "Hoy es {date, date, long}"
+}
+```
+
+```javascript
+// 3. Setup IntlProvider
+import React, { useState } from 'react';
+import { IntlProvider, FormattedMessage, FormattedNumber, FormattedDate } from 'react-intl';
+import enMessages from './messages/en.json';
+import esMessages from './messages/es.json';
+
+const messages = {
+  en: enMessages,
+  es: esMessages
+};
+
+function App() {
+  const [locale, setLocale] = useState('en');
+
+  return (
+    <IntlProvider locale={locale} messages={messages[locale]}>
+      <div style={{ padding: '20px' }}>
+        {/* Language Switcher */}
+        <div style={{ marginBottom: '20px' }}>
+          <button onClick={() => setLocale('en')}>English</button>
+          <button onClick={() => setLocale('es')}>Español</button>
+        </div>
+
+        {/* Translated Messages */}
+        <h1>
+          <FormattedMessage id="app.welcome" />
+        </h1>
+        
+        <p>
+          <FormattedMessage 
+            id="app.greeting" 
+            values={{ name: 'Maria' }} 
+          />
+        </p>
+
+        {/* Formatted Numbers */}
+        <p>
+          <FormattedMessage
+            id="app.price"
+            values={{
+              price: 1234.56
+            }}
+          />
+        </p>
+
+        {/* Formatted Dates */}
+        <p>
+          <FormattedMessage
+            id="app.date"
+            values={{
+              date: new Date()
+            }}
+          />
+        </p>
+
+        {/* Direct formatting */}
+        <p>
+          <FormattedNumber value={9999.99} style="currency" currency="USD" />
+        </p>
+        
+        <p>
+          <FormattedDate value={new Date()} year="numeric" month="long" day="numeric" />
+        </p>
+      </div>
+    </IntlProvider>
+  );
+}
+
+export default App;
+```
+
+## Example 3: Manual Implementation (Simple Cases)
+
+```javascript
+// translations.js
+export const translations = {
+  en: {
+    welcome: 'Welcome',
+    logout: 'Logout',
+    settings: 'Settings'
+  },
+  es: {
+    welcome: 'Bienvenido',
+    logout: 'Cerrar sesión',
+    settings: 'Configuración'
+  },
+  fr: {
+    welcome: 'Bienvenue',
+    logout: 'Déconnexion',
+    settings: 'Paramètres'
+  }
+};
+
+// LanguageContext.js
+import React, { createContext, useContext, useState } from 'react';
+import { translations } from './translations';
+
+const LanguageContext = createContext();
+
+export function LanguageProvider({ children }) {
+  const [language, setLanguage] = useState('en');
+
+  const t = (key) => {
+    return translations[language][key] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  return useContext(LanguageContext);
+}
+
+// App.js
+import React from 'react';
+import { LanguageProvider, useLanguage } from './LanguageContext';
+
+function Content() {
+  const { language, setLanguage, t } = useLanguage();
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+      </select>
+
+      <h1>{t('welcome')}</h1>
+      <button>{t('logout')}</button>
+      <button>{t('settings')}</button>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <Content />
+    </LanguageProvider>
+  );
+}
+
+export default App;
+```
+
+## Best Practices for i18n/l10n:
+
+1. **Extract all strings** - Never hardcode user-facing text
+2. **Use namespaces** - Organize translations by feature/page
+3. **Handle pluralization** - Different languages have different plural rules
+4. **Format dates/numbers** - Use locale-specific formatting
+5. **Support RTL languages** - Arabic, Hebrew need right-to-left layout
+6. **Lazy load translations** - Don't bundle all languages at once
+7. **Provide context** - Add comments for translators
+8. **Test with pseudo-localization** - Find hardcoded strings
+9. **Use professional translators** - Machine translation isn't enough
+10. **Handle missing translations** - Always have fallback values
+
+These examples show different approaches from using full-featured libraries to simple manual implementations, depending on your project's needs!
 
 ## React Code Structure & Best Practices
 
-### 94. How do you structure large React applications?
+# 94. How Do You Structure Large React Applications?
 
-### 95. What are some best practices when writing React code?
+Structuring large React applications is crucial for maintainability, scalability, and team collaboration. Here are proven approaches with examples:
 
-### 96. How do you ensure code quality and maintainability in a React project?
+## 1. Feature-Based Structure (Recommended for Large Apps)
+
+```
+src/
+├── features/
+│   ├── auth/
+│   │   ├── components/
+│   │   │   ├── LoginForm.jsx
+│   │   │   ├── RegisterForm.jsx
+│   │   │   └── PasswordReset.jsx
+│   │   ├── hooks/
+│   │   │   ├── useAuth.js
+│   │   │   └── useLogin.js
+│   │   ├── services/
+│   │   │   └── authService.js
+│   │   ├── store/
+│   │   │   ├── authSlice.js
+│   │   │   └── authSelectors.js
+│   │   ├── utils/
+│   │   │   └── validation.js
+│   │   ├── types/
+│   │   │   └── auth.types.ts
+│   │   └── index.js
+│   │
+│   ├── dashboard/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   └── index.js
+│   │
+│   ├── products/
+│   │   ├── components/
+│   │   │   ├── ProductList.jsx
+│   │   │   ├── ProductCard.jsx
+│   │   │   └── ProductDetails.jsx
+│   │   ├── hooks/
+│   │   │   └── useProducts.js
+│   │   ├── services/
+│   │   │   └── productService.js
+│   │   └── index.js
+│   │
+│   └── cart/
+│       ├── components/
+│       ├── hooks/
+│       └── index.js
+│
+├── shared/
+│   ├── components/
+│   │   ├── Button/
+│   │   │   ├── Button.jsx
+│   │   │   ├── Button.test.jsx
+│   │   │   └── Button.module.css
+│   │   ├── Modal/
+│   │   ├── Input/
+│   │   └── Layout/
+│   │
+│   ├── hooks/
+│   │   ├── useDebounce.js
+│   │   ├── useLocalStorage.js
+│   │   └── useMediaQuery.js
+│   │
+│   ├── utils/
+│   │   ├── formatters.js
+│   │   ├── validators.js
+│   │   └── constants.js
+│   │
+│   └── types/
+│       └── common.types.ts
+│
+├── core/
+│   ├── api/
+│   │   ├── axios.config.js
+│   │   ├── apiClient.js
+│   │   └── endpoints.js
+│   │
+│   ├── store/
+│   │   ├── store.js
+│   │   └── rootReducer.js
+│   │
+│   ├── router/
+│   │   ├── AppRouter.jsx
+│   │   ├── PrivateRoute.jsx
+│   │   └── routes.js
+│   │
+│   └── theme/
+│       ├── theme.js
+│       └── globalStyles.js
+│
+├── assets/
+│   ├── images/
+│   ├── fonts/
+│   └── icons/
+│
+├── config/
+│   ├── env.js
+│   └── app.config.js
+│
+├── App.jsx
+├── main.jsx
+└── index.css
+```
+
+## 2. Atomic Design Structure
+
+```
+src/
+├── components/
+│   ├── atoms/           # Basic building blocks
+│   │   ├── Button/
+│   │   ├── Input/
+│   │   ├── Label/
+│   │   └── Icon/
+│   │
+│   ├── molecules/       # Simple component groups
+│   │   ├── FormField/
+│   │   ├── SearchBar/
+│   │   └── Card/
+│   │
+│   ├── organisms/       # Complex components
+│   │   ├── Header/
+│   │   ├── Sidebar/
+│   │   ├── ProductGrid/
+│   │   └── CheckoutForm/
+│   │
+│   ├── templates/       # Page layouts
+│   │   ├── MainLayout/
+│   │   ├── AuthLayout/
+│   │   └── DashboardLayout/
+│   │
+│   └── pages/          # Complete pages
+│       ├── HomePage/
+│       ├── ProductPage/
+│       └── CheckoutPage/
+```
+
+## 3. Practical Example: E-commerce App Structure
+
+```javascript
+// features/products/index.js - Feature entry point
+export { default as ProductList } from './components/ProductList';
+export { default as ProductDetails } from './components/ProductDetails';
+export { useProducts } from './hooks/useProducts';
+export { productService } from './services/productService';
+
+// features/products/hooks/useProducts.js
+import { useState, useEffect } from 'react';
+import { productService } from '../services/productService';
+
+export function useProducts(filters = {}) {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        const data = await productService.getAll(filters);
+        setProducts(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, [JSON.stringify(filters)]);
+
+  return { products, loading, error };
+}
+
+// features/products/services/productService.js
+import { apiClient } from '@/core/api/apiClient';
+
+export const productService = {
+  async getAll(filters) {
+    const response = await apiClient.get('/products', { params: filters });
+    return response.data;
+  },
+
+  async getById(id) {
+    const response = await apiClient.get(`/products/${id}`);
+    return response.data;
+  },
+
+  async create(productData) {
+    const response = await apiClient.post('/products', productData);
+    return response.data;
+  },
+
+  async update(id, productData) {
+    const response = await apiClient.put(`/products/${id}`, productData);
+    return response.data;
+  },
+
+  async delete(id) {
+    await apiClient.delete(`/products/${id}`);
+  }
+};
+
+// features/products/components/ProductList.jsx
+import React from 'react';
+import { useProducts } from '../hooks/useProducts';
+import { ProductCard } from './ProductCard';
+import { Loader, ErrorMessage } from '@/shared/components';
+
+export default function ProductList({ filters }) {
+  const { products, loading, error } = useProducts(filters);
+
+  if (loading) return <Loader />;
+  if (error) return <ErrorMessage message={error} />;
+
+  return (
+    <div className="product-grid">
+      {products.map(product => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
+
+// core/api/apiClient.js
+import axios from 'axios';
+import { getAuthToken } from '@/features/auth/utils/storage';
+
+const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Request interceptor
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = getAuthToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Handle unauthorized
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export { apiClient };
+
+// core/router/AppRouter.jsx
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { PrivateRoute } from './PrivateRoute';
+import { Loader } from '@/shared/components';
+
+// Lazy load pages
+const HomePage = lazy(() => import('@/features/home/pages/HomePage'));
+const ProductsPage = lazy(() => import('@/features/products/pages/ProductsPage'));
+const DashboardPage = lazy(() => import('@/features/dashboard/pages/DashboardPage'));
+const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'));
+
+export default function AppRouter() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <DashboardPage />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
+}
+
+// shared/components/Button/Button.jsx
+import React from 'react';
+import PropTypes from 'prop-types';
+import styles from './Button.module.css';
+
+export function Button({ 
+  children, 
+  variant = 'primary', 
+  size = 'medium',
+  disabled = false,
+  loading = false,
+  onClick,
+  ...props 
+}) {
+  return (
+    <button
+      className={`${styles.button} ${styles[variant]} ${styles[size]}`}
+      disabled={disabled || loading}
+      onClick={onClick}
+      {...props}
+    >
+      {loading ? 'Loading...' : children}
+    </button>
+  );
+}
+
+Button.propTypes = {
+  children: PropTypes.node.isRequired,
+  variant: PropTypes.oneOf(['primary', 'secondary', 'danger']),
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
+  disabled: PropTypes.bool,
+  loading: PropTypes.bool,
+  onClick: PropTypes.func
+};
+```
+
+## 4. Key Principles
+
+### Separation of Concerns
+```javascript
+// ❌ Bad: Everything in one file
+function ProductPage() {
+  const [products, setProducts] = useState([]);
+  
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data));
+  }, []);
+
+  return <div>{/* render products */}</div>;
+}
+
+// ✅ Good: Separated concerns
+function ProductPage() {
+  const { products, loading } = useProducts(); // Custom hook
+  return <ProductList products={products} loading={loading} />;
+}
+```
+
+### Barrel Exports
+```javascript
+// features/auth/index.js
+export { LoginForm } from './components/LoginForm';
+export { RegisterForm } from './components/RegisterForm';
+export { useAuth } from './hooks/useAuth';
+export { authService } from './services/authService';
+
+// Usage in other files
+import { LoginForm, useAuth } from '@/features/auth';
+```
+
+---
+
+# 95. Best Practices When Writing React Code
+
+## 1. Component Design
+
+### Keep Components Small and Focused
+```javascript
+// ❌ Bad: God component doing everything
+function UserDashboard() {
+  // 500 lines of code handling user profile, settings, orders, etc.
+}
+
+// ✅ Good: Split into focused components
+function UserDashboard() {
+  return (
+    <div>
+      <UserProfile />
+      <UserSettings />
+      <UserOrders />
+    </div>
+  );
+}
+```
+
+### Use Composition Over Props
+```javascript
+// ❌ Bad: Too many conditional props
+function Card({ title, showHeader, showFooter, headerColor }) {
+  return (
+    <div>
+      {showHeader && <header style={{ color: headerColor }}>{title}</header>}
+      {/* content */}
+      {showFooter && <footer>Footer</footer>}
+    </div>
+  );
+}
+
+// ✅ Good: Composition pattern
+function Card({ children }) {
+  return <div className="card">{children}</div>;
+}
+
+function Card.Header({ children, color }) {
+  return <header style={{ color }}>{children}</header>;
+}
+
+function Card.Body({ children }) {
+  return <div className="card-body">{children}</div>;
+}
+
+function Card.Footer({ children }) {
+  return <footer className="card-footer">{children}</footer>;
+}
+
+// Usage
+<Card>
+  <Card.Header color="blue">Title</Card.Header>
+  <Card.Body>Content</Card.Body>
+  <Card.Footer>Footer</Card.Footer>
+</Card>
+```
+
+## 2. State Management
+
+### Lift State Up Appropriately
+```javascript
+// ❌ Bad: State too high up
+function App() {
+  const [modalOpen, setModalOpen] = useState(false); // Only used in Settings
+  return (
+    <div>
+      <Header />
+      <Settings modalOpen={modalOpen} setModalOpen={setModalOpen} />
+    </div>
+  );
+}
+
+// ✅ Good: State at the right level
+function Settings() {
+  const [modalOpen, setModalOpen] = useState(false);
+  // Use it locally
+}
+```
+
+### Use the Right State Management Tool
+```javascript
+// For local state
+const [count, setCount] = useState(0);
+
+// For complex local state
+const [state, dispatch] = useReducer(reducer, initialState);
+
+// For global state (Context)
+const { user, setUser } = useContext(AuthContext);
+
+// For server state (React Query/SWR)
+const { data, isLoading } = useQuery('products', fetchProducts);
+
+// For complex global state (Redux/Zustand)
+const products = useSelector(state => state.products);
+```
+
+## 3. Performance Optimization
+
+### Memoization
+```javascript
+import { memo, useMemo, useCallback } from 'react';
+
+// Memoize expensive components
+const ProductCard = memo(function ProductCard({ product }) {
+  return <div>{product.name}</div>;
+});
+
+// Memoize expensive computations
+function ProductList({ products }) {
+  const sortedProducts = useMemo(() => {
+    return products.sort((a, b) => b.price - a.price);
+  }, [products]);
+
+  // Memoize callbacks passed to children
+  const handleClick = useCallback((id) => {
+    console.log('Clicked:', id);
+  }, []);
+
+  return (
+    <div>
+      {sortedProducts.map(product => (
+        <ProductCard 
+          key={product.id} 
+          product={product}
+          onClick={handleClick}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+### Code Splitting & Lazy Loading
+```javascript
+import { lazy, Suspense } from 'react';
+
+// Lazy load heavy components
+const HeavyChart = lazy(() => import('./HeavyChart'));
+const AdminPanel = lazy(() => import('./AdminPanel'));
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HeavyChart />
+    </Suspense>
+  );
+}
+```
+
+## 4. Error Handling
+
+### Error Boundaries
+```javascript
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught:', error, errorInfo);
+    // Log to error reporting service
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div>
+          <h1>Something went wrong</h1>
+          <button onClick={() => this.setState({ hasError: false })}>
+            Try again
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+// Usage
+<ErrorBoundary>
+  <MyComponent />
+</ErrorBoundary>
+```
+
+### Async Error Handling
+```javascript
+function UserProfile() {
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch('/api/user');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch user');
+        }
+        
+        const data = await response.json();
+        setUser(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUser();
+  }, []);
+
+  if (loading) return <Loader />;
+  if (error) return <ErrorMessage message={error} />;
+  if (!user) return <div>No user found</div>;
+
+  return <div>{user.name}</div>;
+}
+```
+
+## 5. Code Organization
+
+### Custom Hooks for Reusable Logic
+```javascript
+// hooks/useFormInput.js
+function useFormInput(initialValue) {
+  const [value, setValue] = useState(initialValue);
+  
+  const handleChange = (e) => {
+    setValue(e.target.value);
+  };
+
+  const reset = () => {
+    setValue(initialValue);
+  };
+
+  return {
+    value,
+    onChange: handleChange,
+    reset
+  };
+}
+
+// Usage
+function LoginForm() {
+  const email = useFormInput('');
+  const password = useFormInput('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(email.value, password.value);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="email" {...email} />
+      <input type="password" {...password} />
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+```
+
+### Prop Types / TypeScript
+```javascript
+// With PropTypes
+import PropTypes from 'prop-types';
+
+function UserCard({ user, onEdit, onDelete }) {
+  return <div>{user.name}</div>;
+}
+
+UserCard.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired
+  }).isRequired,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func
+};
+
+UserCard.defaultProps = {
+  onEdit: () => {},
+  onDelete: () => {}
+};
+
+// With TypeScript
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+interface UserCardProps {
+  user: User;
+  onEdit?: () => void;
+  onDelete?: () => void;
+}
+
+function UserCard({ user, onEdit, onDelete }: UserCardProps) {
+  return <div>{user.name}</div>;
+}
+```
+
+## 6. Naming Conventions
+
+```javascript
+// ✅ Good naming
+// Components: PascalCase
+function UserProfile() {}
+
+// Hooks: camelCase with 'use' prefix
+function useAuth() {}
+
+// Event handlers: handle prefix
+const handleClick = () => {};
+const handleSubmit = () => {};
+
+// Boolean props/state: is/has prefix
+const [isLoading, setIsLoading] = useState(false);
+const [hasError, setHasError] = useState(false);
+
+// Constants: UPPER_SNAKE_CASE
+const MAX_ITEMS = 100;
+const API_BASE_URL = 'https://api.example.com';
+```
+
+---
+
+# 96. How to Ensure Code Quality and Maintainability
+
+## 1. Linting and Formatting
+
+### ESLint Configuration
+```javascript
+// .eslintrc.js
+module.exports = {
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended',
+    'prettier'
+  ],
+  plugins: ['react', 'react-hooks', 'jsx-a11y'],
+  rules: {
+    'react/prop-types': 'error',
+    'react/jsx-no-target-blank': 'error',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'no-unused-vars': 'error'
+  },
+  settings: {
+    react: {
+      version: 'detect'
+    }
+  }
+};
+```
+
+### Prettier Configuration
+```json
+// .prettierrc
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "arrowParens": "always"
+}
+```
+
+## 2. Testing Strategy
+
+### Unit Tests (Jest + React Testing Library)
+```javascript
+// Button.test.jsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Button } from './Button';
+
+describe('Button Component', () => {
+  it('renders with correct text', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+
+  it('calls onClick when clicked', () => {
+    const handleClick = jest.fn();
+    render(<Button onClick={handleClick}>Click me</Button>);
+    
+    fireEvent.click(screen.getByText('Click me'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('disables button when loading', () => {
+    render(<Button loading>Click me</Button>);
+    expect(screen.getByRole('button')).toBeDisabled();
+  });
+});
+
+// Custom Hook Test
+import { renderHook, act } from '@testing-library/react';
+import { useCounter } from './useCounter';
+
+describe('useCounter', () => {
+  it('increments counter', () => {
+    const { result } = renderHook(() => useCounter());
+    
+    act(() => {
+      result.current.increment();
+    });
+    
+    expect(result.current.count).toBe(1);
+  });
+});
+```
+
+### Integration Tests
+```javascript
+// LoginForm.test.jsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { LoginForm } from './LoginForm';
+import { authService } from '../services/authService';
+
+jest.mock('../services/authService');
+
+describe('LoginForm Integration', () => {
+  it('submits form with valid credentials', async () => {
+    authService.login.mockResolvedValue({ token: 'abc123' });
+    
+    render(<LoginForm />);
+    
+    await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await userEvent.type(screen.getByLabelText(/password/i), 'password123');
+    await userEvent.click(screen.getByRole('button', { name: /login/i }));
+    
+    await waitFor(() => {
+      expect(authService.login).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        password: 'password123'
+      });
+    });
+  });
+
+  it('displays error message on failed login', async () => {
+    authService.login.mockRejectedValue(new Error('Invalid credentials'));
+    
+    render(<LoginForm />);
+    
+    await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await userEvent.type(screen.getByLabelText(/password/i), 'wrong');
+    await userEvent.click(screen.getByRole('button', { name: /login/i }));
+    
+    await waitFor(() => {
+      expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
+    });
+  });
+});
+```
+
+### E2E Tests (Cypress/Playwright)
+```javascript
+// cypress/e2e/login.cy.js
+describe('Login Flow', () => {
+  it('allows user to login successfully', () => {
+    cy.visit('/login');
+    
+    cy.get('input[name="email"]').type('user@example.com');
+    cy.get('input[name="password"]').type('password123');
+    cy.get('button[type="submit"]').click();
+    
+    cy.url().should('include', '/dashboard');
+    cy.contains('Welcome back').should('be.visible');
+  });
+});
+```
+
+## 3. Code Reviews
+
+### Pull Request Template
+```markdown
+## Description
+Brief description of changes
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Checklist
+- [ ] Tests added/updated
+- [ ] Documentation updated
+- [ ] No console.log statements
+- [ ] Code follows style guidelines
+- [ ] Self-review completed
+
+## Screenshots (if applicable)
+
+## Related Issues
+Closes #123
+```
+
+## 4. Documentation
+
+### Component Documentation
+```javascript
+/**
+ * Button component for user interactions
+ * 
+ * @component
+ * @example
+ * <Button variant="primary" onClick={handleClick}>
+ *   Click me
+ * </Button>
+ * 
+ * @param {Object} props - Component props
+ * @param {ReactNode} props.children - Button content
+ * @param {('primary'|'secondary'|'danger')} props.variant - Button style variant
+ * @param {boolean} props.disabled - Whether button is disabled
+ * @param {Function} props.onClick - Click handler function
+ */
+export function Button({ children, variant, disabled, onClick }) {
+  // Implementation
+}
+```
+
+### README Files
+```markdown
+# User Authentication Feature
+
+## Overview
+Handles user login, registration, and session management.
+
+## Components
+- `LoginForm`: User login interface
+- `RegisterForm`: New user registration
+- `PasswordReset`: Password recovery flow
+
+## Usage
+```javascript
+import { LoginForm } from '@/features/auth';
+
+function App() {
+  return <LoginForm onSuccess={handleLoginSuccess} />;
+}
+```
+
+## API
+- `POST /api/auth/login`
+- `POST /api/auth/register`
+- `POST /api/auth/logout`
+```
+
+## 5. Continuous Integration
+
+### GitHub Actions Workflow
+```yaml
+# .github/workflows/ci.yml
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run linter
+        run: npm run lint
+      
+      - name: Run tests
+        run: npm run test:ci
+      
+      - name: Build
+        run: npm run build
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+```
+
+## 6. Performance Monitoring
+
+### Web Vitals Tracking
+```javascript
+// reportWebVitals.js
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+
+function sendToAnalytics(metric) {
+  // Send to your analytics service
+  console.log(metric);
+}
+
+export function reportWebVitals() {
+  getCLS(sendToAnalytics);
+  getFID(sendToAnalytics);
+  getFCP(sendToAnalytics);
+  getLCP(sendToAnalytics);
+  getTTFB(sendToAnalytics);
+}
+
+// main.jsx
+import { reportWebVitals } from './reportWebVitals';
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+reportWebVitals();
+```
+
+### Bundle Size Analysis
+```json
+// package.json
+{
+  "scripts": {
+    "analyze": "vite-bundle-visualizer"
+  }
+}
+```
+
+These practices together ensure a maintainable, scalable, and high-quality React codebase! 🚀
 
 ## React and Git Workflows
 
-### 97. How do you manage feature branches in React development with Git?
+# 97. How Do You Manage Feature Branches in React Development with Git?
 
-### 98. What are your strategies for resolving merge conflicts in React projects?
+Managing feature branches effectively is crucial for team collaboration and maintaining code quality in React projects. Here are comprehensive strategies and workflows:
+
+## 1. Git Branching Strategy (Git Flow)
+
+```bash
+# Main branches
+main (or master)     # Production-ready code
+develop              # Integration branch for features
+
+# Supporting branches
+feature/*           # New features
+bugfix/*            # Bug fixes
+hotfix/*            # Emergency production fixes
+release/*           # Release preparation
+```
+
+### Branch Naming Conventions
+
+```bash
+# Feature branches
+feature/user-authentication
+feature/product-catalog
+feature/shopping-cart
+feature/JIRA-123-payment-integration
+
+# Bug fix branches
+bugfix/login-redirect-issue
+bugfix/cart-total-calculation
+
+# Hotfix branches
+hotfix/security-vulnerability
+hotfix/payment-gateway-error
+
+# Release branches
+release/v1.2.0
+release/2024-Q1
+```
+
+## 2. Complete Feature Branch Workflow
+
+### Step 1: Create Feature Branch
+
+```bash
+# Update local develop branch
+git checkout develop
+git pull origin develop
+
+# Create and switch to new feature branch
+git checkout -b feature/user-profile
+
+# Alternative: Create from specific branch
+git checkout -b feature/user-profile develop
+
+# Push branch to remote
+git push -u origin feature/user-profile
+```
+
+### Step 2: Work on Feature
+
+```bash
+# Make changes to files
+# src/features/profile/components/UserProfile.jsx
+
+# Check status
+git status
+
+# Stage specific files
+git add src/features/profile/
+
+# Or stage all changes
+git add .
+
+# Commit with descriptive message
+git commit -m "feat: add user profile component with avatar upload
+
+- Create UserProfile component
+- Implement avatar upload functionality
+- Add profile edit form
+- Include unit tests"
+
+# Push to remote
+git push origin feature/user-profile
+```
+
+### Step 3: Keep Branch Updated
+
+```bash
+# Regularly sync with develop branch
+git checkout develop
+git pull origin develop
+
+git checkout feature/user-profile
+
+# Option 1: Rebase (cleaner history)
+git rebase develop
+
+# If conflicts occur, resolve them, then:
+git add .
+git rebase --continue
+
+# Option 2: Merge (preserves branch history)
+git merge develop
+
+# Force push after rebase (use with caution)
+git push --force-with-lease origin feature/user-profile
+```
+
+### Step 4: Create Pull Request
+
+```bash
+# Ensure all changes are pushed
+git push origin feature/user-profile
+
+# Then create PR on GitHub/GitLab/Bitbucket
+# From: feature/user-profile
+# To: develop
+```
+
+## 3. Commit Message Conventions (Conventional Commits)
+
+```bash
+# Format
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+
+# Types
+feat:     # New feature
+fix:      # Bug fix
+docs:     # Documentation only
+style:    # Code style (formatting, missing semicolons)
+refactor: # Code refactoring
+perf:     # Performance improvement
+test:     # Adding tests
+chore:    # Build process or auxiliary tool changes
+ci:       # CI configuration files and scripts
+
+# Examples
+git commit -m "feat(auth): implement JWT authentication
+
+- Add login endpoint integration
+- Store token in httpOnly cookie
+- Create auth context provider
+- Add protected route wrapper
+
+Closes #123"
+
+git commit -m "fix(cart): correct total price calculation
+
+The cart was not including tax in final total.
+Now correctly applies 18% tax rate.
+
+Fixes #456"
+
+git commit -m "refactor(components): extract reusable Button component"
+
+git commit -m "test(auth): add unit tests for login flow"
+
+git commit -m "docs(readme): update installation instructions"
+```
+
+## 4. Advanced Git Workflows
+
+### Interactive Rebase (Clean Up Commits)
+
+```bash
+# Clean up last 3 commits before creating PR
+git rebase -i HEAD~3
+
+# In the editor that opens:
+# pick abc123 feat: add user profile
+# squash def456 fix: typo in profile
+# squash ghi789 fix: another small fix
+
+# This combines 3 commits into 1
+
+# Alternative: Squash all commits in feature branch
+git rebase -i develop
+
+# Force push (after team review)
+git push --force-with-lease origin feature/user-profile
+```
+
+### Cherry-Pick Specific Commits
+
+```bash
+# Pick specific commit from another branch
+git checkout feature/user-profile
+git cherry-pick abc123def
+
+# Cherry-pick without committing (for review)
+git cherry-pick -n abc123def
+```
+
+### Stash Changes
+
+```bash
+# Temporarily save uncommitted changes
+git stash save "WIP: profile validation"
+
+# List stashes
+git stash list
+
+# Apply most recent stash
+git stash apply
+
+# Apply and remove from stash list
+git stash pop
+
+# Apply specific stash
+git stash apply stash@{1}
+
+# Drop a stash
+git stash drop stash@{0}
+```
+
+## 5. Practical React Project Example
+
+### Project Structure with Git
+
+```bash
+my-react-app/
+├── .git/
+├── .gitignore
+├── .github/
+│   ├── workflows/
+│   │   └── ci.yml
+│   └── pull_request_template.md
+├── src/
+├── package.json
+└── README.md
+```
+
+### .gitignore for React Projects
+
+```bash
+# .gitignore
+
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Production
+/build
+/dist
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Misc
+.temp/
+.tmp/
+```
+
+### Pull Request Template
+
+```markdown
+<!-- .github/pull_request_template.md -->
+
+## 🎯 Description
+Brief description of what this PR does.
+
+## 🔗 Related Issues
+Closes #123
+Related to #456
+
+## 📸 Screenshots (if applicable)
+[Add screenshots for UI changes]
+
+## 🧪 Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] Manual testing completed
+- [ ] Tested in different browsers
+
+## 📝 Type of Change
+- [ ] 🐛 Bug fix (non-breaking change fixing an issue)
+- [ ] ✨ New feature (non-breaking change adding functionality)
+- [ ] 💥 Breaking change (fix or feature causing existing functionality to change)
+- [ ] 📚 Documentation update
+
+## ✅ Checklist
+- [ ] My code follows the style guidelines
+- [ ] I have performed a self-review
+- [ ] I have commented complex code
+- [ ] I have updated documentation
+- [ ] My changes generate no new warnings
+- [ ] No console.log statements
+- [ ] All tests pass locally
+
+## 🚀 Deployment Notes
+[Any special deployment instructions]
+```
+
+## 6. Team Collaboration Workflows
+
+### Workflow 1: GitHub Flow (Simple)
+
+```bash
+# 1. Create feature branch from main
+git checkout -b feature/new-feature main
+
+# 2. Work and commit
+git commit -m "feat: implement feature"
+
+# 3. Push and create PR
+git push -u origin feature/new-feature
+
+# 4. After review and approval, merge to main
+# 5. Delete feature branch
+git branch -d feature/new-feature
+git push origin --delete feature/new-feature
+```
+
+### Workflow 2: Git Flow (Complex Projects)
+
+```bash
+# 1. Start feature from develop
+git checkout -b feature/new-feature develop
+
+# 2. Work on feature
+git commit -m "feat: add new feature"
+
+# 3. Finish feature - merge to develop
+git checkout develop
+git merge --no-ff feature/new-feature
+git branch -d feature/new-feature
+git push origin develop
+
+# 4. Create release branch
+git checkout -b release/1.2.0 develop
+
+# 5. Finalize release and merge to main and develop
+git checkout main
+git merge --no-ff release/1.2.0
+git tag -a v1.2.0 -m "Release version 1.2.0"
+
+git checkout develop
+git merge --no-ff release/1.2.0
+git branch -d release/1.2.0
+
+# 6. Hotfix if needed
+git checkout -b hotfix/1.2.1 main
+# Fix the issue
+git checkout main
+git merge --no-ff hotfix/1.2.1
+git tag -a v1.2.1
+
+git checkout develop
+git merge --no-ff hotfix/1.2.1
+git branch -d hotfix/1.2.1
+```
+
+### Workflow 3: Trunk-Based Development
+
+```bash
+# 1. Create short-lived feature branch
+git checkout -b feature/quick-fix main
+
+# 2. Make small changes and commit
+git commit -m "feat: small feature"
+
+# 3. Merge back to main quickly (same day)
+git checkout main
+git merge feature/quick-fix
+git push origin main
+
+# 4. Delete branch immediately
+git branch -d feature/quick-fix
+```
+
+## 7. Git Aliases for Productivity
+
+```bash
+# ~/.gitconfig
+
+[alias]
+    # Status shortcuts
+    st = status
+    s = status -s
+    
+    # Checkout shortcuts
+    co = checkout
+    cob = checkout -b
+    
+    # Commit shortcuts
+    cm = commit -m
+    ca = commit --amend
+    
+    # Branch management
+    br = branch
+    brd = branch -d
+    brD = branch -D
+    
+    # Log shortcuts
+    lg = log --oneline --graph --decorate --all
+    last = log -1 HEAD --stat
+    
+    # Diff shortcuts
+    df = diff
+    dfs = diff --staged
+    
+    # Pull/Push shortcuts
+    pl = pull
+    ps = push
+    pso = push origin
+    psf = push --force-with-lease
+    
+    # Stash shortcuts
+    st = stash
+    stp = stash pop
+    stl = stash list
+    
+    # Undo shortcuts
+    undo = reset HEAD~1 --mixed
+    unstage = reset HEAD --
+    
+    # Feature branch workflow
+    feature = "!f() { git checkout develop && git pull && git checkout -b feature/$1; }; f"
+    finish = "!f() { git checkout develop && git merge --no-ff $1 && git branch -d $1; }; f"
+
+# Usage
+git feature user-auth          # Creates feature/user-auth from develop
+git cm "feat: add login"       # Quick commit
+git lg                         # Beautiful log
+git finish feature/user-auth   # Merge and delete branch
+```
+
+## 8. Pre-commit Hooks (Husky + lint-staged)
+
+```javascript
+// package.json
+{
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{json,md,css,scss}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
+```
+
+```bash
+# .husky/pre-commit
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Run lint-staged
+npx lint-staged
+
+# Run tests on staged files
+npm run test:staged
+
+echo "✅ Pre-commit checks passed!"
+```
+
+```bash
+# .husky/commit-msg
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Validate commit message format
+npx --no-install commitlint --edit $1
+```
+
+## 9. Branch Protection Rules
+
+### GitHub Branch Protection Settings
+
+```yaml
+# Recommended settings for main/develop branches:
+
+Required:
+- Require pull request reviews before merging (2 approvals)
+- Require status checks to pass before merging
+  - CI/CD pipeline must pass
+  - All tests must pass
+  - Code coverage threshold met
+- Require branches to be up to date before merging
+- Require signed commits
+- Include administrators (no one bypasses rules)
+
+Optional:
+- Dismiss stale pull request approvals when new commits are pushed
+- Require review from code owners
+- Restrict who can push to matching branches
+```
+
+---
+
+# 98. Strategies for Resolving Merge Conflicts in React Projects
+
+Merge conflicts are inevitable in team development. Here's how to handle them effectively:
+
+## 1. Understanding Merge Conflicts
+
+```bash
+# Conflict occurs when:
+# - Two branches modify the same line in a file
+# - One branch deletes a file that another branch modifies
+# - Two branches create files with the same name
+
+# Example conflict message:
+Auto-merging src/components/Header.jsx
+CONFLICT (content): Merge conflict in src/components/Header.jsx
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+## 2. Identifying Conflicts
+
+```bash
+# Check which files have conflicts
+git status
+
+# Output:
+# Unmerged paths:
+#   (use "git add <file>..." to mark resolution)
+#         both modified:   src/components/Header.jsx
+#         both modified:   src/utils/api.js
+```
+
+### Conflict Markers in Files
+
+```javascript
+// src/components/Header.jsx
+
+import React from 'react';
+
+function Header() {
+<<<<<<< HEAD (Current Branch)
+  return (
+    <header className="main-header">
+      <h1>My App</h1>
+      <nav>
+        <a href="/home">Home</a>
+        <a href="/about">About</a>
+      </nav>
+    </header>
+  );
+=======
+  return (
+    <header className="app-header">
+      <h1>My Application</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+      </nav>
+    </header>
+  );
+>>>>>>> feature/update-navigation (Incoming Branch)
+}
+
+export default Header;
+```
+
+## 3. Manual Conflict Resolution
+
+### Step-by-Step Resolution
+
+```javascript
+// BEFORE: Conflict in src/components/Header.jsx
+<<<<<<< HEAD
+import { useState } from 'react';
+
+function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <header className="main-header">
+      <h1>My App</h1>
+      <button onClick={() => setIsOpen(!isOpen)}>Menu</button>
+    </header>
+  );
+}
+=======
+import React from 'react';
+import { Logo } from './Logo';
+
+function Header() {
+  return (
+    <header className="app-header">
+      <Logo />
+      <h1>My Application</h1>
+      <nav>Navigation here</nav>
+    </header>
+  );
+}
+>>>>>>> feature/add-logo
+
+// AFTER: Resolved (combining both changes)
+import { useState } from 'react';
+import { Logo } from './Logo';
+
+function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <header className="app-header">
+      <Logo />
+      <h1>My Application</h1>
+      <button onClick={() => setIsOpen(!isOpen)}>Menu</button>
+      {isOpen && (
+        <nav>Navigation here</nav>
+      )}
+    </header>
+  );
+}
+
+export default Header;
+```
+
+### Resolution Commands
+
+```bash
+# 1. Open conflicted file in editor and resolve manually
+code src/components/Header.jsx
+
+# 2. After resolving, stage the file
+git add src/components/Header.jsx
+
+# 3. Continue the merge/rebase
+git commit  # For merge
+# or
+git rebase --continue  # For rebase
+
+# If you want to abort
+git merge --abort
+# or
+git rebase --abort
+```
+
+## 4. Using Merge Tools
+
+### Configure Merge Tool
+
+```bash
+# VS Code as merge tool
+git config --global merge.tool vscode
+git config --global mergetool.vscode.cmd 'code --wait $MERGED'
+
+# Vimdiff
+git config --global merge.tool vimdiff
+
+# Meld (GUI tool)
+git config --global merge.tool meld
+```
+
+### Launch Merge Tool
+
+```bash
+# Open merge tool for all conflicts
+git mergetool
+
+# This will open each conflicted file
+# After resolving, save and close
+# Git will automatically stage resolved files
+```
+
+## 5. Common React-Specific Conflicts
+
+### Conflict 1: Component Props
+
+```javascript
+// Conflict in component props
+<<<<<<< HEAD
+function ProductCard({ product, onAddToCart }) {
+  return (
+    <div>
+      <h3>{product.name}</h3>
+      <p>${product.price}</p>
+      <button onClick={() => onAddToCart(product)}>
+        Add to Cart
+      </button>
+    </div>
+  );
+}
+=======
+function ProductCard({ product, onAddToCart, showDiscount }) {
+  return (
+    <div>
+      <h3>{product.name}</h3>
+      <p>${product.price}</p>
+      {showDiscount && <span>20% OFF</span>}
+      <button onClick={() => onAddToCart(product.id)}>
+        Add to Cart
+      </button>
+    </div>
+  );
+}
+>>>>>>> feature/add-discount
+
+// RESOLUTION: Combine both features
+function ProductCard({ product, onAddToCart, showDiscount = false }) {
+  return (
+    <div>
+      <h3>{product.name}</h3>
+      <p>${product.price}</p>
+      {showDiscount && <span className="discount-badge">20% OFF</span>}
+      <button onClick={() => onAddToCart(product)}>
+        Add to Cart
+      </button>
+    </div>
+  );
+}
+```
+
+### Conflict 2: Import Statements
+
+```javascript
+// Conflict in imports
+<<<<<<< HEAD
+import React, { useState } from 'react';
+import { Button } from './components/Button';
+import { formatPrice } from './utils/format';
+=======
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+import { formatCurrency } from '@/utils/currency';
+>>>>>>> feature/refactor-imports
+
+// RESOLUTION: Merge all unique imports
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+import { formatPrice, formatCurrency } from '@/utils/format';
+```
+
+### Conflict 3: State Management
+
+```javascript
+// Conflict in Redux slice
+<<<<<<< HEAD
+const productSlice = createSlice({
+  name: 'products',
+  initialState: {
+    items: [],
+    loading: false,
+  },
+  reducers: {
+    setProducts: (state, action) => {
+      state.items = action.payload;
+    },
+    addProduct: (state, action) => {
+      state.items.push(action.payload);
+    }
+  }
+});
+=======
+const productSlice = createSlice({
+  name: 'products',
+  initialState: {
+    items: [],
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    setProducts: (state, action) => {
+      state.items = action.payload;
+    },
+    deleteProduct: (state, action) => {
+      state.items = state.items.filter(p => p.id !== action.payload);
+    }
+  }
+});
+>>>>>>> feature/add-error-handling
+
+// RESOLUTION: Include all reducers and state
+const productSlice = createSlice({
+  name: 'products',
+  initialState: {
+    items: [],
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    setProducts: (state, action) => {
+      state.items = action.payload;
+    },
+    addProduct: (state, action) => {
+      state.items.push(action.payload);
+    },
+    deleteProduct: (state, action) => {
+      state.items = state.items.filter(p => p.id !== action.payload);
+    }
+  }
+});
+```
+
+### Conflict 4: Package.json
+
+```json
+// Conflict in package.json dependencies
+<<<<<<< HEAD
+{
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.4.0",
+    "lodash": "^4.17.21"
+  }
+}
+=======
+{
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.6.0",
+    "react-query": "^3.39.3"
+  }
+}
+>>>>>>> feature/add-react-query
+
+// RESOLUTION: Include all dependencies with latest versions
+{
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.6.0",
+    "lodash": "^4.17.21",
+    "react-query": "^3.39.3"
+  }
+}
+
+// Then run:
+// npm install
+```
+
+## 6. Prevention Strategies
+
+### Strategy 1: Frequent Syncing
+
+```bash
+# Daily routine: sync with main branch
+git checkout develop
+git pull origin develop
+
+git checkout feature/my-feature
+git rebase develop  # or git merge develop
+
+# This keeps your branch up-to-date and reduces conflicts
+```
+
+### Strategy 2: Small, Focused Commits
+
+```bash
+# ❌ Bad: Large commits with many changes
+git commit -m "feat: complete user dashboard with settings and profile"
+
+# ✅ Good: Small, focused commits
+git commit -m "feat: add user profile component"
+git commit -m "feat: add user settings page"
+git commit -m "feat: integrate profile with dashboard"
+```
+
+### Strategy 3: Code Organization
+
+```javascript
+// ❌ Bad: Multiple features in one file
+// UserDashboard.jsx - 500 lines
+// Multiple developers editing same file = conflicts
+
+// ✅ Good: Split into smaller files
+// UserDashboard.jsx - 50 lines
+// UserProfile.jsx - 80 lines
+// UserSettings.jsx - 100 lines
+// Less chance of conflicts
+```
+
+### Strategy 4: Communication
+
+```bash
+# Before starting work on a file
+# Check with team: "I'm working on Header.jsx"
+# Use GitHub/Slack: "Working on authentication feature"
+
+# This prevents multiple people from modifying same code
+```
+
+## 7. Advanced Conflict Resolution
+
+### Using Git Rerere (Reuse Recorded Resolution)
+
+```bash
+# Enable rerere (reuse recorded resolution)
+git config --global rerere.enabled true
+
+# Git will remember how you resolved conflicts
+# and automatically apply same resolution if conflict occurs again
+```
+
+### Accept Theirs or Ours
+
+```bash
+# Accept all changes from incoming branch
+git checkout --theirs src/components/Header.jsx
+git add src/components/Header.jsx
+
+# Accept all changes from current branch
+git checkout --ours src/components/Header.jsx
+git add src/components/Header.jsx
+
+# For entire merge
+git merge -X theirs feature/branch-name
+git merge -X ours feature/branch-name
+```
+
+### Three-Way Merge Visualization
+
+```bash
+# Show common ancestor, current, and incoming changes
+git show :1:src/components/Header.jsx  # Common ancestor
+git show :2:src/components/Header.jsx  # Current branch (ours)
+git show :3:src/components/Header.jsx  # Incoming branch (theirs)
+```
+
+## 8. Conflict Resolution Checklist
+
+```markdown
+## Merge Conflict Resolution Checklist
+
+- [ ] Identify all conflicted files (`git status`)
+- [ ] Understand the context of both changes
+- [ ] Open conflicted files in editor
+- [ ] Look for conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`)
+- [ ] Communicate with team members if needed
+- [ ] Decide on resolution strategy (combine, choose one, rewrite)
+- [ ] Remove all conflict markers
+- [ ] Test the changes
+- [ ] Run linter and formatter
+- [ ] Run tests
+- [ ] Stage resolved files (`git add`)
+- [ ] Complete merge/rebase
+- [ ] Push changes
+- [ ] Update PR if applicable
+```
+
+## 9. Testing After Conflict Resolution
+
+```bash
+# After resolving conflicts, always:
+
+# 1. Run linter
+npm run lint
+
+# 2. Run tests
+npm test
+
+# 3. Build the project
+npm run build
+
+# 4. Start dev server and manually test
+npm run dev
+
+# 5. Check for console errors
+# Open browser DevTools and verify no errors
+```
+
+## 10. Tools for Better Conflict Management
+
+### VS Code Extensions
+
+```bash
+# Git Graph - Visualize branches
+# GitLens - Enhanced Git capabilities
+# Merge Conflict - Better conflict resolution UI
+```
+
+### Git GUI Clients
+
+```bash
+# GitKraken - Visual merge conflict resolution
+# SourceTree - Free Git GUI
+# GitHub Desktop - Simple interface
+```
+
+These strategies and workflows will help you manage branches and resolve conflicts effectively in React projects! 🚀
 
 ## React Interviews Problem Solving and Scenarios
 
-### 99. How would you handle a feature request or bug report in an ongoing React project?
+# 99. How would you handle a feature request or bug report in an ongoing React project?
 
-### 100. Describe your process for optimizing a component that has complex state logic and several child components.
+## Process Overview
+
+### For Bug Reports:
+
+**1. Reproduce and Verify**
+- Gather all necessary information (steps to reproduce, environment, expected vs actual behavior)
+- Reproduce the bug locally
+- Check if it's a known issue
+
+**2. Isolate and Debug**
+- Use React DevTools to inspect component state and props
+- Add logging/breakpoints to trace the issue
+- Check console for errors and warnings
+
+**3. Fix and Test**
+- Implement the fix
+- Write/update tests to prevent regression
+- Test in multiple scenarios
+
+**4. Document and Deploy**
+- Create clear commit messages
+- Update documentation if needed
+- Deploy through proper channels (staging → production)
+
+### Example Bug Fix:
+
+```javascript
+// BUG REPORT: Cart total doesn't update when quantity changes
+
+// BEFORE (Buggy Code)
+function ShoppingCart() {
+  const [items, setItems] = useState([
+    { id: 1, name: 'Product A', price: 10, quantity: 2 }
+  ]);
+  
+  // Bug: Total calculated once, doesn't recalculate
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  
+  const updateQuantity = (id, newQuantity) => {
+    setItems(items.map(item => 
+      item.id === id ? { ...item, quantity: newQuantity } : item
+    ));
+  };
+  
+  return (
+    <div>
+      <h2>Total: ${total}</h2>
+      {items.map(item => (
+        <CartItem 
+          key={item.id}
+          item={item}
+          onQuantityChange={updateQuantity}
+        />
+      ))}
+    </div>
+  );
+}
+
+// AFTER (Fixed Code)
+function ShoppingCart() {
+  const [items, setItems] = useState([
+    { id: 1, name: 'Product A', price: 10, quantity: 2 }
+  ]);
+  
+  // Fix: Use useMemo to recalculate when items change
+  const total = useMemo(() => 
+    items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [items]
+  );
+  
+  const updateQuantity = useCallback((id, newQuantity) => {
+    setItems(prevItems => prevItems.map(item => 
+      item.id === id ? { ...item, quantity: newQuantity } : item
+    ));
+  }, []);
+  
+  return (
+    <div>
+      <h2>Total: ${total}</h2>
+      {items.map(item => (
+        <CartItem 
+          key={item.id}
+          item={item}
+          onQuantityChange={updateQuantity}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Add test to prevent regression
+describe('ShoppingCart', () => {
+  it('updates total when quantity changes', () => {
+    const { getByText, getByRole } = render(<ShoppingCart />);
+    
+    expect(getByText(/Total: \$20/)).toBeInTheDocument();
+    
+    const increaseBtn = getByRole('button', { name: /increase/i });
+    fireEvent.click(increaseBtn);
+    
+    expect(getByText(/Total: \$30/)).toBeInTheDocument();
+  });
+});
+```
+
+### For Feature Requests:
+
+**1. Understand Requirements**
+- Discuss with stakeholders
+- Define acceptance criteria
+- Create user stories
+
+**2. Design and Plan**
+- Break down into smaller tasks
+- Consider impact on existing features
+- Plan for scalability and maintainability
+
+**3. Implement**
+- Follow existing code patterns
+- Keep components reusable
+- Write tests alongside code
+
+**4. Review and Iterate**
+- Code review
+- QA testing
+- Gather feedback
+
+### Example Feature Implementation:
+
+```javascript
+// FEATURE REQUEST: Add search functionality to product list with filters
+
+// Step 1: Create reusable search hook
+function useProductSearch(products) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({
+    category: 'all',
+    priceRange: 'all',
+    inStock: false
+  });
+
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      // Search term filter
+      const matchesSearch = product.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      
+      // Category filter
+      const matchesCategory = 
+        filters.category === 'all' || product.category === filters.category;
+      
+      // Price range filter
+      const matchesPrice = 
+        filters.priceRange === 'all' || 
+        isPriceInRange(product.price, filters.priceRange);
+      
+      // Stock filter
+      const matchesStock = !filters.inStock || product.inStock;
+      
+      return matchesSearch && matchesCategory && matchesPrice && matchesStock;
+    });
+  }, [products, searchTerm, filters]);
+
+  return {
+    searchTerm,
+    setSearchTerm,
+    filters,
+    setFilters,
+    filteredProducts
+  };
+}
+
+// Step 2: Create search UI component
+function ProductSearch({ onSearchChange, onFilterChange, filters }) {
+  return (
+    <div className="search-container">
+      <input
+        type="text"
+        placeholder="Search products..."
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="search-input"
+      />
+      
+      <div className="filters">
+        <select
+          value={filters.category}
+          onChange={(e) => onFilterChange({ 
+            ...filters, 
+            category: e.target.value 
+          })}
+        >
+          <option value="all">All Categories</option>
+          <option value="electronics">Electronics</option>
+          <option value="clothing">Clothing</option>
+        </select>
+        
+        <select
+          value={filters.priceRange}
+          onChange={(e) => onFilterChange({ 
+            ...filters, 
+            priceRange: e.target.value 
+          })}
+        >
+          <option value="all">All Prices</option>
+          <option value="0-50">$0 - $50</option>
+          <option value="50-100">$50 - $100</option>
+        </select>
+        
+        <label>
+          <input
+            type="checkbox"
+            checked={filters.inStock}
+            onChange={(e) => onFilterChange({ 
+              ...filters, 
+              inStock: e.target.checked 
+            })}
+          />
+          In Stock Only
+        </label>
+      </div>
+    </div>
+  );
+}
+
+// Step 3: Integrate into main component
+function ProductList() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  const {
+    searchTerm,
+    setSearchTerm,
+    filters,
+    setFilters,
+    filteredProducts
+  } = useProductSearch(products);
+
+  useEffect(() => {
+    fetchProducts().then(data => {
+      setProducts(data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return <Loader />;
+
+  return (
+    <div className="product-list-container">
+      <ProductSearch
+        onSearchChange={setSearchTerm}
+        onFilterChange={setFilters}
+        filters={filters}
+      />
+      
+      <div className="results-info">
+        Showing {filteredProducts.length} of {products.length} products
+      </div>
+      
+      <div className="product-grid">
+        {filteredProducts.map(product => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+      
+      {filteredProducts.length === 0 && (
+        <div className="no-results">
+          No products found. Try adjusting your filters.
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Step 4: Add tests
+describe('ProductSearch', () => {
+  it('filters products by search term', () => {
+    const products = [
+      { id: 1, name: 'Laptop', category: 'electronics' },
+      { id: 2, name: 'Shirt', category: 'clothing' }
+    ];
+    
+    const { result } = renderHook(() => useProductSearch(products));
+    
+    act(() => {
+      result.current.setSearchTerm('lap');
+    });
+    
+    expect(result.current.filteredProducts).toHaveLength(1);
+    expect(result.current.filteredProducts[0].name).toBe('Laptop');
+  });
+});
+```
+
+---
+
+# 100. Describe your process for optimizing a component that has complex state logic and several child components
+
+## Optimization Strategy
+
+### 1. Analyze Performance Issues
+
+**Identify Bottlenecks:**
+- Use React DevTools Profiler
+- Check for unnecessary re-renders
+- Measure render times
+- Monitor component update frequency
+
+### 2. State Management Optimization
+
+**Strategies:**
+- Split complex state into smaller pieces
+- Move state closer to where it's used
+- Use `useReducer` for complex state logic
+- Consider state management libraries for very complex cases
+
+### 3. Prevent Unnecessary Re-renders
+
+**Techniques:**
+- Memoize components with `React.memo`
+- Memoize callbacks with `useCallback`
+- Memoize computed values with `useMemo`
+- Optimize context usage
+
+### 4. Component Architecture
+
+**Improvements:**
+- Break down large components
+- Lift heavy computations out of render
+- Lazy load components when appropriate
+- Virtualize long lists
+
+## Complete Example: Optimizing a Complex Dashboard
+
+### BEFORE (Unoptimized):
+
+```javascript
+// Problematic: Everything re-renders on any state change
+function Dashboard() {
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [filters, setFilters] = useState({
+    search: '',
+    role: 'all',
+    status: 'all'
+  });
+  const [sortBy, setSortBy] = useState('name');
+  const [viewMode, setViewMode] = useState('grid');
+
+  // Problem 1: Expensive calculation runs on every render
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesRole = filters.role === 'all' || user.role === filters.role;
+    const matchesStatus = filters.status === 'all' || user.status === filters.status;
+    return matchesSearch && matchesRole && matchesStatus;
+  }).sort((a, b) => {
+    // Expensive sorting logic
+    return a[sortBy] > b[sortBy] ? 1 : -1;
+  });
+
+  // Problem 2: New function created on every render
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+    // More logic...
+  };
+
+  // Problem 3: All child components re-render
+  return (
+    <div className="dashboard">
+      <Header /> {/* Re-renders unnecessarily */}
+      <Sidebar 
+        filters={filters} 
+        onFilterChange={setFilters}
+      />
+      <UserList 
+        users={filteredUsers}
+        onUserClick={handleUserClick}
+        viewMode={viewMode}
+      />
+      <UserDetails user={selectedUser} />
+      <Footer /> {/* Re-renders unnecessarily */}
+    </div>
+  );
+}
+
+function UserList({ users, onUserClick, viewMode }) {
+  // Problem 4: All UserCards re-render when any prop changes
+  return (
+    <div className={`user-list ${viewMode}`}>
+      {users.map(user => (
+        <UserCard 
+          key={user.id} 
+          user={user} 
+          onClick={onUserClick}
+        />
+      ))}
+    </div>
+  );
+}
+
+function UserCard({ user, onClick }) {
+  return (
+    <div onClick={() => onClick(user)}>
+      <img src={user.avatar} alt={user.name} />
+      <h3>{user.name}</h3>
+      <p>{user.role}</p>
+    </div>
+  );
+}
+```
+
+### AFTER (Optimized):
+
+```javascript
+// Step 1: Extract state management logic with useReducer
+function userReducer(state, action) {
+  switch (action.type) {
+    case 'SET_USERS':
+      return { ...state, users: action.payload };
+    case 'SELECT_USER':
+      return { ...state, selectedUser: action.payload };
+    case 'UPDATE_FILTERS':
+      return { ...state, filters: { ...state.filters, ...action.payload } };
+    case 'SET_SORT':
+      return { ...state, sortBy: action.payload };
+    case 'SET_VIEW_MODE':
+      return { ...state, viewMode: action.payload };
+    default:
+      return state;
+  }
+}
+
+// Step 2: Create custom hook for filtering logic
+function useFilteredUsers(users, filters, sortBy) {
+  return useMemo(() => {
+    console.log('Filtering and sorting users...');
+    
+    const filtered = users.filter(user => {
+      const matchesSearch = user.name
+        .toLowerCase()
+        .includes(filters.search.toLowerCase());
+      const matchesRole = filters.role === 'all' || user.role === filters.role;
+      const matchesStatus = filters.status === 'all' || user.status === filters.status;
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+
+    return filtered.sort((a, b) => {
+      return a[sortBy] > b[sortBy] ? 1 : -1;
+    });
+  }, [users, filters, sortBy]); // Only recalculate when these change
+}
+
+// Step 3: Memoize static components
+const Header = memo(() => {
+  console.log('Header rendered');
+  return <header>Dashboard Header</header>;
+});
+
+const Footer = memo(() => {
+  console.log('Footer rendered');
+  return <footer>Dashboard Footer</footer>;
+});
+
+// Step 4: Memoize Sidebar with proper dependencies
+const Sidebar = memo(({ filters, onFilterChange }) => {
+  console.log('Sidebar rendered');
+  
+  return (
+    <aside>
+      <input
+        type="text"
+        value={filters.search}
+        onChange={(e) => onFilterChange({ search: e.target.value })}
+        placeholder="Search users..."
+      />
+      <select
+        value={filters.role}
+        onChange={(e) => onFilterChange({ role: e.target.value })}
+      >
+        <option value="all">All Roles</option>
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+      </select>
+    </aside>
+  );
+});
+
+// Step 5: Memoize UserCard to prevent unnecessary re-renders
+const UserCard = memo(({ user, onClick }) => {
+  console.log(`UserCard rendered: ${user.name}`);
+  
+  return (
+    <div onClick={() => onClick(user)} className="user-card">
+      <img src={user.avatar} alt={user.name} />
+      <h3>{user.name}</h3>
+      <p>{user.role}</p>
+      <span className={`status ${user.status}`}>{user.status}</span>
+    </div>
+  );
+}, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if user data changed
+  return prevProps.user.id === nextProps.user.id &&
+         prevProps.user.name === nextProps.user.name &&
+         prevProps.user.status === nextProps.user.status;
+});
+
+// Step 6: Optimize UserList with virtualization (for large lists)
+const UserList = memo(({ users, onUserClick, viewMode }) => {
+  console.log('UserList rendered');
+  
+  // For very large lists, use react-window or react-virtualized
+  if (users.length > 100) {
+    return (
+      <FixedSizeList
+        height={600}
+        itemCount={users.length}
+        itemSize={150}
+        width="100%"
+      >
+        {({ index, style }) => (
+          <div style={style}>
+            <UserCard user={users[index]} onClick={onUserClick} />
+          </div>
+        )}
+      </FixedSizeList>
+    );
+  }
+  
+  return (
+    <div className={`user-list ${viewMode}`}>
+      {users.map(user => (
+        <UserCard 
+          key={user.id} 
+          user={user} 
+          onClick={onUserClick}
+        />
+      ))}
+    </div>
+  );
+});
+
+// Step 7: Memoize UserDetails
+const UserDetails = memo(({ user }) => {
+  if (!user) return <div>Select a user</div>;
+  
+  console.log('UserDetails rendered');
+  
+  return (
+    <div className="user-details">
+      <h2>{user.name}</h2>
+      <p>Role: {user.role}</p>
+      <p>Status: {user.status}</p>
+      <p>Email: {user.email}</p>
+    </div>
+  );
+});
+
+// Step 8: Optimized main component
+function Dashboard() {
+  const [state, dispatch] = useReducer(userReducer, {
+    users: [],
+    selectedUser: null,
+    filters: { search: '', role: 'all', status: 'all' },
+    sortBy: 'name',
+    viewMode: 'grid'
+  });
+
+  // Load users
+  useEffect(() => {
+    fetchUsers().then(users => {
+      dispatch({ type: 'SET_USERS', payload: users });
+    });
+  }, []);
+
+  // Memoized filtered users
+  const filteredUsers = useFilteredUsers(
+    state.users, 
+    state.filters, 
+    state.sortBy
+  );
+
+  // Memoize callbacks
+  const handleUserClick = useCallback((user) => {
+    dispatch({ type: 'SELECT_USER', payload: user });
+  }, []);
+
+  const handleFilterChange = useCallback((newFilters) => {
+    dispatch({ type: 'UPDATE_FILTERS', payload: newFilters });
+  }, []);
+
+  console.log('Dashboard rendered');
+
+  return (
+    <div className="dashboard">
+      <Header />
+      <Sidebar 
+        filters={state.filters} 
+        onFilterChange={handleFilterChange}
+      />
+      <UserList 
+        users={filteredUsers}
+        onUserClick={handleUserClick}
+        viewMode={state.viewMode}
+      />
+      <UserDetails user={state.selectedUser} />
+      <Footer />
+    </div>
+  );
+}
+
+export default Dashboard;
+```
+
+### Optimization Results:
+
+**Before:**
+- Every state change re-renders entire dashboard
+- Filtering/sorting runs on every render
+- All child components re-render
+- ~200ms render time with 1000 users
+
+**After:**
+- Only affected components re-render
+- Filtering/sorting only when dependencies change
+- Memoized components skip unnecessary renders
+- ~20ms render time with 1000 users (10x faster)
+
+### Key Takeaways:
+
+1. **Use `useMemo`** for expensive calculations
+2. **Use `useCallback`** for functions passed to children
+3. **Use `memo`** for components that render often with same props
+4. **Use `useReducer`** for complex state logic
+5. **Split state** to minimize re-render scope
+6. **Virtualize** large lists
+7. **Profile regularly** to catch regressions
