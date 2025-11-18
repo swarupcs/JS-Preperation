@@ -168,6 +168,7 @@ const input = [1, 2, 3];
 
 **Expected Output:**
 
+
 ```js
 [0, 0, 0]
 ```
