@@ -937,15 +937,556 @@ console.log(yomesh.__proto__.sayName());
 ```
 ### Output
 ```
-
+yomesh
+undefined
+undefined
+undefined
 ```
 ### Explanation
-```
+
+Because in the first case `this === yomesh` and in rest of the cases `this === Person.prototype` during invocation.
+
+# 25. What will be the output of the following code snippet? (in operator)
+
+```js
+const first = 2 in [1, 2];
+const second = '2' in [0, 1, 2];
+
+console.log(first, second);
 
 ```
+### Output
+```
+false true
+```
+### Explanation
+
+The `in` operator returns `true` if the specified property is in the specified object or its prototype chain. Also remember, property names are strings!
+
+# 26. Switch Statement Output
+### 
+
+
+```js
+const a = "1";
+
+switch (+a) {
+  case "1":
+    console.log("🍕");
+    break;
+  case 1:
+    console.log("🚀");
+    break;
+  default:
+    console.log("👻");
+}
+
+```
+### Output
+```
+🚀
+```
+### Explanation : 
 
 
 
+### Matching Cases
+
+Switch uses **strict equality (`===`)** — meaning **type + value** must match.
+
+#### **Case "1"**
+
+```js
+case "1":
+```
+
+* `"1"` is a **string**
+* `1` is a **number**
+
+`1 === "1"` → ❌ **false**
+
+So this case is skipped.
+
+#### **Case 1**
+
+```js
+case 1:
+```
+
+* `1` === `1` → ✅ **true**
+
+This case runs.
+
+So output is:
+
+```
+🚀
+```
+
+---
+
+### **Final Output → 🚀**
+---
+
+# 27. What would be the output of the following code snippet? (Prototype method invocation)
+### 
+
+
+```js
+function Person(name) {
+  this.name = name;
+}
+Person.prototype.getName = () => {
+  return this.name;
+};
+const yomesh = new Person('Yomesh');
+console.log(yomesh.getName());
+
+```
+### Output
+```
+Value of the property name on the global object
+```
+### Explanation
+
+Because the snippet above is using an arrow function for `getName`. Arrow functions cannot create a context and therefore `this` will be the global object in non-strict mode.
+
+
+# 28. What will be the output for the following question in browser ?
+
+```js
+class Pandav {
+  constructor(name, weapon) {
+    this.name = name
+    this.weapon = weapon
+  }
+}
+class Kaurav {
+  constructor(name, weapon) {
+    this.name = name
+    this.weapon = weapon
+  }
+}
+class Guru {
+  constructor(name, weapon) {
+    this.name = name
+  }
+}
+
+var Duryodhana = new Kaurav('Duryodhana', 'Gada')
+let Arjuna = new Pandav('Arjuna', 'Gandiva')
+const Dronacharya = new Guru('Dronacharya')
+console.log(
+  Arjuna.weapon,
+  window.Arjuna,
+  Duryodhana.weapon,
+  window.Duryodhana,
+  Dronacharya.name,
+  window.Dronacharya
+)
+
+```
+### Output
+```
+Gandiva undefined Gada Kaurav Dronacharya undefined
+```
+### Explanation
+
+
+## 🔍 **Key Concept: Global Variables on window**
+
+In the browser:
+
+* `var` variables declared in the global scope → **added to `window`**
+* `let` and `const` declared in the global scope → ❌ **NOT added to `window`**
+
+So:
+
+| Variable            | Declaration | Added to `window`? |
+| ------------------- | ----------- | ------------------ |
+| `var Duryodhana`    | var         | ✅ Yes              |
+| `let Arjuna`        | let         | ❌ No               |
+| `const Dronacharya` | const       | ❌ No               |
+
+---
+
+## 🔥 Let's evaluate each log value
+
+### **1. `Arjuna.weapon`**
+
+Arjuna = `new Pandav('Arjuna', 'Gandiva')`
+So:
+
+```
+"Gandiva"
+```
+
+---
+
+### **2. `window.Arjuna`**
+
+`Arjuna` was created using **let**, so it's **NOT attached** to window.
+
+```
+undefined
+```
+
+---
+
+### **3. `Duryodhana.weapon`**
+
+Duryodhana = `new Kaurav('Duryodhana', 'Gada')`
+
+```
+"Gada"
+```
+
+---
+
+### **4. `window.Duryodhana`**
+
+Because it was declared using **var**, it is added to `window`.
+
+```
+Kaurav { name: "Duryodhana", weapon: "Gada" }
+```
+
+---
+
+### **5. `Dronacharya.name`**
+
+Guru constructor only stores the name, no weapon.
+
+```
+"Dronacharya"
+```
+
+---
+
+### **6. `window.Dronacharya`**
+
+Declared using **const**, so not added to window.
+
+```
+undefined
+```
+
+---
+
+## ✅ **Final Output Will Be:**
+
+```
+Gandiva
+undefined
+Gada
+Kaurav {name: "Duryodhana", weapon: "Gada"}
+Dronacharya
+undefined
+```
+
+---
+
+### Follow-up:
+
+* prototype chain of these classes
+* how to attach objects manually to window
+* how global scope works differently in Node.js vs browser
+
+# 29. What will be the output of the following code snippet? (Based on setTimeout) | JavaScript Quiz
+### 
+
+
+```js
+for (var i = 0; i < 5; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 10);
+}
+
+```
+### Output
+```
+55555
+```
+### Explanation
+
+## 🔍 What happens?
+
+### **Reason: `var` is function-scoped**
+
+`var i` is **not block-scoped**, so there is only **one shared `i` variable** for the entire loop.
+
+The loop finishes *before* any `setTimeout` callback runs.
+
+After the loop ends:
+
+```
+i = 5
+```
+
+So when all the callbacks run, they all read the same final value.
+
+## ✅ Output:
+
+```
+5
+5
+5
+5
+5
+```
+
+---
+
+## ✔ How to fix (using `let`):
+
+```js
+for (let i = 0; i < 5; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 10);
+}
+```
+
+Output:
+
+```
+0 1 2 3 4
+```
+
+Because `let` is block-scoped → each iteration gets its own copy of `i`.
+
+---
+
+## ✔ Another fix (using IIFE closure):
+
+```js
+for (var i = 0; i < 5; i++) {
+  (function (x) {
+    setTimeout(function () {
+      console.log(x);
+    }, 10);
+  })(i);
+}
+```
+
+Same output:
+
+```
+0 1 2 3 4
+```
+
+---
+
+### Follow-up
+
+1. Changing `var` to `let` which we redeclare `i` on every iteration.
+```js
+for (let i = 0; i < 5; i++) {
+	setTimeout(function() {
+		console.log(i);
+	}, 10);
+}
+
+```
+2. Returning an inner function and using closures.
+
+```js
+for (var i = 0; i < 5; i++) {
+	setTimeout(function(i) {
+		return function() { console.log(i); }
+	}(i), 10);
+}
+
+```
+# 30. What is the time complexity of the following code snippet?
+### 
+
+
+```js
+function findIntersection(first, second) {
+  const firstSet = new Set(first);
+
+  return second.reduce((acc, current) => {
+    return firstSet.has(current) ? [...acc, current] : acc;
+  }, []);
+}
+
+function init() {
+  const first = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const second = [1, 2, 3, 4, 5];
+  console.log(findIntersection(first, second));
+}
+
+```
+### Output
+```
+O(n^2)
+```
+### Explanation
+Because
+``` js
+// loops n times i.e. O(n)
+return second.reduce((acc, current) => {
+    // spread operator operation would be O(n) every time
+	return firstSet.has(current) ? [...acc, current] : acc;
+}, []);
+
+```
+Hence, overall time complexity would be `O(n^2)`.
+
+P.S. This is not the best way to find intersection and approach can be improved so please do not use this code anywhere. Code is written in a certain way to test logic.
+
+
+
+# 31. What would be the output of the following snippet? (Based on Arithmetic operators)
+### 
+
+
+```js
+let x = 1;
+
+do {
+  let y = --x;
+  console.log(x++ + --y);
+} while (x++ < 5);
+
+```
+### Output
+```
+-1
+1
+3
+5
+7
+```
+### Explanation
+---
+
+## 🧠 Step-by-step dry run
+
+### **Initial**
+
+```
+x = 1
+```
+
+---
+
+## ✅ **Iteration 1**
+
+```
+y = --x   → x = 0, y = 0
+console.log(x++ + --y)
+```
+
+* `x++` → returns **0**, then x becomes **1**
+* `--y` → y becomes **-1**
+
+Result:
+
+```
+0 + (-1) = -1
+```
+
+**After while check:**
+`x++ < 5` → compares **1 < 5 = true**, then x becomes **2**
+
+---
+
+## ✅ **Iteration 2** (x = 2)
+
+```
+y = --x → x = 1, y = 1
+console.log(x++ + --y)
+```
+
+* `x++` → returns **1**, x becomes **2**
+* `--y` → y = 0
+
+Result:
+
+```
+1 + 0 = 1
+```
+
+**While check:**
+`x++ < 5` → 2 < 5 = true → x becomes **3**
+
+---
+
+## ✅ **Iteration 3** (x = 3)
+
+```
+y = --x → x = 2, y = 2
+console.log(x++ + --y)
+```
+
+* `x++` → 2 (then x = 3)
+* `--y` → 1
+
+Result:
+
+```
+2 + 1 = 3
+```
+
+**While:**
+`3 < 5 = true`, x becomes **4**
+
+---
+
+## ✅ **Iteration 4** (x = 4)
+
+```
+y = --x → x = 3, y = 3
+console.log(x++ + --y)
+```
+
+* `x++` → 3 (then x = 4)
+* `--y` → 2
+
+Result:
+
+```
+3 + 2 = 5
+```
+
+**While:**
+`4 < 5 = true`, x becomes **5**
+
+---
+
+## ✅ **Iteration 5** (x = 5)
+
+```
+y = --x → x = 4, y = 4
+console.log(x++ + --y)
+```
+
+* `x++` → 4 (then x = 5)
+* `--y` → 3
+
+Result:
+
+```
+4 + 3 = 7
+```
+
+**While:**
+`5 < 5 = false`, loop ends.
+
+---
+
+# 🎉 **Final Output**
+
+```
+-1
+1
+3
+5
+7
+```
 
 
 
