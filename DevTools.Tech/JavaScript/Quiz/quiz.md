@@ -232,7 +232,7 @@ true false
 In Javascript Math.max() is lesser than Math.min() because Math.max() returns -Infinity and Math.min() returns Infinity.
 ```
 
-# How the comparison happens with switch cases in JavaScript?
+# 10. How the comparison happens with switch cases in JavaScript?
 ### The switch statement is used to perform different actions based on different conditions in JavaScript.
 
 ### Output
@@ -340,7 +340,7 @@ You can read more about JavaScript programming paradigm here.
 https://developer.mozilla.org/en-US/docs/Web/JavaScript
 ```
 
-# What would be the output? [New Operator | Explicit Primitive Return]
+# 14. What would be the output? [New Operator | Explicit Primitive Return]
 ### 
 
 
@@ -375,6 +375,382 @@ console.log(yomesh);
 ```
 https://www.youtube.com/watch?v=1FkZwBpti0o
 ```
+
+# 15. What is the output of the following code? - Promise Scheduling | Event Loop | JavaScript Quiz
+### What would be the output of the following code snippet?
+
+
+```js
+console.log(1);
+
+setTimeout(() => console.log(2));
+
+Promise.resolve().then(() => console.log(3));
+
+Promise.resolve().then(() => setTimeout(() => console.log(4)));
+
+Promise.resolve().then(() => console.log(5));
+
+setTimeout(() => console.log(6));
+
+console.log(7);
+
+```
+### Output
+```
+1 7 3 5 2 6 4
+```
+### Explanation
+
+---
+
+### Understanding the Output Order
+
+```js
+console.log(1);
+setTimeout(() => console.log(2));
+Promise.resolve().then(() => console.log(3));
+Promise.resolve().then(() => setTimeout(() => console.log(4)));
+Promise.resolve().then(() => console.log(5));
+setTimeout(() => console.log(6));
+console.log(7);
+```
+
+---
+
+### Step-by-Step Execution
+
+#### **1. Synchronous Code Executes First**
+
+* `console.log(1)` → prints **1**
+* `console.log(7)` → prints **7**
+
+So far:
+
+```
+1 7
+```
+
+---
+
+### **2. Task Scheduling**
+
+* `setTimeout(() => console.log(2))` → macrotask
+* `Promise.resolve().then(() => console.log(3))` → microtask
+* `Promise.resolve().then(() => setTimeout(() => console.log(4)))` → microtask (but schedules a macrotask inside)
+* `Promise.resolve().then(() => console.log(5))` → microtask
+* `setTimeout(() => console.log(6))` → macrotask
+
+---
+
+### **3. Microtasks Run Before Macrotasks**
+
+#### Microtask Queue execution:
+
+1. `console.log(3)` → prints **3**
+2. `setTimeout(() => console.log(4))` → a new macrotask is added
+3. `console.log(5)` → prints **5**
+
+Current output:
+
+```
+1 7 3 5
+```
+
+---
+
+### **4. Now the Macrotask Queue Executes**
+
+Order of macrotasks:
+
+1. `console.log(2)`
+2. `console.log(6)`
+3. `console.log(4)` (added during microtask stage)
+
+Final output:
+
+```
+1 7 3 5 2 6 4
+```
+
+---
+
+### ✅ **Final Result**
+
+```
+1 7 3 5 2 6 4
+```
+
+---
+
+# 16. What does this function print? JavaScript Quiz | Interview Question
+### What would be the output of the following code snippet if we execute it as it is.
+
+
+```js
+let number;
+for (var i = 0; i < 5; i++) {
+  number = i;
+  setTimeout(function() {
+    console.log(number);
+  }, 1000);
+}
+
+```
+### Output
+```
+4
+4
+4
+4
+4
+```
+### Explanation
+
+
+---
+
+## ❗ Key Points to Understand
+
+### 1. **`var i` is function-scoped, not block-scoped**
+
+`var` does **not** create a new variable for each loop iteration.
+There is only **one `i` variable** shared across all iterations.
+
+After the loop ends:
+
+* `i = 5`
+* `number = 4` (because last assignment was `number = i` when `i = 4`)
+
+---
+
+### 2. **`setTimeout` callbacks run *after* the loop finishes**
+
+Each `setTimeout` schedules a function to run later (after ~1000 ms).
+By the time those callbacks run:
+
+* The **loop is already finished**
+* `i` is now `5`
+* `number` is now **4**
+
+So inside every callback, `console.log(number)` sees the same final value: **4**
+
+---
+
+## 📌 Final Output
+
+```
+4
+4
+4
+4
+4
+```
+
+Because all 5 callbacks print the **same shared variable value**.
+
+---
+
+## ✔ Extra Visualization
+
+Timeline:
+
+| Time             | What Happens      | `i` | `number` |
+| ---------------- | ----------------- | --- | -------- |
+| Loop iteration 0 | number = 0        | 0   | 0        |
+| Loop iteration 1 | number = 1        | 1   | 1        |
+| Loop iteration 2 | number = 2        | 2   | 2        |
+| Loop iteration 3 | number = 3        | 3   | 3        |
+| Loop iteration 4 | number = 4        | 4   | 4        |
+| Loop ends        | i becomes 5       | 5   | **4**    |
+| After 1 sec      | All callbacks run | 5   | **4**    |
+
+Every callback prints `4`.
+
+---
+
+## Want the output to be 0 1 2 3 4?
+
+Use `let` or an IIFE:
+
+```js
+for (let i = 0; i < 5; i++) {
+  setTimeout(() => console.log(i), 1000);
+}
+```
+
+# 17. What would be the output? [JavaScript Inheritance]
+### Let us talk about JavaScript Inheritance today. This is an interesting question that I recently came across.
+
+What do you think would be the output of the following code snippet?
+
+
+```js
+class Person {
+	constructor(name) {
+		this.name = name;
+	}
+
+	print = () => {
+		console.log(this.name);
+	}
+};
+
+class Employee extends Person {
+	constructor(name, id) {
+		super(name);
+		this.id = id;
+	}
+
+	print() {
+		console.log(this.name, this.id);
+	}
+};
+
+const one = new Person('one');
+one.print();
+
+const two = new Employee('two', 2);
+two.print();
+
+```
+### Output
+```
+one
+two
+```
+### Explanation
+```
+Watch short explanation here -- https://www.youtube.com/watch?v=7bsA6Poxvy4&list=PL4ruoTJ8LTT8250F2ZrYVmRO6o5gWZKpG&index=1
+
+The Person class print() being an arrow function would be associated with object instance when created.
+
+The Employee print() being a regular one, would be available on Employee’s prototype.
+
+In case of one.print(), the output seems reasonable.
+
+In case of two.print(), one might expect the method overriding to work from initial impression. But in this case, two is an object created using Employee which extends Person. Now Person had print() method associated with instance. Meanwhile, Employee’s print() is available on its prototype.
+
+So two being an instance of Employee will look for print() in its instance first which it will find no thanks to Person’s implementation. And so proto of two will never be looked for print().
+```
+
+# 18. What would the output of the following code snippet? [Promises in JavaScript]
+### What would be the output of the following code snippet if we run this as it is?
+
+
+```js
+function processing() {
+  return Promise.reject("Something went wrong!");
+}
+
+function init() {
+  try {
+    return processing();
+  } catch (err) {
+    console.log("Error in processing.");
+  }
+}
+
+init().then(() => {
+  console.log("End");
+});
+
+```
+### Output
+```
+Uncaught (in promise) Something went wrong!
+```
+### Explanation
+```
+Because in function processing our error is async in nature. Traditional try/catch blocks doesn't catch async errors in the promise chain because of their sync nature. You might say they work in case of async/await syntax. Yes, they work because when we are using await keyword then we are kind of suspending the execution of the function till promised is resolved so it behaves in a sync manner.
+```
+# 19. What would be the output of the following code? [Scoping in JavaScript]
+### Consider the follow code snippet. What would be the output if we invoke the print function?
+
+
+```js
+var name = "Yomesh";
+
+function print(name) {
+  console.log(name);
+  var name = "Ajay";
+  console.log(name); 
+} 
+
+print(name);
+
+```
+### Output
+```
+Yomesh
+Ajay
+```
+### Explanation
+
+---
+
+1. We are using `var` here to declare the variable.
+2. The variable name already exists in the global scope.
+
+3. If we think in terms of hoisting, then you might think the answer would be **Option 1** because inside the `print` function, the `name` variable would be hoisted to the top and its value would be `undefined`.
+However, one thing to remember about hoisting is that while variable **declarations** are hoisted to the top, if the variable is already **initialised** with a value, then that value is retained.
+
+4. We are capturing the variable in function arguments.
+
+
+# 20. What would be the output? [Object Destructuring]
+### Let say we have a variable state which represents our current application state.
+
+
+```js
+const state = {
+  user: {
+    id: null,
+    name: '', // empty string
+    subscribe: false,
+    link: '', // empty string
+  },
+};
+
+```
+We want to destructure `user` information.
+```js
+function getUser() {
+  const {
+    user: {
+      id = 1,
+      name = 'Devtools Tech',
+      subscribe = true,
+      link = 'https://bit.ly/devtools-yt',
+    } = {},
+  } = state;
+
+  return {
+    userId: id,
+    name,
+    subscribe,
+    link,
+  };
+}
+
+```
+Now, what would be the output if we call `getUser`function.
+
+```
+console.log(getUser());
+```
+### Output
+```
+
+```
+### Explanation
+```
+
+```
+
+
+
+
 
 
 ---------------------------
