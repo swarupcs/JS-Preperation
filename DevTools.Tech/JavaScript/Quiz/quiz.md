@@ -741,12 +741,213 @@ console.log(getUser());
 ```
 ### Output
 ```
+{
+  "userId": null,
+  "name": "",
+  "subscribe": false,
+  "link": ""
+}
+```
+### Explanation
+because while destructing of objects, default values would only be assigned when the key doesn't exist or value is `undefined`. If the `state` is the following
+```js
+const state = {
+  user: {
+    id: undefined,
+    name: undefined,
+    subscribe: undefined,
+    link: undefined,
+  },
+};
+
+```
+and now if we destructure
+
+```js
+function getUser() {
+  const {
+    user: {
+      id = 1,
+      name = 'Devtools Tech',
+      subscribe = true,
+      link = 'https://bit.ly/devtools-yt',
+    } = {},
+  } = state;
+
+  return {
+    userId: id,
+    name,
+    subscribe,
+    link,
+  };
+}
+
+console.log(getUser());
+
+```
+
+Output would be:
+
+```js
+{
+  "userId": 1,
+  "name": "Devtools Tech",
+  "subscribe": true,
+  "link": "https://bit.ly/devtools-yt"
+}
+
+```
+
+Always remember, `null`, `false`, `''`, and `0` are all still values!
+
+# 21. What would be the output of the following code snippet? [Prototypes & Scopes]
+### 
+
+
+```js
+var name = "Puneet";
+
+function Engineer() {
+	this.name = "Yomesh";
+}
+
+console.log(new Engineer().name);
+Engineer.prototype.name = "Saloni";
+Engineer.prototype.channel = "https://bit.ly/devtools-yt";
+console.log(new Engineer().channel);
+console.log(new Engineer().name);
+
+```
+### Output
+```
+Yomesh
+https://bit.ly/devtools-yt
+Yomesh
+```
+### Explanation
+Final object would look like
+```js
+{
+  name: "Yomesh",
+  __proto__: {
+    name: "Saloni",
+    channel: "https://bit.ly/devtools-yt"
+  }
+}
+
+```
+While searching for property `name`, first look up would be on the direct enumerable properties of the object and since that exists (`this.name = "Yomesh"`), it would be printed. If no direct property is present then `Prototype chain` is traversed and in that case value would be `Saloni`. In case of `channel` property, `Prototype chain` is traversed and value is printed.
+
+# 22. What would be the output of the following code snippet? [ES6 Classes]
+
+
+
+```js
+function parseData(data) {
+  /* Some computation */
+  return data;
+};
+
+class User {
+  constructor(name, data) {
+    const parsedData = parseData(data);
+
+    this.name = name;
+    this.data = parseData;
+
+    return parsedData;
+  }
+
+  getData() {
+    return this.data;
+  }
+}
+
+const yomesh = new User('Yomesh', {
+  youtubeChannel: 'https://bit.ly/devtools-yt',
+  shouldSubscribe: true
+});
+
+// What would be the output of the following statement?
+console.log(yomesh.getData());
+
+```
+### Output
+```
+Error
+```
+### Explanation
+
+because `Class` in JavaScript is (mostly) just syntactical sugar. The underlying working is same as the constructor function. Since, in the code snippet we are creating an instance, using the `new` operator, but returning a non-primitive value from the constructor so implicit `this` will be lost and instance won't have any getData method to call.
+
+# 23. What would be the output? [New Operator | Explicit Non Primitive Return]
+
+
+
+```js
+function Person(name) {
+  this.name = name;
+
+  var person = {
+    name: 'Ajay'
+  };
+
+  function person() {
+    return {
+      name: 'Prithvi'
+    };
+  }
+
+  return person;
+}
+
+var yomesh = new Person('Yomesh');
+console.log(yomesh);
+
+```
+### Output
+```
+{"name":"Ajay"}
+```
+### Explanation
+```
+
+```
+
+# 24. What would be the output? (Different ways of Prototype calls)
+### 
+
+
+```js
+function Person(name) {
+  this.name = name;
+}
+
+Person.prototype.sayName = function () {
+  console.log(this.name);
+}
+
+var yomesh = new Person('yomesh');
+
+console.log(yomesh.sayName());
+console.log(Person.prototype.sayName());
+console.log(Object.getPrototypeOf(yomesh).sayName());
+console.log(yomesh.__proto__.sayName());
+
+```
+### Output
+```
 
 ```
 ### Explanation
 ```
 
 ```
+
+
+
+
+
 
 
 
