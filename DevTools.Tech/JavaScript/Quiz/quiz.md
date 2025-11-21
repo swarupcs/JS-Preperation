@@ -2369,16 +2369,216 @@ Step 1 -- 11 < 6 -- false
 So, loop breaks now and 11 will be the final value of x
 
 ```
+# 54. What would be the output? [React.js]
+### 
 
 
+```js
+class App extends React.Component {
+  state = {
+    items: [],
+  };
+
+  handleClick = () => {
+    const { items } = this.state;
+    this.setState({
+      items: [...items, "apple"],
+    });
+    this.setState({
+      items: [...items, "orange"],
+    });
+    this.setState({
+      items: [...items, "mango"],
+    });
+    this.setState({
+      items: [...items, "peach"],
+    });
+  };
+
+  render() {
+    const { items } = this.state;
+    return (
+      <div className="App">
+        {" "}
+        {items.length ? (
+          <h2> Items are {JSON.stringify(items)} </h2>
+        ) : (
+          <React.Fragment>
+            <p> No items found </p>{" "}
+            <button onClick={this.handleClick}> Add items </button>
+          </React.Fragment>
+        )}{" "}
+      </div>
+    );
+  }
+}
 
 
+```
+### Output
+```
+Items are ["peach"]
+```
+### Explanation
+In React version < 17, it understands the execution context (important to note) and batches the setState calls as per that. No matter how many successive setState calls we make in a React event handler, it will only produce a single re-render at the end of the event and reflects the state accordingly.
+
+To know more, checkout -- https://devtools.tech/understanding-react-setstate/
+
+# 55. What is the output of the following code snippt? | JavaScript Output Based Question | JavaScript Variable Destructing
+### 
 
 
+```js
+var person = {};
+
+({
+  name: person["username"]
+} = {
+  username: "yomeshgupta",
+  email: "team@devtools.tech",
+  name: "yomesh",
+});
+
+console.log(person.username, person.name);
+
+```
+### Output
+```
+yomesh undefined
+```
+### Explanation
+```
+This is sort of an outlier question that I have seen in the whole Frontend Interview process. Many people might even term it is as poorly written code and it is true in some sense. You can't tell what exactly is the intention of the code owner and what is the logic. Since, I have seen this/similar question being asked so here it is.
+
+Basic crux of this question is that we are de-structuring the name property from the right-hand side object and aliasing it with person.username. Since, person already exists, key-value is set on that object. It won't work if we remove the ( ... ) brackets { name: person['name'] has no variable declaration. Within brackets, it is executed as an expression.
+```
 
 
+---
+
+# 🔍 Step-by-step explanation
+
+## **1️⃣ The object you're destructuring FROM is:**
+
+```js
+{
+  username: "yomeshgupta",
+  email: "team@devtools.tech",
+  name: "yomesh",
+}
+```
+
+---
+
+## **2️⃣ The destructuring pattern is:**
+
+```js
+{
+  name: person["username"]
+}
+```
+
+This means:
+
+```
+Take the property "name" from the right-hand-side object,
+and assign its value into person["username"].
+```
+
+So:
+
+```
+person["username"] = "yomesh"
+```
+
+⚠️ Note: The value assigned is **from `name`**, not from `username`.
+
+---
+
+## **3️⃣ No other properties are assigned**
+
+You used only:
+
+```js
+name: person["username"]
+```
+
+Therefore:
+
+* `person.username` becomes `"yomesh"`
+* `person.name` stays **undefined** (because we never assigned it)
+
+---
+
+# 🔚 Final Output
+
+```
+yomesh undefined
+```
+
+---
+
+# 🧠 Why parentheses `(...)` around destructuring?
+
+When destructuring into an existing variable at the start of a statement, wrapping it in parentheses prevents `{}` from being treated as a **block statement**.
+
+---
+
+# 55. What will be the width of the element?
+### Consider a div with class container and the following CSS styling. What will be the width of the element?
 
 
+```js
+.container {
+  width: 100px;
+  height: 100px;
+  padding: 30px;
+  border: 30px solid lightblue;
+  margin: 30px;
+}
+```
+### Output
+```
+220px
+```
+### Explanation
+The width of our elment using the standard box model will actually be 220px (100 + 30 + 30 + 30 + 30), as the padding and border are added to the width used for the content box.
+
+`Total width of the element = Width + Padding + Border`
+
+There is another box model called Alternative Box Model. Using this model, any width is the width of the visible box on the page, therefore the content area width is that width minus the width for the padding and border. The following CSS would give the result `width = 100px`.
+
+```css
+.container { 
+  box-sizing: border-box; 
+}
+```
+
+To read more, visit: https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model.
+
+# 56. What would be the output of the following code snippet? | Promise Based Output Question | Part One
+### This is the first question from a series of questions based on Promise functionality.
+
+
+```js
+function init() {
+  throw new Error("I am an error");
+  return Promise.resolve(1);
+}
+
+init()
+  .then((v) => console.log(v + 1))
+  .catch((err) => console.log("Error caught -- ", err));
+
+```
+### Output
+```
+
+```
+### Explanation
+```
+
+```
 
 
 
