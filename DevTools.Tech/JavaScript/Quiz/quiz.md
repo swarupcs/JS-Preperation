@@ -1972,12 +1972,412 @@ barY(); // Output4?
 ```
 ### Output
 ```
-
+foo
+window
+undefined
+window
 ```
 ### Explanation
 ```
 
 ```
+# 47. Output question based on the delete operator in JavaScript
+### 
+
+
+```js
+var person = "Yomesh";
+
+var deletePerson = () => {
+  delete person;
+  return person;
+};
+
+console.log(deletePerson());
+
+```
+### Output
+```
+Yomesh
+```
+### Explanation
+We can't delete a `local variable` that has been declared with `var`/`let`/`const`.
+
+We can only delete properties of objects. This also includes global variables which are implicit properties of the window object. As per the MDN --
+
+`The JavaScript delete operator removes a property from an object`
+
+If we change the code to the following then delete will work.
+
+```js
+window.person = "Yomesh";
+
+var deletePerson = () => {
+  delete window.person;
+  return window.person;
+};
+
+console.log(deletePerson()); // undefined
+
+```
+
+To read more -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete
+
+
+# 48. Output question based on CSS Pseudo Classes
+Consider a huge list of `<p>` elements. Using CSS select every 2nd element starting from the 3rd element
+
+
+```js
+<div>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  <p>Para</p>
+  ...
+</div>
+
+```
+### Output
+```
+p:nth-child(2n+3)
+```
+### Explanation
+```
+
+```
+
+# 49. Nodejs Event Loop
+### 
+
+
+```js
+function performNextTick() {
+  process.nextTick(() => {
+    console.log("Inside nextTick | outside setTimeout");
+    setTimeout(() => {
+      console.log("Inside nextTick | Inside setTimeout");
+      process.exit();
+    }, 0);
+  });
+}
+
+setInterval(() => {
+  console.log("setInterval");
+}, 0);
+
+performNextTick();
+
+```
+### Output
+```
+Inside nextTick | outside setTimeout
+setInterval
+Inside nextTick | Inside setTimeout
+```
+### Explanation
+```
+
+```
+
+### Follow-up
+https://www.linkedin.com/feed/update/urn:li:activity:6664781708208025600/
+
+
+# 50. What would be the output? (String Reversal)
+
+```js
+function reverse(string) {
+  let i;
+  let temp;
+  const limit = parseInt(string.length / 2, 10);
+
+  for (i = 0; i < limit; i++) {
+    temp = string[i];
+    string[i] = string[string.length - i - 1];
+    string[string.length - i - 1] = temp;
+  }
+
+  return string;
+}
+
+const reversed = reverse("hello");
+console.log(reversed);
+
+
+```
+### Output
+```
+hello
+```
+### Explanation
+Strings are immutable in JavaScript. Hence, even if we try to overwrite it but original value will never be lost. In order to reverse using this method, we need to convert string into an array first.
+```js
+function reverse(str) {
+  let i;
+  let temp;
+  const string = str.split("");
+  const limit = parseInt(string.length / 2, 10);
+
+  for (i = 0; i < limit; i++) {
+    temp = string[i];
+    string[i] = string[string.length - i - 1];
+    string[string.length - i - 1] = temp;
+  }
+
+  return string;
+}
+
+const reversed = reverse("hello");
+console.log(reversed);
+
+```
+P.S. This is not the only way to reverse a string. There are multiple ways to do it.
+
+# 51. What would be the output on the button click? (Event Handling)
+### 
+
+
+```js
+<div id="grandfather">
+  <div id="father">
+    <!-- What would be the output in the console if the following button#child is clicked -->
+    <button id="child">Click Me</button>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function bindEvent(id) {
+    document
+      .getElementById(id)
+      .addEventListener(
+        "click",
+        (e) => console.log(e.target.getAttribute("id")),
+        true
+      );
+  }
+  
+  bindEvent("grandfather");
+  bindEvent("father");
+  bindEvent("child");
+</script>
+
+```
+### Output
+```
+child
+child
+child
+```
+### Explanation
+Output would always be `child` because `event.target` is a reference to the object onto which the event was dispatched. To get the current HTML Element whose handler is being executed, use the property `event.currentTarget`.
+
+Further resources:
+
+https://developer.mozilla.org/en-US/docs/Web/API/Event/target
+
+https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
+
+
+# 52. What would be the output?
+
+
+```js
+const first = 6;
+const second = "6";
+const third = first + second;
+const fourth = first - second;
+const fifth = third + first * first;
+const sixth = fourth + second * second;
+
+console.log("Fifth is --", fifth, typeof fifth);
+console.log("Sixth is --", sixth, typeof sixth);
+
+```
+### Output
+```
+Fifth is -- 6636 string
+Sixth is -- 36 number
+```
+### Explanation
+
+---
+
+# 🔍 **Step-by-step evaluation**
+
+## **1️⃣ `first` and `second`**
+
+```js
+first  = 6        // number
+second = "6"      // string
+```
+
+---
+
+## **2️⃣ `third = first + second`**
+
+`+` with a **string** performs **string concatenation**.
+
+```
+6 + "6"  →  "66"   (string)
+```
+
+So:
+
+```js
+third = "66"
+```
+
+---
+
+## **3️⃣ `fourth = first - second`**
+
+`-` always converts both sides to **numbers**.
+
+```
+6 - "6" 
+→ 6 - 6 
+→ 0
+```
+
+So:
+
+```js
+fourth = 0   // number
+```
+
+---
+
+## **4️⃣ `fifth = third + first * first`**
+
+### Step A:
+
+`first * first = 6 * 6 = 36` (number)
+
+### Step B:
+
+`third` is `"66"` (string)
+
+`"66" + 36`
+→ `"66" + "36"`
+→ `"6636"` (string)
+
+So:
+
+```js
+fifth = "6636"     // string
+```
+
+---
+
+## **5️⃣ `sixth = fourth + second * second`**
+
+### Step A:
+
+`second * second = "6" * "6"`
+→ JS converts both to numbers
+→ `6 * 6 = 36` (number)
+
+### Step B:
+
+`fourth = 0` (number)
+
+`0 + 36 = 36` (number)
+
+So:
+
+```js
+sixth = 36   // number
+```
+
+---
+
+# 🧾 **Final Output**
+
+```
+Fifth is -- 6636 string
+Sixth is -- 36 number
+```
+
+---
+
+# ✅ **Final Values Summary**
+
+| Variable | Value    | Type   |
+| -------- | -------- | ------ |
+| `third`  | `"66"`   | string |
+| `fourth` | `0`      | number |
+| `fifth`  | `"6636"` | string |
+| `sixth`  | `36`     | number |
+
+---
+
+# 53. What would be the output of the following code snippet?
+### 
+
+
+```js
+var x = 1;
+
+for (; x < 6; x += 2) {
+  x = x * x;
+}
+
+console.log(x);
+```
+### Output
+```
+11
+```
+### Explanation
+In the above code snippet, `x = 1` initially and it follows the following steps afterwards
+
+1. Check against the limit (6)
+2. Assign x the new value
+3. Increment x with 2
+4. Repeat
+
+
+```js
+First iteration [x = 1] :
+
+Step 1 -- 1 < 6 -- true
+Step 2 -- x = 1 * 1 -- 1
+Step 3 -- x += 2 -- 1 += 2 -- 3
+
+Second iteration [x = 3]:
+
+Step 1 -- 3 < 6 -- true
+Step 2 -- x = 3 * 3 -- 9
+Step 3 -- x += 2 -- 9 += 2 -- 11
+
+Third iteration [x = 11]:
+
+Step 1 -- 11 < 6 -- false
+
+So, loop breaks now and 11 will be the final value of x
+
+```
+
+
+
+
+
+
+
+
+
 
 
 
