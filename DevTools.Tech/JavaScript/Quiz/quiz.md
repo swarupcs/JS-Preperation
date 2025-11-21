@@ -1478,7 +1478,7 @@ Result:
 
 ---
 
-# 🎉 **Final Output**
+## 🎉 **Final Output**
 
 ```
 -1
@@ -1488,7 +1488,496 @@ Result:
 7
 ```
 
+# 32. What is the use of the <noscript> tag in Javascript?
+### In the question, you need to select the correct behavior of the noscript tag.
 
+### Output
+```
+The <noscript> tag defines an alternate content to be displayed to users that have disabled scripts in their browser or have a browser that doesn't support script.
+```
+### Explanation
+```
+
+```
+
+# 33. What do you think would be the output? [HTML Collection | NodeList]
+### Suppose we have the following HTML structure.
+
+
+```js
+<div>Hello World</div>
+<div>How are you?</div>
+
+```
+
+### What would be the output if we run the following code snippet?
+```js
+var divs = document.getElementsByTagName("div");
+
+for ( var i = 0; i<divs.length; i++ ) {
+	divs[i].appendChild(document.createElement("div"));
+}
+
+console.log(divs.length);
+
+
+```
+
+### Output
+
+```
+Infinite
+```
+
+### Explanation
+
+This would lead to an infinite loop as `document.getElementsByClassName()` is an `HTMLCollection` and is live.
+
+
+# 34. What is the output of the following? (Exotic Array Objects JavaScript)
+### 
+
+
+```js
+let items = [];
+
+items[null] = "foo";
+console.log(items.length);
+items[100] = "bar";
+console.log(items.length);
+
+```
+### Output
+```
+0
+101
+```
+### Explanation
+```
+Arrays are exotic objects in JavaScript and they behave differently than ordinary objects. To know more about this behavior, checkout: https://www.youtube.com/watch?v=-5Nmn68xxSU
+```
+
+
+
+# 35. Difference between Defer and Async keywords?
+### What are the differences between the keyword async and defer?
+
+
+```js
+<p>Hello World</p>
+
+<script type="text/javascript" src="/script2.js" async></script>
+<script type="text/javascript" src="/script1.js" defer></script>
+<script type="text/javascript" src="/script3.js" defer></script>
+<script type="text/javascript" src="/script4.js" async></script>
+
+```
+### Output
+```
+Defer:
+1. Execute after the document is loaded and parsed (they wait if needed), right before DOMContentLoaded.
+2. Order of execution matters.
+3. Does not blocks parsing of the page.
+4. Used for scripts that need the whole DOM and/or their relative execution order is important.
+
+Async:
+1. May load and execute while the document has not yet been fully downloaded.
+2. Load first order -- executes which ever scripts loads first.
+3. Blocks Parsing of the page.
+4. Used for independent scripts, like counters or ads. And their relative execution order does not matter.
+```
+### Explanation
+```
+Learn here: https://medium.com/@puneetahuja_23950/script-tag-defer-and-async-2aa3cc82e5cb
+```
+# 36. What would be the output? (Array sum problem)
+### 
+
+
+```js
+function sum(first, ...middle, last) {
+  return first + middle.reduce((acc, num) => acc + num, 0) + last;
+}
+
+console.log(sum(1, 2, 3, 4, 5));
+
+```
+### Output
+```
+Uncaught Error
+```
+### Explanation
+ Because the above code snippet will throw an error `Uncaught SyntaxError: Rest parameter must be last formal parameter` i.e. Rest parameter should always be the last parameter in function definition as it combines all the remaining arguments into an array.
+
+
+# 37. What would be the output? (Based on setTimeout)
+### 
+
+
+```js
+function sayName() {
+  setTimeout(() => {
+    console.log(this.name);
+  }, 1000);
+}
+sayName.call({
+  name: 'Yomesh'
+});
+
+```
+### Output
+```
+Yomesh
+```
+### Explanation
+
+Because we are passing an arrow function to the `setTimeout`. Arrow functions retains the scope of their definition. Hence, when the arrow function will be called then context will be same as `sayName` function.
+
+
+# 38. Would the output be the same for the following code snippet?
+
+
+```js
+var nums1 = [1, 2, 3, 4];
+var squared1 = nums1.map(x => x * x);
+
+var nums2 = new Array(4);
+nums2 = nums2.map((x, i) => i + 1);
+var squared2 = nums2.map(x => x * x);
+
+console.log(squared1, squared2);
+
+```
+
+Output of the both arrays would be the same? As in `[1, 4, 9, 16]`?
+
+### Output
+```
+No
+```
+### Explanation
+Output of both the arrays would be not be the same.
+
+```js
+squared1 array - [1, 4, 9, 16]
+squared2 array - [empty x 4]
+```
+
+When we create an array using the Array constructor providing the length of the array as argument then it returns empty slots as array elements. Function like map, forEach checks if the property/key exists on the array and then only invokes the passed callback. Hence, we will get the value of `squared2` as `[empty x 4]`.
+
+To fix this, we either copy the array or use `.fill`.
+
+```js
+var nums2 = new Array(4);
+nums2 = [...nums2];
+
+or
+
+var nums2 = new Array(4).fill(0);
+
+```
+
+# 39. What would be the output? (Based on Temporal Dead Zone)
+
+
+```js
+var firstname = computeName();
+
+let name = "Yomesh";
+
+function computeName() {
+  return `${name} Gupta`;
+}
+
+console.log(firstname);
+
+```
+### Output
+```
+Error
+```
+### Explanation
+Answer would be `Uncaught ReferenceError: name is not defined` as in the line no. 1 `computeName()` call jumps control flow to the execution of the function which tries to access the variable `name` which is still in the `Temporal Dead Zone`. Hence, it is not accessible.
+
+To know more, visit -- https://medium.com/@yomesh.gupta/understanding-temporal-dead-zone-in-javascript-53a735a682
+
+---
+
+# 40. What would be the output? (Based on Array prototype forEach)
+### 
+
+
+```js
+var first = [1, , 3];
+
+var second = [...first];
+
+first.forEach((value, index) => {
+  console.log(index, value);
+});
+
+second.forEach((value, index) => {
+  console.log(index, value);
+});
+
+```
+### Output
+```
+0 1
+2 3
+0 1
+1 undefined
+2 3
+```
+### Explanation
+because the length of the first array would be `3`. `first` is a sparse array i.e. array with empty slots in between. The indices in sparse array itself doesn't exist rather than having `undefined` as value.
+
+```js
+console.log(first.length); // 3
+
+first[0] -- 1
+first[1] -- empty slot
+first[2] -- 3
+
+Since the array is just an object then its representation would be
+// first
+{
+    "0": 1,
+    "2": 3
+}
+
+```
+Now, when we use the spread operator to create a copy then it will iterate over the array as in `i: 0 to n - 1` and set the value `second[i] = first[i]`. Since, when we access empty slots in an array then the returned value would be `undefined`, therefore, `second[1]` would be `undefined`. By spreading, we just created a dense array.
+
+```js
+// second
+{
+    "0": 1,
+    "1": undefined,
+    "2": 3
+}
+
+```
+
+`Array.prototype.forEach` iterates over the array and check if the indices exist in the array. If yes, then only callback will be invoked with index & value as arguments.
+
+To know more --
+
+https://github.com/v8/v8/blob/ca6e40d7ba853319c15196fef3f4536c8b3929fe/src/js/array.js#L1059
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+
+
+# 41. What will be the output for the following?
+### 
+
+
+```js
+function kidsLove(x) {
+  console.log(x);
+}
+["JavaScript","Python"].forEach(num=>kidsLove(num));
+
+const menLove=function(x) {
+  console.log(x);
+};
+["C++","Java"].forEach(num=>menLove(num));
+
+const legendsLove = (x) => {
+  console.log(x);
+};
+["01010"].forEach(num=>legendsLove(num));
+
+```
+### Output
+```
+JavaScript 
+Python
+C++
+Java
+01010
+```
+### Explanation
+```
+
+```
+
+# 42. What would be the output of the following code snippet? | Promise Based Output Question | Part Three
+### 
+
+
+```js
+function processing() {
+  return new Promise((resolve, reject) => {
+    resolve(1);
+    reject("Failed");
+    resolve(2);
+    console.log("After resolve/reject");
+  });
+}
+
+function init() {
+  processing()
+    .then((v) => console.log(v + 1))
+    .catch((err) => console.log(err));
+}
+
+init();
+
+```
+### Output
+```
+After resolve/reject
+2
+```
+### Explanation
+Because `resolve` and `reject` doesn't work like `return`. Even if they are called, the function completes its execution. Hence, `console.log` will be called even though `resolve/reject` is already invoked before and `.then callback` will be called after that. Yes, `resolve/reject` will be called once as per order of invocation.
+
+P.S. There is an exception and we will discuss that in further questions.
+
+# 43. What would be the output of the following code snippet? | Promise Based Output Question | Part Two
+### 
+
+
+```js
+function processing() {
+  return new Promise((resolve, reject) => {
+    resolve(1);
+    reject("Failed");
+    resolve(2);
+  });
+}
+
+function init() {
+  processing()
+    .then((v) => console.log(v + 1))
+    .catch((err) => console.log(err));
+}
+
+init();
+
+```
+### Output
+```
+2
+```
+### Explanation
+Answer would be `2` because the `resolve` or `reject` only execute once in the order they are called. No matter if there is a `reject` after `resolve` or vice versa it won't be executed.
+
+# 44. What will be the output for the following question (Copying in JavaScript)?
+
+```js
+let saiyan = {
+  name: "Vegeta",
+  chiBlasts: {
+    low: "Big bang attack",
+    med: "Gallic gun",
+    high: "Final flash",
+  },
+};
+
+let anotherSaiyan = { ...saiyan };
+anotherSaiyan.name = "Goku";
+anotherSaiyan.chiBlasts.high = "Spirit Bomb";
+
+let sonOfSaiyan = Object.assign({}, saiyan);
+sonOfSaiyan.name = "Trunks";
+sonOfSaiyan.chiBlasts.high = "Finish Buster";
+
+let sonOfAnotherSaiyan = JSON.parse(JSON.stringify(anotherSaiyan));
+sonOfAnotherSaiyan.name = "Gohan";
+sonOfAnotherSaiyan.chiBlasts.high = "Kamehameha";
+
+console.log(
+  saiyan.name,
+  anotherSaiyan.name,
+  sonOfSaiyan.name,
+  sonOfAnotherSaiyan.name
+);
+console.log(
+  saiyan.chiBlasts.high,
+  anotherSaiyan.chiBlasts.high,
+  sonOfSaiyan.chiBlasts.high,
+  sonOfAnotherSaiyan.chiBlasts.high
+);
+
+```
+### Output
+```
+Vegeta Goku Trunks Gohan
+Finish Buster Finish Buster Finish Buster Kamehameha
+```
+### Explanation
+```
+
+```
+
+# 45. What would be the output of the following? (Based on IIFE in JS)
+### 
+
+
+```js
+(function () {
+  var first = second = 5;
+})();
+
+console.log(second);
+
+```
+### Output
+```
+5
+```
+### Explanation
+The answer would be 5 even though it seems as if the variable was declared within a function and can't be accessed outside of it. This is because
+
+```js
+var first = second = 5;
+```
+
+is interpreted the following way:
+
+```js
+var first = second;
+second = 5;
+```
+
+But `second` is not declared anywhere in the function with `var` so it is set equal to `5` in the global scope.
+
+
+# 46. What will be the output for below in the browser?
+### 
+
+
+```js
+"use strict";
+
+let foo = {
+  barX: function () {
+    console.log(this);
+  },
+  barY: () => {
+    console.log(this);
+  },
+};
+
+let barX = foo.barX;
+let barY = foo.barY;
+
+foo.barX(); // Output1?
+foo.barY(); // Output2?
+barX(); // Output3?
+barY(); // Output4?
+
+```
+### Output
+```
+
+```
+### Explanation
+```
+
+```
 
 
 
