@@ -3,9 +3,6 @@ title: Can you offer a use case for the new arrow => function syntax?
 subtitle: How does this new syntax differ from other functions?
 ---
 
-# Can you offer a use case for the new arrow => function syntax?
-
-
 ## TL;DR
 
 Arrow functions provide a concise syntax for writing functions in JavaScript. They are particularly useful for maintaining the `this` context within methods and callbacks. For example, in an event handler or array method like `map`, arrow functions can simplify the code and avoid issues with `this` binding.
