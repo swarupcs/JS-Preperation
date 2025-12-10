@@ -47,7 +47,7 @@ interval.start(); // i is now 3.
 // t = 50:
 interval.stop(); // i remains at 4.
 
-```
+
 ```
 
 # My Solution
