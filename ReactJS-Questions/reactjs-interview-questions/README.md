@@ -700,24 +700,19 @@ Hide/Show table of contents
 
 7.  ### When to use a Class Component over a Function Component?
 
-    After the addition of Hooks(i.e. React 16.8 onwards) it is always recommended to use Function components over Class components in React. Because you could use state, lifecycle methods and other features that were only available in class component present in function component too.
+    With the introduction of **React Hooks** in version 16.8, it is now recommended to use **Function Components** for almost all use cases. Hooks allow function components to manage state, handle side effects, and access other React features that were previously only possible in Class Components.
 
-    But even there are two reasons to use Class components over Function components.
+    However, there are still a few specific scenarios where you might use or encounter Class Components:
 
-    1. If you need a React functionality whose Function component equivalent is not present yet, like Error Boundaries.
-    2. In older versions, If the component needs _state or lifecycle methods_ then you need to use class component.
+    1.  **Error Boundaries:** Currently, there are no hook equivalents for the lifecycle methods `getDerivedStateFromError` or `componentDidCatch`. To create an Error Boundary component, you must use a Class Component (or use a library like `react-error-boundary`).
+    2.  **Legacy Codebases:** Many older React projects are built with Class Components. When maintaining or extending these projects, you may continue using classes for consistency, though it's often recommended to write new components as functions.
+    3.  **Third-Party Libraries:** Some older libraries might still require class components for integration, though this is increasingly rare.
 
-    So the summary to this question is as follows:
-
-    **Use Function Components:**
-
-    - If you don't need state or lifecycle methods, and your component is purely presentational.
-    - For simplicity, readability, and modern code practices, especially with the use of React Hooks for state and side effects.
-
-    **Use Class Components:**
-
-    - If you need to manage state or use lifecycle methods.
-    - In scenarios where backward compatibility or integration with older code is necessary.
+    **Why Prefer Function Components?**
+    - **Simplicity:** They require less boilerplate code (no `this` keyword, no manual binding of event handlers).
+    - **Readability:** Hooks like `useEffect` allow you to group related logic together rather than splitting it across multiple lifecycle methods.
+    - **Performance:** While the performance difference is often negligible, function components can be easier for React to optimize.
+    - **Future-Proof:** React's newer features (like Server Components and certain optimizations) are primarily designed with function components in mind.
 
     **Note:** You can also use reusable [react error boundary](https://github.com/bvaughn/react-error-boundary) third-party component without writing any class. i.e, No need to use class components for Error boundaries.
 
@@ -1059,15 +1054,19 @@ class ParentComponent extends React.Component {
 
 14. ### What are inline conditional expressions?
 
-    You can use either _if statements_ or _ternary expressions_ which are available in JS(and JSX in React) to conditionally execute or render expressions. Apart from these approaches, you can also embed any expressions in JSX by wrapping them in curly braces and then followed by JS logical operator `&&`. It is helpful to render elements conditionally within a single line and commonly used for concise logic, especially in JSX rendering.
+    You can use either _if statements_ or _ternary expressions_ which are available in JavaScript to conditionally render content in JSX. By wrapping expressions in curly braces `{}`, you can embed logic directly into your components. The logical `&&` operator is also commonly used for short-circuiting to render elements only when a condition is true.
 
-    ```jsx harmony
-    <h1>Hello!</h1>;
-    {
-      messages.length > 0 && !isLogin ? (
-        <h2>You have {messages.length} unread messages.</h2>
-      ) : (
-        <h2>You don't have unread messages.</h2>
+    ```jsx
+    function MessageStatus({ messages, isLogin }) {
+      return (
+        <div>
+          <h1>Hello!</h1>
+          {messages.length > 0 && !isLogin ? (
+            <h2>You have {messages.length} unread messages.</h2>
+          ) : (
+            <h2>You don't have unread messages.</h2>
+          )}
+        </div>
       );
     }
     ```
