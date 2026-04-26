@@ -800,9 +800,7 @@ db.myCollection.deleteMany({ age: { $gt: 25 } });
 ```
 <br>
 
-Here are questions 16–100 formatted with answers in that style:
 
-```markdown
 ## 16. Can you join two _collections_ in _MongoDB_? If so, how?
 
 MongoDB does not support joins in the traditional relational sense, but you can achieve similar functionality using the `$lookup` aggregation operator.
