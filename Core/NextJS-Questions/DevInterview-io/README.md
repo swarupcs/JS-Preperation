@@ -768,6 +768,887 @@ export default function MyStaticPage({ data }) {
 ```
 <br>
 
+## 16. What is `getServerSideProps` and what kind of rendering does it enable?
+
+`getServerSideProps` is a Next.js data fetching function that runs **on the server on every request**, enabling true Server-Side Rendering (SSR). In Next.js v15+, the App Router with async Server Components is the preferred SSR approach, but `getServerSideProps` remains available in the Pages Router.
+
+### What It Enables
+
+- Renders fresh HTML on every request with up-to-date data
+- Ideal for pages where data changes frequently (dashboards, user feeds)
+- The page is never statically cached — always server-rendered
+
+### Code Example: Using `getServerSideProps`
+
+Here is the Pages Router implementation:
+
+```javascript
+// pages/dashboard.js
+// Runs on every request — never cached
+
+export async function getServerSideProps(context) {
+  const { req, res, params, query } = context;
+
+  // Fetch fresh data from an API or database on every request
+  const response = await fetch(`https://api.example.com/data?page=${query.page || 1}`);
+
+  // If fetch fails, show 404 page
+  if (!response.ok) {
+    return { notFound: true };
+  }
+
+  const data = await response.json();
+
+  // Pass data to the page component as props
+  return {
+    props: {
+      data,
+      fetchedAt: new Date().toISOString(), // Always fresh timestamp
+    },
+  };
+}
+
+// Page component receives props from getServerSideProps
+export default function Dashboard({ data, fetchedAt }) {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <p>Last updated: {fetchedAt}</p>
+      <ul>
+        {data.items.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### App Router Equivalent (Next.js 13–15+)
+
+In the App Router, SSR is achieved with async Server Components and `cache: "no-store"`:
+
+```javascript
+// app/dashboard/page.js
+// This is the modern recommended approach in Next.js 15
+
+// No need for getServerSideProps — just make the component async
+export default async function Dashboard({ searchParams }) {
+  // Fetch runs on every request due to 'no-store'
+  const response = await fetch(
+    `https://api.example.com/data?page=${searchParams.page || 1}`,
+    { cache: "no-store" }           // Disables caching → SSR behavior
+  );
+
+  const data = await response.json();
+
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <ul>
+        {data.items.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+---
+
+## 17. How would you implement _Incremental Static Regeneration (ISR)_ in _Next.js_?
+
+ISR allows statically generated pages to be **re-generated in the background** at a specified interval without rebuilding the entire app. In Next.js 15, ISR is supported in both the Pages Router and the App Router.
+
+### How ISR Works
+
+- Page is statically generated at build time
+- After the revalidation period, the next request triggers a background regeneration
+- Stale page is served until the new one is ready (stale-while-revalidate)
+
+### Code Example: Pages Router ISR with `getStaticProps`
+
+```javascript
+// pages/products/[id].js
+
+export async function getStaticPaths() {
+  // Pre-build only the top 10 most popular products
+  const res = await fetch("https://api.example.com/products/top");
+  const products = await res.json();
+
+  const paths = products.map((product) => ({
+    params: { id: product.id.toString() },
+  }));
+
+  return {
+    paths,
+    fallback: "blocking",           // Generate new pages on-demand if not pre-built
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const res = await fetch(`https://api.example.com/products/${params.id}`);
+
+  if (!res.ok) {
+    return { notFound: true };
+  }
+
+  const product = await res.json();
+
+  return {
+    props: { product },
+    revalidate: 60,                 // Re-generate this page every 60 seconds
+  };
+}
+
+export default function ProductPage({ product }) {
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      <p>{product.description}</p>
+      <p>Price: ${product.price}</p>
+    </div>
+  );
+}
+```
+
+### App Router ISR (Next.js 13–15+)
+
+```javascript
+// app/products/[id]/page.js
+
+// Generate static params at build time
+export async function generateStaticParams() {
+  const res = await fetch("https://api.example.com/products/top");
+  const products = await res.json();
+
+  return products.map((product) => ({
+    id: product.id.toString(),
+  }));
+}
+
+export default async function ProductPage({ params }) {
+  // revalidate controls ISR — page regenerates every 60 seconds
+  const res = await fetch(`https://api.example.com/products/${params.id}`, {
+    next: { revalidate: 60 },       // ISR: regenerate after 60 seconds
+  });
+
+  const product = await res.json();
+
+  return (
+    <div>
+      <h1>{product.name}</h1>
+      <p>{product.description}</p>
+      <p>Price: ${product.price}</p>
+    </div>
+  );
+}
+
+// Optional: set revalidate as a segment-level config export
+export const revalidate = 60;
+```
+
+### On-Demand ISR (Next.js 15)
+
+```javascript
+// app/api/revalidate/route.js
+// Trigger ISR manually via API call instead of waiting for the timer
+
+import { revalidatePath, revalidateTag } from "next/cache";
+
+export async function POST(request) {
+  const { secret, path, tag } = await request.json();
+
+  // Protect this endpoint with a secret token
+  if (secret !== process.env.REVALIDATION_SECRET) {
+    return Response.json({ error: "Invalid secret" }, { status: 401 });
+  }
+
+  if (path) {
+    revalidatePath(path);           // Invalidate a specific page path
+  }
+
+  if (tag) {
+    revalidateTag(tag);             // Invalidate all fetches tagged with this key
+  }
+
+  return Response.json({ revalidated: true, at: new Date().toISOString() });
+}
+```
+
+---
+
+## 18. Can you use client-side data fetching in _Next.js_? If so, how?
+
+Yes, Next.js fully supports client-side data fetching using React hooks like `useState`/`useEffect`, or libraries like **SWR** (built by Vercel) and **TanStack Query**. Client-side fetching is ideal for user-specific, real-time, or frequently changing data.
+
+### When to Use Client-Side Fetching
+
+- User-specific data (profile, cart, notifications)
+- Real-time or frequently updated content
+- Data not needed for SEO
+- Interactive dashboards or filters
+
+### Code Example 1: Using `useEffect` and `useState`
+
+```javascript
+"use client";                       // Required in App Router for hooks
+
+import { useState, useEffect } from "react";
+
+export default function UserProfile({ userId }) {
+  const [user, setUser]       = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    setLoading(true);
+
+    fetch(`/api/users/${userId}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch user");
+        return res.json();
+      })
+      .then((data) => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [userId]);                     // Re-fetch whenever userId changes
+
+  if (loading) return <p>Loading...</p>;
+  if (error)   return <p>Error: {error}</p>;
+  if (!user)   return null;
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+```
+
+### Code Example 2: Using SWR (Recommended for Next.js)
+
+```javascript
+"use client";
+
+import useSWR from "swr";
+
+// Reusable fetcher function
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+export default function Dashboard() {
+  // SWR handles caching, revalidation, and loading/error states automatically
+  const { data, error, isLoading, mutate } = useSWR("/api/dashboard", fetcher, {
+    refreshInterval: 30000,         // Auto-refresh every 30 seconds
+    revalidateOnFocus: true,        // Refresh when window regains focus
+  });
+
+  if (isLoading) return <p>Loading dashboard...</p>;
+  if (error)     return <p>Failed to load dashboard.</p>;
+
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <p>Total Users: {data.totalUsers}</p>
+      <p>Revenue: ${data.revenue}</p>
+      {/* Manually trigger re-fetch */}
+      <button onClick={() => mutate()}>Refresh</button>
+    </div>
+  );
+}
+```
+
+### Code Example 3: Using TanStack Query (React Query)
+
+```javascript
+"use client";
+
+import { useQuery, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
+function ProductList() {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["products"],         // Cache key
+    queryFn: () => fetch("/api/products").then((r) => r.json()),
+    staleTime: 60 * 1000,          // Consider data fresh for 1 minute
+  });
+
+  if (isLoading) return <p>Loading products...</p>;
+  if (isError)   return <p>Error loading products.</p>;
+
+  return (
+    <ul>
+      {data.map((product) => (
+        <li key={product.id}>{product.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+// Wrap with provider (typically done in layout.js)
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ProductList />
+    </QueryClientProvider>
+  );
+}
+```
+
+---
+
+## 19. Explain the 'fallback' key used in the `getStaticPaths` function.
+
+The `fallback` key in `getStaticPaths` controls what happens when a user requests a dynamic page that was **not pre-generated at build time**. It has three possible values: `false`, `true`, and `"blocking"`.
+
+### The Three Fallback Modes
+
+```javascript
+// pages/posts/[id].js
+
+export async function getStaticPaths() {
+  const res   = await fetch("https://api.example.com/posts");
+  const posts = await res.json();
+
+  // Only pre-build the first 10 posts
+  const paths = posts.slice(0, 10).map((post) => ({
+    params: { id: post.id.toString() },
+  }));
+
+  return {
+    paths,
+    fallback: false,                // ← Change this to test different behaviors
+  };
+}
+```
+
+### `fallback: false` — 404 for unknown paths
+
+```javascript
+// pages/posts/[id].js
+
+export async function getStaticPaths() {
+  const res   = await fetch("https://api.example.com/posts");
+  const posts = await res.json();
+
+  return {
+    paths: posts.map((post) => ({ params: { id: post.id.toString() } })),
+    fallback: false,                // Any path NOT in 'paths' → 404 page
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const res  = await fetch(`https://api.example.com/posts/${params.id}`);
+  const post = await res.json();
+
+  return { props: { post } };
+}
+
+export default function Post({ post }) {
+  return <h1>{post.title}</h1>;
+}
+```
+
+### `fallback: true` — Serve skeleton immediately, then hydrate
+
+```javascript
+// pages/posts/[id].js
+import { useRouter } from "next/router";
+
+export async function getStaticPaths() {
+  return {
+    paths: [],                      // Pre-build nothing — generate all on-demand
+    fallback: true,                 // Unknown paths get a fallback skeleton first
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const res  = await fetch(`https://api.example.com/posts/${params.id}`);
+
+  if (!res.ok) return { notFound: true };
+
+  const post = await res.json();
+  return { props: { post }, revalidate: 60 };
+}
+
+export default function Post({ post }) {
+  const router = useRouter();
+
+  // router.isFallback is true while the page is being generated
+  if (router.isFallback) {
+    return (
+      <div>
+        <div className="skeleton-title" />   {/* Show loading skeleton */}
+        <div className="skeleton-body"  />
+      </div>
+    );
+  }
+
+  return <h1>{post.title}</h1>;
+}
+```
+
+### `fallback: "blocking"` — Wait for generation, then serve (Recommended)
+
+```javascript
+// pages/posts/[id].js
+
+export async function getStaticPaths() {
+  const res   = await fetch("https://api.example.com/posts/popular");
+  const posts = await res.json();
+
+  return {
+    paths: posts.map((post) => ({ params: { id: post.id.toString() } })),
+    fallback: "blocking",           // Unknown paths: wait for SSR, then cache
+    // No isFallback needed — user waits like SSR, page is cached after first hit
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const res = await fetch(`https://api.example.com/posts/${params.id}`);
+
+  if (!res.ok) return { notFound: true };
+
+  const post = await res.json();
+  return { props: { post }, revalidate: 60 };
+}
+
+export default function Post({ post }) {
+  // No need to handle isFallback — page is always fully rendered before serving
+  return <h1>{post.title}</h1>;
+}
+```
+
+---
+
+## 20. How do you create an _API route_ in _Next.js_?
+
+Next.js lets you build backend API endpoints directly inside your project. In the **Pages Router**, files inside `pages/api/` become API routes. In the **App Router** (Next.js 13–15+), you use **Route Handlers** inside `app/` directories with `route.js` files.
+
+### Pages Router: `pages/api/`
+
+```javascript
+// pages/api/users/index.js
+// Accessible at: GET/POST /api/users
+
+export default async function handler(req, res) {
+  // Route by HTTP method
+  switch (req.method) {
+    case "GET":
+      return handleGet(req, res);
+    case "POST":
+      return handlePost(req, res);
+    default:
+      res.setHeader("Allow", ["GET", "POST"]);
+      return res.status(405).json({ error: `Method ${req.method} not allowed` });
+  }
+}
+
+async function handleGet(req, res) {
+  try {
+    const users = await db.getUsers();                // Fetch from DB
+    return res.status(200).json(users);
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to fetch users" });
+  }
+}
+
+async function handlePost(req, res) {
+  try {
+    const { name, email } = req.body;                 // Parse request body
+
+    if (!name || !email) {
+      return res.status(400).json({ error: "Name and email are required" });
+    }
+
+    const newUser = await db.createUser({ name, email });
+    return res.status(201).json(newUser);
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to create user" });
+  }
+}
+```
+
+### App Router: Route Handlers with `route.js`
+
+```javascript
+// app/api/users/route.js
+// Accessible at: GET/POST /api/users
+
+import { NextResponse } from "next/server";
+
+// GET /api/users
+export async function GET(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const page  = searchParams.get("page")  || 1;
+    const limit = searchParams.get("limit") || 10;
+
+    const users = await db.getUsers({ page, limit });
+
+    return NextResponse.json(users, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
+  }
+}
+
+// POST /api/users
+export async function POST(request) {
+  try {
+    const body = await request.json();              // Parse JSON body
+    const { name, email } = body;
+
+    if (!name || !email) {
+      return NextResponse.json(
+        { error: "Name and email are required" },
+        { status: 400 }
+      );
+    }
+
+    const newUser = await db.createUser({ name, email });
+    return NextResponse.json(newUser, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+  }
+}
+```
+
+### Dynamic API Route
+
+```javascript
+// app/api/users/[id]/route.js
+// Accessible at: GET/PUT/DELETE /api/users/:id
+
+import { NextResponse } from "next/server";
+
+// GET /api/users/123
+export async function GET(request, { params }) {
+  try {
+    const user = await db.getUserById(params.id);
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+// PUT /api/users/123
+export async function PUT(request, { params }) {
+  try {
+    const body        = await request.json();
+    const updatedUser = await db.updateUser(params.id, body);
+    return NextResponse.json(updatedUser);
+  } catch (error) {
+    return NextResponse.json({ error: "Update failed" }, { status: 500 });
+  }
+}
+
+// DELETE /api/users/123
+export async function DELETE(request, { params }) {
+  try {
+    await db.deleteUser(params.id);
+    return NextResponse.json({ message: "User deleted" }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+  }
+}
+```
+
+---
+
+## 21. Can you use _middleware_ within _Next.js API routes_?
+
+Yes. In Next.js, middleware can be applied at two levels: **global Edge Middleware** via `middleware.js` at the project root (runs before any route), and **inline middleware** composed manually inside API route handlers for route-specific logic like auth, validation, or logging.
+
+### Global Edge Middleware (`middleware.js`)
+
+```javascript
+// middleware.js  ← placed at the project root (same level as app/ or pages/)
+// Runs on the Edge Runtime before every matched request
+
+import { NextResponse } from "next/server";
+
+export async function middleware(request) {
+  const { pathname } = request.nextUrl;
+
+  // ── Auth Guard ───────────────────────────────────────────────────────────
+  if (pathname.startsWith("/api/protected")) {
+    const token = request.headers.get("authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+      const payload = await verifyToken(token);   // Verify JWT on the edge
+
+      // Pass user info to the route handler via a custom header
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set("x-user-id",    payload.userId);
+      requestHeaders.set("x-user-role",  payload.role);
+
+      return NextResponse.next({ request: { headers: requestHeaders } });
+    } catch {
+      return NextResponse.json({ error: "Invalid token" }, { status: 403 });
+    }
+  }
+
+  // ── Rate Limiting (simple example) ───────────────────────────────────────
+  if (pathname.startsWith("/api/")) {
+    const ip = request.ip || "unknown";
+    // Check rate limit against KV store, Redis, etc.
+    const isRateLimited = await checkRateLimit(ip);
+
+    if (isRateLimited) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+  }
+
+  return NextResponse.next();
+}
+
+// Define which routes this middleware applies to
+export const config = {
+  matcher: ["/api/:path*"],         // Only run on /api/* routes
+};
+```
+
+### Inline Middleware (Composed HOFs for Pages Router)
+
+```javascript
+// lib/middleware/compose.js
+// Higher-Order Function pattern for layering middleware in Pages Router
+
+// Authentication middleware
+function withAuth(handler) {
+  return async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      req.user = await verifyToken(token);        // Attach user to request
+      return handler(req, res);                   // Proceed to next handler
+    } catch {
+      return res.status(403).json({ error: "Invalid token" });
+    }
+  };
+}
+
+// Request logger middleware
+function withLogging(handler) {
+  return async (req, res) => {
+    const start = Date.now();
+    console.log(`→ ${req.method} ${req.url}`);
+    await handler(req, res);
+    console.log(`← ${req.method} ${req.url} (${Date.now() - start}ms)`);
+  };
+}
+
+// Validation middleware factory
+function withValidation(schema) {
+  return (handler) => async (req, res) => {
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+    return handler(req, res);
+  };
+}
+
+// ── Usage in a Pages Router API route ────────────────────────────────────────
+// pages/api/protected/data.js
+
+async function handler(req, res) {
+  // req.user is already populated by withAuth
+  return res.status(200).json({ data: "secret", userId: req.user.id });
+}
+
+// Compose middleware right-to-left: logging → auth → handler
+export default withLogging(withAuth(handler));
+```
+
+### Inline Middleware for App Router Route Handlers
+
+```javascript
+// lib/middleware/withAuth.js
+// Reusable wrapper for App Router route handlers
+
+export function withAuth(handler) {
+  return async (request, context) => {
+    const token = request.headers.get("authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+      const user = await verifyToken(token);
+      // Attach user via a custom property on the request (or pass via context)
+      request.user = user;
+      return handler(request, context);
+    } catch {
+      return Response.json({ error: "Invalid token" }, { status: 403 });
+    }
+  };
+}
+
+// app/api/protected/data/route.js
+import { NextResponse } from "next/server";
+import { withAuth }     from "@/lib/middleware/withAuth";
+
+async function GET(request) {
+  return NextResponse.json({ data: "secret", user: request.user });
+}
+
+export const GET = withAuth(GET);   // Wrap the handler with auth middleware
+```
+
+---
+
+## 22. Explain how to handle _query parameters_ in _Next.js API routes_.
+
+Query parameters are the key-value pairs in a URL after the `?` symbol (e.g., `/api/products?page=2&category=shoes`). Next.js provides straightforward access to them in both the Pages Router and the App Router.
+
+### Pages Router: `req.query`
+
+```javascript
+// pages/api/products/index.js
+// Example URL: /api/products?page=2&category=shoes&sort=price&order=asc
+
+export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  // ── Extract query parameters from req.query ────────────────────────────
+  const {
+    page     = 1,         // Default to page 1 if not provided
+    limit    = 10,        // Default page size
+    category,             // Optional filter
+    sort     = "name",    // Default sort field
+    order    = "asc",     // Default sort order
+    search,               // Optional search term
+  } = req.query;
+
+  // ── Validate and parse ────────────────────────────────────────────────
+  const pageNum  = parseInt(page,  10);
+  const limitNum = parseInt(limit, 10);
+
+  if (isNaN(pageNum) || pageNum < 1) {
+    return res.status(400).json({ error: "Invalid page number" });
+  }
+
+  if (!["asc", "desc"].includes(order)) {
+    return res.status(400).json({ error: "Order must be 'asc' or 'desc'" });
+  }
+
+  try {
+    const products = await db.getProducts({
+      page:     pageNum,
+      limit:    limitNum,
+      category: category || null,
+      sort,
+      order,
+      search:   search   || null,
+    });
+
+    return res.status(200).json({
+      data:    products,
+      page:    pageNum,
+      limit:   limitNum,
+      total:   products.total,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to fetch products" });
+  }
+}
+```
+
+### App Router: `URL` and `searchParams`
+
+```javascript
+// app/api/products/route.js
+// Example URL: /api/products?page=2&category=shoes&sort=price&order=asc
+
+import { NextResponse } from "next/server";
+
+export async function GET(request) {
+  // ── Parse query params from the URL object ─────────────────────────────
+  const { searchParams } = new URL(request.url);
+
+  const page     = parseInt(searchParams.get("page")     || "1",   10);
+  const limit    = parseInt(searchParams.get("limit")    || "10",  10);
+  const category =           searchParams.get("category");          // null if absent
+  const sort     =           searchParams.get("sort")    || "name";
+  const order    =           searchParams.get("order")   || "asc";
+  const search   =           searchParams.get("search");
+
+  // ── Validate ────────────────────────────────────────────────────────────
+  if (isNaN(page) || page < 1) {
+    return NextResponse.json({ error: "Invalid page" }, { status: 400 });
+  }
+
+  if (!["asc", "desc"].includes(order)) {
+    return NextResponse.json(
+      { error: "Order must be 'asc' or 'desc'" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const products = await db.getProducts({ page, limit, category, sort, order, search });
+
+    return NextResponse.json({
+      data:  products,
+      meta:  { page, limit, total: products.total },
+    });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+  }
+}
+```
+
+### Handling Query Params in Dynamic Routes (Both Routers)
+
+```javascript
+// app/api/users/[id]/posts/route.js
+// Example URL: /api/users/42/posts?status=published&limit=5
+
+import { NextResponse } from "next/server";
+
+export async function GET(request, { params }) {
+  const userId = params.id;                           // Dynamic segment from URL path
+  const { searchParams } = new URL(request.url);
+
+  const status = searchParams.get("status") || "all"; // Query param
+  const limit  = parseInt(searchParams.get("limit") || "10", 10);
+
+  try {
+    const posts = await db.getUserPosts(userId, { status, limit });
+    return NextResponse.json(posts);
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 });
+  }
+}
+```
+
 ## 23. How can you include _CSS modules_ in your _Next.js_ application?
 
 CSS Modules are supported out of the box in Next.js with zero configuration. Any file ending in `.module.css` is automatically treated as a CSS Module, scoping all class names locally to avoid style conflicts.
