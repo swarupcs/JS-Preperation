@@ -2542,31 +2542,27 @@ class ParentComponent extends React.Component {
     </p>
     </details>
 
-    With the export specifier, the MyProfile is going to be the member and exported to this module and the same can be imported without mentioning the name in other components.
-    ```
-
 **[⬆ Back to Top](#table-of-contents)**
 
 73. ### What are the exceptions on React component naming?
 
-    The component names should start with an uppercase letter but there are few exceptions to this convention. The lowercase tag names with a dot (property accessors) are still considered as valid component names.
-    For example, the below tag can be compiled to a valid component,
+    Component names should usually start with an uppercase letter. The main exception is when the component is accessed as a property, such as `obj.component`. JSX treats member expressions as component references even if the final property name starts with a lowercase letter.
+
+    For example, the tag below compiles to a valid component:
 
     ```jsx harmony
-         render() {
-              return (
-                <obj.component/> // `React.createElement(obj.component)`
-              )
-        }
+    function App() {
+      return <obj.component />; // React.createElement(obj.component)
+    }
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 74. ### Is it possible to use async/await in plain React?
 
-    Yes, you can use `async/await` in plain React, as long as your JavaScript environment supports ES2017+. Nowadays most modern browsers and build tools support ES2017+ version. If you're using **Create React App**, **Next.js**, **Remix**, or any modern React setup, `async/await` is supported out of the box through **Babel**.
+    Yes, you can use `async/await` in React as long as your JavaScript environment supports ES2017 or your build tool transpiles it. Modern React setups such as Create React App, Vite, Next.js, and Remix support `async/await` out of the box.
 
-    ### Example Usage
+    **Example usage:**
 
     ```jsx
     import { useEffect, useState } from 'react';
@@ -2587,37 +2583,37 @@ class ParentComponent extends React.Component {
       return user ? <div>Hello, {user.name}</div> : <div>Loading...</div>;
     }
     ```
-    But If you're not using a bundler like **Webpack or Babel**, you will need _Babel_ and [transform-async-to-generator](https://babeljs.io/docs/en/babel-plugin-transform-async-to-generator) plugin. However, React Native ships with Babel and a set of transforms.
+    If you are not using a modern bundler or build setup, you may need Babel and the [transform-async-to-generator](https://babeljs.io/docs/en/babel-plugin-transform-async-to-generator) plugin. React Native already ships with Babel and the required transforms.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-75.  ### What are the common folder structures for React?
+75. ### What are the common folder structures for React?
 
-     There are two common practices for React project file structure.
+     There are two common practices for React project file structure:
 
      1.  **Grouping by features or routes:**
 
-        One common way to structure projects is locate CSS, JS, and tests together, grouped by feature or route.
+        One common way to structure projects is to keep CSS, JavaScript, and tests together, grouped by feature or route.
 
         ```
         common/
-        ├─ Avatar.js
-        ├─ Avatar.css
-        ├─ APIUtils.js
-        └─ APIUtils.test.js
+        |-- Avatar.js
+        |-- Avatar.css
+        |-- APIUtils.js
+        `-- APIUtils.test.js
         feed/
-        ├─ index.js
-        ├─ Feed.js
-        ├─ Feed.css
-        ├─ FeedStory.js
-        ├─ FeedStory.test.js
-        └─ FeedAPI.js
+        |-- index.js
+        |-- Feed.js
+        |-- Feed.css
+        |-- FeedStory.js
+        |-- FeedStory.test.js
+        `-- FeedAPI.js
         profile/
-        ├─ index.js
-        ├─ Profile.js
-        ├─ ProfileHeader.js
-        ├─ ProfileHeader.css
-        └─ ProfileAPI.js
+        |-- index.js
+        |-- Profile.js
+        |-- ProfileHeader.js
+        |-- ProfileHeader.css
+        `-- ProfileAPI.js
         ```
 
      2.  **Grouping by file type:**
@@ -2626,41 +2622,41 @@ class ParentComponent extends React.Component {
 
         ```
         api/
-        ├─ APIUtils.js
-        ├─ APIUtils.test.js
-        ├─ ProfileAPI.js
-        └─ UserAPI.js
+        |-- APIUtils.js
+        |-- APIUtils.test.js
+        |-- ProfileAPI.js
+        `-- UserAPI.js
         components/
-        ├─ Avatar.js
-        ├─ Avatar.css
-        ├─ Feed.js
-        ├─ Feed.css
-        ├─ FeedStory.js
-        ├─ FeedStory.test.js
-        ├─ Profile.js
-        ├─ ProfileHeader.js
-        └─ ProfileHeader.css
+        |-- Avatar.js
+        |-- Avatar.css
+        |-- Feed.js
+        |-- Feed.css
+        |-- FeedStory.js
+        |-- FeedStory.test.js
+        |-- Profile.js
+        |-- ProfileHeader.js
+        `-- ProfileHeader.css
         ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
 76. ### What are the popular packages for animation?
 
-    _React Transition Group_ and _React Motion_ are popular animation packages in React ecosystem.
+    Popular animation packages in the React ecosystem include _React Transition Group_, _Framer Motion_, and _React Spring_. React Motion was popular historically, but newer projects commonly use Framer Motion or React Spring.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 77. ### What is the benefit of styles modules?
 
-    It is recommended to avoid hard coding style values in components. Any values that are likely to be used across different UI components should be extracted into their own modules.
+    Style modules help avoid hard-coding repeated style values in components. Values that are shared across UI components, such as colors, spacing, typography, and breakpoints, can be extracted into reusable modules.
 
-    For example, these styles could be extracted into a separate component:
+    For example, these values could be extracted into a separate style module:
 
     ```javascript
     export const colors = {
-      white,
-      black,
-      blue,
+      white: "#ffffff",
+      black: "#000000",
+      blue: "#0d6efd",
     };
 
     export const space = [0, 8, 16, 32, 64];
@@ -2676,9 +2672,9 @@ class ParentComponent extends React.Component {
 
 78. ### What are the popular React-specific linters?
 
-    ESLint is a popular JavaScript linter. There are plugins available that analyse specific code styles. One of the most common for React is an npm package called `eslint-plugin-react`. By default, it will check a number of best practices, with rules checking things from keys in iterators to a complete set of prop types.
+    ESLint is a popular JavaScript linter. There are plugins available that analyze React-specific patterns. One of the most common React plugins is `eslint-plugin-react`, which checks best practices such as valid JSX, keys in lists, and prop validation rules.
 
-    Another popular plugin is `eslint-plugin-jsx-a11y`, which will help fix common issues with accessibility. As JSX offers slightly different syntax to regular HTML, issues with `alt` text and `tabindex`, for example, will not be picked up by regular plugins.
+    Another popular plugin is `eslint-plugin-jsx-a11y`, which helps catch common accessibility issues. Since JSX syntax differs slightly from regular HTML, issues such as missing `alt` text or incorrect `tabIndex` usage are better handled by JSX-aware lint rules.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -2688,47 +2684,47 @@ class ParentComponent extends React.Component {
 
 79. ### What is React Router?
 
-    React Router is a powerful routing library built on top of React that helps you add new screens and flows to your application incredibly quickly, all while keeping the URL in sync with what's being displayed on the page.
+    React Router is a routing library for React applications. It lets you map URLs to components, navigate between screens, handle nested routes, and keep the UI in sync with the browser URL.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 80. ### How React Router is different from history library?
 
-    React Router is a wrapper around the `history` library which handles interaction with the browser's `window.history` with its browser and hash histories. It also provides memory history which is useful for environments that don't have global history, such as mobile app development (React Native) and unit testing with Node.
+    The `history` library provides low-level session history utilities, such as browser, hash, and memory history. React Router builds a routing API on top of history concepts, adding route matching, navigation components, nested routes, URL params, loaders/actions in data routers, and React integration.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 81. ### What are the `<Router>` components of React Router v6?
 
-    React Router v6 provides below 4 `<Router>` components:
+    React Router v6 provides these commonly used router components:
 
-    1.  `<BrowserRouter>`:Uses the HTML5 history API for standard web apps.
-    2.  `<HashRouter>`:Uses hash-based routing for static servers.
-    3.  `<MemoryRouter>`:Uses in-memory routing for testing and non-browser environments.
-    4.  `<StaticRouter>`:Provides static routing for server-side rendering (SSR).
+    1.  `<BrowserRouter>`: Uses the HTML5 history API for standard web apps.
+    2.  `<HashRouter>`: Uses hash-based routing for static servers.
+    3.  `<MemoryRouter>`: Uses in-memory routing for testing and non-browser environments.
+    4.  `<StaticRouter>`: Provides static routing for server-side rendering (SSR).
 
-    The above components will create _browser_, _hash_, _memory_ and _static_ history instances. React Router v6 makes the properties and methods of the `history` instance associated with your router available through the context in the `router` object.
+    These routers manage browser, hash, memory, or static navigation behavior. In React Router v6, you usually navigate with hooks such as `useNavigate()` instead of working directly with a `history` object.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 82. ### What is the purpose of `push()` and `replace()` methods of `history`?
 
-    A history instance has two methods for navigation purpose.
+    A history instance has two methods commonly used for navigation:
 
     1.  `push()`
     2.  `replace()`
 
-    If you think of the history as an array of visited locations, `push()` will add a new location to the array and `replace()` will replace the current location in the array with the new one.
+    If you think of history as an array of visited locations, `push()` adds a new location to the stack and `replace()` replaces the current location with a new one.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 83. ### How do you programmatically navigate using React Router v4?
 
-    There are three different ways to achieve programmatic routing/navigation within components.
+    In React Router v4, there are three common ways to perform programmatic navigation inside components.
 
     1.  **Using the `withRouter()` higher-order function:**
 
-        The `withRouter()` higher-order function will inject the history object as a prop of the component. This object provides `push()` and `replace()` methods to avoid the usage of context.
+        The `withRouter()` higher-order function injects the `history` object as a prop. This object provides methods such as `push()` and `replace()`.
 
         ```jsx harmony
         import { withRouter } from "react-router-dom"; // this also works with 'react-router-native'
@@ -2747,7 +2743,7 @@ class ParentComponent extends React.Component {
 
     2.  **Using `<Route>` component and render props pattern:**
 
-        The `<Route>` component passes the same props as `withRouter()`, so you will be able to access the history methods through the history prop.
+        The `<Route>` component passes route props to its render function, so you can access navigation methods through the `history` prop.
 
         ```jsx harmony
         import { Route } from "react-router-dom";
@@ -2770,9 +2766,11 @@ class ParentComponent extends React.Component {
 
     3.  **Using context:**
 
-        This option is not recommended and treated as unstable API.
+        This option is not recommended because it relies on legacy context APIs.
 
         ```jsx harmony
+        import PropTypes from "prop-types";
+
         const Button = (props, context) => (
           <button
             type="button"
@@ -2785,8 +2783,8 @@ class ParentComponent extends React.Component {
         );
 
         Button.contextTypes = {
-          history: React.PropTypes.shape({
-            push: React.PropTypes.func.isRequired,
+          history: PropTypes.shape({
+            push: PropTypes.func.isRequired,
           }),
         };
         ```
@@ -2795,7 +2793,7 @@ class ParentComponent extends React.Component {
 
 84. ### How to get query parameters in React Router v4?
 
-    The ability to parse query strings was taken out of React Router v4 because there have been user requests over the years to support different implementation. So the decision has been given to users to choose the implementation they like. The recommended approach is to use query strings library.
+    React Router v4 does not parse query strings for you. This lets applications choose the query-string implementation they prefer. A common approach is to use the `query-string` package.
 
     ```javascript
     const queryString = require("query-string");
@@ -2809,27 +2807,27 @@ class ParentComponent extends React.Component {
     const foo = params.get("name");
     ```
 
-    You should use a _polyfill_ for IE11.
+    If you need to support older browsers, you may need a polyfill for `URLSearchParams`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 85. ### Why you get "Router may have only one child element" warning?
 
-    You have to wrap your Route's in a `<Switch>` block because `<Switch>` is unique in that it renders a route exclusively.
+    In React Router v4, a `<Router>` must have only one child element. Wrap your routes in a single parent, commonly a `<Switch>`, because `<Switch>` renders the first matching route exclusively.
 
-    At first you need to add `Switch` to your imports:
+    First, add `Switch` to your imports:
 
     ```javascript
-    import { Switch, Router, Route } from "react-router";
+    import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
     ```
 
-    Then define the routes within `<Switch>` block:
+    Then define the routes inside the `<Switch>` block:
 
     ```jsx harmony
     <Router>
       <Switch>
-        <Route {/* ... */} />
-        <Route {/* ... */} />
+        <Route exact path="/" component={Home} />
+        <Route path="/about" component={About} />
       </Switch>
     </Router>
     ```
@@ -2838,7 +2836,7 @@ class ParentComponent extends React.Component {
 
 86. ### How to pass params to `history.push` method in React Router v4?
 
-    While navigating you can pass props to the `history` object:
+    While navigating, you can pass location data to the `history` object:
 
     ```javascript
     this.props.history.push({
@@ -2848,13 +2846,13 @@ class ParentComponent extends React.Component {
     });
     ```
 
-    The `search` property is used to pass query params in `push()` method.
+    The `search` property is used for query parameters, and the `state` property is used for additional location state.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 87. ### How to implement _default_ or _NotFound_ page?
 
-    A `<Switch>` renders the first child `<Route>` that matches. A `<Route>` with no path always matches. So you just need to simply drop path attribute as below
+    In React Router v4/v5, a `<Switch>` renders the first child `<Route>` that matches. A `<Route>` with no `path` always matches, so place it last to render a default or `NotFound` page.
 
     ```jsx harmony
     <Switch>
@@ -2868,7 +2866,7 @@ class ParentComponent extends React.Component {
 
 88. ### How to get history on React Router v4?
 
-    Below are the list of steps to get history object on React Router v4,
+    Below are the steps to get a custom `history` object in React Router v4:
 
     1.  Create a module that exports a `history` object and import this module across the project.
 
@@ -2882,7 +2880,7 @@ class ParentComponent extends React.Component {
         });
         ```
 
-    2.  You should use the `<Router>` component instead of built-in routers. Import the above `history.js` inside `index.js` file:
+    2.  Use the low-level `<Router>` component instead of a built-in router. Import the above `history.js` file inside `index.js`:
 
         ```jsx harmony
         import { Router } from "react-router-dom";
@@ -2893,11 +2891,11 @@ class ParentComponent extends React.Component {
           <Router history={history}>
             <App />
           </Router>,
-          holder
+          document.getElementById("root")
         );
         ```
 
-    3.  You can also use push method of `history` object similar to built-in history object:
+    3.  You can also use the `push` method of the custom `history` object:
 
         ```javascript
         // some-other-file.js
@@ -4680,7 +4678,7 @@ class ParentComponent extends React.Component {
 
 185. ### What is NextJS and major features of it?
 
-     Next.js is a popular and lightweight framework for static and server‑rendered applications built with React. It also provides styling and routing solutions. Below are the major features provided by NextJS,
+     Next.js is a popular and lightweight framework for static and server-rendered applications built with React. It also provides styling and routing solutions. Below are the major features provided by NextJS,
 
      1. Server-rendered by default
      2. Automatic code splitting for faster page loads
@@ -6535,26 +6533,26 @@ Technically it is possible to write nested function components but it is not sug
      **Example of Page Router structure:**
      ```
      pages/
-     ├── index.js          // Home page (/)
-     ├── about.js          // About page (/about)
-     ├── _app.js           // Custom App component
-     ├── _document.js      // Custom Document
-     └── posts/
-         └── [id].js       // Dynamic route (/posts/:id)
+     |-- index.js          // Home page (/)
+     |-- about.js          // About page (/about)
+     |-- _app.js           // Custom App component
+     |-- _document.js      // Custom Document
+     `-- posts/
+         `-- [id].js       // Dynamic route (/posts/:id)
      ```
 
      **Example of App Router structure:**
      ```
      app/
-     ├── page.js           // Home page (/)
-     ├── layout.js         // Root layout
-     ├── loading.js        // Loading UI
-     ├── error.js          // Error UI
-     ├── about/
-     │   └── page.js       // About page (/about)
-     └── posts/
-         └── [id]/
-             └── page.js   // Dynamic route (/posts/:id)
+     |-- page.js           // Home page (/)
+     |-- layout.js         // Root layout
+     |-- loading.js        // Loading UI
+     |-- error.js          // Error UI
+     |-- about/
+     |   `-- page.js       // About page (/about)
+     `-- posts/
+         `-- [id]/
+             `-- page.js   // Dynamic route (/posts/:id)
      ```
 
      **Note:** The App Router is recommended for new Next.js applications as it provides better performance, simpler data fetching patterns, and improved developer experience with React Server Components.
@@ -6746,7 +6744,7 @@ Technically it is possible to write nested function components but it is not sug
      ```
      The > `console.log(count)` prints the **old value**, because the update hasn’t happened yet.
      
-     To see the updated state value, you can use `useEffect()` hook. It runs **after the component has re-rendered.**  By the time `useEffect` runs:
+     To see the updated state value, you can use `useEffect()` hook. It runs **after the component has re-rendered.**  By the time `useEffect` runs:
 
         *   The component has been updated.
         *   The **state contains the new value**.
@@ -9649,17 +9647,17 @@ Technically it is possible to write nested function components but it is not sug
 
          ```
          my-app/
-         ├─ .gitignore
-         ├─ images.d.ts
-         ├─ node_modules/
-         ├─ public/
-         ├─ src/
-         │  └─ ...
-         ├─ package.json
-         ├─ tsconfig.json
-         ├─ tsconfig.prod.json
-         ├─ tsconfig.test.json
-         └─ tslint.json
+         |-- .gitignore
+         |-- images.d.ts
+         |-- node_modules/
+         |-- public/
+         |-- src/
+         |  `-- ...
+         |-- package.json
+         |-- tsconfig.json
+         |-- tsconfig.prod.json
+         |-- tsconfig.test.json
+         `-- tslint.json
          ```
 
     **[⬆ Back to Top](#table-of-contents)**
