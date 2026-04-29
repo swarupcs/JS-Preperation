@@ -1092,15 +1092,15 @@ class ParentComponent extends React.Component {
 
 15. ### What is "key" prop and what is the benefit of using it in arrays of elements?
 
-    A `key` is a special attribute you **should** include when mapping over arrays to render data. _Key_ prop helps React identify which items have changed, are added, or are removed.
+    A `key` is a special prop that should be added to elements created from an array. It gives each rendered item a stable identity so React can compare the previous list with the next list during reconciliation.
 
-    Keys should be unique among its siblings. Most often we use ID from our data as _key_:
+    Keys should be unique among their siblings. Most often, you should use a stable ID from your data:
 
     ```jsx harmony
     const todoItems = todos.map((todo) => <li key={todo.id}>{todo.text}</li>);
     ```
 
-    When you don't have stable IDs for rendered items, you may use the item _index_ as a _key_ as a last resort:
+    When you don't have stable IDs, you may use the item index as a key only as a last resort:
 
     ```jsx harmony
     const todoItems = todos.map((todo, index) => (
@@ -1108,17 +1108,17 @@ class ParentComponent extends React.Component {
     ));
     ```
     **Benefits of key:**
-      *   Enables React to **efficiently update and re-render** components.
-      *   Prevents unnecessary re-renders by **reusing** components when possible.
-      *   Helps **maintain internal state** of list items correctly.
+      *   Helps React detect which items were added, removed, or reordered.
+      *   Improves reconciliation by allowing React to reuse existing DOM nodes and component instances where possible.
+      *   Helps preserve the correct state for each list item, such as input values or component state.
 
     **Note:**
 
     1. Using _indexes_ for _keys_ is **not recommended** if the order of items may change. This can negatively impact performance and may cause issues with component state.
-    2. If you extract list item as separate component then apply _keys_ on list component instead of `li` tag.
+    2. If you extract a list item into a separate component, apply the `key` on the component in the array, not inside the extracted component.
     3. There will be a warning message in the console if the `key` prop is not present on list items.
-    4. The key attribute accepts either string or number and internally convert it as string type.
-    5. Don't generate the key on the fly something like `key={Math.random()}`. Because the keys will never match up between re-renders and DOM created everytime.
+    4. The `key` prop accepts a string or number and React stores it internally as a string.
+    5. Don't generate keys on the fly, such as `key={Math.random()}`. The keys will be different on every render, so React will recreate the items instead of matching them correctly.
 
     **[⬆ Back to Top](#table-of-contents)**
 
