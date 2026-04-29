@@ -127,7 +127,7 @@ Hide/Show table of contents
 | 86  | [How do you pass params to the history.push method in React Router v4?](#how-to-pass-params-to-historypush-method-in-react-router-v4)                                                                                            |
 | 87  | [How do you implement a default or NotFound page?](#how-to-implement-default-or-notfound-page)                                                                                                                                   |
 | 88  | [How do you get history in React Router v4?](#how-to-get-history-on-react-router-v4)                                                                                                                                             |
-| 89  | [How do you perform an automatic redirect after login?](#how-to-perform-automatic-redirect-after-login) 
+| 89  | [How do you perform an automatic redirect after login?](#how-to-perform-automatic-redirect-after-login)
 |     | **React Internationalization**                                                                                                                                                                                                   |
 | 90  | [What is React Intl?](#what-is-react-intl)                                                                                                                                                                                       |
 | 91  | [What are the main features of React Intl?](#what-are-the-main-features-of-react-intl)                                                                                                                                           |
@@ -490,7 +490,7 @@ Hide/Show table of contents
        <details>
            <summary><b>See deep-dive answer</b></summary>
            The evolution of React has a fascinating history that spans over a decade:
-    
+
        **2010-2011: The Origins**
        - The journey began with **XHP**, a PHP extension created at Facebook that allowed HTML components to be used in PHP code
        - XHP improved front-end code readability and helped prevent cross-site scripting (XSS) attacks
@@ -610,7 +610,7 @@ Hide/Show table of contents
 5.  ### What is the difference between an Element and a Component?
 
       **Element:**
-      - A React **Element** is a plain JavaScript object that describes what you want to see on the UI. It represents a DOM node or a component at a specific point in time. 
+      - A React **Element** is a plain JavaScript object that describes what you want to see on the UI. It represents a DOM node or a component at a specific point in time.
       - Elements are immutable: once created, you cannot change their properties. Instead, you create new elements to reflect updates.
       - Elements can be nested within other elements through their `props`.
       - Creating an element is a fast, lightweight operation—it does **not** create any actual DOM nodes or render anything to the screen directly.
@@ -944,27 +944,27 @@ class ParentComponent extends React.Component {
     In React, both **state** and **props** are plain JavaScript objects, but they serve different purposes and have distinct behaviors:
 
     ### State
-    - **Definition:**  
+    - **Definition:**
       State is a data structure that is managed within a component. It represents information that can change over the lifetime of the component.
-    - **Mutability:**  
+    - **Mutability:**
       State is mutable, meaning it can be changed using the setter function (`setState` in class components or the updater function from `useState` in functional components).
-    - **Scope:**  
+    - **Scope:**
       State is local to the component where it is defined. Only that component can modify its own state.
-    - **Usage:**  
+    - **Usage:**
       State is typically used for data that needs to change in response to user actions, network responses, or other dynamic events.
-    - **Re-rendering:**  
+    - **Re-rendering:**
       Updating the state triggers a re-render of the component and its descendants.
 
     ### Props
-    - **Definition:**  
+    - **Definition:**
       Props (short for “properties”) are inputs to a component, provided by its parent component.
-    - **Mutability:**  
+    - **Mutability:**
       Props are read-only. A component cannot modify its own props; they are immutable from the component’s perspective.
-    - **Scope:**  
+    - **Scope:**
       Props are used to pass data and event handlers down the component tree, enabling parent components to configure or communicate with their children.
-    - **Usage:**  
+    - **Usage:**
       Props are commonly used to make components reusable and configurable. They allow the same component to be rendered with different data or behavior.
-    - **Analogy:**  
+    - **Analogy:**
       Think of props as arguments to a function, whereas state is like variables declared inside the function.
 
     ### Summary Table
@@ -1056,7 +1056,7 @@ class ParentComponent extends React.Component {
       return <input name="title" onChange={handleTitleChange} />;
     }
     ```
-    
+
     List of common synthetic events are:
 
     *   `onClick`
@@ -1134,25 +1134,25 @@ class ParentComponent extends React.Component {
 
     The _Virtual DOM_ works in five simple steps:
 
-    **1. Initial Render**  
+    **1. Initial Render**
         When a component renders for the first time, it returns JSX. React converts that JSX into a Virtual DOM tree and then uses it to create the Real DOM in the browser.
 
-    **2. State or Props Change**  
+    **2. State or Props Change**
         When the component's state or props change, React creates a new Virtual DOM tree that represents the updated UI. It does not immediately replace the Real DOM; it first prepares the update in memory.
-               
+
       ![vdom](images/vdom1.png)
 
-    **3. Diffing Algorithm**  
+    **3. Diffing Algorithm**
         React compares the new Virtual DOM tree with the previous one using a process called diffing. It determines what changed and identifies the minimal set of updates needed.
-       
-       ![vdom2](images/vdom2.png)  
 
-    **4. Reconciliation**  
+       ![vdom2](images/vdom2.png)
+
+    **4. Reconciliation**
         Based on the diffing result, React decides which parts of the Real DOM should be updated. It avoids recreating the entire DOM and updates only the elements that changed.
-        
+
        ![vdom3](images/vdom3.png)
 
-    **5. Efficient DOM Updates**  
+    **5. Efficient DOM Updates**
         This process of using the Virtual DOM, diffing, and selective updates makes UI rendering more efficient than manually manipulating the Real DOM for every change.
 
     **[⬆ Back to Top](#table-of-contents)**
@@ -1233,7 +1233,7 @@ class ParentComponent extends React.Component {
    }
    ```
    In controlled components, the DOM does not hold the source value. React state does.
-   
+
    **Benefits:**
 
    *   Easy to implement **validation**, **conditional formatting**, or **live feedback**.
@@ -1323,7 +1323,7 @@ class ParentComponent extends React.Component {
 23. ### What is the difference between createElement and cloneElement?
     Both `React.createElement` and `React.cloneElement` are used to work with React elements, but they serve different purposes.
 
-    #### **createElement:** 
+    #### **createElement:**
     Creates a new React element from scratch. JSX is transpiled to `React.createElement()` calls, which create React elements that represent the UI.
     **Syntax:**
     ```jsx
@@ -1408,7 +1408,7 @@ class ParentComponent extends React.Component {
     2. Render hijacking (e.g., conditional rendering or layout changes).
     3. State abstraction and manipulation (e.g., handling form logic).
     4. Props manipulation (e.g., injecting additional props or filtering them).
-    
+
     Some real-world examples of HOCs in the React ecosystem are:
     1. `connect()` from React Redux
     2. `withRouter()` from React Router v5
@@ -2908,26 +2908,28 @@ class ParentComponent extends React.Component {
 
 89. ### How to perform automatic redirect after login?
 
-    The `react-router` package provides `<Redirect>` component in React Router. Rendering a `<Redirect>` will navigate to a new location. Like server-side redirects, the new location will override the current location in the history stack.
+    In React Router v6, use the `<Navigate>` component or the `useNavigate()` hook to redirect after login. Rendering `<Navigate>` changes the current location, and the `replace` prop prevents the login page from staying in the browser history.
 
-    ```javascript
-    import { Redirect } from "react-router";
+    ```jsx
+    import { Navigate } from "react-router-dom";
 
-    export default function Login {
-        if (this.state.isLoggedIn === true) {
-          return <Redirect to="/your/redirect/page" />;
-        } else {
-          return <div>{"Login Please"}</div>;
-        }
+    export default function Login({ isLoggedIn }) {
+      if (isLoggedIn) {
+        return <Navigate to="/dashboard" replace />;
+      }
+
+      return <div>{"Login Please"}</div>;
     }
     ```
+
+    In React Router v4/v5, the equivalent component is `<Redirect>`.
 
       <details><summary><b>See Class</b></summary>
       <p>
 
     ```jsx
     import React, { Component } from "react";
-    import { Redirect } from "react-router";
+    import { Redirect } from "react-router-dom";
 
     export default class LoginComponent extends Component {
       render() {
@@ -2949,29 +2951,31 @@ class ParentComponent extends React.Component {
 
 90. ### What is React Intl?
 
-    The _React Intl_ library makes internationalization in React straightforward, with off-the-shelf components and an API that can handle everything from formatting strings, dates, and numbers, to pluralization. React Intl is part of _FormatJS_ which provides bindings to React via its components and API.
+    _React Intl_ is a React library for internationalization (i18n). It provides components, hooks, and imperative APIs for formatting translated messages, numbers, dates, times, relative time, and pluralized text.
+
+    React Intl is part of the _FormatJS_ ecosystem and is built on standard JavaScript internationalization APIs such as `Intl.NumberFormat`, `Intl.DateTimeFormat`, and `Intl.PluralRules`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 91. ### What are the main features of React Intl?
 
-    Below are the main features of React Intl,
+    The main features of React Intl are:
 
-    1.  Display numbers with separators.
-    2.  Display dates and times correctly.
-    3.  Display dates relative to "now".
-    4.  Pluralize labels in strings.
-    5.  Support for 150+ languages.
-    6.  Runs in the browser and Node.
-    7.  Built on standards.
+    1.  Formats translated messages.
+    2.  Formats numbers, currencies, percentages, dates, and times.
+    3.  Displays relative time, such as "2 hours ago".
+    4.  Supports pluralization and parameterized messages.
+    5.  Works in the browser and Node.js.
+    6.  Uses standard `Intl` APIs.
+    7.  Supports many locales, depending on the available `Intl` data.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 92. ### What are the two ways of formatting in React Intl?
 
-    The library provides two ways to format strings, numbers, and dates:
+    React Intl provides two common ways to format messages, numbers, and dates:
 
-    1.  **Using react components:**
+    1.  **Using React components:**
 
         ```jsx harmony
         <FormattedMessage
@@ -2980,9 +2984,11 @@ class ParentComponent extends React.Component {
         />
         ```
 
-    2.  **Using an API:**
+    2.  **Using the imperative API:**
 
         ```javascript
+        const intl = useIntl();
+
         const messages = defineMessages({
           accountMessage: {
             id: "account",
@@ -2990,75 +2996,69 @@ class ParentComponent extends React.Component {
           },
         });
 
-        formatMessage(messages.accountMessage);
+        intl.formatMessage(messages.accountMessage);
         ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
 93. ### How to use `<FormattedMessage>` as placeholder using React Intl?
 
-    The `<Formatted... />` components from `react-intl` return elements, not plain text, so they can't be used for placeholders, alt text, etc. In that case, you should use lower level API `formatMessage()`. You can inject the `intl` object into your component using `injectIntl()` higher-order component and then format the message using `formatMessage()` available on that object.
+    The `<Formatted... />` components from `react-intl` return React elements, not plain strings, so they are not suitable for attributes such as `placeholder`, `title`, or `alt`. For those cases, use the imperative `formatMessage()` API from `useIntl()`.
 
     ```jsx harmony
     import React from "react";
-    import { injectIntl, intlShape } from "react-intl";
+    import { useIntl } from "react-intl";
 
-    const MyComponent = ({ intl }) => {
+    const MyComponent = () => {
+      const intl = useIntl();
       const placeholder = intl.formatMessage({ id: "messageId" });
+
       return <input placeholder={placeholder} />;
     };
 
-    MyComponent.propTypes = {
-      intl: intlShape.isRequired,
-    };
-
-    export default injectIntl(MyComponent);
+    export default MyComponent;
     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
 94. ### How to access current locale with React Intl?
 
-    You can get the current locale in any component of your application using `injectIntl()`:
+    You can get the current locale in any component using the `useIntl()` hook:
 
     ```jsx harmony
-    import { injectIntl, intlShape } from "react-intl";
+    import { useIntl } from "react-intl";
 
-    const MyComponent = ({ intl }) => (
-      <div>{`The current locale is ${intl.locale}`}</div>
-    );
+    const MyComponent = () => {
+      const intl = useIntl();
 
-    MyComponent.propTypes = {
-      intl: intlShape.isRequired,
+      return <div>{`The current locale is ${intl.locale}`}</div>;
     };
 
-    export default injectIntl(MyComponent);
+    export default MyComponent;
     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
 95. ### How to format date using React Intl?
 
-     The `injectIntl()` higher-order component will give you access to the `formatDate()` method via the props in your component. The method is used internally by instances of `FormattedDate` and it returns the string representation of the formatted date.
+     The `useIntl()` hook gives you access to the `formatDate()` method. It returns a localized string representation of the date.
 
      ```jsx harmony
-     import { injectIntl, intlShape } from "react-intl";
+     import { useIntl } from "react-intl";
 
-     const stringDate = this.props.intl.formatDate(date, {
-       year: "numeric",
-       month: "numeric",
-       day: "numeric",
-     });
+     const MyComponent = ({ date }) => {
+       const intl = useIntl();
 
-     const MyComponent = ({ intl }) => (
-       <div>{`The formatted date is ${stringDate}`}</div>
-     );
+       const stringDate = intl.formatDate(date, {
+         year: "numeric",
+         month: "long",
+         day: "numeric",
+       });
 
-     MyComponent.propTypes = {
-       intl: intlShape.isRequired,
+       return <div>{`The formatted date is ${stringDate}`}</div>;
      };
 
-     export default injectIntl(MyComponent);
+     export default MyComponent;
      ```
 
     **[⬆ Back to Top](#table-of-contents)**
@@ -3067,7 +3067,9 @@ class ParentComponent extends React.Component {
 
 96. ### What is Shallow Renderer in React testing?
 
-    _Shallow rendering_ is useful for writing unit test cases in React. It lets you render a component _one level deep_ and assert facts about what its render method returns, without worrying about the behavior of child components, which are not instantiated or rendered.
+    _Shallow rendering_ renders a component only one level deep. It lets you assert what a component returns without rendering its child components. This was useful for isolated unit tests, especially with class components.
+
+    In modern React projects, React Testing Library is usually preferred because it tests behavior from the user's perspective. Still, shallow rendering is useful to understand for older test suites.
 
     For example, if you have the following component:
 
@@ -3104,7 +3106,7 @@ class ParentComponent extends React.Component {
 
 97. ### What is `TestRenderer` package in React?
 
-    This package provides a renderer that can be used to render components to pure JavaScript objects, without depending on the DOM or a native mobile environment. This package makes it easy to grab a snapshot of the platform view hierarchy (similar to a DOM tree) rendered by a ReactDOM or React Native without using a browser or `jsdom`.
+    The `react-test-renderer` package renders React components to pure JavaScript objects without depending on the DOM or a native mobile environment. It can be used for snapshot testing or inspecting the rendered component tree without using a browser or `jsdom`.
 
     ```jsx harmony
     import TestRenderer from "react-test-renderer";
@@ -3127,31 +3129,36 @@ class ParentComponent extends React.Component {
 
 98. ### What is the purpose of ReactTestUtils package?
 
-    _ReactTestUtils_ are provided in the `with-addons` package and allow you to perform actions against a simulated DOM for the purpose of unit testing.
+    `ReactTestUtils` provided low-level utilities for testing React components with a simulated DOM. It included helpers for rendering components and simulating events in unit tests.
+
+    In modern React applications, React Testing Library is generally preferred because it encourages testing user-visible behavior instead of implementation details.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 99. ### What is Jest?
 
-    _Jest_ is a JavaScript unit testing framework created by Facebook based on Jasmine and provides automated mock creation and a `jsdom` environment. It's often used for testing components.
+    _Jest_ is a JavaScript testing framework created by Facebook. It includes a test runner, assertion library, mocking utilities, code coverage support, and optional `jsdom` environment for testing browser-like code.
+
+    Jest is commonly used with React Testing Library to test React components, hooks, and application logic.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 100. ### What are the advantages of Jest over Jasmine?
 
-     There are couple of advantages compared to Jasmine:
+     Jest has several advantages compared to Jasmine:
 
-     - Automatically finds tests to execute in your source code.
-     - Automatically mocks dependencies when running your tests.
-     - Allows you to test asynchronous code synchronously.
+     - Automatically finds and runs test files based on naming conventions.
+     - Provides built-in mocking and spying utilities.
+     - Supports async tests with promises, `async/await`, and fake timers.
      - Runs your tests with a fake DOM implementation (via `jsdom`) so that your tests can be run on the command line.
-     - Runs tests in parallel processes so that they finish sooner.
+     - Runs tests in parallel processes for better performance.
+     - Includes snapshot testing and code coverage support.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 101. ### Give a simple example of Jest test case
 
-     Let's write a test for a function that adds two numbers in `sum.js` file:
+     Let's write a test for a function that adds two numbers in a `sum.js` file:
 
      ```javascript
      const sum = (a, b) => a + b;
@@ -3159,7 +3166,7 @@ class ParentComponent extends React.Component {
      export default sum;
      ```
 
-     Create a file named `sum.test.js` which contains actual test:
+     Create a file named `sum.test.js` that contains the actual test:
 
      ```javascript
      import sum from "./sum";
@@ -3184,7 +3191,7 @@ class ParentComponent extends React.Component {
      ```console
      $ yarn test
      PASS ./sum.test.js
-     ✓ adds 1 + 2 to equal 3 (2ms)
+     Test: adds 1 + 2 to equal 3 (2ms)
      ```
 
 ## React Redux
@@ -3193,13 +3200,13 @@ class ParentComponent extends React.Component {
 
 102. ### What is flux?
 
-       **Flux** is an **application architecture** (not a framework or library) designed by Facebook to manage **data flow** in React applications. It was created as an alternative to the traditional **MVC (Model-View-Controller)** pattern, and it emphasizes a **unidirectional data flow** to make state changes more predictable and easier to debug.
+       **Flux** is an **application architecture** designed by Facebook to manage data flow in React applications. It is not a framework by itself. Flux was created as an alternative to traditional MVC patterns and emphasizes **unidirectional data flow** to make state changes more predictable and easier to debug.
 
-       Flux complements React by organizing the way data moves through your application, especially in large-scale or complex projects.
+       Flux complements React by organizing how data moves through an application, especially in large or complex projects.
 
        #### Core Concepts of Flux
 
-       Flux operates using **four key components**, each with a specific responsibility:
+       Flux operates using **four key parts**, each with a specific responsibility:
        *   **Actions**
              *   Plain JavaScript objects or functions that describe _what happened_ (e.g., user interactions or API responses).
              *   Example: `{ type: 'ADD_TODO', payload: 'Buy milk' }`
@@ -3215,14 +3222,16 @@ class ParentComponent extends React.Component {
              *   They can also trigger new actions (e.g., on user input).
 
 
-       The workflow between dispatcher, stores and views components with distinct inputs and outputs as follows:
+       The workflow between dispatcher, stores, and views is shown below:
 
        ![flux](images/flux.png)
 
 **[⬆ Back to Top](#table-of-contents)**
 
-103.  ### What is Redux?
-       Redux is a predictable state container for JavaScript applications, most commonly used with React. It helps you manage and centralize your application’s state in a single source of truth, enabling easier debugging, testing, and maintenance—especially in large or complex applications. Redux core is tiny library(about 2.5kB gzipped) and has no dependencies.
+103. ### What is Redux?
+       Redux is a predictable state container for JavaScript applications, commonly used with React. It helps centralize application state in a single store, making state changes easier to trace, debug, test, and maintain.
+
+       Redux is based on actions, reducers, and a store. Modern Redux development typically uses Redux Toolkit, which reduces boilerplate and provides recommended defaults.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3231,17 +3240,17 @@ class ParentComponent extends React.Component {
      Redux follows three fundamental principles:
 
      1. **Single source of truth:** The state of your whole application is stored in an object tree within a single store. The single state tree makes it easier to keep track of changes over time and debug or inspect the application.
-   
+
       ```jsx
       const store = createStore(reducer);
       ```
-     2. **State is read-only:** The only way to change the state is to emit an action, an object describing what happened. This ensures that neither the views nor the network callbacks will ever write directly to the state.
+     2. **State is read-only:** The only way to change state is to dispatch an action, which is an object describing what happened. This ensures that views and network callbacks do not write directly to state.
       ```js
       const action = { type: 'INCREMENT' };
       store.dispatch(action);
       ```
-     3. **Changes are made with pure functions(Reducers):** To specify how the state tree is transformed by actions, you write reducers. Reducers are just pure functions that take the previous state and an action as parameters, and return the next state.
-      
+     3. **Changes are made with pure functions (reducers):** Reducers specify how the state tree changes in response to actions. A reducer takes the previous state and an action, then returns the next state without mutating the previous state.
+
       ```jsx
       function counter(state = 0, action) {
         switch (action.type) {
@@ -3259,21 +3268,21 @@ class ParentComponent extends React.Component {
 
 105. ### What are the downsides of Redux compared to Flux?
 
-     While Redux offers a powerful and predictable state management solution, it comes with a few trade-offs when compared to Flux. These include:
+     Redux offers predictable state management, but it has a few trade-offs compared to Flux-style architectures:
 
-     1.  **Immutability is essential**  
-        Redux enforces a strict immutability model for state updates, which differs from Flux’s more relaxed approach. This means you must avoid mutating state directly. Many Redux-related libraries assume immutability, so your team must be disciplined in writing pure update logic. You can use tools like `redux-immutable-state-invariant`, `Immer`, or `Immutable.js` to help enforce this practice, especially during development.
-     2.  **Careful selection of complementary packages**  
-        Redux is more minimal by design and provides extension points such as middleware and store enhancers. This has led to a large ecosystem, but it also means you must thoughtfully choose and configure additional packages for features like undo/redo, persistence, or form handling—something Flux explicitly leaves out but may be simpler to manage in smaller setups.
-     3.  **Limited static type integration**  
-        While Flux has mature support for static type checking with tools like Flow, Redux’s type integration is less seamless. Although TypeScript is commonly used with Redux now, early Flow support was limited, and more boilerplate was required for static type safety. This may affect teams that rely heavily on type systems for large codebases.
+     1.  **Immutability is essential**
+        Redux relies on immutable state updates. You must avoid mutating state directly so Redux can detect changes correctly. Tools such as Redux Toolkit and Immer make this easier.
+     2.  **Careful selection of complementary packages**
+        Redux is minimal by design and uses extension points such as middleware and store enhancers. This flexibility is powerful, but you must choose packages carefully for features such as persistence, async workflows, and forms.
+     3.  **Static typing can add complexity**
+        TypeScript support is strong in modern Redux, especially with Redux Toolkit, but complex action and state types can still add a learning curve and boilerplate in large applications.
 
 
 **[⬆ Back to Top](#table-of-contents)**
 
 106. ### What is the difference between `mapStateToProps()` and `mapDispatchToProps()`?
 
-     `mapStateToProps()` is a utility which helps your component get updated state (which is updated by some other components):
+     `mapStateToProps()` is used with React Redux's `connect()` API. It selects data from the Redux store and passes it to the component as props:
 
      ```javascript
      const mapStateToProps = (state) => {
@@ -3283,7 +3292,7 @@ class ParentComponent extends React.Component {
      };
      ```
 
-     `mapDispatchToProps()` is a utility which will help your component to fire an action event (dispatching action which may cause change of application state):
+     `mapDispatchToProps()` provides dispatching functions to the component as props. Those functions dispatch actions that may update the Redux state:
 
      ```javascript
      const mapDispatchToProps = (dispatch) => {
@@ -3295,9 +3304,7 @@ class ParentComponent extends React.Component {
      };
      ```
 
-     It is recommended to always use the “object shorthand” form for the `mapDispatchToProps`.
-
-     Redux wraps it in another function that looks like (…args) => dispatch(onTodoClick(…args)), and pass that wrapper function as a prop to your component.
+     The object shorthand form is often recommended for `mapDispatchToProps` because it is shorter and easier to read:
 
      ```javascript
      const mapDispatchToProps = {
@@ -3305,23 +3312,31 @@ class ParentComponent extends React.Component {
      };
      ```
 
+     React Redux wraps each action creator in `dispatch`, similar to `(...args) => dispatch(onTodoClick(...args))`, and passes the wrapped function as a prop.
+
 **[⬆ Back to Top](#table-of-contents)**
 
 107. ### Can I dispatch an action in reducer?
 
-     Dispatching an action within a reducer is an **anti-pattern**. Your reducer should be _without side effects_, simply digesting the action payload and returning a new state object. Adding listeners and dispatching actions within the reducer can lead to chained actions and other side effects.
+     No. Dispatching an action inside a reducer is an **anti-pattern**. Reducers must be pure functions: they receive the current state and an action, then return the next state without side effects.
+
+     Dispatching from a reducer can cause chained updates, unpredictable behavior, and infinite loops. Side effects should be handled in middleware, thunks, sagas, listeners, or component/event logic.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 108. ### How to access Redux store outside a component?
 
-     You just need to export the store from the module where it created with `createStore()`. Also, it shouldn't pollute the global window object.
+     You can export the store from the module where it is created and import it where needed. Avoid putting the store on the global `window` object.
 
      ```javascript
-     store = createStore(myReducer);
+     const store = configureStore({
+       reducer: rootReducer,
+     });
 
      export default store;
      ```
+
+     In React components, prefer using React Redux hooks such as `useSelector()` and `useDispatch()` instead of importing the store directly. Direct store access is mostly useful for setup code, utilities, or integration points outside React.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -4306,7 +4321,7 @@ class ParentComponent extends React.Component {
 
       if (name === 'John') {
         // Incorrect: useState is called inside a conditional
-        const [country, setCountry] = useState('US'); 
+        const [country, setCountry] = useState('US');
       }
 
       return (
@@ -4361,7 +4376,7 @@ class ParentComponent extends React.Component {
       //Example1
       function normalFunction() {
         // Incorrect: Can't call hooks in normal functions
-        const [count, setCount] = useState(0); 
+        const [count, setCount] = useState(0);
       }
 
       //Example2
@@ -4921,7 +4936,7 @@ class ParentComponent extends React.Component {
 
 
         If the module containing the dynamic import is not yet loaded by the time parent component renders, you must show some fallback content while you’re waiting for it to load using a loading indicator. This can be done using **Suspense** component.
-    
+
         ```javascript
         const OtherComponent = React.lazy(() => import("./OtherComponent"));
 
@@ -4953,7 +4968,7 @@ class ParentComponent extends React.Component {
         }
 
     ```
-     
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -5231,7 +5246,7 @@ class ParentComponent extends React.Component {
 
      The `useEffect` hook is a React Hook that lets you perform **side effects** in function components. Side effects are operations that interact with the outside world or system and aren't directly related to rendering UI — such as fetching data, setting up subscriptions, timers, manually manipulating the DOM, etc.
 
-     In function components, useEffect replaces the class component lifecycle methods(`componentDidMount`, `componentDidUpdate` and `componentWillUnmount`) with a single, unified API.     
+     In function components, useEffect replaces the class component lifecycle methods(`componentDidMount`, `componentDidUpdate` and `componentWillUnmount`) with a single, unified API.
 
      **Syntax**
      ```js
@@ -5960,7 +5975,7 @@ class ParentComponent extends React.Component {
      2. **All the tags needs to be closed:**
         Unlike HTML, all tags needs to closed explicitly with in JSX. This rule applies for self-closing tags(like hr, br and img tags) as well.
      3. **Use camelCase naming:**
-        It is suggested to use camelCase naming for attributes in JSX. For example, the common attributes of HTML elements such as `class`, `tabindex` will be used as `className` and `tabIndex`.  
+        It is suggested to use camelCase naming for attributes in JSX. For example, the common attributes of HTML elements such as `class`, `tabindex` will be used as `className` and `tabIndex`.
         **Note:** There is an exception for `aria-*` and `data-*` attributes which should be lower cased all the time.
 
 **[⬆ Back to Top](#table-of-contents)**
@@ -6415,7 +6430,7 @@ Technically it is possible to write nested function components but it is not sug
 
 266. ### How is `useReducer` Different from `useState`?
      There are notable differences between `useState` and `useReducer` hooks.
-           
+
         | Feature               | `useState`                           | `useReducer`                          |
         |-----------------------|--------------------------------------|---------------------------------------|
         | State complexity      | Simple (one variable or flat object) | Complex, multi-part or deeply nested  |
@@ -6432,42 +6447,42 @@ Technically it is possible to write nested function components but it is not sug
 
      The usage of useContext involves three main steps:
       #### **Step 1 : Create the Context**
-    
+
         Use `React.createContext()` to create a context object.
-    
+
         ```jsx
-        import React, { createContext } from 'react'; 
-    
+        import React, { createContext } from 'react';
+
         const ThemeContext = createContext(); // default value optional
         ```
-    
+
       You typically export this so other components can import it.
 
       #### **Step 2: Provide the Context Value**
-    
+
         Wrap your component tree (or a part of it) with the `Context.Provider` and pass a `value` prop.
-    
+
         ```jsx
         function App() {
-            return ( 
+            return (
                 <ThemeContext.Provider value="dark">
                    <MyComponent />
                 </ThemeContext.Provider>
-            ); 
+            );
         }
         ```
-    
+
         Now any component inside `<ThemeContext.Provider>` can access the context value.
 
         #### **Step 3: Consume the Context with** `**useContext**`
-    
+
         In any functional component **inside the Provider**, use the `useContext` hook:
-    
+
         ```jsx
-        import { useContext } from 'react'; 
+        import { useContext } from 'react';
         function MyComponent() {
             const theme = useContext(ThemeContext); // theme = "dark"
-            return <p>Current Theme: {theme}</p>; 
+            return <p>Current Theme: {theme}</p>;
         }
         ```
 
@@ -6476,15 +6491,15 @@ Technically it is possible to write nested function components but it is not sug
 268. ### What are the use cases of useContext hook?
      The `useContext` hook in React is used to share data across components without having to pass props manually through each level. Here are some common and effective use cases:
 
-        1.  **Theme Customization**  
+        1.  **Theme Customization**
             `useContext` can be used to manage application-wide themes, such as light and dark modes, ensuring consistent styling and enabling user-driven customization.
-        2.  **Localization and Internationalization**  
+        2.  **Localization and Internationalization**
             It supports localization by providing translated strings or locale-specific content to components, adapting the application for users in different regions.
-        3.  **User Authentication and Session Management**  
+        3.  **User Authentication and Session Management**
             `useContext` allows global access to authentication status and user data. This enables conditional rendering of components and helps manage protected routes or user-specific UI elements.
-        4.  **Shared Modal or Sidebar Visibility**  
+        4.  **Shared Modal or Sidebar Visibility**
             It's ideal for managing the visibility of shared UI components like modals, drawers, or sidebars, especially when their state needs to be controlled from various parts of the app.
-        5.  **Combining with** `**useReducer**` **for Global State Management**  
+        5.  **Combining with** `**useReducer**` **for Global State Management**
             When combined with `useReducer`, `useContext` becomes a powerful tool for managing more complex global state logic. This pattern helps maintain cleaner, scalable state logic without introducing external libraries like Redux.
              Some of the common use cases of useContext are listed below,
 
@@ -6568,10 +6583,10 @@ Technically it is possible to write nested function components but it is not sug
      ```js
       const memoizedValue = useMemo(() => computeExpensiveValue(arg), [dependencies]);
      ```
-      - **`computeExpensiveValue`**:  
+      - **`computeExpensiveValue`**:
       A function that returns the computed result.
 
-     - **`dependencies`**:  
+     - **`dependencies`**:
       An array of values that, when changed, will cause the memoized function to re-run.
 
       If the dependencies haven’t changed since the last render, React returns the **cached result** instead of re-running the function.
@@ -6639,7 +6654,7 @@ Technically it is possible to write nested function components but it is not sug
 
 273. ### What is an updater function? Should an updater function be used in all cases?
      An **updater function** is a form of `setState` where you pass a **function** instead of a direct value. This function receives the **previous state** as an argument and returns the **next state**.
-     
+
      The updater function expression looks like below,
      ```js
      setCount(prevCount => prevCount + 1); // Safe and predictable
@@ -6666,14 +6681,14 @@ Technically it is possible to write nested function components but it is not sug
      ```js
      setName('Sudheer');
      ```
-     
+
 **[⬆ Back to Top](#table-of-contents)**
 
 274. ### Can useState take a function as an initial value?
      Yes, `useState` can take a function as an initial value, and this is a useful feature in React called **lazy initialization**. This function is also known as **initializer function**.
 
      When you call useState(initialValue), you normally pass in a value directly:
-     
+
      ```js
      const [count, setCount] = useState(0);  // initial value is 0
      ```
@@ -6685,9 +6700,9 @@ Technically it is possible to write nested function components but it is not sug
         return expensiveComputation();
         });
      ```
-     
+
      This function avoids doing heavy computation on every render. If you don't use this function form and invokes it directly, the function will run everytime the component renders and impact the performance.
-     For example, the below usage is not recommended. 
+     For example, the below usage is not recommended.
      ```js
      const [count, setCount] = useState(expensiveComputation());
      ```
@@ -6705,7 +6720,7 @@ Technically it is possible to write nested function components but it is not sug
      *   `null` or `undefined`
 
      But you needs to be cautious with **reference types (objects/arrays)** because React compares old and new values **by reference**, so direct mutations won't trigger a re-render.
-     For example, the correct and wrong ways of state updates as shown below, 
+     For example, the correct and wrong ways of state updates as shown below,
      ```js
      user.name = "Sudheer"; //wrong way
      setUser(prev => ({ ...prev, name: 'Sudheer' })); //correct way
@@ -6715,8 +6730,8 @@ Technically it is possible to write nested function components but it is not sug
 276. ### What happens if you call `useState` conditionally?
      As per rules of React Hooks, hooks must be called unconditionally. For example, if you conditionally call it:
      ```js
-     if (someCondition) { 
-        const [state, setState] = useState(0); 
+     if (someCondition) {
+        const [state, setState] = useState(0);
      }
      ```
 
@@ -6732,38 +6747,38 @@ Technically it is possible to write nested function components but it is not sug
      This happens immediately during rendering.
      However, the state update function (**setState**) is asynchronous in the sense that it doesn't update the state immediately.
      React **batches** updates and applies them before the next render. You won’t see the updated value immediately after calling `setState`.
-     
+
      **Example:**
      ```js
      const [count, setCount] = useState(0);
-    
+
      function handleClick() {
        setCount(count + 1);
        console.log(count); // ❗️Still logs the old value
      }
      ```
      The > `console.log(count)` prints the **old value**, because the update hasn’t happened yet.
-     
+
      To see the updated state value, you can use `useEffect()` hook. It runs **after the component has re-rendered.**  By the time `useEffect` runs:
 
         *   The component has been updated.
         *   The **state contains the new value**.
-     
+
         ```js
         import React, { useState, useEffect } from 'react';
 
         function Counter() {
         const [count, setCount] = useState(0);
-        
+
         const handleClick = () => {
         setCount(count + 1);
         console.log('Clicked count (old):', count); // Old value
         };
-        
+
         useEffect(() => {
         console.log('Updated count:', count); // New value
         }, [count]); // Only runs when `count` changes
-        
+
         return <button onClick={handleClick}>Count: {count}</button>;
         }
         ```
@@ -6785,19 +6800,19 @@ Technically it is possible to write nested function components but it is not sug
         *   A queue of pending state updates.
 
       #### 3. **Initial Render**
-        
+
       *   When the component first renders, React:
          *   Creates a new slot for `useState` with the initial state (e.g., `0`).
          *   Returns `[state, updaterFunction]`.
 
       #### 4. **Updater Function**
-    
+
       *   The updater function (`setCount`) is a closure that, when called:
         *   Enqueues a state update to React's internal queue.
         *   Schedules a re-render of the component.
-    
+
       #### 5. **Re-render and State Update**
-    
+
       *   On the next render:
         *   React processes all queued updates for each hook slot.
         *   Updates the stored state value accordingly.
@@ -6807,15 +6822,15 @@ Technically it is possible to write nested function components but it is not sug
 
       *   Hooks must be called in the same order on every render so React can match hook calls to their internal slots.
       *   That’s why you can’t call hooks conditionally.
-      
+
       The pseudocode for internal implementation of `useState` looks like below,
       ```js
         let hookIndex = 0;
         const hooks = [];
-        
+
         function useState(initialValue) {
             const currentIndex = hookIndex;
-        
+
             if (!hooks[currentIndex]) {
                 // First render: initialize state
                 hooks[currentIndex] = {
@@ -6823,27 +6838,27 @@ Technically it is possible to write nested function components but it is not sug
                     queue: [],
                 };
             }
-        
+
             const hook = hooks[currentIndex];
-        
+
             // Process queued updates
             hook.queue.forEach(update => {
                 hook.state = update(hook.state);
             });
             hook.queue = [];
-        
+
             // Define updater function
             function setState(action) {
                 // action can be new state or function(state) => new state
                 hook.queue.push(typeof action === 'function' ? action : () => action);
                 scheduleRender(); // triggers React re-render
             }
-        
+
             hookIndex++;
             return [hook.state, setState];
         }
         ```
-      
+
 **[⬆ Back to Top](#table-of-contents)**
 
 279. ### What is `useReducer`? Why do you use useReducer?
@@ -6870,7 +6885,7 @@ Technically it is possible to write nested function components but it is not sug
          *   Undo/Redo functionality
          *   Shopping cart logic
          *   Toggle & conditional UI logic
-         
+
 **[⬆ Back to Top](#table-of-contents)**
 
 280. ### How does `useReducer` works? Explain with an example
@@ -6878,12 +6893,12 @@ Technically it is possible to write nested function components but it is not sug
 
         *   You define a **reducer function** to handle state transitions.
         *   You dispatch actions to update the state.
-     
+
      **Counter Example with Increment, Decrement, and Reset:**
      1. Reducer function:
 
         Define a counter reducer function that takes the current state and an action object with a type, and returns a new state based on that type.
-     
+
          ```js
          function counterReducer(state, action) {
             switch (action.type) {
@@ -6944,7 +6959,7 @@ Technically it is possible to write nested function components but it is not sug
 
 282. ### Can you dispatch multiple actions in a row with useReducer?
      Yes, you can dispatch multiple actions in a row using `useReducer` but not directly in one call. You'd have to call dispatch multiple times or create a composite action in your reducer that performs multiple updates based on the action type.
-     
+
      **Example: Dispatching Multiple Actions**
      You can define a custom function with dispatching actions one by one.
      ```js
@@ -7055,48 +7070,48 @@ Technically it is possible to write nested function components but it is not sug
 
 284. ### How does useContext works? Explain with an example
      The `useContext` hook can be used for authentication state management across multiple components and pages in a React application.
-    
+
      Let's build a simple authentication flow with:
 
         *   **Login and Logout buttons**
         *   Global `AuthContext` to share state
         *   Components that can **access and update** auth status
-     
+
       **1. Create the Auth Context:**
 
        You can define `AuthProvider` which holds and provides `user`, `login()`, and `logout()` via context.
         ```js
         // AuthContext.js
         import React, { createContext, useContext, useState } from 'react';
-        
+
         const AuthContext = createContext();
-        
+
         export function AuthProvider({ children }) {
           const [user, setUser] = useState(null);
-        
+
           const login = (username) => setUser({ name: username });
           const logout = () => setUser(null);
-        
+
           return (
             <AuthContext.Provider value={{ user, login, logout }}>
               {children}
             </AuthContext.Provider>
           );
         }
-        
+
         // Custom hook for cleaner usage
         export const useAuth = () => useContext(AuthContext);
         ```
      **2. Wrap Your App with the Provider:**
-       
-        Wrap the above created provider in main `App.js` file      
+
+        Wrap the above created provider in main `App.js` file
         ```js
         // App.js
         import React from 'react';
         import { AuthProvider } from './AuthContext';
         import HomePage from './HomePage';
         import Dashboard from './Dashboard';
-        
+
         function App() {
           return (
             <AuthProvider>
@@ -7105,7 +7120,7 @@ Technically it is possible to write nested function components but it is not sug
             </AuthProvider>
           );
         }
-        
+
         export default App;
         ```
      **3. Home page with login:**
@@ -7115,10 +7130,10 @@ Technically it is possible to write nested function components but it is not sug
          // HomePage.js
          import React from 'react';
          import { useAuth } from './AuthContext';
-    
+
          function HomePage() {
            const { user, login } = useAuth();
-    
+
            return (
              <div>
                <h1>Home</h1>
@@ -7130,10 +7145,10 @@ Technically it is possible to write nested function components but it is not sug
              </div>
            );
          }
-    
+
          export default HomePage;
         ```
-     
+
      **4. Dashboard with logout:**
       Read or access user and logout details from `useAuth` custom hook and use it inside dashboard page.
 
@@ -7141,14 +7156,14 @@ Technically it is possible to write nested function components but it is not sug
         // Dashboard.js
         import React from 'react';
         import { useAuth } from './AuthContext';
-        
+
         function Dashboard() {
           const { user, logout } = useAuth();
-        
+
           if (!user) {
             return <p>Please login to view the dashboard.</p>;
           }
-        
+
           return (
             <div>
               <h2>Dashboard</h2>
@@ -7157,7 +7172,7 @@ Technically it is possible to write nested function components but it is not sug
             </div>
           );
         }
-        
+
         export default Dashboard;
       ```
 
@@ -7171,7 +7186,7 @@ Technically it is possible to write nested function components but it is not sug
         *   Create multiple contexts using `createContext()`.
         *   Wrap your component tree with multiple `<Provider>`s.
         *   Call `useContext()` separately for each context in the same component.
-     
+
      **Example: Using `ThemeContext` and `UserContext` Together**
      ```js
      import React, { createContext, useContext } from 'react';
@@ -7236,15 +7251,15 @@ Technically it is possible to write nested function components but it is not sug
 
      This issue can be fixed in two ways,
 
-     **1. Split Contexts**  
+     **1. Split Contexts**
      Create separate contexts for unrelated pieces of state:
 
      ```jsx
-     const UserContext = React.createContext(); 
+     const UserContext = React.createContext();
      const ThemeContext = React.createContext();
      ```
 
-     **2. Memoize Context Value**  
+     **2. Memoize Context Value**
      Use `useMemo` to prevent unnecessary re-renders:
 
      ```jsx
@@ -7252,30 +7267,30 @@ Technically it is possible to write nested function components but it is not sug
      ```
 
      However, this only helps if the object structure and dependencies are well controlled.
-    
+
   **[⬆ Back to Top](#table-of-contents)**
 
 287. ### What would the context value be for no matching provider?
-    
+
      When a component calls `useContext(SomeContext)` but **no matching** `<SomeContext.Provider>` **is present higher up in the component tree**, the **default value** passed to `React.createContext(defaultValue)` is returned.
-    
+
      ```js
      const ThemeContext = React.createContext('light'); // 'light' is the default value
-    
+
      function ThemedComponent() {
        const theme = useContext(ThemeContext);
        return <div>Current theme: {theme}</div>;
      }
-    
+
      // No ThemeContext.Provider anywhere in the tree
      ```
      In this case, `theme` will be 'light'. It's the default value you provided when you created the context.
-    
+
      **Note:** If you don’t specify a default value, the context value will be undefined when used without a provider:
-    
+
      ```jsx
      const AuthContext = React.createContext(); // No default
-    
+
      function Profile() {
        const auth = useContext(AuthContext);
        // auth will be undefined if there's no AuthContext.Provider
@@ -7324,7 +7339,7 @@ Technically it is possible to write nested function components but it is not sug
            *   Can lead to **performance issues** if not used carefully.
 
        React uses shallow comparison of the dependencies. If any value has changed (!==), the effect will re-run.
-       
+
        **Note:** This hook works well when dependencies are primitives or memoized objects/functions.
 
 **[⬆ Back to Top](#table-of-contents)**
@@ -7386,7 +7401,7 @@ Technically it is possible to write nested function components but it is not sug
 
 291. ### How to prevent infinite loops with useEffect?
         Infinite loops happen when the effect updates state that’s listed in its own dependency array, which causes the effect to re-run, updating state again and so on.
-        
+
         **Infinite loop scenario:**
         ```js
         useEffect(() => {
@@ -7435,9 +7450,9 @@ Technically it is possible to write nested function components but it is not sug
         typeof window !== 'undefined' ? useLayoutEffect : useEffect;
       ```
 
-      i.e, Use `useIsomorphicLayoutEffect` in components that render both on client and server.     
+      i.e, Use `useIsomorphicLayoutEffect` in components that render both on client and server.
 
-**[⬆ Back to Top](#table-of-contents)** 
+**[⬆ Back to Top](#table-of-contents)**
 
 294. ### What happens if you use useLayoutEffect for non-layout logic?
       Using `useLayoutEffect` for logic **unrelated to layout or visual DOM changes** (such as logging, data fetching, or analytics) is **not recommended**. It can lead to **performance issues** or even unexpected behavior.
@@ -7451,7 +7466,7 @@ Technically it is possible to write nested function components but it is not sug
       ```
       The above usage delays the paint of the UI just to send a network request, which could (and should) be done after paint using useEffect.
 
-**[⬆ Back to Top](#table-of-contents)** 
+**[⬆ Back to Top](#table-of-contents)**
 
 295. ### How does useLayoutEffect cause layout thrashing?
       The `useLayoutEffect` can **cause layout thrashing** when you **repeatedly read and write to the DOM** in ways that force the browser to recalculate layout multiple times per frame. This is because `useLayoutEffect` runs _before the browser paints_, these reflows happen _synchronously_, blocking rendering and degrading performance.
@@ -7474,25 +7489,25 @@ Technically it is possible to write nested function components but it is not sug
 
       This issue can be avoided by batching your DOM reads and writes and prevent unnecessary reads after writes.
 
-**[⬆ Back to Top](#table-of-contents)** 
+**[⬆ Back to Top](#table-of-contents)**
 
 296. ### How Do You Use useRef to Access a DOM Element in React? Give an example.
         The `useRef` hook is commonly used in React to directly reference and interact with DOM elements — like focusing an input, scrolling to a section, or controlling media elements.
-        
+
         When you assign a ref to a DOM element using useRef, React gives you access to the underlying DOM node via the .current property of the ref object.
-        
+
         **Example: Focus an input**
 
         ```js
         import React, { useRef } from 'react';
-        
+
         function FocusInput() {
           const inputRef = useRef(null); // create the ref
-        
+
           const handleFocus = () => {
             inputRef.current.focus(); // access DOM element and focus it
           };
-        
+
           return (
             <div>
               <input type="text" ref={inputRef} />
@@ -7507,7 +7522,7 @@ Technically it is possible to write nested function components but it is not sug
 
 297. ### Can you use useRef to persist values across renders??
         Yes, you can use `useRef` to persist values across renders in React. Unlike `useState`, changing `.current` does not cause re-renders, but the value is preserved across renders.
-        
+
         **Example:**
         ```js
         function Timer() {
@@ -7516,7 +7531,7 @@ Technically it is possible to write nested function components but it is not sug
             renderCount.current++;
             console.log("Render count:", renderCount.current);
           });
-        
+
           return <div>Check console for render count.</div>;
         }
         ```
@@ -7524,21 +7539,21 @@ Technically it is possible to write nested function components but it is not sug
 
 298. ###  Can useRef be used to store previous values?
         Yes, `useRef` is a common pattern when you want to compare current and previous props or state without causing re-renders.
-        
+
         **Example: Storing previous state value**
         ```js
         import { useEffect, useRef, useState } from 'react';
-        
+
         function PreviousValueExample() {
           const [count, setCount] = useState(0);
           const prevCountRef = useRef();
-        
+
           useEffect(() => {
             prevCountRef.current = count;
           }, [count]);
-        
+
           const prevCount = prevCountRef.current;
-        
+
           return (
             <div>
               <p>Current: {count}</p>
@@ -7548,20 +7563,20 @@ Technically it is possible to write nested function components but it is not sug
           );
         }
         ```
-     
+
 **[⬆ Back to Top](#table-of-contents)**
 
 299. ### Is it possible to access a ref in the render method?
         Yes, you can access a ref in the render method, but what you get from it depends on how you're using the ref and when in the component lifecycle you're rendering.
-        
+
         For example, when using ref to access a DOM node (e.g., divRef.current), it's not immediately available on the first render.
         ```js
         const divRef = useRef(null);
-        
+
         console.log(divRef.current); // ❌ null on initial render
         return <div ref={divRef}>Hello</div>;
         ```
-     
+
 **[⬆ Back to Top](#table-of-contents)**
 
 300. ### What are the common usecases of useRef hook?
@@ -7586,7 +7601,7 @@ Technically it is possible to write nested function components but it is not sug
         useImperativeHandle,
         forwardRef,
       } from 'react';
-      import './Dialog.css'; 
+      import './Dialog.css';
 
       const Dialog = forwardRef((props, ref) => {
         const [isOpen, setIsOpen] = useState(false);
@@ -7601,7 +7616,7 @@ Technically it is possible to write nested function components but it is not sug
         if (!isOpen) return null;
 
         return (
-          <div className="dialog"> 
+          <div className="dialog">
             <h2>Dialog</h2>
             <input
               type="text"
@@ -7638,13 +7653,13 @@ Technically it is possible to write nested function components but it is not sug
 302. ### When should you use useImperativeHandle?
       The useImperativeHandler hook will be used in below cases:
 
-      *   You want to expose **imperative methods** from a child component 
+      *   You want to expose **imperative methods** from a child component
             - Custom input controls exposing `focus`, `clear`, or `validate` methods
             - Modal components exposing `open()` and `close()` methods
             - Scroll containers exposing `scrollToTop()` or `scrollToBottom()` methods
       *   You want to **hide internal implementation** but provide controlled external access.
       *   You're building **reusable component libraries** (e.g., inputs, modals, form controls).
-  
+
 **[⬆ Back to Top](#table-of-contents)**
 
 303. ### Is that possible to use useImperativeHandle without forwardRef?
@@ -7672,7 +7687,7 @@ Technically it is possible to write nested function components but it is not sug
 305. ### Does useMemo prevent re-rendering of child components?
 
         The `useMemo` hook **does not directly prevent re-rendering of child components**. Its main purpose is to memoize the result of an expensive computation so that it doesn’t get recalculated unless its dependencies change. While this can improve performance, it doesn’t inherently control whether a child component re-renders.
-        
+
         However, `useMemo` **can help prevent re-renders** when the memoized value is passed as a prop to a child component that is wrapped in `React.memo`. In that case, if the memoized value doesn’t change between renders (i.e., it has the same reference), React.memo can skip re-rendering the child. So, while `useMemo` doesn’t stop renders on its own, it **works in combination** with tools like `React.memo` to optimize rendering behavior.
 
 **[⬆ Back to Top](#table-of-contents)**
@@ -7680,15 +7695,15 @@ Technically it is possible to write nested function components but it is not sug
 306. ### What is `useCallback` and why is it used?
 
         The `useCallback` is a React Hook used to memoize **function definitions** between renders. It returns the same function reference unless its dependencies change. This is especially useful when passing callbacks to optimized child components (e.g. those wrapped in `React.memo`) to prevent unnecessary re-renders.
-        
+
         **Example:**
-        
+
         ```css
         const handleClick = useCallback(() => {
           console.log('Button clicked');
         }, []);
         ```
-        
+
         Without `useCallback`, a new function is created on every render, potentially causing child components to re-render unnecessarily.
 
 **[⬆ Back to Top](#table-of-contents)**
@@ -7759,55 +7774,55 @@ Technically it is possible to write nested function components but it is not sug
         );
       }
       ```
-     
+
       Some of the benefits of custom hooks are:
        *   Promotes **code reuse**
        *   Keeps components **clean and focused**
        *   Makes complex logic **easier to test and maintain**
-  
+
 **[⬆ Back to Top](#table-of-contents)**
 
 309. ### How does React Fiber works? Explain in detail.
 
       React Fiber is the **core engine** that enables advanced features like **concurrent rendering**, **prioritization**, and **interruptibility** in React. Here's how it works:
-          
+
       ### 1. **Fiber Tree Structure**
-          
+
       Each component in your app is represented by a **Fiber node** in a tree structure. A Fiber node contains:
       *   Component type
       *   Props & state
       *   Pointers to parent, child, and sibling nodes
       *   Effect tags to track changes (e.g., update, placement)
       *   This forms the **Fiber Tree**, a data structure React uses instead of the traditional call stack.
-          
+
       ### 2. **Two Phases of Rendering**
-          
+
         #### **A. Render Phase (work-in-progress)**
-          
+
       *   React builds a **work-in-progress Fiber tree**.
       *   It walks through each component (begin phase), calculates what needs to change, and collects side effects (complete phase).
       *   This phase is **interruptible**—React can pause it and resume later.
         #### **B. Commit Phase**
-          
+
       *   React applies changes to the **Real DOM**.
       *   Runs lifecycle methods (e.g., `componentDidMount`, `useEffect`).
       *   This phase is **non-interruptible** but fast.
-          
+
         ### 3. **Work Units and Scheduling**
-          
+
       *   React breaks rendering into **units of work** (small tasks).
       *   These units are scheduled based on **priority** using the **React Scheduler**.
       *   If time runs out (e.g., user starts typing), React can **pause and yield** control back to the browser.
-          
+
         ### 4. **Double Buffering with Two Trees**
-          
+
       *   React maintains two trees:
       *   **Current Tree** – what's visible on the screen.
       *   **Work-In-Progress Tree** – the next version being built in memory.
       *   Only after the new tree is fully ready, React **commits** it, making it the new current tree.
-          
+
         ### 5. **Concurrency and Prioritization**
-          
+
       *   React can prepare multiple versions of UI at once (e.g., during slow data loading).
       *   Updates can be **assigned priorities**, so urgent updates (like clicks) are handled faster than background work.
 
@@ -7828,7 +7843,7 @@ Technically it is possible to write nested function components but it is not sug
 
      function EmailField() {
        const id = useId();
-       
+
        return (
          <div>
            <label htmlFor={id}>Email:</label>
@@ -7868,7 +7883,7 @@ Technically it is possible to write nested function components but it is not sug
      function SearchResults({ query }) {
        // Expensive computation or large list filtering
        const results = useMemo(() => {
-         return largeDataSet.filter(item => 
+         return largeDataSet.filter(item =>
            item.name.toLowerCase().includes(query.toLowerCase())
          );
        }, [query]);
@@ -7887,8 +7902,8 @@ Technically it is possible to write nested function components but it is not sug
 
        return (
          <div>
-           <input 
-             value={query} 
+           <input
+             value={query}
              onChange={(e) => setQuery(e.target.value)}
              placeholder="Search..."
            />
@@ -7932,9 +7947,9 @@ Technically it is possible to write nested function components but it is not sug
            <button onClick={() => selectTab('home')}>Home</button>
            <button onClick={() => selectTab('posts')}>Posts (slow)</button>
            <button onClick={() => selectTab('contact')}>Contact</button>
-           
+
            {isPending && <Spinner />}
-           
+
            {tab === 'home' && <HomeTab />}
            {tab === 'posts' && <PostsTab />}  {/* Expensive component */}
            {tab === 'contact' && <ContactTab />}
@@ -8093,10 +8108,10 @@ Technically it is possible to write nested function components but it is not sug
      function FontSizeSelector() {
        const [fontSize, setFontSize] = useLocalStorage('fontSize', 16);
        return (
-         <input 
-           type="range" 
-           value={fontSize} 
-           onChange={(e) => setFontSize(Number(e.target.value))} 
+         <input
+           type="range"
+           value={fontSize}
+           onChange={(e) => setFontSize(Number(e.target.value))}
          />
        );
      }
@@ -8126,10 +8141,10 @@ Technically it is possible to write nested function components but it is not sug
        useEffect(() => {
          const handleOnline = () => setIsOnline(true);
          const handleOffline = () => setIsOnline(false);
-         
+
          window.addEventListener('online', handleOnline);
          window.addEventListener('offline', handleOffline);
-         
+
          return () => {
            window.removeEventListener('online', handleOnline);
            window.removeEventListener('offline', handleOffline);
@@ -8147,10 +8162,10 @@ Technically it is possible to write nested function components but it is not sug
      ```jsx
      function useUser(userId) {
        const [user, setUser] = useState(null);
-       
+
        // The format function only runs when DevTools is open
        useDebugValue(user, (user) => user ? `User: ${user.name}` : 'Loading...');
-       
+
        return user;
      }
      ```
@@ -8167,7 +8182,7 @@ Technically it is possible to write nested function components but it is not sug
      ```js
      useEffect(() => {
        // Setup code
-       
+
        return () => {
          // Cleanup code
        };
@@ -8181,7 +8196,7 @@ Technically it is possible to write nested function components but it is not sug
      useEffect(() => {
        const handleResize = () => setWidth(window.innerWidth);
        window.addEventListener('resize', handleResize);
-       
+
        return () => window.removeEventListener('resize', handleResize);
      }, []);
      ```
@@ -8192,7 +8207,7 @@ Technically it is possible to write nested function components but it is not sug
        const intervalId = setInterval(() => {
          setCount(c => c + 1);
        }, 1000);
-       
+
        return () => clearInterval(intervalId);
      }, []);
      ```
@@ -8201,7 +8216,7 @@ Technically it is possible to write nested function components but it is not sug
      ```jsx
      useEffect(() => {
        const subscription = dataSource.subscribe(handleChange);
-       
+
        return () => subscription.unsubscribe();
      }, [dataSource]);
      ```
@@ -8210,7 +8225,7 @@ Technically it is possible to write nested function components but it is not sug
      ```jsx
      useEffect(() => {
        const controller = new AbortController();
-       
+
        fetch(url, { signal: controller.signal })
          .then(response => response.json())
          .then(data => setData(data))
@@ -8219,7 +8234,7 @@ Technically it is possible to write nested function components but it is not sug
              setError(err);
            }
          });
-       
+
        return () => controller.abort();
      }, [url]);
      ```
