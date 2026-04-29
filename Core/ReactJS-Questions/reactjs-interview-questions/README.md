@@ -1004,11 +1004,19 @@ class ParentComponent extends React.Component {
           ```html
           <a href="#" onclick="console.log('Clicked'); return false;">Click Me</a>
           ```
-        - **React:** You must explicitly call `event.preventDefault()` on the event object.
-          ```javascript
-          function handleClick(e) {
-            e.preventDefault();
-            console.log('The link was clicked.');
+        - **React:** You cannot return `false` to prevent default behavior. You must explicitly call `event.preventDefault()` on the event object.
+          ```jsx
+          function ActionLink() {
+            function handleClick(e) {
+              e.preventDefault();
+              console.log('The link was clicked.');
+            }
+
+            return (
+              <a href="#" onClick={handleClick}>
+                Click Me
+              </a>
+            );
           }
           ```
 
@@ -1031,7 +1039,7 @@ class ParentComponent extends React.Component {
 
 13. ### What are synthetic events in React?
 
-    `SyntheticEvent` is a cross-browser wrapper around the browser's native event. Its API is same as the browser's native event, including `stopPropagation()` and `preventDefault()`, except the events work identically across all browsers. The native events can be accessed directly from synthetic events using `nativeEvent` attribute.
+    `SyntheticEvent` is a cross-browser wrapper around the browser's native event. Its API is the same as the browser's native event, including `stopPropagation()` and `preventDefault()`, except the events work identically across all browsers. The native events can be accessed directly from synthetic events using `nativeEvent` attribute.
 
     Let's take an example of `BookStore` title search component with the ability to get all native event properties
 
