@@ -983,42 +983,51 @@ class ParentComponent extends React.Component {
 
 12. ### What is the difference between HTML and React event handling?
 
-    Below are some of the main differences between HTML and React event handling,
+    Below are the main differences between HTML and React event handling:
 
-    1. In HTML, the event name usually represents in _lowercase_ as a convention:
+    1.  **Naming Convention:**
+        - **HTML:** Event names are written in **lowercase** (e.g., `onclick`, `onchange`).
+        - **React:** Event names use **camelCase** (e.g., `onClick`, `onChange`).
 
-       ```html
-       <button onclick="activateLasers()"></button>
-       ```
+    2.  **Event Handler Syntax:**
+        - **HTML:** You pass a **string** as the event handler, which typically invokes the function.
+          ```html
+          <button onclick="activateLasers()">Activate Lasers</button>
+          ```
+        - **React:** You pass a **function reference** (the function itself) wrapped in curly braces.
+          ```jsx
+          <button onClick={activateLasers}>Activate Lasers</button>
+          ```
 
-       Whereas in React it follows _camelCase_ convention:
+    3.  **Preventing Default Behavior:**
+        - **HTML:** You can return `false` from the handler to prevent default behavior (like page refresh on form submit).
+          ```html
+          <a href="#" onclick="console.log('Clicked'); return false;">Click Me</a>
+          ```
+        - **React:** You must explicitly call `event.preventDefault()` on the event object.
+          ```javascript
+          function handleClick(e) {
+            e.preventDefault();
+            console.log('The link was clicked.');
+          }
+          ```
 
-       ```jsx harmony
-       <button onClick={activateLasers}>
-       ```
+    4.  **Synthetic Events:**
+        - **HTML:** Uses native browser events, which can behave differently across browsers.
+        - **React:** Uses a cross-browser wrapper called **SyntheticEvent**. This ensures the event behaves identically in all browsers (W3C spec compliant).
 
-    2. In HTML, you can return `false` to prevent default behavior:
+    ### Comparison Table
 
-       ```html
-       <a
-         href="#"
-         onclick='console.log("The link was clicked."); return false;'
-       />
-       ```
-
-       Whereas in React you must call `preventDefault()` explicitly:
-
-       ```javascript
-       function handleClick(event) {
-         event.preventDefault();
-         console.log("The link was clicked.");
-       }
-       ```
-
-    3. In HTML, you need to invoke the function by appending `()`
-       Whereas in react you should not append `()` with the function name. (refer "activateLasers" function in the first point for example)
+    | Feature | HTML Event Handling | React Event Handling |
+    | :--- | :--- | :--- |
+    | **Naming** | Lowercase (e.g., `onclick`) | camelCase (e.g., `onClick`) |
+    | **Handler Type** | String (e.g., `"handleClick()"`) | Function (e.g., `{handleClick}`) |
+    | **Prevent Default** | Can return `false` | Must call `e.preventDefault()` |
+    | **Event Type** | Native Browser Event | SyntheticEvent (Wrapper) |
+    | **Execution** | Global scope or inline | Component scope |
 
     **[⬆ Back to Top](#table-of-contents)**
+
 
 13. ### What are synthetic events in React?
 
