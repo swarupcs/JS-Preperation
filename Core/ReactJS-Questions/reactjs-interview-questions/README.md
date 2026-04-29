@@ -1720,7 +1720,7 @@ class ParentComponent extends React.Component {
 
 36. ### How to apply validation on props in React?
 
-    When the application is running in _development mode_, React will automatically check all props that we set on components to make sure they have _correct type_. If the type is incorrect, React will generate warning messages in the console. It's disabled in _production mode_ due to performance impact. The mandatory props are defined with `isRequired`.
+    In _development mode_, React can check component props with the `prop-types` package. If a prop has the wrong type, React prints a warning in the console. These checks are not run in production for performance reasons. Required props are marked with `isRequired`.
 
     The set of predefined prop types:
 
@@ -1735,7 +1735,7 @@ class ParentComponent extends React.Component {
     9. `PropTypes.symbol`
     10. `PropTypes.any`
 
-    We can define `propTypes` for `User` component as below:
+    We can define `propTypes` for the `User` component as below:
 
     ```jsx harmony
     import React from "react";
@@ -1751,7 +1751,7 @@ class ParentComponent extends React.Component {
         return (
           <>
             <h1>{`Welcome, ${this.props.name}`}</h1>
-            <h2>{`Age, ${this.props.age}`}</h2>
+            <h2>{`Age: ${this.props.age}`}</h2>
           </>
         );
       }
@@ -1770,7 +1770,7 @@ class ParentComponent extends React.Component {
       return (
         <>
           <h1>{`Welcome, ${name}`}</h1>
-          <h2>{`Age, ${age}`}</h2>
+          <h2>{`Age: ${age}`}</h2>
         </>
       );
     }
@@ -1785,54 +1785,56 @@ class ParentComponent extends React.Component {
 
 37. ### What are the advantages of React?
 
-    Below are the list of main advantages of React,
+    The main advantages of React are:
 
-    1. Increases the application's performance with _Virtual DOM_.
+    1. Improves UI update performance through reconciliation and the _Virtual DOM_.
     2. JSX makes code easy to read and write.
-    3. It renders both on client and server side (_SSR_).
-    4. Easy to integrate with frameworks (Angular, Backbone) since it is only a view library.
+    3. It can render on both the client and the server (_SSR_).
+    4. It is easy to integrate into existing applications because it focuses on the view layer.
     5. Easy to write unit and integration tests with tools such as Jest.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 38. ### What are the limitations of React?
 
-    Apart from the advantages, there are few limitations of React too,
+    Apart from its advantages, React also has a few limitations:
 
     1. React is just a view library, not a full framework.
     2. There is a learning curve for beginners who are new to web development.
     3. Integrating React into a traditional MVC framework requires some additional configuration.
-    4. The code complexity increases with inline templating and JSX.
-    5. Too many smaller components leading to over engineering or boilerplate.
+    4. JSX and component-based patterns can feel unfamiliar at first.
+    5. Too many small components can lead to over-engineering or extra boilerplate.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 39. ### What are the recommended ways for static type checking?
 
-    Normally we use _PropTypes library_ (`React.PropTypes` moved to a `prop-types` package since React v15.5) for _type checking_ in the React applications. For large code bases, it is recommended to use _static type checkers_ such as Flow or TypeScript, that perform type checking at compile time and provide auto-completion features.
+    For runtime prop validation, React applications can use the `prop-types` package. For large codebases, static type checkers such as TypeScript or Flow are recommended because they check types at compile time and provide better editor support, such as autocomplete and refactoring help.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 40. ### What is the use of `react-dom` package?
 
-    The `react-dom` package provides _DOM-specific methods_ that can be used at the top level of your app. Most of the components are not required to use this module. Some of the methods of this package are:
+    The `react-dom` package provides DOM-specific APIs for rendering React components in the browser. Most components do not use this package directly; it is usually used at the application entry point.
 
-    1. `render()`
-    2. `hydrate()`
-    3. `unmountComponentAtNode()`
-    4. `findDOMNode()`
-    5. `createPortal()`
+    Common APIs include:
+
+    1. `createRoot()` from `react-dom/client`
+    2. `hydrateRoot()` from `react-dom/client`
+    3. `createPortal()` from `react-dom`
+
+    Older APIs such as `render()`, `hydrate()`, `unmountComponentAtNode()`, and `findDOMNode()` are legacy APIs in modern React.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 41. ### What is ReactDOMServer?
 
-    The `ReactDOMServer` object enables you to render components to static markup (typically used on node server). This object is mainly used for _server-side rendering_ (SSR). The following methods can be used in both the server and browser environments:
+    The `ReactDOMServer` object enables you to render React components to HTML on the server. It is mainly used for _server-side rendering_ (SSR). Common APIs include:
 
     1. `renderToString()`
     2. `renderToStaticMarkup()`
 
-    For example, you generally run a Node-based web server like Express, Hapi, or Koa, and you call `renderToString` to render your root component to a string, which you then send as response.
+    For example, you can run a Node-based web server like Express, Hapi, or Koa and call `renderToString` to render your root component to a string, which you then send as a response.
 
     ```javascript
     // using Express
@@ -1854,9 +1856,9 @@ class ParentComponent extends React.Component {
 
 42. ### How to use innerHTML in React?
 
-    The `dangerouslySetInnerHTML` attribute is React's replacement for using `innerHTML` in the browser DOM. Just like `innerHTML`, it is risky to use this attribute considering cross-site scripting (XSS) attacks. You just need to pass a `__html` object as key and HTML text as value.
+    The `dangerouslySetInnerHTML` attribute is React's replacement for using `innerHTML` in the browser DOM. Like `innerHTML`, it can expose your app to cross-site scripting (XSS) attacks if you render untrusted HTML. You need to pass an object with a `__html` key and the HTML string as its value.
 
-    In this example MyComponent uses `dangerouslySetInnerHTML` attribute for setting HTML markup:
+    In this example, `MyComponent` uses `dangerouslySetInnerHTML` to set HTML markup:
 
     ```jsx harmony
     function createMarkup() {
@@ -1872,7 +1874,7 @@ class ParentComponent extends React.Component {
 
 43. ### How to use styles in React?
 
-    The `style` attribute accepts a JavaScript object with camelCased properties rather than a CSS string. This is consistent with the DOM style JavaScript property, is more efficient, and prevents XSS security holes.
+    The `style` attribute accepts a JavaScript object with camelCased properties rather than a CSS string. This is consistent with the DOM `style` property and avoids building inline CSS strings manually.
 
     ```jsx harmony
     const divStyle = {
@@ -1885,16 +1887,16 @@ class ParentComponent extends React.Component {
     }
     ```
 
-    Style keys are camelCased in order to be consistent with accessing the properties on DOM nodes in JavaScript (e.g. `node.style.backgroundImage`).
+    Style keys are camelCased to stay consistent with how style properties are accessed on DOM nodes in JavaScript, such as `node.style.backgroundImage`.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 44. ### How events are different in React?
 
-    Handling events in React elements has some syntactic differences:
+    Handling events in React elements has a few syntactic differences from plain HTML:
 
     1. React event handlers are named using camelCase, rather than lowercase.
-    2. With JSX you pass a function as the event handler, rather than a string.
+    2. In JSX, you pass a function as the event handler rather than a string.
 
     **[⬆ Back to Top](#table-of-contents)**
 
@@ -1902,7 +1904,7 @@ class ParentComponent extends React.Component {
 
     Keys should be stable, predictable, and unique so that React can keep track of elements.
 
-    In the below code snippet each element's key will be based on ordering, rather than tied to the data that is being represented. This limits the optimizations that React can do and creates confusing bugs in the application.
+    In the code snippet below, each element's key is based on its position in the array rather than the data it represents. This can limit React's ability to match items correctly and can create confusing bugs when items are inserted, removed, or reordered.
 
     ```jsx harmony
     {
@@ -1910,7 +1912,7 @@ class ParentComponent extends React.Component {
     }
     ```
 
-    If you use element data for unique key, assuming `todo.id` is unique to this list and stable, React would be able to reorder elements without needing to reevaluate them as much.
+    If you use a stable key from the data, such as `todo.id`, React can match and reorder elements more reliably.
 
     ```jsx harmony
     {
@@ -1918,13 +1920,13 @@ class ParentComponent extends React.Component {
     }
     ```
 
-    **Note:** If you don't specify `key` prop at all, React will use index as a key's value while iterating over an array of data.
+    **Note:** If you don't specify a `key` prop, React warns in development. Internally, it falls back to using the item's position, which has the same problems as using an index key.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 46. ### How do you conditionally render components?
 
-    In some cases you want to render different components depending on some state. JSX does not render `false` or `undefined`, so you can use conditional _short-circuiting_ to render a given part of your component only if a certain condition is true.
+    In some cases, you want to render different UI depending on state or props. JSX does not render `false`, `null`, or `undefined`, so you can use conditional _short-circuiting_ to render part of your component only when a condition is true.
 
     ```jsx harmony
     const MyComponent = ({ name, address }) => (
@@ -1935,7 +1937,7 @@ class ParentComponent extends React.Component {
     );
     ```
 
-    If you need an `if-else` condition then use _ternary operator_.
+    If you need an `if-else` condition, use the _ternary operator_.
 
     ```jsx harmony
     const MyComponent = ({ name, address }) => (
@@ -1950,7 +1952,7 @@ class ParentComponent extends React.Component {
 
 47. ### Why we need to be careful when spreading props on DOM elements?
 
-    When we _spread props_ we run into the risk of adding unknown HTML attributes, which is a bad practice. Instead we can use prop destructuring with `...rest` operator, so it will add only required props.
+    When we _spread props_ on a DOM element, we may accidentally pass props that are not valid DOM attributes or expose implementation details. Instead, destructure component-only props first and pass only the remaining DOM-safe props with the `...rest` operator.
 
     For example,
 
@@ -1968,31 +1970,19 @@ class ParentComponent extends React.Component {
 
 48. ### How do you memoize a component?
 
-    There are memoize libraries available which can be used on function components.
+    You can memoize a function component with `React.memo`. It returns a memoized version of the component that skips re-rendering when its props have not changed.
 
-    For example `moize` library can memoize the component in another component.
+    For example:
 
     ```jsx harmony
-    import moize from "moize";
-    import Component from "./components/Component"; // this module exports a non-memoized component
-
-    const MemoizedFoo = moize.react(Component);
-
-    const Consumer = () => {
-      <div>
-        {"I will memoize the following entry:"}
-        <MemoizedFoo />
-      </div>;
-    };
+    const MemoizedComponent = React.memo(function Component({ name }) {
+      return <div>{name}</div>;
+    });
     ```
 
-    **Update:** Since React v16.6.0, we have a `React.memo`. It provides a higher order component which memoizes component unless the props change. To use it, simply wrap the component using React.memo before you use it.
+    You can also export a memoized component directly:
 
     ```js
-    const MemoComponent = React.memo(function MemoComponent(props) {
-      /* render using props */
-    });
-    OR;
     export default React.memo(MyFunctionComponent);
     ```
 
@@ -2000,7 +1990,7 @@ class ParentComponent extends React.Component {
 
 49. ### How you implement Server Side Rendering or SSR?
 
-    React is already equipped to handle rendering on Node servers. A special version of the DOM renderer is available, which follows the same pattern as on the client side.
+    React can render components on a Node server using `react-dom/server`. On the server, you render the app to an HTML string or stream, send that HTML in the response, and then hydrate it on the client.
 
     ```jsx harmony
     import ReactDOMServer from "react-dom/server";
@@ -2009,27 +1999,29 @@ class ParentComponent extends React.Component {
     ReactDOMServer.renderToString(<App />);
     ```
 
-    This method will output the regular HTML as a string, which can be then placed inside a page body as part of the server response. On the client side, React detects the pre-rendered content and seamlessly picks up where it left off.
+    This method outputs HTML as a string, which can be placed inside the page body as part of the server response. On the client side, React hydrates the pre-rendered HTML and attaches event handlers so the page becomes interactive.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 50. ### How to enable production mode in React?
 
-    You should use Webpack's `DefinePlugin` method to set `NODE_ENV` to `production`, by which it strip out things like propType validation and extra warnings. Apart from this, if you minify the code, for example, Uglify's dead-code elimination to strip out development only code and comments, it will drastically reduce the size of your bundle.
+    Production mode is normally enabled by using a production build command from your tooling, such as `npm run build` in Create React App, Vite, Next.js, or similar setups. These tools set `process.env.NODE_ENV` to `production`, minify the code, remove development warnings, and optimize the bundle.
+
+    If you configure Webpack manually, you can set `mode: "production"` or use `DefinePlugin` to set `process.env.NODE_ENV` to `"production"`.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 51. ### Do Hooks replace render props and higher order components?
 
-    Both render props and higher-order components render only a single child but in most of the cases Hooks are a simpler way to serve this by reducing nesting in your tree.
+    Hooks do not completely replace render props or higher-order components, but they often provide a simpler way to share stateful logic between components. Hooks can reduce wrapper components and nesting, but render props and HOCs are still valid patterns, especially in older codebases and some library APIs.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 52. ### What is a switching component?
 
-    A _switching component_ is a component that renders one of many components. We need to use object to map prop values to components.
+    A _switching component_ is a component that renders one of many components based on a prop or state value. You can use an object to map values to components.
 
-    For example, a switching component to display different pages based on `page` prop:
+    For example, a switching component can display different pages based on the `page` prop:
 
     ```jsx harmony
     import HomePage from "./HomePage";
@@ -2060,9 +2052,9 @@ class ParentComponent extends React.Component {
 
 53. ### What are React Mixins?
 
-    _Mixins_ are a way to totally separate components to have a common functionality. Mixins **should not be used** and can be replaced with _higher-order components_ or _decorators_.
+    _Mixins_ were an old React pattern for sharing common functionality between components created with `React.createClass`. Mixins **should not be used** in modern React. They can usually be replaced with hooks, higher-order components, or render props.
 
-    One of the most commonly used mixins is `PureRenderMixin`. You might be using it in some components to prevent unnecessary re-renders when the props and state are shallowly equal to the previous props and state:
+    One commonly used mixin was `PureRenderMixin`, which helped prevent unnecessary re-renders when props and state were shallowly equal to the previous props and state:
 
     ```javascript
     const PureRenderMixin = require("react-addons-pure-render-mixin");
@@ -2079,9 +2071,9 @@ class ParentComponent extends React.Component {
 
 54. ### What are the Pointer Events supported in React?
 
-    _Pointer Events_ provide a unified way of handling all input events. In the old days we had a mouse and respective event listeners to handle them but nowadays we have many devices which don't correlate to having a mouse, like phones with touch surface or pens. We need to remember that these events will only work in browsers that support the _Pointer Events_ specification.
+    _Pointer Events_ provide a unified way to handle input from a mouse, touch screen, pen, or other pointing device. These events work in browsers that support the _Pointer Events_ specification.
 
-    The following event types are now available in _React DOM_:
+    The following event types are available in _React DOM_:
 
     1. `onPointerDown`
     2. `onPointerMove`
@@ -2098,27 +2090,25 @@ class ParentComponent extends React.Component {
 
 55. ### Why should component names start with capital letter?
 
-    If you are rendering your component using JSX, the name of that component has to begin with a capital letter otherwise React will throw an error as an unrecognized tag. This convention is because only HTML elements and SVG tags can begin with a lowercase letter.
+    If you render a custom component using JSX, its name must start with a capital letter. Lowercase tag names are treated as built-in HTML or SVG elements.
 
     ```jsx harmony
-    function SomeComponent {
+    function SomeComponent() {
       // Code goes here
     }
     ```
 
-    You can define function component whose name starts with lowercase letter, but when it's imported it should have a capital letter. Here lowercase is fine:
+    You can define a component with a lowercase function name, but it should be imported or assigned to a capitalized identifier before being used in JSX:
 
     ```jsx harmony
-    function myComponent {
-      render() {
-        return <div />;
-      }
+    function myComponent() {
+      return <div />;
     }
 
     export default myComponent;
     ```
 
-    While when imported in another file it should start with capital letter:
+    When imported in another file, use a capitalized name:
 
     ```jsx harmony
     import MyComponent from "./myComponent";
@@ -2128,7 +2118,7 @@ class ParentComponent extends React.Component {
 
 56. ### Are custom DOM attributes supported in React v16?
 
-    Yes. In the past, React used to ignore unknown DOM attributes. If you wrote JSX with an attribute that React doesn't recognize, React would just skip it.
+    Yes. In older React versions, React ignored unknown DOM attributes. If you wrote JSX with an attribute that React did not recognize, React skipped it.
 
     For example, let's take a look at the below attribute:
 
@@ -2142,7 +2132,7 @@ class ParentComponent extends React.Component {
     <div />
     ```
 
-    In React v16 any unknown attributes will end up in the DOM:
+    In React v16 and later, unknown attributes are passed through to the DOM:
 
     ```html
     <div mycustomattribute="something" />
@@ -2154,7 +2144,7 @@ class ParentComponent extends React.Component {
 
 57. ### How to loop inside JSX?
 
-    You can simply use `Array.prototype.map` with ES6 _arrow function_ syntax.
+    You can use `Array.prototype.map` with ES6 _arrow function_ syntax.
 
     For example, the `items` array of objects is mapped into an array of components:
 
@@ -2166,7 +2156,7 @@ class ParentComponent extends React.Component {
     </tbody>
     ```
 
-    But you can't iterate using `for` loop:
+    You cannot place a `for` loop directly inside JSX because `for` is a statement, not an expression:
 
     ```jsx harmony
     <tbody>
@@ -2176,13 +2166,13 @@ class ParentComponent extends React.Component {
     </tbody>
     ```
 
-    This is because JSX tags are transpiled into _function calls_, and you can't use statements inside expressions. This may change thanks to `do` expressions which are _stage 1 proposal_.
+    JSX tags are transpiled into function calls, and JavaScript statements cannot be used where an expression is expected. If you need a `for` loop, build the array before the `return` statement and render that array inside JSX.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 58. ### How do you access props in attribute quotes?
 
-    React (or JSX) doesn't support variable interpolation inside an attribute value. The below representation won't work:
+    React JSX does not support string interpolation inside quoted attribute values. The below example will not work:
 
     ```jsx harmony
     <img className="image" src="images/{this.props.image}" />
@@ -2204,14 +2194,16 @@ class ParentComponent extends React.Component {
 
 59. ### What is React proptype array with shape?
 
-    If you want to pass an array of objects to a component with a particular shape then use `React.PropTypes.shape()` as an argument to `React.PropTypes.arrayOf()`.
+    If you want to pass an array of objects to a component with a particular shape, use `PropTypes.shape()` as an argument to `PropTypes.arrayOf()`.
 
     ```javascript
+    import PropTypes from "prop-types";
+
     ReactComponent.propTypes = {
-      arrayWithShape: React.PropTypes.arrayOf(
-        React.PropTypes.shape({
-          color: React.PropTypes.string.isRequired,
-          fontSize: React.PropTypes.number.isRequired,
+      arrayWithShape: PropTypes.arrayOf(
+        PropTypes.shape({
+          color: PropTypes.string.isRequired,
+          fontSize: PropTypes.number.isRequired,
         })
       ).isRequired,
     };
@@ -2221,13 +2213,13 @@ class ParentComponent extends React.Component {
 
 60. ### How to conditionally apply class attributes?
 
-    You shouldn't use curly braces inside quotes because it is going to be evaluated as a string.
+    You should not use curly braces inside quotes because the expression will be treated as a plain string.
 
     ```jsx harmony
     <div className="btn-panel {this.props.visible ? 'show' : 'hidden'}">
     ```
 
-    Instead you need to move curly braces outside (don't forget to include spaces between class names):
+    Instead, move the curly braces outside the quotes and include spaces between class names:
 
     ```jsx harmony
     <div className={'btn-panel ' + (this.props.visible ? 'show' : 'hidden')}>
@@ -2243,7 +2235,9 @@ class ParentComponent extends React.Component {
 
 61. ### What is the difference between React and ReactDOM?
 
-    The `react` package contains `React.createElement()`, `React.Component`, `React.Children`, and other helpers related to elements and component classes. You can think of these as the isomorphic or universal helpers that you need to build components. The `react-dom` package contains `ReactDOM.render()`, and in `react-dom/server` we have _server-side rendering_ support with `ReactDOMServer.renderToString()` and `ReactDOMServer.renderToStaticMarkup()`.
+    The `react` package contains APIs for defining components and creating React elements, such as `createElement`, `Component`, hooks, and `Children` helpers. These APIs are renderer-independent and can be used across React environments.
+
+    The `react-dom` package contains browser DOM-specific APIs, such as `createRoot`, `hydrateRoot`, and `createPortal`. The `react-dom/server` package provides server rendering APIs such as `renderToString()` and `renderToStaticMarkup()`.
 
     **[⬆ Back to Top](#table-of-contents)**
 
@@ -2251,20 +2245,20 @@ class ParentComponent extends React.Component {
 
     The React team worked on extracting all DOM-related features into a separate library called _ReactDOM_. React v0.14 is the first release in which the libraries are split. By looking at some of the packages, `react-native`, `react-art`, `react-canvas`, and `react-three`, it has become clear that the beauty and essence of React has nothing to do with browsers or the DOM.
 
-    To build more environments that React can render to, React team planned to split the main React package into two: `react` and `react-dom`. This paves the way to writing components that can be shared between the web version of React and React Native.
+    To support more rendering environments, the React team split the main React package into `react` and renderer-specific packages such as `react-dom`. This makes it easier to share component logic between React DOM, React Native, and other renderers.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 63. ### How to use React label element?
 
-    If you try to render a `<label>` element bound to a text input using the standard `for` attribute, then it produces HTML missing that attribute and prints a warning to the console.
+    In JSX, use `htmlFor` instead of the HTML `for` attribute on a `<label>`.
 
     ```jsx harmony
     <label for={'user'}>{'User'}</label>
     <input type={'text'} id={'user'} />
     ```
 
-    Since `for` is a reserved keyword in JavaScript, use `htmlFor` instead.
+    React maps `htmlFor` to the `for` attribute in the final HTML.
 
     ```jsx harmony
     <label htmlFor={'user'}>{'User'}</label>
@@ -2275,7 +2269,7 @@ class ParentComponent extends React.Component {
 
 64. ### How to combine multiple inline style objects?
 
-    You can use _spread operator_ in regular React:
+    You can use the _spread operator_ in React DOM:
 
     ```jsx harmony
     <button style={{ ...styles.panel.button, ...styles.panel.submitButton }}>
@@ -2283,7 +2277,7 @@ class ParentComponent extends React.Component {
     </button>
     ```
 
-    If you're using React Native then you can use the array notation:
+    In React Native, you can use array notation:
 
     ```jsx harmony
     <button style={[styles.panel.button, styles.panel.submitButton]}>
@@ -2295,22 +2289,21 @@ class ParentComponent extends React.Component {
 
 65. ### How to re-render the view when the browser is resized?
 
-    You can use the `useState` hook to manage the width and height state variables, and the `useEffect` hook to add and remove the `resize` event listener. The `[]` dependency array passed to useEffect ensures that the effect only runs once (on mount) and not on every re-render.
+    You can use the `useState` hook to store the width and height, and the `useEffect` hook to add and remove the `resize` event listener. The empty dependency array (`[]`) makes the effect run once after mount and clean up on unmount.
 
     ```javascript
     import React, { useState, useEffect } from "react";
     function WindowDimensions() {
-      const [dimensions, setDimensions] = useState({
+      const getDimensions = () => ({
         width: window.innerWidth,
         height: window.innerHeight,
       });
 
+      const [dimensions, setDimensions] = useState(getDimensions);
+
       useEffect(() => {
         function handleResize() {
-          setDimensions({
-            width: window.innerWidth,
-            height: window.innerHeight,
-          });
+          setDimensions(getDimensions());
         }
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
@@ -2327,18 +2320,14 @@ class ParentComponent extends React.Component {
     <details>
     <summary><h4>Using Class Component</h4></summary>
 
-    You can listen to the `resize` event in `componentDidMount()` and then update the dimensions (`width` and `height`). You should remove the listener in `componentWillUnmount()` method.
+    You can listen to the `resize` event in `componentDidMount()` and update the dimensions (`width` and `height`). You should remove the listener in `componentWillUnmount()`.
 
     ```javascript
     class WindowDimensions extends React.Component {
-      constructor(props) {
-        super(props);
-        this.updateDimensions = this.updateDimensions.bind(this);
-      }
-
-      componentWillMount() {
-        this.updateDimensions();
-      }
+      state = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
 
       componentDidMount() {
         window.addEventListener("resize", this.updateDimensions);
@@ -2348,12 +2337,12 @@ class ParentComponent extends React.Component {
         window.removeEventListener("resize", this.updateDimensions);
       }
 
-      updateDimensions() {
+      updateDimensions = () => {
         this.setState({
           width: window.innerWidth,
           height: window.innerHeight,
         });
-      }
+      };
 
       render() {
         return (
@@ -2371,13 +2360,13 @@ class ParentComponent extends React.Component {
 
 66. ### How to pretty print JSON with React?
 
-    We can use `<pre>` tag so that the formatting of the `JSON.stringify()` is retained:
+    You can use the `<pre>` tag so the formatting from `JSON.stringify()` is preserved:
 
     ```jsx harmony
     const data = { name: "John", age: 42 };
 
-    function User {
-        return <pre>{JSON.stringify(data, null, 2)}</pre>;
+    function User() {
+      return <pre>{JSON.stringify(data, null, 2)}</pre>;
     }
 
     const container = createRoot(document.getElementById("container"));
@@ -2397,7 +2386,9 @@ class ParentComponent extends React.Component {
       }
     }
 
-    React.render(<User />, document.getElementById("container"));
+    const container = createRoot(document.getElementById("container"));
+
+    container.render(<User />);
     ```
 
       </p>
@@ -2407,13 +2398,15 @@ class ParentComponent extends React.Component {
 
 67. ### Why can't you update props in React?
 
-    The React philosophy is that props should be _immutable_(read only) and _top-down_. This means that a parent can send any prop values to a child, but the child can't modify received props.
+    React props are _immutable_ (read-only) from the receiving component's perspective. Data flows from parent to child, so a child component should not modify the props it receives.
+
+    If a child needs to request a change, the parent should pass a callback prop. The child calls that callback, and the parent updates its own state.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 68. ### How to focus an input element on page load?
 
-    You need to use `useEffect` hook to set focus on input field during page load time for functional component.
+    You can use `useRef` to access the input element and `useEffect` to focus it after the component mounts.
 
     ```jsx harmony
     import React, { useEffect, useRef } from "react";
@@ -2433,12 +2426,13 @@ class ParentComponent extends React.Component {
       );
     };
 
-    ReactDOM.render(<App />, document.getElementById("app"));
+    const root = ReactDOM.createRoot(document.getElementById("app"));
+    root.render(<App />);
     ```
 
       <details><summary><b>See Class</b></summary>
       <p>
-      You can do it by creating _ref_ for `input` element and using it in `componentDidMount()`:
+      You can do it by creating a _ref_ for the `input` element and focusing it in `componentDidMount()`:
 
     ```jsx harmony
     class App extends React.Component {
@@ -2459,7 +2453,8 @@ class ParentComponent extends React.Component {
       }
     }
 
-    ReactDOM.render(<App />, document.getElementById("app"));
+    const root = ReactDOM.createRoot(document.getElementById("app"));
+    root.render(<App />);
     ```
 
       </p>
@@ -2469,28 +2464,36 @@ class ParentComponent extends React.Component {
 
 69. ### How can we find the version of React at runtime in the browser?
 
-    You can use `React.version` to get the version.
+    You can use `React.version` to get the React version at runtime.
 
     ```jsx harmony
     const REACT_VERSION = React.version;
 
-    ReactDOM.render(
-      <div>{`React version: ${REACT_VERSION}`}</div>,
-      document.getElementById("app")
-    );
+    const root = ReactDOM.createRoot(document.getElementById("app"));
+    root.render(<div>{`React version: ${REACT_VERSION}`}</div>);
     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
 70. ### How to add Google Analytics for React Router?
 
-    Add a listener on the `history` object to record each page view:
+    With React Router, you can record a page view whenever the location changes. In modern React Router, this is commonly done with `useLocation` and an effect:
 
-    ```javascript
-    history.listen(function (location) {
-      window.ga("set", "page", location.pathname + location.search);
-      window.ga("send", "pageview", location.pathname + location.search);
-    });
+    ```jsx
+    import { useEffect } from "react";
+    import { useLocation } from "react-router-dom";
+
+    function AnalyticsTracker() {
+      const location = useLocation();
+
+      useEffect(() => {
+        window.gtag("event", "page_view", {
+          page_path: location.pathname + location.search,
+        });
+      }, [location]);
+
+      return null;
+    }
     ```
 
 **[⬆ Back to Top](#table-of-contents)**
@@ -2513,13 +2516,13 @@ class ParentComponent extends React.Component {
 
 72. ### How to import and export components using React and ES6?
 
-    You should use default for exporting the components
+    You can export a component as the default export and import it without braces:
 
     ```jsx harmony
     import User from "user";
 
-    export default function MyProfile {
-        return <User type="customer">//...</User>;
+    export default function MyProfile() {
+      return <User type="customer">...</User>;
     }
     ```
 
@@ -2529,11 +2532,11 @@ class ParentComponent extends React.Component {
      import React from "react";
      import User from "user";
 
-    export default class MyProfile extends React.Component {
-    render() {
-    return <User type="customer">//...</User>;
-    }
-    }
+     export default class MyProfile extends React.Component {
+       render() {
+         return <User type="customer">...</User>;
+       }
+     }
 
     ```
     </p>
