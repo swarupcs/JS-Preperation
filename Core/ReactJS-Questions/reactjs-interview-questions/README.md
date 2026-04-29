@@ -1124,42 +1124,44 @@ class ParentComponent extends React.Component {
 
 16. ### What is Virtual DOM?
 
-    The _Virtual DOM_ (VDOM) is a lightweight, in-memory representation of _Real DOM_ used by libraries like React to optimize UI rendering. The representation of a UI is kept in memory and synced with the "real" DOM. It's a step that happens between the render function being called and the displaying of elements on the screen. This entire process is called _reconciliation_.
+    The _Virtual DOM_ (VDOM) is a lightweight, in-memory representation of the _Real DOM_. React keeps this representation in memory and uses it to decide how the browser DOM should change when a component renders.
+
+    When state or props change, React creates a new Virtual DOM tree, compares it with the previous one, and updates only the necessary parts of the Real DOM. This process is part of _reconciliation_.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 17. ### How Virtual DOM works?
 
-    The _Virtual DOM_ works in five simple steps.
+    The _Virtual DOM_ works in five simple steps:
 
     **1. Initial Render**  
-        When a UI component renders for the first time, it returns JSX. React uses this structure to create a Virtual DOM tree, which is a lightweight copy of the actual DOM. This Virtual DOM is then used to build and render the Real DOM in the browser.
+        When a component renders for the first time, it returns JSX. React converts that JSX into a Virtual DOM tree and then uses it to create the Real DOM in the browser.
 
     **2. State or Props Change**  
-        When the component's state or props change, React creates a new Virtual DOM reflecting the updated UI. However, it doesn't immediately update the Real DOM; instead, it works in memory to prepare for an efficient update.
+        When the component's state or props change, React creates a new Virtual DOM tree that represents the updated UI. It does not immediately replace the Real DOM; it first prepares the update in memory.
                
       ![vdom](images/vdom1.png)
 
     **3. Diffing Algorithm**  
-        React then compares the new Virtual DOM with the previous one using a process called diffing. It determines what has changed between the two versions and identifies the minimal set of updates needed.
+        React compares the new Virtual DOM tree with the previous one using a process called diffing. It determines what changed and identifies the minimal set of updates needed.
        
        ![vdom2](images/vdom2.png)  
 
     **4. Reconciliation**  
-        Based on the diffing results, React decides which parts of the Real DOM should be updated. It avoids re-rendering the entire DOM and instead updates only the elements that actually changed.
+        Based on the diffing result, React decides which parts of the Real DOM should be updated. It avoids recreating the entire DOM and updates only the elements that changed.
         
        ![vdom3](images/vdom3.png)
 
     **5. Efficient DOM Updates**  
-        This entire process—working with the Virtual DOM, diffing, and selective updating—makes the UI rendering much faster and more efficient than manipulating the Real DOM directly.
+        This process of using the Virtual DOM, diffing, and selective updates makes UI rendering more efficient than manually manipulating the Real DOM for every change.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 18. ### What is the difference between Shadow DOM and Virtual DOM?
 
-    The _Shadow DOM_ is a browser technology designed primarily for scoping variables and CSS in _web components_. The _Virtual DOM_ is a concept implemented by libraries in JavaScript on top of browser APIs.
+    The _Shadow DOM_ is a browser technology used mainly by Web Components to encapsulate markup, styles, and behavior. The _Virtual DOM_ is a JavaScript programming concept used by libraries such as React to optimize UI updates.
 
-    The key differences in a table format shown below:
+    The key differences are shown below:
 
     | Feature | Shadow DOM | Virtual DOM |
     | --- | --- | --- |
@@ -1173,40 +1175,42 @@ class ParentComponent extends React.Component {
 
 19. ### What is React Fiber?
 
-    **React Fiber** is the **new reconciliation engine** in React, introduced in React 16. It’s a complete rewrite of React’s core algorithm(old stack-based algorithm) for rendering and updating the UI. Fiber enhances React’s ability to handle **asynchronous rendering**, **prioritized updates**(assign priority to different types of updates), and **interruption**(ability to pause, abort, or reuse work) of rendering work, enabling smoother and more responsive user interfaces.
+    **React Fiber** is React's reconciliation engine, introduced in React 16. It is a rewrite of React's older stack-based reconciliation algorithm for rendering and updating the UI.
+
+    Fiber allows React to split rendering work into smaller units, assign priority to different updates, pause or resume work, and reuse or discard work when needed. This helps React keep applications more responsive, especially during complex updates, animations, and user interactions.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 20. ### What is the main goal of React Fiber?
 
-    The goal of _React Fiber_ is to increase its suitability for areas like animation, layout, and gestures. Its headline feature is **incremental rendering**: the ability to split rendering work into chunks and spread it out over multiple frames.
+    The main goal of _React Fiber_ is to make React better suited for responsive user interfaces, especially for areas like animation, layout, gestures, and high-priority user interactions. Its headline feature is **incremental rendering**, which means React can split rendering work into chunks and spread that work across multiple frames.
 
     Its main goals are:
 
-    *   **Incremental Rendering** – Breaks work into chunks for smoother updates.
-    *   **Interruptible Rendering** – Pauses and resumes rendering to keep the UI responsive.
-    *   **Prioritization** – Handles high-priority updates (e.g. animations) before low-priority ones.
-    *   **Concurrency Support** – Enables working on multiple UI versions simultaneously.
-    *   **Better Error Handling** – Supports component-level error boundaries.
-    *   **Suspense Support** – Allows waiting for async data before rendering.
-    *   **Improved DevTools** – Enables better debugging and performance tracking.
+    *   **Incremental Rendering:** Breaks work into chunks for smoother updates.
+    *   **Interruptible Rendering:** Pauses and resumes rendering to keep the UI responsive.
+    *   **Prioritization:** Handles high-priority updates, such as typing or animations, before lower-priority work.
+    *   **Concurrency Support:** Enables React to work on multiple UI versions and commit the most appropriate one.
+    *   **Better Error Handling:** Supports component-level error boundaries.
+    *   **Suspense Support:** Allows React to wait for asynchronous work before rendering parts of the UI.
+    *   **Improved DevTools:** Enables better debugging and performance tracking.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 21. ### What are controlled components?
 
-    A **controlled component** is a React component that **fully manages the form element's state**(e.g, elements like `<input>`, `<textarea>`, or `<select>`))  using React's internal state mechanism. i.e, The component does not manage its own internal state — instead, React acts as the single source of truth for form data.
+    A **controlled component** is a form element, such as `<input>`, `<textarea>`, or `<select>`, whose value is controlled by React state. The DOM does not act as the source of truth for the form value; React does.
 
-    The controlled components will be implemented using the below steps,
+    Controlled components are usually implemented with these steps:
 
-    1. Initialize the state using `useState` hooks in function components or inside constructor for class components.
+    1. Initialize state using the `useState` hook in function components or in the constructor for class components.
     2. Set the value of the form element to the respective state variable.
-    3. Create an event handler(`onChange`) to handle the user input changes through `useState`'s updater function or `setState` from class component.
-    4. Attach the above event handler to form element's change or click events
+    3. Create an event handler, such as `onChange`, to update state when the user changes the input.
+    4. Attach the event handler to the form element.
 
     **Note:** React re-renders the component every time the input value changes.
 
-   For example, the name input field updates the username using `handleChange` event handler as below,
+   For example, the name input field updates `username` using the `handleChange` event handler:
 
    ```javascript
    import React, { useState } from "react";
@@ -1228,27 +1232,27 @@ class ParentComponent extends React.Component {
      );
    }
    ```
-   In these components, DOM does not hold the actual data instead React does.
+   In controlled components, the DOM does not hold the source value. React state does.
    
    **Benefits:**
 
    *   Easy to implement **validation**, **conditional formatting**, or **live feedback**.
    *   Full control over form data.
-   *   Easier to test and debug because the data is centralized in the component’s state.
+   *   Easier to test and debug because the data is centralized in the component's state.
 
    **[⬆ Back to Top](#table-of-contents)**
 
 22. ### What are uncontrolled components?
-    The **Uncontrolled components** are form elements (like `<input>`, `<textarea>`, or `<select>`) that **manage their own state internally** via the **DOM**, rather than through React state.
+    **Uncontrolled components** are form elements, such as `<input>`, `<textarea>`, or `<select>`, that manage their own state through the DOM rather than through React state.
     You can query the DOM using a `ref` to find its current value when you need it. This is a bit more like traditional HTML.
 
-    The uncontrolled components will be implemented using the below steps,
+    Uncontrolled components are usually implemented with these steps:
 
-    1. Create a ref using `useRef` react hook in function component or `React.createRef()` in class based component.
+    1. Create a ref using the `useRef` hook in a function component or `React.createRef()` in a class component.
     2. Attach this `ref` to the form element.
-    3. The form element value can be accessed directly through `ref` in event handlers or `componentDidMount` for class components
+    3. Access the form element's value directly through the ref in event handlers or lifecycle methods.
 
-    In the below UserProfile component, the `username` input is accessed using ref.
+    In the `UserProfile` component below, the `username` input is accessed using a ref.
 
     ```jsx harmony
     import React, { useRef } from "react";
@@ -1272,14 +1276,14 @@ class ParentComponent extends React.Component {
       );
     }
     ```
-    **Note:** Here, DOM is in charge of the value. React only accesses the value when needed (via `ref`).
+    **Note:** Here, the DOM is in charge of the value. React only accesses the value when needed through the `ref`.
 
     **Benefits:**
-     *   **Less boilerplate** — no need for `useState` and `onChange`.
+     *   **Less boilerplate** because there is no need for `useState` and `onChange`.
      *   Useful for **quick form setups** or when integrating with **non-React code**.
      *   Slightly better **performance** in very large forms (fewer re-renders).
 
-    In most cases, it's recommend to use controlled components to implement forms. In a controlled component, form data is handled by a React component. The alternative is uncontrolled components, where form data is handled by the DOM itself.
+    In most cases, it is recommended to use controlled components for forms. In a controlled component, form data is handled by React. In an uncontrolled component, form data is handled by the DOM itself.
 
     <details><summary><b>See Class</b></summary>
     <p>
@@ -1320,7 +1324,7 @@ class ParentComponent extends React.Component {
     Both `React.createElement` and `React.cloneElement` are used to work with React elements, but they serve different purposes.
 
     #### **createElement:** 
-    Creates a new React element from scratch. JSX elements will be transpiled to `React.createElement()` functions to create React elements which are going to be used for the object representation of UI.
+    Creates a new React element from scratch. JSX is transpiled to `React.createElement()` calls, which create React elements that represent the UI.
     **Syntax:**
     ```jsx
     React.createElement(type, props, ...children)
@@ -1330,7 +1334,7 @@ class ParentComponent extends React.Component {
     React.createElement('button', { className: 'btn' }, 'Click Me')
     ```
     #### **cloneElement:**
-     The `cloneElement` method is used to clone an existing React element and optionally adds or overrides props.
+     The `cloneElement` method clones an existing React element and optionally adds, replaces, or overrides props.
 
     **Syntax:**
     ```jsx
@@ -1346,20 +1350,20 @@ class ParentComponent extends React.Component {
 
 24. ### What is Lifting State Up in React?
 
-    When several components need to share the same changing data then it is recommended to _lift the shared state up_ to their closest common ancestor. That means if two child components share the same data from its parent, then move the state to parent instead of maintaining local state in both of the child components.
+    When several components need to share the same changing data, it is recommended to _lift the shared state up_ to their closest common ancestor. This means the parent component owns the state and passes the data and update handlers down to the child components through props, instead of each child maintaining its own separate copy of the same state.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 25. ### What are Higher-Order Components?
 
-    A _higher-order component_ (_HOC_) is a function that takes a component and returns a new enhanced component with additional props, behavior, or data. It’s a design pattern based on React’s compositional nature, allowing you to reuse logic across multiple components without modifying their internals.
+    A _higher-order component_ (_HOC_) is a function that takes a component and returns a new enhanced component with additional props, behavior, or data. It is a design pattern based on React's compositional nature and is used to reuse logic across multiple components without modifying their internals.
 
-    We consider HOCs **pure components** because they don’t mutate or copy behavior from the original component—they simply **wrap it**, enhance it, and pass through the necessary props. The wrapped component remains decoupled and reusable.
+    HOCs should be implemented as pure functions. They should not mutate the original component; instead, they wrap it, enhance it, and pass through the necessary props. The wrapped component remains decoupled and reusable.
 
     ```javascript
     const EnhancedComponent = higherOrderComponent(WrappedComponent);
     ```
-    Let's take an example of a `withAuth` higher-order component (HOC) in React. This HOC will check if a user is authenticated and either render the wrapped component if authenticated or redirect (or show a message) if not.
+    Let's take an example of a `withAuth` higher-order component in React. This HOC checks whether a user is authenticated and either renders the wrapped component or redirects the user to the login page.
 
     **withAuth HOC Example:**
     ```jsx
@@ -1398,34 +1402,34 @@ class ParentComponent extends React.Component {
     export default withAuth(Dashboard);
     ```
 
-    HOC can be used for many use cases:
+    HOCs can be used for many use cases:
 
-    1. Code reuse, logic and bootstrap abstraction (e.g., fetching data, permissions, theming).
+    1. Code reuse and logic abstraction (e.g., fetching data, permissions, theming).
     2. Render hijacking (e.g., conditional rendering or layout changes).
-    3. State abstraction and manipulation(e.g., handling form logic).
-    4. Props manipulation(e.g., injecting additional props or filtering them).
+    3. State abstraction and manipulation (e.g., handling form logic).
+    4. Props manipulation (e.g., injecting additional props or filtering them).
     
-    Some of the real-world examples of HOCs in react eco-system:
-    1. connect() from react-redux
-    2. withRouter() from React Router v5
-    3. withTranslation() from react-i18next
-    4. withApollo() from Apollo client
-    5. withFormik from Formik library
-    6. withTheme from styled components
+    Some real-world examples of HOCs in the React ecosystem are:
+    1. `connect()` from React Redux
+    2. `withRouter()` from React Router v5
+    3. `withTranslation()` from react-i18next
+    4. `withApollo()` from Apollo Client
+    5. `withFormik()` from Formik
+    6. `withTheme()` from styled-components
 
     **[⬆ Back to Top](#table-of-contents)**
 
 26. ### What is children prop?
-    The `children` prop is a special prop in React used to pass elements between the opening and closing tags of a component. It is commonly used in layout and wrapper componnents. 
+    The `children` prop is a special prop in React used to pass content between the opening and closing tags of a component. It is commonly used in layout and wrapper components.
 
-    A simple usage of children prop looks as below,
+    A simple usage of the `children` prop looks like this:
 
     ```jsx harmony
     function MyDiv({ children }){
         return (
           <div>
             {children}
-          </div>;
+          </div>
         );
     }
 
@@ -1438,9 +1442,9 @@ class ParentComponent extends React.Component {
       );
     }
     ```
-    Here, everything inside `<MyDiv>...</MyDiv>` is passed as children to the custom div component.
+    Here, everything inside `<MyDiv>...</MyDiv>` is passed as `children` to the custom `MyDiv` component.
 
-    The children can be text, JSX elements, fragments, arrays and functions(for advance use case like render props).
+    `children` can be text, JSX elements, fragments, arrays, or functions for advanced use cases such as render props.
 
     <details><summary><b>See Class</b></summary>
     <p>
@@ -1470,13 +1474,13 @@ class ParentComponent extends React.Component {
 
 27. ### How to write comments in React?
 
-    The comments in React/JSX are similar to JavaScript Multiline comments but are wrapped in curly braces.
+    Comments in React JSX are similar to JavaScript comments, but they must be wrapped in curly braces.
 
     **Single-line comments:**
 
     ```jsx harmony
     <div>
-      {/* Single-line comments(In vanilla JavaScript, the single-line comments are represented by double slash(//)) */}
+      {/* Single-line comment */}
       {`Welcome ${user}, let's play React`}
     </div>
     ```
@@ -1497,16 +1501,17 @@ class ParentComponent extends React.Component {
 
 28. ### What is reconciliation?
 
-    `Reconciliation` is the process through which React updates the Browser DOM and makes React work faster. React use a `diffing algorithm` so that component updates are predictable and faster. React would first calculate the difference between the `real DOM` and the copy of DOM `(Virtual DOM)` when there's an update of components.
-    React stores a copy of Browser DOM which is called `Virtual DOM`. When we make changes or add data, React creates a new Virtual DOM and compares it with the previous one. This comparison is done by `Diffing Algorithm`.
-    Now React compares the Virtual DOM with Real DOM. It finds out the changed nodes and updates only the changed nodes in Real DOM leaving the rest nodes as it is. This process is called _Reconciliation_.
+    `Reconciliation` is the process React uses to update the browser DOM when a component's state or props change. React creates a new Virtual DOM tree, compares it with the previous tree using its diffing algorithm, and determines the smallest set of changes needed.
+
+    After that comparison, React updates only the parts of the Real DOM that actually changed instead of recreating the whole DOM tree. This makes UI updates more predictable and efficient.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 29. ### Does the lazy function support named exports?
 
-    No, currently `React.lazy` function supports default exports only. If you would like to import modules which are named exports, you can create an intermediate module that reexports it as the default. It also ensures that tree shaking keeps working and don’t pull unused components.
-    Let's take a component file which exports multiple named components,
+    No. `React.lazy` supports default exports only. If you want to lazy-load a named export, create an intermediate module that re-exports that component as the default export. This also helps tree shaking continue to work correctly so unused components are not pulled into the bundle.
+
+    Let's take a component file that exports multiple named components:
 
     ```javascript
     // MoreComponents.js
@@ -1514,14 +1519,14 @@ class ParentComponent extends React.Component {
     export const UnusedComponent = /* ... */;
     ```
 
-    and reexport `MoreComponents.js` components in an intermediate file `IntermediateComponent.js`
+    Re-export the required component as the default export from an intermediate file:
 
     ```javascript
     // IntermediateComponent.js
     export { SomeComponent as default } from "./MoreComponents.js";
     ```
 
-    Now you can import the module using lazy function as below,
+    Now you can import the module using `lazy`:
 
     ```javascript
     import React, { lazy } from "react";
@@ -1532,11 +1537,11 @@ class ParentComponent extends React.Component {
 
 30. ### Why React uses `className` over `class` attribute?
 
-    React uses **className** instead of **class** because of a JavaScript naming conflict with the class keyword.
+    React uses **className** instead of **class** because JSX maps closely to DOM property names. In the browser DOM API, the property for an element's CSS class is `className`.
 
-    1. `class` is a reserved keyword in JavaScript
-        In JavaScript, class is used to define ES6 classes:
-      
+    1. `class` is a reserved keyword in JavaScript.
+        In JavaScript, `class` is used to define ES6 classes:
+
         ```js
         class Person {
           constructor(name) {
@@ -1544,43 +1549,33 @@ class ParentComponent extends React.Component {
           }
         }
         ```
-        If you try to use class as a variable or property name, it will throw a syntax error. Since JSX is just JavaScript with XML-like syntax, using class directly in JSX would break the parser.
 
-    2. JSX Is JavaScript
-    
+    2. JSX is JavaScript.
         When you write JSX like this:
-        ```jsx
-        <div class="btn">Click</div>
-        ```
-        It will be compiled to:
-        ```jsx
-        React.createElement('div', { class: 'btn' }, 'Click');
-        ```
-        But `class` is invalid in this object literal context (since it clashes with the JS keyword), hence React instead uses className.
         ```jsx
         <div className="btn">Click</div>
         ```
-        which compiles to:
+        It compiles to:
         ```jsx
         React.createElement('div', { className: 'btn' }, 'Click');
         ```
-        React then translates `className` to` class` in the final HTML DOM.
+        React then applies this as the `class` attribute in the final HTML DOM.
 
-    3. Aligns with DOM APIs
+    3. It aligns with DOM APIs.
         In vanilla JavaScript, you interact with element classes using:
         ```js
         element.className = 'my-class';
         ```
-        React follows this convention, staying consistent with the DOM API's property name rather than HTML’s attribute.
+        React follows this convention, staying consistent with the DOM API's property name rather than HTML's attribute name.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 31. ### What are fragments?
 
-    It's a common pattern or practice in React for a component to return multiple elements. _Fragments_ let you group a list of children without adding extra nodes to the DOM.
-    You need to use either `<Fragment>` or a shorter syntax having empty tag (`<></>`).
+    It is common in React for a component to return multiple elements. _Fragments_ let you group a list of children without adding extra nodes to the DOM.
+    You can use either `<Fragment>` or the shorter empty tag syntax (`<></>`).
 
-    Below is the example of how to use fragment inside _Story_ component.
+    Below is an example of how to use a fragment inside a _Story_ component.
 
     ```jsx harmony
     function Story({ title, description, date }) {
@@ -1594,7 +1589,7 @@ class ParentComponent extends React.Component {
     }
     ```
 
-    It is also possible to render list of fragments inside a loop with the mandatory **key** attribute supplied.
+    It is also possible to render a list of fragments inside a loop by supplying the required **key** attribute.
 
     ```jsx harmony
     function StoryBook() {
@@ -1608,7 +1603,7 @@ class ParentComponent extends React.Component {
     }
     ```
 
-    Usually, you don't need to use `<Fragment>` until there is a need of _key_ attribute. The usage of shorter syntax looks like below.
+    Usually, you can use the short syntax unless you need to pass a `key` to the fragment. The shorter syntax looks like this:
 
     ```jsx harmony
     function Story({ title, description, date }) {
@@ -1626,17 +1621,17 @@ class ParentComponent extends React.Component {
 
 32. ### Why fragments are better than container divs?
 
-    Below are the list of reasons to prefer fragments over container DOM elements,
+    Below are the reasons to prefer fragments over container DOM elements:
 
     1. Fragments are a bit faster and use less memory by not creating an extra DOM node. This only has a real benefit on very large and deep trees.
-    2. Some CSS mechanisms like _Flexbox_ and _CSS Grid_ have a special parent-child relationships, and adding divs in the middle makes it hard to keep the desired layout.
+    2. Some CSS mechanisms like _Flexbox_ and _CSS Grid_ depend on specific parent-child relationships, and adding extra divs can make it harder to keep the desired layout.
     3. The DOM Inspector is less cluttered.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 33. ### What are portals in React?
 
-    A Portal is a React feature that enables rendering children into a DOM node that exists outside the parent component's DOM hierarchy, while still preserving the React component hierarchy. Portals help avoid CSS stacking issues—for example, elements with position: fixed may not behave as expected inside a parent with transform. Portals solve this by rendering content (like modals or tooltips) outside such constrained DOM contexts.
+    A portal is a React feature that lets you render children into a DOM node that exists outside the parent component's DOM hierarchy, while still preserving the React component hierarchy. Portals are useful for UI such as modals, tooltips, and dropdowns that need to escape parent layout or stacking constraints.
 
     ```javascript
     ReactDOM.createPortal(child, container);
@@ -1646,52 +1641,55 @@ class ParentComponent extends React.Component {
 
     Even though the content renders elsewhere in the DOM, it still behaves like a normal child in React. It has access to context, state, and event handling.
 
-    **Example:- Modal:**
+    **Example: Modal**
     ```jsx
     function Modal({ children }) {
       return ReactDOM.createPortal(
         <div className="modal">{children}</div>,
-        document.body)
+        document.body
       );
     }
     ```
-    The above code will render the modal content into the body element in the HTML, not inside the component's usual location.
+    The above code renders the modal content into the document body, not inside the component's usual DOM location.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 34. ### What are stateless components?
 
-    If the behaviour of a component is independent of its state then it can be a stateless component. You can use either a function or a class for creating stateless components. But unless you need to use a lifecycle hook in your components, you should go for function components. There are a lot of benefits if you decide to use function components here; they are easy to write, understand, and test, a little faster, and you can avoid the `this` keyword altogether.
+    If the behavior of a component is independent of its own state, it can be called a stateless component. Stateless components usually receive data through props and render UI based on those props.
+
+    Function components are the preferred way to create stateless components because they are simple to write, easy to test, and avoid the `this` keyword.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 35. ### What are stateful components?
 
-    If the behaviour of a component is dependent on the _state_ of the component then it can be termed as stateful component. These _stateful components_ are either function components with hooks or _class components_.
+    If a component's behavior depends on its own _state_, it can be called a stateful component. Stateful components can be function components that use hooks or class components that use `this.state`.
 
-    Let's take an example of function stateful component which update the state based on click event,
+    Let's take an example of a function component that updates state when a button is clicked:
 
     ```javascript
-    import React, {useState} from 'react';
+    import React, { useState } from 'react';
 
-    const App = (props) => {
-    const [count, setCount] = useState(0);
-    handleIncrement() {
-      setCount(count+1);
-    }
+    const App = () => {
+      const [count, setCount] = useState(0);
 
-    return (
-      <>
-        <button onClick={handleIncrement}>Increment</button>
-        <span>Counter: {count}</span>
-      </>
-      )
-    }
+      const handleIncrement = () => {
+        setCount((count) => count + 1);
+      };
+
+      return (
+        <>
+          <button onClick={handleIncrement}>Increment</button>
+          <span>Counter: {count}</span>
+        </>
+      );
+    };
     ```
 
     <details><summary><b>See Class</b></summary>
     <p>
-    The equivalent class stateful component with a state that gets initialized in the `constructor`.
+    The equivalent class component initializes state in the `constructor`.
 
     ```jsx harmony
     class App extends Component {
@@ -1700,15 +1698,17 @@ class ParentComponent extends React.Component {
         this.state = { count: 0 };
       }
 
-      handleIncrement() {
-        setState({ count: this.state.count + 1 });
-      }
+      handleIncrement = () => {
+        this.setState((state) => ({ count: state.count + 1 }));
+      };
 
       render() {
-        <>
-          <button onClick={() => this.handleIncrement}>Increment</button>
-          <span>Count: {count}</span>
-        </>;
+        return (
+          <>
+            <button onClick={this.handleIncrement}>Increment</button>
+            <span>Count: {this.state.count}</span>
+          </>
+        );
       }
     }
     ```
