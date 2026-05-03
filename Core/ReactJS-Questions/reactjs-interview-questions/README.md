@@ -2122,19 +2122,26 @@ class ParentComponent extends React.Component {
 
     **[⬆ Back to Top](#table-of-contents)**
 
-51. ### Do Hooks replace render props and higher order components?
+51. ### Do Hooks replace render props and higher-order components?
 
-    Hooks do not completely replace render props or higher-order components, but they often provide a simpler way to share stateful logic between components. Hooks can reduce wrapper components and nesting, but render props and HOCs are still valid patterns, especially in older codebases and some library APIs.
+    **Hooks** primarily replace the need for render props and HOCs when it comes to **sharing stateful logic**. They allow you to reuse logic without changing your component hierarchy or adding "wrapper" components.
+
+    However, they do not completely replace these patterns because:
+    1.  **Render Props:** Are still ideal for **UI composition** and "slot" patterns where a component delegates part of its rendering to the consumer.
+    2.  **Higher-Order Components (HOCs):** Remain useful for logic that needs to be applied at the component definition level or when integrating with certain legacy libraries.
+
+    In modern React, **Hooks are the first choice** for logic sharing. Render props and HOCs should be reserved for specific UI patterns where Hooks aren't the best fit.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 52. ### What is a switching component?
 
-    A _switching component_ is a component that renders one of many components based on a prop or state value. You can use an object to map values to components.
+    A **switching component** is a pattern where a component renders one of several possible components based on a prop or state value. It is essentially a dynamic form of conditional rendering.
 
-    For example, a switching component can display different pages based on the `page` prop:
+    Using an **object mapping** is the most readable and maintainable way to implement this, as it avoids complex `if-else` or `switch` blocks inside the JSX.
 
-    ```jsx harmony
+    **Example:**
+    ```jsx
     import HomePage from "./HomePage";
     import AboutPage from "./AboutPage";
     import ServicesPage from "./ServicesPage";
@@ -2147,15 +2154,11 @@ class ParentComponent extends React.Component {
       contact: ContactPage,
     };
 
-    const Page = (props) => {
-      const Handler = PAGES[props.page] || ContactPage;
+    const Page = ({ page, ...props }) => {
+      // Dynamically select the handler/component
+      const Component = PAGES[page] || ContactPage;
 
-      return <Handler {...props} />;
-    };
-
-    // The keys of the PAGES object can be used in the prop types to catch dev-time errors.
-    Page.propTypes = {
-      page: PropTypes.oneOf(Object.keys(PAGES)).isRequired,
+      return <Component {...props} />;
     };
     ```
 
@@ -2163,433 +2166,325 @@ class ParentComponent extends React.Component {
 
 53. ### What are React Mixins?
 
-    _Mixins_ were an old React pattern for sharing common functionality between components created with `React.createClass`. Mixins **should not be used** in modern React. They can usually be replaced with hooks, higher-order components, or render props.
+    **Mixins** were an early React feature used to share common functionality between components created with `React.createClass`. They are now **deprecated** and considered an anti-pattern in modern React.
 
-    One commonly used mixin was `PureRenderMixin`, which helped prevent unnecessary re-renders when props and state were shallowly equal to the previous props and state:
+    ### Why were they deprecated?
+    1.  **Implicit Dependencies:** It was hard to trace where a method or piece of state came from.
+    2.  **Name Clashes:** Multiple mixins could have conflicting property or method names.
+    3.  **Fragility:** Modifying a mixin could break multiple components in unexpected ways.
 
-    ```javascript
-    const PureRenderMixin = require("react-addons-pure-render-mixin");
-
-    const Button = React.createClass({
-      mixins: [PureRenderMixin],
-      // ...
-    });
-    ```
-
-     <!-- TODO: mixins are deprecated -->
+    **Modern Solution:** Use **Custom Hooks** for stateful logic sharing, or **HOCs/Render Props** for UI-related patterns.
 
     **[⬆ Back to Top](#table-of-contents)**
 
-54. ### What are the Pointer Events supported in React?
+54. ### What are the pointer events supported in React?
 
-    _Pointer Events_ provide a unified way to handle input from a mouse, touch screen, pen, or other pointing device. These events work in browsers that support the _Pointer Events_ specification.
+    **Pointer Events** provide a unified way to handle inputs from various pointing devices (mouse, touch, pen). React supports the following pointer events:
 
-    The following event types are available in _React DOM_:
+    - `onPointerDown`
+    - `onPointerMove`
+    - `onPointerUp`
+    - `onPointerCancel`
+    - `onGotPointerCapture`
+    - `onLostPointerCapture`
+    - `onPointerEnter`
+    - `onPointerLeave`
+    - `onPointerOver`
+    - `onPointerOut`
 
-    1. `onPointerDown`
-    2. `onPointerMove`
-    3. `onPointerUp`
-    4. `onPointerCancel`
-    5. `onGotPointerCapture`
-    6. `onLostPointerCapture`
-    7. `onPointerEnter`
-    8. `onPointerLeave`
-    9. `onPointerOver`
-    10. `onPointerOut`
+    These events allow developers to build interfaces that are naturally responsive to both mouse and touch interactions without writing separate logic for each.
 
     **[⬆ Back to Top](#table-of-contents)**
 
-55. ### Why should component names start with capital letter?
+55. ### Why should component names start with a capital letter?
 
-    If you render a custom component using JSX, its name must start with a capital letter. Lowercase tag names are treated as built-in HTML or SVG elements.
+    React requires component names to start with a **capital letter** so it can distinguish between standard HTML elements and custom components during the JSX transpilation process.
 
-    ```jsx harmony
-    function SomeComponent() {
-      // Code goes here
-    }
-    ```
+    - **Lowercase names** (e.g., `<div />`) are treated as built-in HTML or SVG tags and are passed as **strings** to `React.createElement('div')`.
+    - **Capitalized names** (e.g., `<MyComponent />`) are treated as custom components and are passed as **variables/identifiers** (e.g., `React.createElement(MyComponent)`).
 
-    You can define a component with a lowercase function name, but it should be imported or assigned to a capitalized identifier before being used in JSX:
-
-    ```jsx harmony
-    function myComponent() {
-      return <div />;
+    **Example:**
+    ```jsx
+    // Correct - treated as a custom component
+    function Welcome() {
+      return <h1>Hello!</h1>;
     }
 
-    export default myComponent;
-    ```
-
-    When imported in another file, use a capitalized name:
-
-    ```jsx harmony
-    import MyComponent from "./myComponent";
+    // Incorrect - would be treated as an HTML tag <welcome> (which doesn't exist)
+    function welcome() {
+      return <h1>Hello!</h1>;
+    }
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 56. ### Are custom DOM attributes supported in React v16?
 
-    Yes. In older React versions, React ignored unknown DOM attributes. If you wrote JSX with an attribute that React did not recognize, React skipped it.
+    Yes. Starting with **React v16**, any unknown or custom attributes are passed through directly to the DOM.
 
-    For example, let's take a look at the below attribute:
+    In previous versions (v15 and below), React would strip out any attributes that were not part of the standard HTML spec. This change makes it much easier to integrate with third-party libraries, use browser-specific non-standard attributes, or use data/aria attributes.
 
-    ```jsx harmony
-    <div mycustomattribute={"something"} />
+    **Example:**
+    ```jsx
+    // Results in <div my-custom-attr="value"></div> in the DOM
+    <div my-custom-attr="value" />
     ```
-
-    Would render an empty div to the DOM with React v15:
-
-    ```html
-    <div />
-    ```
-
-    In React v16 and later, unknown attributes are passed through to the DOM:
-
-    ```html
-    <div mycustomattribute="something" />
-    ```
-
-    This is useful for supplying browser-specific non-standard attributes, trying new DOM APIs, and integrating with opinionated third-party libraries.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 57. ### How to loop inside JSX?
 
-    You can use `Array.prototype.map` with ES6 _arrow function_ syntax.
+    You must use **JavaScript expressions** that return an array of elements. The standard approach is using **`Array.prototype.map()`**.
 
-    For example, the `items` array of objects is mapped into an array of components:
-
-    ```jsx harmony
-    <tbody>
+    **Example:**
+    ```jsx
+    <ul>
       {items.map((item) => (
-        <SomeComponent key={item.id} name={item.name} />
+        <li key={item.id}>{item.text}</li>
       ))}
-    </tbody>
+    </ul>
     ```
 
-    You cannot place a `for` loop directly inside JSX because `for` is a statement, not an expression:
+    **Note:** You cannot use a `for` loop directly inside JSX because it is a **statement**, not an expression. If you need a `for` loop, you must run it outside the `return` block and store the results in an array.
 
-    ```jsx harmony
-    <tbody>
-      for (let i = 0; i < items.length; i++) {
-        <SomeComponent key={items[i].id} name={items[i].name} />
-      }
-    </tbody>
+    ```jsx
+    const listItems = [];
+    for (let i = 0; i < items.length; i++) {
+      listItems.push(<li key={items[i].id}>{items[i].text}</li>);
+    }
+
+    return <ul>{listItems}</ul>;
     ```
-
-    JSX tags are transpiled into function calls, and JavaScript statements cannot be used where an expression is expected. If you need a `for` loop, build the array before the `return` statement and render that array inside JSX.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 58. ### How do you access props in attribute quotes?
 
-    React JSX does not support string interpolation inside quoted attribute values. The below example will not work:
+    JSX does not support string interpolation (like `${}`) inside standard quotes for attributes. Instead, you must use **curly braces `{}`** to pass a JavaScript expression as the attribute value.
 
-    ```jsx harmony
-    <img className="image" src="images/{this.props.image}" />
+    **Incorrect:**
+    ```jsx
+    <img src="images/${props.imageName}" />
     ```
 
-    But you can put any JS expression inside curly braces as the entire attribute value. So the below expression works:
-
-    ```jsx harmony
-    <img className="image" src={"images/" + this.props.image} />
+    **Correct (Template String):**
+    ```jsx
+    <img src={`images/${props.imageName}`} />
     ```
 
-    Using _template strings_ will also work:
-
-    ```jsx harmony
-    <img className="image" src={`images/${this.props.image}`} />
+    **Correct (Concatenation):**
+    ```jsx
+    <img src={"images/" + props.imageName} />
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
-59. ### What is React proptype array with shape?
+59. ### What is a React PropType array with shape?
 
-    If you want to pass an array of objects to a component with a particular shape, use `PropTypes.shape()` as an argument to `PropTypes.arrayOf()`.
+    If you want to validate that a prop is an array of objects where each object follows a specific structure, you combine **`PropTypes.arrayOf`** with **`PropTypes.shape`**.
 
+    **Example:**
     ```javascript
     import PropTypes from "prop-types";
 
-    ReactComponent.propTypes = {
-      arrayWithShape: PropTypes.arrayOf(
+    MyComponent.propTypes = {
+      userList: PropTypes.arrayOf(
         PropTypes.shape({
-          color: PropTypes.string.isRequired,
-          fontSize: PropTypes.number.isRequired,
+          id: PropTypes.number.isRequired,
+          name: PropTypes.string.isRequired,
+          email: PropTypes.string,
         })
       ).isRequired,
     };
     ```
 
+    This ensures that the array contains only objects with the specified keys and types.
+
     **[⬆ Back to Top](#table-of-contents)**
 
 60. ### How to conditionally apply class attributes?
 
-    You should not use curly braces inside quotes because the expression will be treated as a plain string.
+    In React, conditional classes are applied by passing a JavaScript expression to the `className` prop using curly braces `{}`.
 
-    ```jsx harmony
-    <div className="btn-panel {this.props.visible ? 'show' : 'hidden'}">
-    ```
+    ### Common Patterns:
 
-    Instead, move the curly braces outside the quotes and include spaces between class names:
+    1.  **Template Literals (Cleanest):**
+        ```jsx
+        <div className={`btn ${isActive ? 'btn-active' : 'btn-idle'}`}>
+          Submit
+        </div>
+        ```
 
-    ```jsx harmony
-    <div className={'btn-panel ' + (this.props.visible ? 'show' : 'hidden')}>
-    ```
+    2.  **Logical AND (For single conditions):**
+        ```jsx
+        <div className={`btn ${error && 'btn-error'}`}>
+          Save
+        </div>
+        ```
 
-    _Template strings_ will also work:
-
-    ```jsx harmony
-    <div className={`btn-panel ${this.props.visible ? 'show' : 'hidden'}`}>
-    ```
+    3.  **Using `clsx` or `classnames` (Industry Standard):**
+        For many conditional classes, libraries like `clsx` keep the code readable.
+        ```javascript
+        import clsx from 'clsx';
+        <div className={clsx('btn', isActive && 'active', error && 'error')}>...</div>
+        ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 61. ### What is the difference between React and ReactDOM?
 
-    The `react` package contains APIs for defining components and creating React elements, such as `createElement`, `Component`, hooks, and `Children` helpers. These APIs are renderer-independent and can be used across React environments.
+    **React** is a JavaScript library for building user interfaces. It contains the core logic for components, state, hooks, and reconciliation. It is **platform-independent**, meaning the same core React logic can be used for web, mobile (React Native), or even VR.
 
-    The `react-dom` package contains browser DOM-specific APIs, such as `createRoot`, `hydrateRoot`, and `createPortal`. The `react-dom/server` package provides server rendering APIs such as `renderToString()` and `renderToStaticMarkup()`.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-62. ### Why ReactDOM is separated from React?
-
-    The React team worked on extracting all DOM-related features into a separate library called _ReactDOM_. React v0.14 is the first release in which the libraries are split. By looking at some of the packages, `react-native`, `react-art`, `react-canvas`, and `react-three`, it has become clear that the beauty and essence of React has nothing to do with browsers or the DOM.
-
-    To support more rendering environments, the React team split the main React package into `react` and renderer-specific packages such as `react-dom`. This makes it easier to share component logic between React DOM, React Native, and other renderers.
+    **ReactDOM** is the **renderer** specifically built for the browser. It provides the glue between React's component logic and the web's DOM. It handles things like rendering elements to the page, hydrating server-rendered HTML, and managing portals.
 
     **[⬆ Back to Top](#table-of-contents)**
 
-63. ### How to use React label element?
+62. ### Why was ReactDOM separated from React?
 
-    In JSX, use `htmlFor` instead of the HTML `for` attribute on a `<label>`.
+    The React team split the library (starting in v0.14) to make the core logic **reusable across different environments**. 
 
-    ```jsx harmony
-    <label for={'user'}>{'User'}</label>
-    <input type={'text'} id={'user'} />
+    By separating the core (React) from the renderer (ReactDOM), developers can use the same component-based model for various platforms:
+    - **ReactDOM:** For web browsers.
+    - **React Native:** For native iOS and Android apps.
+    - **React VR:** For virtual reality experiences.
+    - **React-ART:** For drawing vector graphics.
+
+    This separation ensures that the essence of React (components, props, state) remains pure and agnostic of the underlying rendering technology.
+
+    **[⬆ Back to Top](#table-of-contents)**
+
+63. ### How to use the React label element?
+
+    In JSX, you must use **`htmlFor`** instead of the standard HTML `for` attribute. This is because `for` is a reserved keyword in JavaScript.
+
+    **Example:**
+    ```jsx
+    <label htmlFor="user-input">Username:</label>
+    <input type="text" id="user-input" />
     ```
 
-    React maps `htmlFor` to the `for` attribute in the final HTML.
-
-    ```jsx harmony
-    <label htmlFor={'user'}>{'User'}</label>
-    <input type={'text'} id={'user'} />
-    ```
+    When React renders this to the DOM, it automatically converts `htmlFor` back into the standard `for` attribute.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 64. ### How to combine multiple inline style objects?
 
-    You can use the _spread operator_ in React DOM:
+    You can combine multiple style objects using the **spread operator** (`...`).
 
-    ```jsx harmony
-    <button style={{ ...styles.panel.button, ...styles.panel.submitButton }}>
-      {"Submit"}
-    </button>
+    **React DOM (Web):**
+    ```jsx
+    const combinedStyle = { ...styles.base, ...styles.overrides };
+    <button style={combinedStyle}>Submit</button>
     ```
 
-    In React Native, you can use array notation:
-
-    ```jsx harmony
-    <button style={[styles.panel.button, styles.panel.submitButton]}>
-      {"Submit"}
-    </button>
+    **React Native:**
+    React Native specifically supports an **array notation** for combining styles, which is often cleaner for conditional styling:
+    ```jsx
+    <View style={[styles.base, styles.active && styles.activeBorder]} />
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 65. ### How to re-render the view when the browser is resized?
 
-    You can use the `useState` hook to store the width and height, and the `useEffect` hook to add and remove the `resize` event listener. The empty dependency array (`[]`) makes the effect run once after mount and clean up on unmount.
+    You can use the `useState` hook to store dimensions and the `useEffect` hook to attach a listener to the `window` resize event.
 
-    ```javascript
-    import React, { useState, useEffect } from "react";
+    **Example:**
+    ```jsx
+    import { useState, useEffect } from "react";
+
     function WindowDimensions() {
-      const getDimensions = () => ({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-
-      const [dimensions, setDimensions] = useState(getDimensions);
+      const [width, setWidth] = useState(window.innerWidth);
 
       useEffect(() => {
-        function handleResize() {
-          setDimensions(getDimensions());
-        }
+        const handleResize = () => setWidth(window.innerWidth);
         window.addEventListener("resize", handleResize);
+
+        // Cleanup the listener on unmount
         return () => window.removeEventListener("resize", handleResize);
       }, []);
 
-      return (
-        <span>
-          {dimensions.width} x {dimensions.height}
-        </span>
-      );
+      return <span>Window Width: {width}</span>;
     }
     ```
 
-    <details>
-    <summary><h4>Using Class Component</h4></summary>
+    **Performance Tip:** For simple layout changes (e.g., hiding a sidebar), prefer **CSS Media Queries** over JavaScript-based re-rendering. JS resize listeners can cause "layout thrashing" and performance issues if not throttled or debounced.
 
-    You can listen to the `resize` event in `componentDidMount()` and update the dimensions (`width` and `height`). You should remove the listener in `componentWillUnmount()`.
-
-    ```javascript
-    class WindowDimensions extends React.Component {
-      state = {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      };
-
-      componentDidMount() {
-        window.addEventListener("resize", this.updateDimensions);
-      }
-
-      componentWillUnmount() {
-        window.removeEventListener("resize", this.updateDimensions);
-      }
-
-      updateDimensions = () => {
-        this.setState({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-      };
-
-      render() {
-        return (
-          <span>
-            {this.state.width} x {this.state.height}
-          </span>
-        );
-      }
-    }
-    ```
-
-    </details>
-
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 66. ### How to pretty print JSON with React?
 
-    You can use the `<pre>` tag so the formatting from `JSON.stringify()` is preserved:
+    You can use the `<pre>` tag to preserve whitespace, combined with `JSON.stringify()`'s formatting arguments.
 
-    ```jsx harmony
-    const data = { name: "John", age: 42 };
-
-    function User() {
-      return <pre>{JSON.stringify(data, null, 2)}</pre>;
-    }
-
-    const container = createRoot(document.getElementById("container"));
-
-    container.render(<User />);
+    **Example:**
+    ```jsx
+    const UserData = ({ data }) => {
+      return (
+        <pre>
+          {JSON.stringify(data, null, 2)}
+        </pre>
+      );
+    };
     ```
 
-      <details><summary><b>See Class</b></summary>
-      <p>
+    In `JSON.stringify(data, replacer, space)`, the `2` represents the number of spaces used for indentation, making the output human-readable.
 
-    ```jsx harmony
-    const data = { name: "John", age: 42 };
-
-    class User extends React.Component {
-      render() {
-        return <pre>{JSON.stringify(data, null, 2)}</pre>;
-      }
-    }
-
-    const container = createRoot(document.getElementById("container"));
-
-    container.render(<User />);
-    ```
-
-      </p>
-      </details>
-
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 67. ### Why can't you update props in React?
 
-    React props are _immutable_ (read-only) from the receiving component's perspective. Data flows from parent to child, so a child component should not modify the props it receives.
+    React follows a **Unidirectional Data Flow** (one-way data binding). Props are **read-only** (immutable) to the component receiving them. 
 
-    If a child needs to request a change, the parent should pass a callback prop. The child calls that callback, and the parent updates its own state.
+    ### Key Reasons:
+    1.  **Predictability:** React components should act like **pure functions**—they should not modify their inputs. This ensures that for the same props, the output remains consistent.
+    2.  **State Management:** If a child component could modify its props, the parent component (the source of truth) would lose track of its own state, leading to hard-to-debug "side effects."
+    3.  **Data Flow:** Changes should always be requested by calling a **callback function** passed down by the parent.
 
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 68. ### How to focus an input element on page load?
 
-    You can use `useRef` to access the input element and `useEffect` to focus it after the component mounts.
+    The simplest way is using the HTML **`autoFocus`** attribute. For more programmatic control, you can use **`useRef`** and **`useEffect`**.
 
-    ```jsx harmony
-    import React, { useEffect, useRef } from "react";
+    **Example (Programmatic):**
+    ```jsx
+    import { useEffect, useRef } from "react";
 
     const App = () => {
-      const inputElRef = useRef(null);
+      const inputRef = useRef(null);
 
       useEffect(() => {
-        inputElRef.current.focus();
+        inputRef.current?.focus();
       }, []);
 
-      return (
-        <div>
-          <input defaultValue={"Won't focus"} />
-          <input ref={inputElRef} defaultValue={"Will focus"} />
-        </div>
-      );
+      return <input ref={inputRef} placeholder="Focused on load" />;
     };
-
-    const root = ReactDOM.createRoot(document.getElementById("app"));
-    root.render(<App />);
     ```
 
-      <details><summary><b>See Class</b></summary>
-      <p>
-      You can do it by creating a _ref_ for the `input` element and focusing it in `componentDidMount()`:
+    **Note:** When using `autoFocus`, React will focus the element immediately after it mounts. It's often preferred for simplicity unless you need to delay the focus or apply it conditionally.
 
-    ```jsx harmony
-    class App extends React.Component {
-      componentDidMount() {
-        this.nameInput.focus();
-      }
-
-      render() {
-        return (
-          <div>
-            <input defaultValue={"Won't focus"} />
-            <input
-              ref={(input) => (this.nameInput = input)}
-              defaultValue={"Will focus"}
-            />
-          </div>
-        );
-      }
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById("app"));
-    root.render(<App />);
-    ```
-
-      </p>
-      </details>
-
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 69. ### How can we find the version of React at runtime in the browser?
 
-    You can use `React.version` to get the React version at runtime.
+    You can access the version of the React library currently in use via the **`React.version`** property.
 
-    ```jsx harmony
-    const REACT_VERSION = React.version;
+    **Example:**
+    ```jsx
+    import React from 'react';
 
-    const root = ReactDOM.createRoot(document.getElementById("app"));
-    root.render(<div>{`React version: ${REACT_VERSION}`}</div>);
+    console.log(React.version); // e.g., "18.2.0"
+
+    const App = () => <div>React Version: {React.version}</div>;
     ```
 
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 70. ### How to add Google Analytics for React Router?
 
-    With React Router, you can record a page view whenever the location changes. In modern React Router, this is commonly done with `useLocation` and an effect:
+    In a Single Page Application (SPA), you need to manually track page views when the route changes. You can achieve this by listening to location changes using the **`useLocation`** hook.
 
+    **Example (GA4 with gtag):**
     ```jsx
     import { useEffect } from "react";
     import { useLocation } from "react-router-dom";
@@ -2598,6 +2493,7 @@ class ParentComponent extends React.Component {
       const location = useLocation();
 
       useEffect(() => {
+        // Track page view
         window.gtag("event", "page_view", {
           page_path: location.pathname + location.search,
         });
@@ -2605,189 +2501,154 @@ class ParentComponent extends React.Component {
 
       return null;
     }
+
+    // Usage: Place <AnalyticsTracker /> inside your <Router>
     ```
 
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 71. ### How do you apply vendor prefixes to inline styles in React?
 
-    React _does not_ apply _vendor prefixes_ automatically. You need to add vendor prefixes manually.
+    React **does not** automatically add vendor prefixes to inline styles. You must add them manually using camelCase for the property names.
 
-    ```jsx harmony
-    <div
-      style={{
-        transform: "rotate(90deg)",
-        WebkitTransform: "rotate(90deg)", // note the capital 'W' here
-        msTransform: "rotate(90deg)", // 'ms' is the only lowercase vendor prefix
-      }}
-    />
+    **Example:**
+    ```jsx
+    <div style={{
+      transform: 'rotate(90deg)',
+      WebkitTransform: 'rotate(90deg)', // Note the capital 'W'
+      msTransform: 'rotate(90deg)'     // 'ms' is the only lowercase prefix
+    }} />
     ```
 
-**[⬆ Back to Top](#table-of-contents)**
+    **Tip:** In modern development, it is recommended to use **CSS modules** or **CSS-in-JS** libraries (like Styled Components or Emotion) which handle autoprefixing automatically using tools like Autoprefixer.
 
-72. ### How to import and export components using React and ES6?
+    **[⬆ Back to Top](#table-of-contents)**
 
-    You can export a component as the default export and import it without braces:
+72. ### How to import and export components using ES6?
 
-    ```jsx harmony
-    import User from "user";
+    You can use either **Default Exports** or **Named Exports** to share components between files.
 
-    export default function MyProfile() {
-      return <User type="customer">...</User>;
-    }
-    ```
+    1.  **Default Export:**
+        Useful for a single main component in a file.
+        ```jsx
+        // Export
+        export default function UserProfile() { ... }
+        // Import
+        import UserProfile from './UserProfile';
+        ```
 
-    <details><summary><b>See Class</b></summary>
-    <p>
-     ```jsx harmony
-     import React from "react";
-     import User from "user";
+    2.  **Named Export:**
+        Useful for exporting multiple components or utilities from a single file.
+        ```jsx
+        // Export
+        export const Button = () => { ... }
+        export const Input = () => { ... }
+        // Import
+        import { Button, Input } from './Components';
+        ```
 
-     export default class MyProfile extends React.Component {
-       render() {
-         return <User type="customer">...</User>;
-       }
-     }
-
-    ```
-    </p>
-    </details>
-
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 73. ### What are the exceptions on React component naming?
 
-    Component names should usually start with an uppercase letter. The main exception is when the component is accessed as a property, such as `obj.component`. JSX treats member expressions as component references even if the final property name starts with a lowercase letter.
+    The general rule is that React components must start with an **uppercase letter**. However, there is one main exception: **Property Access (Member Expressions)**.
 
-    For example, the tag below compiles to a valid component:
+    If a component is accessed as a property of an object (e.g., `MyComponents.button`), JSX treats it as a component reference even if the property itself starts with a lowercase letter.
 
-    ```jsx harmony
+    **Example:**
+    ```jsx
+    const UI = {
+      button: (props) => <button {...props} />
+    };
+
     function App() {
-      return <obj.component />; // React.createElement(obj.component)
+      // This is valid even though 'button' is lowercase
+      return <UI.button>Click Me</UI.button>;
     }
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
-74. ### Is it possible to use async/await in plain React?
+74. ### Is it possible to use async/await in React?
 
-    Yes, you can use `async/await` in React as long as your JavaScript environment supports ES2017 or your build tool transpiles it. Modern React setups such as Create React App, Vite, Next.js, and Remix support `async/await` out of the box.
+    Yes. You can use `async/await` within React components, typically inside **`useEffect`** or event handlers. However, since `useEffect` cannot directly return a Promise, you must define the async function inside the effect and call it.
 
-    **Example usage:**
-
+    **Example:**
     ```jsx
-    import { useEffect, useState } from 'react';
+    useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch('https://api.example.com/data');
+        const result = await response.json();
+        setData(result);
+      };
 
-    function UserProfile() {
-      const [user, setUser] = useState(null);
-
-      useEffect(() => {
-        const fetchUser = async () => {
-          const response = await fetch('/api/user');
-          const data = await response.json();
-          setUser(data);
-        };
-
-        fetchUser();
-      }, []);
-
-      return user ? <div>Hello, {user.name}</div> : <div>Loading...</div>;
-    }
+      fetchData();
+    }, []);
     ```
-    If you are not using a modern bundler or build setup, you may need Babel and the [transform-async-to-generator](https://babeljs.io/docs/en/babel-plugin-transform-async-to-generator) plugin. React Native already ships with Babel and the required transforms.
 
-**[⬆ Back to Top](#table-of-contents)**
+    Most modern environments and bundlers (Vite, Next.js, Create React App) support `async/await` out of the box without extra configuration.
+
+    **[⬆ Back to Top](#table-of-contents)**
 
 75. ### What are the common folder structures for React?
 
-     There are two common practices for React project file structure:
+    React doesn't enforce a specific folder structure. However, there are two common patterns used in the industry:
 
-     1.  **Grouping by features or routes:**
-
-        One common way to structure projects is to keep CSS, JavaScript, and tests together, grouped by feature or route.
-
-        ```
+    1.  **Grouping by Feature/Module:**
+        Keeping all files related to a specific feature (JS, CSS, Tests) together in one folder. This is highly scalable for large teams.
+        ```text
         common/
-        |-- Avatar.js
-        |-- Avatar.css
-        |-- APIUtils.js
-        `-- APIUtils.test.js
-        feed/
-        |-- index.js
-        |-- Feed.js
-        |-- Feed.css
-        |-- FeedStory.js
-        |-- FeedStory.test.js
-        `-- FeedAPI.js
+          Avatar.js
+          Avatar.css
         profile/
-        |-- index.js
-        |-- Profile.js
-        |-- ProfileHeader.js
-        |-- ProfileHeader.css
-        `-- ProfileAPI.js
+          Profile.js
+          ProfileHeader.js
+          Profile.css
         ```
 
-     2.  **Grouping by file type:**
-
-        Another popular way to structure projects is to group similar files together.
-
-        ```
-        api/
-        |-- APIUtils.js
-        |-- APIUtils.test.js
-        |-- ProfileAPI.js
-        `-- UserAPI.js
+    2.  **Grouping by File Type:**
+        Organizing files based on their type (components, hooks, services). This is simpler for smaller projects.
+        ```text
         components/
-        |-- Avatar.js
-        |-- Avatar.css
-        |-- Feed.js
-        |-- Feed.css
-        |-- FeedStory.js
-        |-- FeedStory.test.js
-        |-- Profile.js
-        |-- ProfileHeader.js
-        `-- ProfileHeader.css
+          Button.js
+          Header.js
+        hooks/
+          useAuth.js
+        services/
+          api.js
         ```
 
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 76. ### What are the popular packages for animation?
 
-    Popular animation packages in the React ecosystem include _React Transition Group_, _Framer Motion_, and _React Spring_. React Motion was popular historically, but newer projects commonly use Framer Motion or React Spring.
+    The most widely used animation libraries in React are:
+    - **Framer Motion:** The current industry favorite. It provides a simple, declarative API for complex orchestrations.
+    - **React Spring:** Based on physics-based animations (spring dynamics) rather than durations.
+    - **GSAP (GreenSock):** A powerful, industry-standard animation engine used for highly complex or timeline-based animations.
+    - **React Transition Group:** A lower-level library used primarily for entering/leaving transitions.
 
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
-77. ### What is the benefit of styles modules?
+77. ### What is the benefit of CSS Modules?
 
-    Style modules help avoid hard-coding repeated style values in components. Values that are shared across UI components, such as colors, spacing, typography, and breakpoints, can be extracted into reusable modules.
+    **CSS Modules** provide a way to scope CSS locally to a specific component, solving the problem of **global namespace collisions** in standard CSS.
 
-    For example, these values could be extracted into a separate style module:
+    ### Key Benefits:
+    1.  **Local Scoping:** Class names are automatically hashed (e.g., `.button` becomes `.button_abc123`), ensuring they don't leak into other components.
+    2.  **Explicit Dependencies:** You import the CSS file directly into the component, making it clear which styles belong to which file.
+    3.  **No Conflicts:** You can use generic class names like `.container` in every component without fear of styles overwriting each other.
 
-    ```javascript
-    export const colors = {
-      white: "#ffffff",
-      black: "#000000",
-      blue: "#0d6efd",
-    };
-
-    export const space = [0, 8, 16, 32, 64];
-    ```
-
-    And then imported individually in other components:
-
-    ```javascript
-    import { space, colors } from "./styles";
-    ```
-
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 78. ### What are the popular React-specific linters?
 
-    ESLint is a popular JavaScript linter. There are plugins available that analyze React-specific patterns. One of the most common React plugins is `eslint-plugin-react`, which checks best practices such as valid JSX, keys in lists, and prop validation rules.
+    **ESLint** is the industry standard for linting React applications. The most important plugins are:
+    1.  **`eslint-plugin-react`:** Provides rules for general React best practices (e.g., missing keys, prop-types).
+    2.  **`eslint-plugin-react-hooks`:** **Critical.** Enforces the "Rules of Hooks" (e.g., calling hooks only at the top level).
+    3.  **`eslint-plugin-jsx-a11y`:** Checks for common accessibility issues (e.g., missing `alt` text on images).
 
-    Another popular plugin is `eslint-plugin-jsx-a11y`, which helps catch common accessibility issues. Since JSX syntax differs slightly from regular HTML, issues such as missing `alt` text or incorrect `tabIndex` usage are better handled by JSX-aware lint rules.
-
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 ## React Router
 
@@ -2795,15 +2656,20 @@ class ParentComponent extends React.Component {
 
 79. ### What is React Router?
 
-    React Router is a routing library for React applications. It lets you map URLs to components, navigate between screens, handle nested routes, and keep the UI in sync with the browser URL.
+    **React Router** is the standard routing library for React applications. It enables **client-side routing**, allowing your application to navigate between different views without refreshing the entire page. It keeps the UI in sync with the browser URL and supports features like nested routes, URL parameters, and programmatic navigation.
 
-**[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
-80. ### How React Router is different from history library?
+80. ### How is React Router different from the history library?
 
-    The `history` library provides low-level session history utilities, such as browser, hash, and memory history. React Router builds a routing API on top of history concepts, adding route matching, navigation components, nested routes, URL params, loaders/actions in data routers, and React integration.
+    The **`history`** library is a low-level dependency of React Router that provides a consistent API for managing session history across different environments (browser, memory, hash).
 
-**[⬆ Back to Top](#table-of-contents)**
+    **React Router** is a high-level library built *on top* of `history`. It adds the actual routing logic, such as:
+    - **Route Matching:** Deciding which component to render based on the URL.
+    - **Navigation Components:** `<Link>`, `<NavLink>`, and `<Navigate>`.
+    - **Hooks:** `useNavigate`, `useLocation`, and `useParams`.
+
+    **[⬆ Back to Top](#table-of-contents)**
 
 81. ### What are the `<Router>` components of React Router v6?
 
