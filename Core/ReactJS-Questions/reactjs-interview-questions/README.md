@@ -4149,84 +4149,37 @@ class ParentComponent extends React.Component {
 
 181. ### What is code-splitting?
 
-     Code-Splitting is a feature supported by bundlers like Webpack and Browserify which can create multiple bundles that can be dynamically loaded at runtime. The react project supports code splitting via dynamic import() feature.
+     **Code-splitting** is a feature supported by modern bundlers (like Webpack, Vite, and Rollup) that splits your code into smaller chunks, which can then be loaded on demand. This significantly improves the initial load time of your application.
 
-     For example, in the below code snippets, it will make moduleA.js and all its unique dependencies as a separate chunk that only loads after the user clicks the 'Load' button.
-
-     **moduleA.js**
-
-     ```javascript
-     const moduleA = "Hello";
-
-     export { moduleA };
-     ```
-
-     **App.js**
+     ### How to implement in React:
+     React supports code-splitting through dynamic `import()` and the `React.lazy` component.
 
      ```javascript
-     export default function App {
-       function handleClick() {
-         import("./moduleA")
-           .then(({ moduleA }) => {
-             // Use moduleA
-           })
-           .catch((err) => {
-             // Handle failure
-           });
-       };
+     import React, { Suspense } from 'react';
 
-      return (
-        <div>
-          <button onClick={this.handleClick}>Load</button>
-        </div>
-      );
+     // This component is loaded only when it's needed
+     const LazyWidget = React.lazy(() => import('./LazyWidget'));
+
+     function App() {
+       return (
+         <Suspense fallback={<div>Loading...</div>}>
+           <LazyWidget />
+         </Suspense>
+       );
      }
      ```
-
-  <details><summary><b>See Class</b></summary>
-    <p>
-
-  ```javascript
-    import React, { Component } from "react";
-
-     class App extends Component {
-       handleClick = () => {
-         import("./moduleA")
-           .then(({ moduleA }) => {
-             // Use moduleA
-           })
-           .catch((err) => {
-             // Handle failure
-           });
-       };
-
-       render() {
-         return (
-           <div>
-             <button onClick={this.handleClick}>Load</button>
-           </div>
-         );
-       }
-     }
-
-     export default App;
-  ```
-
-  </p>
-</details>
 
 **[⬆ Back to Top](#table-of-contents)**
 
 182. ### What are Keyed Fragments?
 
-     The Fragments declared with the explicit <React.Fragment> syntax may have keys. The general use case is mapping a collection to an array of fragments as below,
+     Fragments declared with the explicit **`<React.Fragment>`** syntax may have keys. This is useful when mapping a collection to an array of fragments (e.g., a list of description terms and details).
 
      ```javascript
-     function Glossary(props) {
+     function Glossary({ items }) {
        return (
          <dl>
-           {props.items.map((item) => (
-             // Without the `key`, React will fire a key warning
+           {items.map((item) => (
              <React.Fragment key={item.id}>
                <dt>{item.term}</dt>
                <dd>{item.description}</dd>
@@ -4236,350 +4189,215 @@ class ParentComponent extends React.Component {
        );
      }
      ```
-
-     **Note:** key is the only attribute that can be passed to Fragment. In the future, there might be a support for additional attributes, such as event handlers.
+     *Note: The short syntax `<>` does not support keys.*
 
 **[⬆ Back to Top](#table-of-contents)**
 
 183. ### Does React support all HTML attributes?
 
-     As of React 16, both standard or custom DOM attributes are fully supported. Since React components often take both custom and DOM-related props, React uses the camelCase convention just like the DOM APIs.
-
-     Let us take few props with respect to standard HTML attributes,
-
-     ```javascript
-     <div tabIndex="-1" />      // Just like node.tabIndex DOM API
-     <div className="Button" /> // Just like node.className DOM API
-     <input readOnly={true} />  // Just like node.readOnly DOM API
-     ```
-
-     These props work similarly to the corresponding HTML attributes, with the exception of the special cases. It also support all SVG attributes.
+     Yes. As of React 16, both standard and custom DOM attributes are fully supported. React uses camelCase for attributes (e.g., `tabIndex`, `readOnly`) and preserves unknown attributes instead of stripping them.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-184. ### When component props defaults to true?
+184. ### When do component props default to true?
 
-     If you pass no value for a prop, it defaults to true. This behavior is available so that it matches the behavior of HTML.
+     If you pass a prop without a value, it defaults to **`true`**. This behavior matches the behavior of HTML boolean attributes (like `disabled` or `checked`).
 
-     For example, below expressions are equivalent,
-
-     ```javascript
-     <MyInput autocomplete />
-
-     <MyInput autocomplete={true} />
+     ```jsx
+     <MyInput autocomplete /> // Same as autocomplete={true}
      ```
-
-     **Note:** It is not recommended to use this approach because it can be confused with the ES6 object shorthand (example, `{name}` which is short for `{name: name}`)
 
 **[⬆ Back to Top](#table-of-contents)**
 
-185. ### What is NextJS and major features of it?
+185. ### What is Next.js and what are its major features?
 
-     Next.js is a popular and lightweight framework for static and server-rendered applications built with React. It also provides styling and routing solutions. Below are the major features provided by NextJS,
+     **Next.js** is a powerful React framework designed for high-performance, production-ready applications. It provides built-in solutions for routing, data fetching, and image optimization.
 
-     1. Server-rendered by default
-     2. Automatic code splitting for faster page loads
-     3. Simple client-side routing (page based)
-     4. Webpack-based dev environment which supports (HMR)
-     5. Able to implement with Express or any other Node.js HTTP server
-     6. Customizable with your own Babel and Webpack configurations
+     ### Major Features:
+     1.  **Rendering Modes:** SSR (Server-Side), SSG (Static), and CSR (Client-Side).
+     2.  **App Router & Server Components:** Modern architecture for faster data fetching and smaller bundles.
+     3.  **File-based Routing:** Folders and files in the `app/` or `pages/` directory automatically become routes.
+     4.  **Optimized Components:** Built-in `<Image />`, `<Link />`, and `<Script />` for automatic performance tuning.
+     5.  **API Routes:** Easily build serverless backend endpoints within the same project.
+     6.  **Middleware:** Run code before a request is completed (e.g., for authentication).
 
 **[⬆ Back to Top](#table-of-contents)**
 
 186. ### How do you pass an event handler to a component?
 
-     You can pass event handlers and other functions as props to child components. The functions can be passed to child component as below,
+     You pass event handlers as props to child components. It is a standard convention to name these props starting with `on` (e.g., `onClick`, `onUserAction`).
 
      ```jsx
-     function Button({ onClick }) {
-       return <button onClick={onClick}>Download</button>;
-     }
-
-     export default function downloadExcel() {
-       function handleClick() {
-         alert("Downloaded");
-       }
-
-       return <Button onClick={handleClick}></Button>;
-     }
+     const Parent = () => {
+       const handleAction = () => alert("Clicked!");
+       return <Child onAction={handleAction} />;
+     };
      ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-187. ### How to prevent a function from being called multiple times?
+187. ### How do you prevent a function from being called multiple times?
 
-     If you use an event handler such as **onClick or onScroll** and want to prevent the callback from being fired too quickly, then you can limit the rate at which callback is executed. This can be achieved in the below possible ways,
-
-     1. **Throttling:** Changes based on a time based frequency. For example, it can be used using \_.throttle lodash function
-     2. **Debouncing:** Publish changes after a period of inactivity. For example, it can be used using \_.debounce lodash function
-     3. **RequestAnimationFrame throttling:** Changes based on requestAnimationFrame. For example, it can be used using raf-schd lodash function
-
-**[⬆ Back to Top](#table-of-contents)**
-
-188. ### How JSX prevents Injection Attacks?
-
-     React DOM escapes any values embedded in JSX before rendering them. Thus it ensures that you can never inject anything that’s not explicitly written in your application. Everything is converted to a string before being rendered.
-
-     For example, you can embed user input as below,
+     To prevent a callback (like `onScroll`) from firing too frequently, use **Throttling** or **Debouncing**. In functional components, wrap these in **`useCallback`** to prevent the function from being recreated on every render.
 
      ```javascript
-     const name = response.potentiallyMaliciousInput;
-     const element = <h1>{name}</h1>;
+     import { useCallback } from 'react';
+     import debounce from 'lodash.debounce';
+
+     const Search = () => {
+       const debouncedSearch = useCallback(
+         debounce((query) => console.log("Searching...", query), 500),
+         []
+       );
+
+       return <input onChange={(e) => debouncedSearch(e.target.value)} />;
+     };
      ```
 
-     This way you can prevent XSS(Cross-site-scripting) attacks in the application.
+**[⬆ Back to Top](#table-of-contents)**
+
+188. ### How does JSX prevent injection attacks?
+
+     React DOM **escapes** any values embedded in JSX before rendering them. This ensures that you can never inject anything (like `<script>`) that isn't explicitly written in your code. Everything is converted to a string before rendering, preventing XSS (Cross-Site Scripting).
 
 **[⬆ Back to Top](#table-of-contents)**
 
 189. ### How do you update rendered elements?
 
-     You can update UI(represented by rendered element) by passing the newly created element to ReactDOM's render method.
+     In modern React, you update elements by **updating the component's state**. React then calculates the differences (diffing) and updates only the necessary parts of the DOM.
 
-     For example, lets take a ticking clock example, where it updates the time by calling render method multiple times,
+     **Modern Standard (React 18):**
+     Initialize the root once and let state changes drive the updates.
 
      ```javascript
-     function tick() {
-       const element = (
-         <div>
-           <h1>Hello, world!</h1>
-           <h2>It is {new Date().toLocaleTimeString()}.</h2>
-         </div>
-       );
-       ReactDOM.render(element, document.getElementById("root"));
+     import { createRoot } from 'react-dom/client';
+     const root = createRoot(document.getElementById('root'));
+
+     function Counter() {
+       const [count, setCount] = React.useState(0);
+       return <button onClick={() => setCount(count + 1)}>{count}</button>;
      }
 
-     setInterval(tick, 1000);
+     root.render(<Counter />);
      ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-190. ### How do you say that props are readonly?
+190. ### How do you indicate that props are read-only?
 
-     When you declare a component as a function or a class, it must never modify its own props.
-
-     Let us take a below capital function,
-
-     ```javascript
-     function capital(amount, interest) {
-       return amount + interest;
-     }
-     ```
-
-     The above function is called “pure” because it does not attempt to change their inputs, and always return the same result for the same inputs. Hence, React has a single rule saying "All React components must act like pure functions with respect to their props."
+     All React components must act like **pure functions** with respect to their props. Components should never modify their own `props` object; if a value needs to change, it must be managed via **state** in a parent component and passed down as a new prop value.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-191. ### What are the conditions to safely use the index as a key?
+191. ### What are the conditions for safely using an index as a key?
 
-     There are three conditions to make sure, it is safe use the index as a key.
+     Using an index as a key is generally a **last resort**. It is only safe if:
+     1.  The list and items are **static** (they never change, reorder, or get filtered).
+     2.  The items in the list have no unique IDs.
+     3.  The list will never be reordered or filtered.
 
-     1. The list and items are static– they are not computed and do not change
-     2. The items in the list have no ids
-     3. The list is never reordered or filtered.
+     *Warning: Using the index can cause serious bugs with component state (like inputs) and performance issues if the list is dynamic.*
 
 **[⬆ Back to Top](#table-of-contents)**
 
-192. ### Should keys be globally unique?
+192. ### Do keys need to be globally unique?
 
-     The keys used within arrays should be unique among their siblings but they don’t need to be globally unique. i.e, You can use the same keys with two different arrays.
-
-     For example, the below `Book` component uses two arrays with different arrays,
-
-     ```javascript
-     function Book(props) {
-       const index = (
-         <ul>
-           {props.pages.map((page) => (
-             <li key={page.id}>{page.title}</li>
-           ))}
-         </ul>
-       );
-       const content = props.pages.map((page) => (
-         <div key={page.id}>
-           <h3>{page.title}</h3>
-           <p>{page.content}</p>
-           <p>{page.pageNumber}</p>
-         </div>
-       ));
-       return (
-         <div>
-           {index}
-           <hr />
-           {content}
-         </div>
-       );
-     }
-     ```
+     No. Keys only need to be unique among their **siblings** within the same array. They do not need to be globally unique across your entire application. You can reuse the same keys in different arrays or different components.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 193. ### What is the popular choice for form handling?
 
-     `Formik` is a form library for react which provides solutions such as validation, keeping track of the visited fields, and handling form submission.
+     While there are many options, the two most popular libraries for form handling in modern React are:
 
-     In detail, You can categorize them as follows,
+     1.  **React Hook Form (Recommended):** Focuses on performance by using uncontrolled components (via `refs`) to minimize re-renders. It is extremely lightweight and provides a great developer experience.
+     2.  **Formik:** A battle-tested library using controlled components. It is intuitive but can cause performance issues in very large forms due to frequent re-renders.
 
-     1. Getting values in and out of form state
-     2. Validation and error messages
-     3. Handling form submission
-
-     It is used to create a scalable, performant, form helper with a minimal API to solve annoying stuff.
+     Both libraries integrate seamlessly with validation schemas like **Yup** or **Zod**.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-194. ### What are the advantages of formik over redux form library?
+194. ### What are the advantages of Formik over the Redux Form library?
 
-     Below are the main reasons to recommend formik over redux form library,
-
-     1. The form state is inherently short-term and local, so tracking it in Redux (or any kind of Flux library) is unnecessary.
-     2. Redux-Form calls your entire top-level Redux reducer multiple times ON EVERY SINGLE KEYSTROKE. This way it increases input latency for large apps.
-     3. Redux-Form is 22.5 kB minified gzipped whereas Formik is 12.7 kB
+     Formik (and React Hook Form) are generally preferred over Redux Form because:
+     1.  **Local State:** Form state is inherently local and ephemeral; tracking it in a global Redux store is usually unnecessary boilerplate.
+     2.  **Performance:** Redux Form often triggers global store updates on every keystroke, which can lead to input latency.
+     3.  **Bundle Size:** Modern form libraries are significantly smaller than the Redux Form package.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 195. ### Why are you not required to use inheritance?
-     In React, it is recommended to use composition over inheritance to reuse code between components. Both Props and composition give you all the flexibility you need to customize a component’s look and behavior explicitly and safely.
-     Whereas, If you want to reuse non-UI functionality between components, it is suggested to extract it into a separate JavaScript module. Later components import it and use that function, object, or class, without extending it.
+
+     React favors **Composition over Inheritance**. You can solve almost all code-reuse use cases by passing components as props (like a `children` prop) or by using Hooks. React doesn't even provide a built-in way to inherit from components other than extending `React.Component`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-196. ### Can I use web components in react application?
+196. ### Can you use web components in a React application?
 
-     Yes, you can use web components in a react application. Even though many developers won't use this combination, it may require especially if you are using third-party UI components that are written using Web Components.
+     Yes. React is designed to be compatible with Web Components. This is useful when using third-party UI libraries built with standard web technologies.
 
-     For example, let us use `Vaadin` date picker web component as below,
-
-     ```javascript
-     import "./App.css";
-     import "@vaadin/vaadin-date-picker";
-     export default function App() {
-       return (
-         <div className="App">
-           <vaadin-date-picker label="When were you born?"></vaadin-date-picker>
-         </div>
-       );
-     }
-     ```
+     **Modern Note (React 19):** React 19 significantly improves support for Web Components, correctly handling properties, attributes, and custom events out of the box.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-197. ### What is dynamic import?
+197. ### What is a dynamic import?
 
-     You can achieve code-splitting in your app using dynamic import.
-
-     Let's take an example of addition,
-
-     1. **Normal Import**
+     A **dynamic import** allows you to load JavaScript modules on demand rather than at build time. It returns a **Promise** that resolves to the module.
 
      ```javascript
-     import { add } from "./math";
-     console.log(add(10, 20));
-     ```
+     // Normal (Static) Import
+     import { add } from './math';
 
-     2. **Dynamic Import**
-
-     ```javascript
-     import("./math").then((math) => {
-       console.log(math.add(10, 20));
-     });
+     // Dynamic Import
+     const loadMath = async () => {
+       const math = await import('./math');
+       console.log(math.add(1, 2));
+     };
      ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
 198. ### What are loadable components?
 
-     With the release of React 18, React.lazy and Suspense are now available for server-side rendering. However, prior to React 18, it was recommended to use Loadable Components for code-splitting in a server-side rendered app because React.lazy and Suspense were not available for server-side rendering. Loadable Components lets you render a dynamic import as a regular component. For example, you can use Loadable Components to load the OtherComponent in a separate bundle like this:
-
-     ```javascript
-     import loadable from "@loadable/component";
-
-     const OtherComponent = loadable(() => import("./OtherComponent"));
-
-     function MyComponent() {
-       return (
-         <div>
-           <OtherComponent />
-         </div>
-       );
-     }
-     ```
-
-     Now OtherComponent will be loaded in a separated bundle
-     Loadable Components provides additional benefits beyond just code-splitting, such as automatic code reloading, error handling, and preloading. By using Loadable Components, you can ensure that your application loads quickly and efficiently, providing a better user experience for your users.
+     Before React 18, **`@loadable/component`** was the standard library for code-splitting in Server-Side Rendered (SSR) apps because `React.lazy` didn't support SSR. While `React.lazy` now supports SSR in React 18+, Loadable Components remains useful for advanced features like preloading and library-specific optimizations.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-199. ### What is suspense component?
+199. ### What is a Suspense component?
 
-     React Suspense is a built-in feature that lets you defer rendering part of your component tree until some condition(asynchronous operation) is met—usually, data or code has finished loading. While waiting, Suspense lets you display a fallback UI like a spinner or placeholder.
+     **`<Suspense>`** lets you "wait" for something to load and display a fallback UI (like a spinner) in the meantime.
 
-
-     1. Lazy loading components uses suspense feature,
-
-
-        If the module containing the dynamic import is not yet loaded by the time parent component renders, you must show some fallback content while you’re waiting for it to load using a loading indicator. This can be done using **Suspense** component.
-
-        ```javascript
-        const OtherComponent = React.lazy(() => import("./OtherComponent"));
-
-        function MyComponent() {
-          return (
-            <div>
-              <Suspense fallback={<div>Loading...</div>}>
-                <OtherComponent />
-              </Suspense>
-            </div>
-          );
-        }
-        ```
-        The above component shows fallback UI instead real component until `OtherComponent` is fully loaded.
-
-     2. As an another example, suspend until async data(data fetching) is ready
-      ```jsx
-        function UserProfile() {
-          const user = use(fetchUser()); // throws a promise internally
-          return <div>{user.name}</div>;
-        }
-
-        function App() {
-          return (
-            <Suspense fallback={<div>Loading user...</div>}>
-              <UserProfile />
-            </Suspense>
-          );
-        }
-
-    ```
-
+     ### Common Use Cases:
+     1.  **Code Splitting:** Waiting for a `lazy` component to download.
+     2.  **Data Fetching:** Waiting for an async operation (using frameworks like Next.js or libraries like TanStack Query).
+     3.  **Streaming SSR:** (React 18+) Allowing parts of the page to hydrate independently.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-200. ### What is route based code splitting?
+200. ### What is route-based code splitting?
 
-     One of the best place to do code splitting is with routes. The entire page is going to re-render at once so users are unlikely to interact with other elements in the page at the same time. Due to this, the user experience won't be disturbed.
+     One of the best places to split code is at the route level. This ensures users only download the code for the page they are currently viewing.
 
-     Let us take an example of route based website using libraries like React Router with React.lazy,
-
+     ### Modern Example (React Router v6):
      ```javascript
-     import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-     import React, { Suspense, lazy } from "react";
+     import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+     import React, { Suspense, lazy } from 'react';
 
-     const Home = lazy(() => import("./routes/Home"));
-     const About = lazy(() => import("./routes/About"));
+     const Home = lazy(() => import('./routes/Home'));
+     const About = lazy(() => import('./routes/About'));
 
      const App = () => (
        <Router>
          <Suspense fallback={<div>Loading...</div>}>
-           <Switch>
-             <Route exact path="/" component={Home} />
-             <Route path="/about" component={About} />
-           </Switch>
+           <Routes>
+             <Route path="/" element={<Home />} />
+             <Route path="/about" element={<About />} />
+           </Routes>
          </Suspense>
        </Router>
      );
      ```
 
-     In the above code, the code splitting will happen at each route level.
 
 **[⬆ Back to Top](#table-of-contents)**
 
