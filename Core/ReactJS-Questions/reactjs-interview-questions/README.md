@@ -5775,9 +5775,13 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-271. ### Can you describe the useMemo() Hook?
+271. ### Can you describe the `useMemo()` Hook?
 
-     The `useMemo()` Hook in React is used to **optimize performance** by **memoizing the result of expensive calculations**. It ensures that a function is **only re-executed when its dependencies change**, preventing unnecessary computations on every re-render.
+     The `useMemo()` Hook memoizes the **result** of an expensive calculation between re-renders. It ensures that a function is only re-executed when its dependencies change.
+
+     ### Key Use Cases:
+     1.  **Expensive Calculations:** Skipping heavy logic (like filtering large lists) on every render.
+     2.  **Referential Equality:** Ensuring an object or array remains the same between renders to prevent unnecessary re-renders of memoized children (using `React.memo`).
 
      #### Syntax
 
@@ -5940,14 +5944,15 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-277. ### Is useState Synchronous or Asynchronous?
-     The `useState` hook is synchronous, but state updates are asynchronous. When you call `useState()`, it runs synchronously and returns the state variable and setter function as tuple.
-     ```js
-     const [count, setCount] = useState(0);
-     ```
-     This happens immediately during rendering.
-     However, the state update function (**setState**) is asynchronous in the sense that it doesn't update the state immediately.
-     React **batches** updates and applies them before the next render. You won’t see the updated value immediately after calling `setState`.
+277. ### Is `useState` Synchronous or Asynchronous?
+
+     The `useState` hook itself is synchronous, but **state updates are asynchronous**. React does not update the state immediately after the setter is called. Instead, it **batches** updates to optimize performance.
+
+     ### React 18: Automatic Batching
+     Modern React (v18+) uses **Automatic Batching**, which means all updates inside promises, timeouts, or native event handlers are grouped into a single re-render.
+
+     ### Why is it Asynchronous?
+     React waits until all code in the current event handler has finished before re-rendering. This prevents the "partial render" problem.
 
      **Example:**
      ```js
@@ -6089,14 +6094,41 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-280. ### How does `useReducer` works? Explain with an example
-     The `useReducer` hooks works similarly to Redux, where:
+280. ### How does `useReducer` work? Explain with an example
 
-        *   You define a **reducer function** to handle state transitions.
-        *   You dispatch actions to update the state.
+     `useReducer` separates the state transition logic (reducer) from the UI (dispatch).
 
-     **Counter Example with Increment, Decrement, and Reset:**
-     1. Reducer function:
+     ### Example: A Comprehensive Counter
+     ```javascript
+     import React, { useReducer } from 'react';
+
+     // 1. Define Initial State
+     const initialState = { count: 0 };
+
+     // 2. Define Reducer Function
+     function reducer(state, action) {
+       switch (action.type) {
+         case 'increment': return { count: state.count + 1 };
+         case 'decrement': return { count: state.count - 1 };
+         case 'reset': return initialState;
+         default: throw new Error('Unknown action');
+       }
+     }
+
+     // 3. Component Implementation
+     function Counter() {
+       const [state, dispatch] = useReducer(reducer, initialState);
+
+       return (
+         <>
+           <h3>Count: {state.count}</h3>
+           <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+           <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+           <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
+         </>
+       );
+     }
+     ```
 
         Define a counter reducer function that takes the current state and an action object with a type, and returns a new state based on that type.
 
@@ -6139,22 +6171,30 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-281. ### Can you combine **useReducer** with **useContext**?
+281. ### Can you combine `useReducer` with `useContext`?
 
-      Yes, it's common to combine **useReducer** with **useContext** to build a lightweight state management system similar to Redux:
+     Yes. Combining **`useReducer`** with **`useContext`** is a powerful pattern for building a lightweight state management system (often called a "Redux-like" pattern) without external libraries.
 
-      ```js
-      const AppContext = React.createContext();
+     ### Why use this?
+     -   **Global State:** Access state and dispatch from anywhere in the tree.
+     -   **Avoid Prop Drilling:** No need to pass callbacks through intermediate components.
+     -   **Clean Logic:** Keeps state transition logic out of components.
 
-      function AppProvider({ children }) {
-        const [state, dispatch] = useReducer(reducer, initialState);
-        return (
-          <AppContext.Provider value={{ state, dispatch }}>
-            {children}
-          </AppContext.Provider>
-        );
-      }
-      ```
+     ```javascript
+     const StateContext = createContext();
+     const DispatchContext = createContext();
+
+     export function AppProvider({ children }) {
+       const [state, dispatch] = useReducer(reducer, initialState);
+       return (
+         <StateContext.Provider value={state}>
+           <DispatchContext.Provider value={dispatch}>
+             {children}
+           </DispatchContext.Provider>
+         </StateContext.Provider>
+       );
+     }
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -6545,27 +6585,42 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-289. ### When and how often does React invoke the setup and cleanup functions inside a useEffect hook?
+289. ### When and how often does React invoke the setup and cleanup functions inside a `useEffect` hook?
 
-     1. **Setup Function Execution (`useEffect`)**
+     ### 1. Setup Function
+     -   **Mount:** Runs once after the component is added to the DOM.
+     -   **Update:** Runs after every re-render where dependencies have changed.
 
-         The setup function (or the main function) you pass to `useEffect` runs at specific points:
+     ### 2. Cleanup Function (optional return)
+     -   **Before Update:** Runs before the next setup function to clean up the previous effect's state (e.g., unsubscribing).
+     -   **Unmount:** Runs once when the component is removed from the DOM.
 
-           1.  **After the component is mounted** (if the dependency array is empty `[]`)
-           2.  **After every render** (if no dependency array is provided)
-           3.  **After a dependency value changes** (if the dependency array contains variables)
-
-     2. **Cleanup Function Execution (Returned function from `useEffect`)**
-
-        The cleanup function is called **before the effect is re-executed** and when the component **unmounts**.
+     ### React 18 Strict Mode Note:
+     In development mode, React **mounts, unmounts, and remounts** your component once to ensure your cleanup logic is correct and catches memory leaks.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-290. ### What happens if you return a Promise from useEffect??
-      You should NOT return a Promise from useEffect. React expects the function passed to useEffect to return either nothing (undefined) or a cleanup function (synchronous function). i.e, It does not expect or handle a returned Promise. If you still return a Promise, React will ignore it silently, and it may lead to bugs or warnings in strict mode.
+290. ### What happens if you return a Promise from `useEffect`?
 
-      **Incorrect:**
-      ```js
+     React will log a warning and the effect won't work as expected. **`useEffect`** expects a synchronous function that either returns nothing or a cleanup function. Returning an `async` function (which implicitly returns a Promise) is forbidden because React needs to call the cleanup function synchronously.
+
+     ### ❌ The Wrong Way:
+     ```javascript
+     useEffect(async () => {
+       const data = await fetchData(); // Error: useEffect must return a cleanup function or nothing.
+     }, []);
+     ```
+
+     ### ✅ The Correct Way:
+     ```javascript
+     useEffect(() => {
+       const loadData = async () => {
+         const data = await fetchData();
+         setData(data);
+       };
+       loadData();
+     }, []);
+     ```
       useEffect(async () => {
         await fetchData(); // ❌ useEffect shouldn't be async
       }, []);
@@ -6600,197 +6655,200 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-291. ### How to prevent infinite loops with useEffect?
-        Infinite loops happen when the effect updates state that’s listed in its own dependency array, which causes the effect to re-run, updating state again and so on.
+291. ### Can you have multiple `useEffect` hooks in a single component?
 
-        **Infinite loop scenario:**
-        ```js
-        useEffect(() => {
-          setCount(count + 1);
-        }, [count]); // Triggers again every time count updates
-        ```
-        You need to ensure that setState calls do not depend on values that cause the effect to rerun, or isolate them with a guard.
-        ```js
-        useEffect(() => {
-          if (count < 5) {
-            setCount(count + 1);
-          }
-        }, [count]);
-        ```
-**[⬆ Back to Top](#table-of-contents)**
+     Yes. It is a best practice to use multiple **`useEffect`** hooks to separate different concerns. This keeps your code modular and easier to test.
 
-292. ### What are the usecases of useLayoutEffect?
-      You need to use `useLayoutEffect` when your effect **must run before the browser paints**, such as:
+     ```javascript
+     useEffect(() => {
+       console.log('User ID changed:', userId);
+     }, [userId]);
 
-      *   **Reading layout measurements** (e.g., element size, scroll position)
-      *   **Synchronously applying DOM styles** to prevent visual flicker
-      *   **Animating layout or transitions**
-      *   **Integrating with third-party libraries** that require DOM manipulation
-
-      If there's no visual or layout dependency, prefer `useEffect` — it's more performance-friendly.
-
-      ```js
-      useLayoutEffect(() => {
-        const width = divRef.current.offsetWidth;
-        if (width < 400) {
-          divRef.current.style.background = 'blue'; // prevents flicker
-        }
-      }, []);
-      ```
+     useEffect(() => {
+       const timer = setInterval(() => console.log('Tick'), 1000);
+       return () => clearInterval(timer);
+     }, []);
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-293. ### How does useLayoutEffect work during server-side rendering (SSR)?
+292. ### How to prevent infinite loops with `useEffect`?
 
-     The `useLayoutEffect` hook does **not run on the server**, because there is no DOM. React issues a warning in server environments like Next.js if `useLayoutEffect` is used directly.
+     Infinite loops happen when an effect updates a state that is listed as its own dependency.
 
-     This can be mitigated using a conditional polyfill:
+     ### Strategies to fix:
+     1.  **Use functional updates:** `setCount(c => c + 1)` doesn't require `count` as a dependency.
+     2.  **Move functions inside:** Define helper functions inside the effect to avoid dependency on them.
+     3.  **Use `useMemo` or `useCallback`:** Memoize objects/functions if they are passed as dependencies.
 
-      ```jsx
-      const useIsomorphicLayoutEffect =
-        typeof window !== 'undefined' ? useLayoutEffect : useEffect;
-      ```
+     ```javascript
+     // ✅ CORRECT: No 'count' dependency needed
+     useEffect(() => {
+       const interval = setInterval(() => {
+         setCount(prev => prev + 1);
+       }, 1000);
+       return () => clearInterval(interval);
+     }, []); 
+     ```
+**[⬆ Back to Top](#table-of-contents)**
 
-      i.e, Use `useIsomorphicLayoutEffect` in components that render both on client and server.
+293. ### What are the use cases of `useLayoutEffect`?
+
+     **`useLayoutEffect`** is identical to `useEffect`, but it fires **synchronously** after all DOM mutations but **before the browser paints**.
+
+     ### Use Cases:
+     -   **Measuring DOM:** Reading element width, height, or scroll position before the user sees the frame.
+     -   **Synchronous Styling:** Applying styles (like tooltips or popovers) that must be positioned perfectly to avoid a visual "jump".
+
+     ```javascript
+     useLayoutEffect(() => {
+       const { height } = ref.current.getBoundingClientRect();
+       setHeight(height); // Happens before paint, no flicker!
+     }, []);
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-294. ### What happens if you use useLayoutEffect for non-layout logic?
-      Using `useLayoutEffect` for logic **unrelated to layout or visual DOM changes** (such as logging, data fetching, or analytics) is **not recommended**. It can lead to **performance issues** or even unexpected behavior.
+294. ### How does `useLayoutEffect` work during server-side rendering (SSR)?
 
-      **Example: Anti-pattern**
-      ```js
-      useLayoutEffect(() => {
-        console.log("Tracking analytics");
-        fetch('/log-page-view');
-      }, []);
-      ```
-      The above usage delays the paint of the UI just to send a network request, which could (and should) be done after paint using useEffect.
+     `useLayoutEffect` **does not run on the server**. Because the server doesn't have a DOM, React will issue a warning if it's used in a Server Component or during SSR.
 
-**[⬆ Back to Top](#table-of-contents)**
-
-295. ### How does useLayoutEffect cause layout thrashing?
-      The `useLayoutEffect` can **cause layout thrashing** when you **repeatedly read and write to the DOM** in ways that force the browser to recalculate layout multiple times per frame. This is because `useLayoutEffect` runs _before the browser paints_, these reflows happen _synchronously_, blocking rendering and degrading performance.
-
-      **Example:**
-      ```js
-      function ThrashingComponent() {
-        const ref = useRef();
-
-        useLayoutEffect(() => {
-          const height = ref.current.offsetHeight; //Read
-          ref.current.style.height = height + 20 + 'px'; //Write
-          const newHeight = ref.current.offsetHeight; //Read again — forces reflow
-        }, []);
-
-        return <div ref={ref}>Hello</div>;
-      }
-      ```
-      In the above code, each read/write cycle triggers synchronous reflows, blocking the main thread and delays UI rendering.
-
-      This issue can be avoided by batching your DOM reads and writes and prevent unnecessary reads after writes.
+     ### Solution: `useIsomorphicLayoutEffect`
+     To fix the warning, use this pattern:
+     ```javascript
+     const useIsomorphicLayoutEffect = 
+       typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-296. ### How Do You Use useRef to Access a DOM Element in React? Give an example.
-        The `useRef` hook is commonly used in React to directly reference and interact with DOM elements — like focusing an input, scrolling to a section, or controlling media elements.
+295. ### What happens if you use `useLayoutEffect` for non-layout logic?
 
-        When you assign a ref to a DOM element using useRef, React gives you access to the underlying DOM node via the .current property of the ref object.
+     If you use **`useLayoutEffect`** for things like data fetching or logging, it will **block the browser from painting** until the effect finishes. This makes your app feel sluggish.
 
-        **Example: Focus an input**
-
-        ```js
-        import React, { useRef } from 'react';
-
-        function FocusInput() {
-          const inputRef = useRef(null); // create the ref
-
-          const handleFocus = () => {
-            inputRef.current.focus(); // access DOM element and focus it
-          };
-
-          return (
-            <div>
-              <input type="text" ref={inputRef} />
-              <button onClick={handleFocus}>Focus the input</button>
-            </div>
-          );
-        }
-        ```
-       **Note:** The DOM reference is only available **after the component has mounted** — typically accessed in `useEffect` or event handlers.
+     > [!IMPORTANT]
+     > Always prefer `useEffect` unless you are specifically fixing a visual "glitch" or measuring the DOM.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-297. ### Can you use useRef to persist values across renders??
-        Yes, you can use `useRef` to persist values across renders in React. Unlike `useState`, changing `.current` does not cause re-renders, but the value is preserved across renders.
+296. ### How does `useLayoutEffect` cause layout thrashing?
 
-        **Example:**
-        ```js
-        function Timer() {
-          const renderCount = useRef(0);
-          useEffect(() => {
-            renderCount.current++;
-            console.log("Render count:", renderCount.current);
-          });
+     Layout thrashing occurs when you perform a series of **"Read-Write-Read"** operations on the DOM. Each "Read" after a "Write" forces the browser to recalculate the layout immediately.
 
-          return <div>Check console for render count.</div>;
-        }
-        ```
-**[⬆ Back to Top](#table-of-contents)**
-
-298. ###  Can useRef be used to store previous values?
-        Yes, `useRef` is a common pattern when you want to compare current and previous props or state without causing re-renders.
-
-        **Example: Storing previous state value**
-        ```js
-        import { useEffect, useRef, useState } from 'react';
-
-        function PreviousValueExample() {
-          const [count, setCount] = useState(0);
-          const prevCountRef = useRef();
-
-          useEffect(() => {
-            prevCountRef.current = count;
-          }, [count]);
-
-          const prevCount = prevCountRef.current;
-
-          return (
-            <div>
-              <p>Current: {count}</p>
-              <p>Previous: {prevCount}</p>
-              <button onClick={() => setCount(c => c + 1)}>Increment</button>
-            </div>
-          );
-        }
-        ```
+     ```javascript
+     useLayoutEffect(() => {
+       const h1 = ref.current.offsetHeight; // Read
+       ref.current.style.height = '100px';  // Write
+       const h2 = ref.current.offsetHeight; // Read (Forced synchronous layout!)
+     }, []);
+     ```
+     Doing this inside `useLayoutEffect` is especially dangerous because it happens on the main thread before the paint, potentially causing dropped frames.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-299. ### Is it possible to access a ref in the render method?
-        Yes, you can access a ref in the render method, but what you get from it depends on how you're using the ref and when in the component lifecycle you're rendering.
+297. ### How do you use `useRef` to access a DOM element in React? Give an example.
 
-        For example, when using ref to access a DOM node (e.g., divRef.current), it's not immediately available on the first render.
-        ```js
-        const divRef = useRef(null);
+     The `useRef` hook returns a mutable object with a `.current` property. Assigning this to a React element's `ref` prop gives you direct access to the DOM node.
 
-        console.log(divRef.current); // ❌ null on initial render
-        return <div ref={divRef}>Hello</div>;
-        ```
+     ```javascript
+     function FocusInput() {
+       const inputRef = useRef(null);
+
+       const handleClick = () => {
+         inputRef.current.focus(); // Direct DOM access
+       };
+
+       return (
+         <>
+           <input ref={inputRef} type="text" />
+           <button onClick={handleClick}>Focus</button>
+         </>
+       );
+     }
+     ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+298. ### Can you use `useRef` to persist values across renders?
+
+     Yes. Unlike `useState`, updating a ref's `.current` value **does not trigger a re-render**. This makes it perfect for storing IDs, timers, or other values that don't affect the visual UI.
+
+     ```javascript
+     const timerId = useRef(null);
+
+     const startTimer = () => {
+       timerId.current = setInterval(() => { /* ... */ }, 1000);
+     };
+
+     const stopTimer = () => {
+       clearInterval(timerId.current); // Value persisted across renders
+     };
+     ```
+**[⬆ Back to Top](#table-of-contents)**
+
+299. ### Can `useRef` be used to store previous values?
+
+     Yes. This is a common pattern for comparing props or state between renders. Since `useEffect` runs *after* render, you can store the current value in a ref to be used as the "previous" value in the next render.
+
+     ```javascript
+     function Counter() {
+       const [count, setCount] = useState(0);
+       const prevCount = useRef(0);
+
+       useEffect(() => {
+         prevCount.current = count; // Updates after render
+       }, [count]);
+
+       return <h1>Now: {count}, Before: {prevCount.current}</h1>;
+     }
+     ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+300. ### Is it possible to access a ref in the render method?
+
+     You **should not** read or write `ref.current` during the render phase. Reading it during render makes your component non-deterministic because React doesn't know when the ref changed.
+
+     ### ❌ Avoid This:
+     ```javascript
+     function MyComponent() {
+       const myRef = useRef(0);
+       // Writing during render
+       myRef.current = myRef.current + 1; 
+
+       // Reading during render
+       return <div>{myRef.current}</div>; 
+     }
+     ```
+     > [!TIP]
+     > Refs should only be accessed in **`useEffect`** or **event handlers**.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 300. ### What are the common usecases of useRef hook?
       Some of the common cases are:
-      *   Automatically focus an input when a component mounts.
-      *   Scroll to a specific element.
-      *   Measure element dimensions (`offsetWidth`, `clientHeight`).
-      *   Control video/audio playback.
-      *   Integrate with non-React libraries (like D3 or jQuery).
+301. ### What are the common use cases of the `useRef` Hook?
+
+     `useRef` is versatile for handling anything that doesn't belong in the React state:
+     -   **DOM Interactions:** Focusing an input, scrolling to a position, or measuring an element.
+     -   **Persisting Mutable Values:** Storing a `setInterval` ID or a socket reference.
+     -   **Tracking History:** Storing the previous prop or state value to compare in an effect.
+     -   **3rd Party Libraries:** Holding a reference to a D3 chart instance or a Mapbox map.
+
+     ### Example: Storing a Timer ID
+     ```javascript
+     const timerRef = useRef();
+
+     const start = () => {
+       timerRef.current = setInterval(() => console.log('Tick'), 1000);
+     };
+
+     const stop = () => clearInterval(timerRef.current);
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-301. ### What is useImperativeHandle Hook? Give an example.
+302. ### What is the `useImperativeHandle` Hook? Give an example.
       `useImperativeHandle` is a React Hook that allows a **child component** to expose **custom functions or properties** to its **parent component**, when using `ref`.
       It is typically used with `forwardRef` and is very useful in cases like **modals**, **dialogs**, **custom inputs**, etc., where the parent needs to **control behavior imperatively** (e.g., open, close, reset).
 
@@ -6851,7 +6909,7 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-302. ### When should you use useImperativeHandle?
+303. ### When should you use `useImperativeHandle`?
       The useImperativeHandler hook will be used in below cases:
 
       *   You want to expose **imperative methods** from a child component
@@ -6863,12 +6921,12 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-303. ### Is that possible to use useImperativeHandle without forwardRef?
+304. ### Is it possible to use `useImperativeHandle` without `forwardRef`?
         **No.** `useImperativeHandle` only works when the component is wrapped in `forwardRef`. It's the combination that allows parent components to use a `ref` on a function component.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-304. ### How is useMemo different from useCallback?
+305. ### How is `useMemo` different from `useCallback`?
      The following table compares both useMemo and useCallback:
 
       | Feature | `useMemo` | `useCallback` |
@@ -6885,7 +6943,7 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-305. ### Does useMemo prevent re-rendering of child components?
+306. ### Does `useMemo` prevent re-rendering of child components?
 
         The `useMemo` hook **does not directly prevent re-rendering of child components**. Its main purpose is to memoize the result of an expensive computation so that it doesn’t get recalculated unless its dependencies change. While this can improve performance, it doesn’t inherently control whether a child component re-renders.
 
@@ -6893,7 +6951,7 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-306. ### What is `useCallback` and why is it used?
+307. ### What is `useCallback` and why is it used?
 
         The `useCallback` is a React Hook used to memoize **function definitions** between renders. It returns the same function reference unless its dependencies change. This is especially useful when passing callbacks to optimized child components (e.g. those wrapped in `React.memo`) to prevent unnecessary re-renders.
 
@@ -6909,7 +6967,7 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-307. ### What are Custom React Hooks, and How Can You Develop One?
+308. ### What are Custom React Hooks, and how can you develop one?
 
       **Custom Hooks** in React are JavaScript functions that allow you to **extract and reuse component logic** using React’s built-in Hooks like `useState`, `useEffect`, etc.
 
@@ -6983,7 +7041,7 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-309. ### How does React Fiber works? Explain in detail.
+309. ### How does React Fiber work? Explain in detail.
 
       React Fiber is the **core engine** that enables advanced features like **concurrent rendering**, **prioritization**, and **interruptibility** in React. Here's how it works:
 
@@ -7029,7 +7087,7 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-310. ### What is the useId hook and when should you use it?
+310. ### What is the `useId` Hook and when should you use it?
 
      The `useId` hook is a React hook introduced in React 18 that generates **unique IDs** that are stable across server and client renders. It's primarily used for **accessibility attributes** like linking form labels to inputs.
 
@@ -7068,9 +7126,9 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-311. ### What is the useDeferredValue hook?
+311. ### What is the `useDeferredValue` Hook?
 
-     The `useDeferredValue` hook is used to **defer updating a part of the UI** to keep other parts responsive. It accepts a value and returns a "deferred" version of that value that may lag behind. This is useful for optimizing performance when rendering expensive components.
+     **`useDeferredValue`** allows you to defer updating a part of the UI. It is useful for keeping the interface responsive by telling React that a specific value update can wait until more urgent updates (like typing) are finished.
 
      #### Syntax
      ```js
@@ -7120,9 +7178,9 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-312. ### What is the useTransition hook and how does it differ from useDeferredValue?
+312. ### What is the `useTransition` Hook and how does it differ from `useDeferredValue`?
 
-     The `useTransition` hook allows you to mark certain state updates as **non-urgent transitions**, keeping the UI responsive during expensive re-renders. It returns a `isPending` flag and a `startTransition` function.
+     **`useTransition`** lets you mark state updates as "transitions." Transitions are non-urgent updates that React can interrupt if a more urgent update (like a click) occurs.
 
      #### Syntax
      ```js
@@ -7170,9 +7228,9 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-313. ### What is the useSyncExternalStore hook?
+313. ### What is the `useSyncExternalStore` Hook?
 
-     The `useSyncExternalStore` hook is designed to **subscribe to external stores** (non-React state sources) in a way that's compatible with concurrent rendering. It's primarily used by library authors for state management libraries.
+     **`useSyncExternalStore`** is a Hook that allows subscribing to an external data store (e.g., Redux, browser APIs) in a way that is compatible with React's concurrent rendering features. It prevents **"tearing"** (showing inconsistent UI).
 
      #### Syntax
      ```js
@@ -7214,9 +7272,9 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-314. ### What is the useInsertionEffect hook?
+314. ### What is the `useInsertionEffect` Hook?
 
-     The `useInsertionEffect` hook is designed for **CSS-in-JS library authors** to inject styles into the DOM before any layout effects run. It fires synchronously before DOM mutations.
+     **`useInsertionEffect`** is a Hook designed for CSS-in-JS library authors. it fires synchronously **before** any layout effects run, allowing libraries to inject `<style>` tags into the DOM before React calculates the layout.
 
      #### Syntax
      ```js
@@ -7446,7 +7504,7 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-317. ### What are the differences between useEffect and useEvent (experimental)?
+318. ### What are the differences between `useEffect` and `useEvent` (experimental)?
 
      `useEvent` is an **experimental hook** (not yet stable in React) designed to solve the problem of creating **stable event handlers** that always access the latest props and state without causing re-renders or needing to be in dependency arrays.
 
@@ -7493,7 +7551,7 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-318. ### What are the best practices for using React Hooks?
+319. ### What are the best practices for using React Hooks?
 
      Following best practices ensures your hooks are predictable, maintainable, and bug-free.
 
