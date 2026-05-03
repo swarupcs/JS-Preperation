@@ -141,16 +141,16 @@ Hide/Show table of contents
 | 98  | [What is the purpose of the ReactTestUtils package?](#what-is-the-purpose-of-reacttestutils-package)                                                                                                                             |
 | 99  | [What is Jest?](#what-is-jest)                                                                                                                                                                                                   |
 | 100 | [What are the advantages of Jest over Jasmine?](#what-are-the-advantages-of-jest-over-jasmine)                                                                                                                                   |
-| 101 | [Can you give a simple example of a Jest test case?](#give-a-simple-example-of-jest-test-case)                                                                                                                                   |
+| 101 | [Can you give a simple example of a Jest test case?](#can-you-give-a-simple-example-of-a-jest-test-case)                                                                                                                                   |
 |     | **React Redux**                                                                                                                                                                                                                  |
 | 102 | [What is Flux?](#what-is-flux)                                                                                                                                                                                                   |
 | 103 | [What is Redux?](#what-is-redux)                                                                                                                                                                                                 |
 | 104 | [What are the core principles of Redux?](#what-are-the-core-principles-of-redux)                                                                                                                                                 |
 | 105 | [What are the downsides of Redux compared to Flux?](#what-are-the-downsides-of-redux-compared-to-flux)                                                                                                                           |
 | 106 | [What is the difference between mapStateToProps() and mapDispatchToProps()?](#what-is-the-difference-between-mapstatetoprops-and-mapdispatchtoprops)                                                                             |
-| 107 | [Can you dispatch an action in a reducer?](#can-i-dispatch-an-action-in-reducer)                                                                                                                                                 |
-| 108 | [How do you access the Redux store outside a component?](#how-to-access-redux-store-outside-a-component)                                                                                                                         |
-| 109 | [What are the drawbacks of the MVW pattern?](#what-are-the-drawbacks-of-mvw-pattern)                                                                                                                                            |
+| 107 | [Can you dispatch an action in a reducer?](#can-you-dispatch-an-action-in-a-reducer)                                                                                                                                                 |
+| 108 | [How do you access the Redux store outside a component?](#how-do-you-access-the-redux-store-outside-a-component)                                                                                                                         |
+| 109 | [What are the drawbacks of the MVW pattern?](#what-are-the-drawbacks-of-the-mvw-pattern)                                                                                                                                            |
 | 110 | [Are there any similarities between Redux and RxJS?](#are-there-any-similarities-between-redux-and-rxjs)                                                                                                                         |
 | 111 | [How do you reset state in Redux?](#how-to-reset-state-in-redux)                                                                                                                                                                 |
 | 112 | [What is the difference between React Context and React Redux?](#what-is-the-difference-between-react-context-and-react-redux)                                                                                                   |
@@ -2990,7 +2990,45 @@ class ParentComponent extends React.Component {
 
 100. ### What are the advantages of Jest over Jasmine?
 
+     Jest is built on top of Jasmine but offers several significant improvements for modern JavaScript testing:
+     1.  **Zero Configuration:** Jest works out of the box for most projects without complex setup.
+     2.  **Performance:** It runs tests in parallel using worker processes, making it significantly faster for large suites.
+     3.  **Built-in Features:** Comes with code coverage, mocking (spies/stubs), and snapshot testing built-in, whereas Jasmine often requires extra libraries.
+     4.  **Snapshots:** Allows you to capture UI states and compare them over time, which is invaluable for preventing UI regressions.
+     5.  **Isolation:** Each test runs in its own environment, preventing state leakage between tests.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+101. ### Can you give a simple example of a Jest test case?
+
+     To write a test, you define a block (usually `test` or `it`) that performs an assertion using `expect`.
+
+     **Example (Vanilla JavaScript):**
+     ```javascript
+     // sum.js
+     export const sum = (a, b) => a + b;
+
+     // sum.test.js
+     import { sum } from "./sum";
+
+     test("adds 1 + 2 to equal 3", () => {
+       expect(sum(1, 2)).toBe(3);
+     });
      ```
+
+     **Example (React with Testing Library):**
+     ```jsx
+     import { render, screen } from "@testing-library/react";
+     import Greeting from "./Greeting";
+
+     test("renders greeting message", () => {
+       render(<Greeting name="John" />);
+       const linkElement = screen.getByText(/hello, john/i);
+       expect(linkElement).toBeInTheDocument();
+     });
+     ```
+
+**[⬆ Back to Top](#table-of-contents)**
 
 ## React Redux
 
@@ -2998,29 +3036,38 @@ class ParentComponent extends React.Component {
 
 102. ### What is Flux?
 
-    **Flux** is an application architecture pattern designed by Facebook for building client-side web applications. It complements React by emphasizing **unidirectional data flow**, making state changes more predictable.
+     **Flux** is an application architecture pattern designed by Facebook for building client-side web applications. It complements React by emphasizing **unidirectional data flow**, making state changes more predictable.
 
-    ### Core Components of Flux:
-    1.  **Actions:** Plain objects describing what happened (e.g., `ADD_ITEM`).
-    2.  **Dispatcher:** The central hub that receives actions and broadcasts them to stores. There is only **one** dispatcher per app.
-    3.  **Stores:** Logic and state containers that respond to actions and emit change events.
-    4.  **Views:** React components that listen to stores and re-render the UI.
+     ### Core Components of Flux:
+     1.  **Actions:** Plain objects describing what happened (e.g., `ADD_ITEM`).
+     2.  **Dispatcher:** A central hub that receives actions and broadcasts them to stores. There is only **one** dispatcher per app.
+     3.  **Stores:** Containers for logic and state that respond to actions and emit change events.
+     4.  **Views:** React components that listen to stores and re-render the UI.
+
+     *Note: While Flux was the original architecture, Redux has largely superseded it in the React ecosystem by simplifying the pattern.*
 
 **[⬆ Back to Top](#table-of-contents)**
 
 103. ### What is Redux?
-       Redux is a predictable state container for JavaScript applications, commonly used with React. It helps centralize application state in a single store, making state changes easier to trace, debug, test, and maintain.
 
-       Redux is based on actions, reducers, and a store. Modern Redux development typically uses Redux Toolkit, which reduces boilerplate and provides recommended defaults.
+     **Redux** is a predictable state container for JavaScript applications. It helps you manage the entire state of your application in a **single, centralized store**, making data flow easy to track and debug.
+
+     ### Why use Redux?
+     - **Centralized State:** Data is stored in one place, accessible by any component.
+     - **Predictable Updates:** State can only be changed via actions and pure functions (reducers).
+     - **DevTools:** Powerful debugging features like "Time-Travel" (stepping through state changes).
+     - **Scalability:** Well-suited for large applications with complex data sharing.
+
+     Modern Redux development is done using **Redux Toolkit (RTK)**, which simplifies setup and reduces boilerplate.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 104. ### What are the core principles of Redux?
 
-    Redux follows three fundamental principles:
-    1.  **Single Source of Truth:** The entire state of your application is stored in a single object tree within a single store.
-    2.  **State is Read-Only:** The only way to change the state is to dispatch an **Action** (an object describing what happened).
-    3.  **Changes are made with Pure Functions:** To specify how the state tree is transformed by actions, you write **Reducers** (pure functions that take `(previousState, action)` and return `nextState`).
+     Redux follows three fundamental principles:
+     1.  **Single Source of Truth:** The entire state of your application is stored in a single object tree within a single store.
+     2.  **State is Read-Only:** The only way to change the state is to dispatch an **Action** (an object describing what happened).
+     3.  **Changes are made with Pure Functions:** To specify how the state tree is transformed by actions, you write **Reducers** (pure functions that take `(previousState, action)` and return `nextState`).
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3028,69 +3075,77 @@ class ParentComponent extends React.Component {
 
      Redux offers predictable state management, but it has a few trade-offs compared to Flux-style architectures:
 
-     1.  **Immutability is essential**
-        Redux relies on immutable state updates. You must avoid mutating state directly so Redux can detect changes correctly. Tools such as Redux Toolkit and Immer make this easier.
-     2.  **Careful selection of complementary packages**
-        Redux is minimal by design and uses extension points such as middleware and store enhancers. This flexibility is powerful, but you must choose packages carefully for features such as persistence, async workflows, and forms.
-     3.  **Static typing can add complexity**
-        TypeScript support is strong in modern Redux, especially with Redux Toolkit, but complex action and state types can still add a learning curve and boilerplate in large applications.
-
+     1.  **Immutability is essential:** Redux relies on immutable state updates. You must avoid mutating state directly so Redux can detect changes correctly. Tools such as Redux Toolkit and Immer make this easier.
+     2.  **Careful selection of complementary packages:** Redux is minimal by design and uses extension points such as middleware and store enhancers. This flexibility is powerful, but you must choose packages carefully for features such as persistence, async workflows, and forms.
+     3.  **Static typing can add complexity:** TypeScript support is strong in modern Redux, especially with Redux Toolkit, but complex action and state types can still add a learning curve and boilerplate in large applications.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-106. ### What is the difference between `mapStateToProps` and `mapDispatchToProps`?
+106. ### What is the difference between `mapStateToProps()` and `mapDispatchToProps()`?
 
-    In the legacy `connect()` API:
-    - **`mapStateToProps`:** Used to select data from the Redux store and pass it as props to your component.
-    - **`mapDispatchToProps`:** Used to pass action creators to your component as props, automatically wrapped in `dispatch()`.
+     In the legacy `connect()` API:
+     - **`mapStateToProps`:** Used to select data from the Redux store and pass it as props to your component.
+     - **`mapDispatchToProps`:** Used to pass action creators to your component as props, automatically wrapped in `dispatch()`.
 
-    **Modern Alternative:** In functional components, we now use hooks:
-    - **`useSelector`** instead of `mapStateToProps`.
-    - **`useDispatch`** instead of `mapDispatchToProps`.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-107. ### Can I dispatch an action in reducer?
-
-     No. Dispatching an action inside a reducer is an **anti-pattern**. Reducers must be pure functions: they receive the current state and an action, then return the next state without side effects.
-
-     Dispatching from a reducer can cause chained updates, unpredictable behavior, and infinite loops. Side effects should be handled in middleware, thunks, sagas, listeners, or component/event logic.
+     **Modern Standard:** In functional components, we now use hooks:
+     - **`useSelector`** instead of `mapStateToProps`.
+     - **`useDispatch`** instead of `mapDispatchToProps`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-108. ### How to access Redux store outside a component?
+107. ### Can you dispatch an action in a reducer?
 
-     You can export the store from the module where it is created and import it where needed. Avoid putting the store on the global `window` object.
+     **No.** Dispatching an action inside a reducer is an **anti-pattern**. Reducers must be pure functions: they receive the current state and an action, then return the next state without side effects.
 
+     ### Why?
+     1.  **Purity:** Reducers should only compute the next state, not trigger new events.
+     2.  **Predictability:** Dispatching from a reducer makes state changes hard to trace and can lead to infinite loops.
+     3.  **Debugging:** It breaks the mental model of "one action = one transition."
+
+     Side effects should be handled in **Middleware** (like Thunks or Sagas) or in event handlers.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+108. ### How do you access the Redux store outside a component?
+
+     You can export the `store` instance from the file where it is created and import it where needed.
+
+     **Example:**
      ```javascript
-     const store = configureStore({
-       reducer: rootReducer,
-     });
+     // store.js
+     export const store = configureStore({ ... });
 
-     export default store;
+     // utils.js
+     import { store } from './store';
+
+     export const logState = () => {
+       console.log(store.getState());
+     };
      ```
 
-     In React components, prefer using React Redux hooks such as `useSelector()` and `useDispatch()` instead of importing the store directly. Direct store access is mostly useful for setup code, utilities, or integration points outside React.
+     **Caution:** Within React components, always prefer using Hooks (`useSelector`, `useDispatch`). Direct store access should be reserved for setup code, utilities, or integration points outside the React tree.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 109. ### What are the drawbacks of the MVW pattern?
 
-    The **MVW (Model-View-Whatever)** pattern (common in frameworks like early AngularJS) often led to several issues in large-scale apps:
-    1.  **Complexity:** Two-way data binding makes it difficult to track how data flows through the app.
-    2.  **Performance:** Heavy DOM manipulation and complex "watchers" can slow down the UI.
-    3.  **Unpredictability:** Circular dependencies between Models and Views make debugging extremely difficult.
-    4.  **No Time-Travel:** Because state is mutated in multiple places, it is nearly impossible to implement features like "Undo/Redo" or "Time-Travel Debugging" without massive extra code.
+     The **MVW (Model-View-Whatever)** pattern (common in early frameworks like AngularJS) often led to several issues in large-scale applications:
+     1.  **Circular Dependencies:** Two-way data binding makes it difficult to track how data flows, as changes in the view can update the model, which updates other views.
+     2.  **Performance:** Heavy DOM manipulation and complex "watchers" can slow down the UI as the number of data bindings grows.
+     3.  **Unpredictability:** It becomes hard to reason about the state of the application at any given time.
+     4.  **No Time-Travel:** Because state is mutated in multiple places, implementing features like undo/redo or time-travel debugging is nearly impossible.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 110. ### Are there any similarities between Redux and RxJS?
 
-     These libraries are very different for very different purposes, but there are some vague similarities.
+     While they serve different purposes, both **Redux** and **RxJS** are based on reactive programming principles:
 
-     Redux is a tool for managing state throughout the application. It is usually used as an architecture for UIs. Think of it as an alternative to (half of) Angular. RxJS is a reactive programming library. It is usually used as a tool to accomplish asynchronous tasks in JavaScript. Think of it as an alternative to Promises. Redux uses the Reactive paradigm because the Store is reactive. The Store observes actions from a distance, and changes itself. RxJS also uses the Reactive paradigm, but instead of being an architecture, it gives you basic building blocks, Observables, to accomplish this pattern.
+     - **Reactive Nature:** Both handle streams of data/events. In Redux, the store "reacts" to dispatched actions. In RxJS, observers "react" to stream emissions.
+     - **Unidirectional Flow:** Both encourage a predictable flow of data.
+     - **Integration:** You can use RxJS *within* Redux (via `redux-observable`) to handle complex asynchronous side effects as streams (Epics).
 
-**[⬆ Back to Top](#table-of-contents)**
+     **Key Difference:** Redux is a **state management** library (focused on holding a single state), while RxJS is a **utility library** for handling asynchronous event streams.
 
 111. ### How to reset state in Redux?
 
