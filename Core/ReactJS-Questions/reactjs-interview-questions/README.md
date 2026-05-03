@@ -5347,126 +5347,109 @@ class ParentComponent extends React.Component {
 
       export default function Profile() {
         const [user, setUser] = useState({
-          firstName: "John",
-          lastName: "Abraham",
-          age: 30,
-        });
+251. ### What are capture phase events?
 
-        function handleFirstNameChange(e) {
-          user.firstName = e.target.value;
-        }
+     By default, React events bubble up from the child to the parent. However, you can catch events during the **capture phase** (traveling down from the parent) by appending **`Capture`** to the event name (e.g., `onClickCapture`).
 
-        function handleLastNameChange(e) {
-          user.lastName = e.target.value;
-        }
-
-        function handleAgeChange(e) {
-          user.age = e.target.value;
-        }
-
-        return (
-          <>
-            <label>
-              First name:
-              <input value={user.firstName} onChange={handleFirstNameChange} />
-            </label>
-            <label>
-              Last name:
-              <input value={user.lastName} onChange={handleLastNameChange} />
-            </label>
-            <label>
-              Age:
-              <input value={user.age} onChange={handleAgeChange} />
-            </label>
-            <p>
-              Profile:
-              {person.firstName} {person.lastName} ({person.age})
-            </p>
-          </>
-        );
-      }
-      ```
-
-      Once you run the application with above user profile component, you can observe that user profile details won't be update upon entering the input fields.
-      This issue can be fixed by creating a new copy of object which includes existing properties through spread syntax(...obj) and add changed values in a single event handler itself as shown below.
-
-      ```jsx
-      handleProfileChange(e) {
-        setUser({
-        ...user,
-          [e.target.name]: e.target.value
-        });
-      }
-      ```
-
-      The above event handler is concise instead of maintaining separate event handler for each field. Now, UI displays the updated field values as expected without an issue.
+     ### Example:
+     ```javascript
+     <div onClickCapture={() => console.log('Parent Capture')}>
+       <button onClick={() => console.log('Button Click')}>Click Me</button>
+     </div>
+     // Output: "Parent Capture" then "Button Click"
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-257.  ### How do you update nested objects inside state?
+252. ### How does React update the screen in an application?
 
-      You cannot simply use spread syntax for all kinds of objects inside state. Because spread syntax is shallow and it copies properties for one level deep only. If the object has nested object structure, UI doesn't work as expected with regular JavaScript nested property mutation. Let's demonstrate this behavior with an example of User object which has address nested object inside of it.
-
-      ```jsx
-      const user = {
-        name: "John",
-        age: 32,
-        address: {
-          country: "Singapore",
-          postalCode: 440004,
-        },
-      };
-      ```
-
-      If you try to update the country nested field in a regular javascript fashion(as shown below) then user profile screen won't be updated with latest value.
-
-      ```js
-      user.address.country = "Germany";
-      ```
-
-      This issue can be fixed by flattening all the fields into a top-level object or create a new object for each nested object and point it to it's parent object. In this example, first you need to create copy of address object and update it with the latest value. Later, the address object should be linked to parent user object something like below.
-
-      ```js
-      setUser({
-        ...user,
-        address: {
-          ...user.address,
-          country: "Germany",
-        },
-      });
-      ```
-
-      This approach is bit verbose and not easy for deep hierarchical state updates. But this workaround can be used for few levels of nested objects without much hassle.
+     React updates the UI in three distinct steps:
+     1.  **Triggering:** A render is triggered by either the initial mount (`createRoot`) or a state update.
+     2.  **Rendering:** React calls your components to determine what should be on the screen. It calculates the difference (Diffing) between the new and old Virtual DOM.
+     3.  **Committing:** React applies the minimal set of changes to the real DOM using browser APIs like `appendChild` or `setAttribute`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-258.  ### How do you update arrays inside state?
+253. ### How does React batch multiple state updates?
 
-      Eventhough arrays in JavaScript are mutable in nature, you need to treat them as immutable while storing them in a state. That means, similar to objects, the arrays cannot be updated directly inside state. Instead, you need to create a copy of the existing array and then set the state to use newly copied array.
+     **Batching** is when React groups multiple state updates into a single re-render for better performance. In React 18, **Automatic Batching** handles this for all updates inside promises, timeouts, and native event handlers.
 
-      To ensure that arrays are not mutated, the mutation operations like direct direct assignment(arr[1]='one'), push, pop, shift, unshift, splice etc methods should be avoided on original array. Instead, you can create a copy of existing array with help of array operations such as filter, map, slice, spread syntax etc.
+     ```javascript
+     function handleClick() {
+       setCount(c => c + 1);
+       setFlag(f => !f);
+       // React only re-renders ONCE at the end.
+     }
+     ```
 
-      For example, the below push operation doesn't add the new todo to the total todo's list in an event handler.
+**[⬆ Back to Top](#table-of-contents)**
 
-      ```jsx
-      onClick = {
-        todos.push({
-          id: id+1,
-          name: name
-        })
-      }
-      ```
+254. ### Is it possible to prevent automatic batching?
 
-      This issue is fixed by replacing push operation with spread syntax where it will create a new array and the UI updated with new todo.
+     Yes. If you need to read something from the DOM immediately after a state update (like scroll position), you can use **`flushSync`** from `react-dom` to force React to update the DOM synchronously.
 
-      ```jsx
-      onClick = {
-        [
-          ...todos,
-          { id: id+1, name: name }
-        ]
-      }
-      ```
+**[⬆ Back to Top](#table-of-contents)**
+
+255. ### What is React hydration?
+
+     **Hydration** is the process where React attaches event listeners to the static HTML that was pre-rendered by the server (SSR). It "waters" the dry HTML to make it an interactive React application.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+256. ### How do you update objects inside state?
+
+     In React, you should treat state as **read-only**. To update an object, you must create a **new object** with the updated values using the spread operator (`...`).
+
+     ```javascript
+     const [user, setUser] = useState({ name: 'John', age: 30 });
+
+     const updateName = (newName) => {
+       setUser({
+         ...user,      // 1. Copy existing properties
+         name: newName // 2. Override the specific property
+       });
+     };
+     ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+257. ### How do you update nested objects inside state?
+
+     Spread syntax is **shallow**. If you have a nested object, you must spread every level that you want to update.
+
+     ```javascript
+     const [user, setUser] = useState({
+       name: 'John',
+       address: { city: 'Singapore', zip: 4400 }
+     });
+
+     const updateCity = (newCity) => {
+       setUser({
+         ...user,
+         address: {
+           ...user.address, // Spread the nested level
+           city: newCity
+         }
+       });
+     };
+     ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+258. ### How do you update arrays inside state?
+
+     Just like objects, arrays in state should be treated as **immutable**. Avoid methods like `push`, `pop`, or `splice`. Instead, use `filter`, `map`, or the spread operator.
+
+     ```javascript
+     // Adding to an array:
+     setTodos([...todos, { id: 1, text: 'New Item' }]);
+
+     // Removing from an array:
+     setTodos(todos.filter(item => item.id !== targetId));
+
+     // Updating an item:
+     setTodos(todos.map(item => item.id === targetId ? { ...item, done: true } : item));
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -5507,34 +5490,63 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-260.  ### What are the benefits of preventing the direct state mutations?
+260. ### What are the benefits of preventing direct state mutations?
+
+     1.  **Predictability:** The UI always accurately reflects the current state snapshot.
+     2.  **Performance (Memoization):** Allows React to use cheap shallow comparisons (`prev === next`) to skip re-renders.
+     3.  **Debugging:** Enables "Time Travel Debugging" (seeing exactly what changed and when).
+     4.  **Concurrent Features:** Immutability allows React to interrupt rendering and resume it safely without inconsistent data.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-261.  ### What are the preferred and non-preferred array operations for updating the state?
+261. ### What are the preferred and non-preferred array operations for updating state?
 
-      The below table represent preferred and non-preferred array operations for updating the component state.
+     When updating arrays in state, you should avoid methods that mutate the original array.
 
-      | Action    | Preferred            | Non-preferred              |
-      | --------- | -------------------- | -------------------------- |
-      | Adding    | concat, [...arr]     | push, unshift              |
-      | Removing  | filter, slice        | pop, shift, splice         |
-      | Replacing | map                  | splice, arr[i] = someValue |
-      | sorting   | copying to new array | reverse, sort              |
+     | Action | Preferred (Non-mutating) | Non-preferred (Mutating) |
+     | :--- | :--- | :--- |
+     | **Adding** | `[...arr, item]` | `push()`, `unshift()` |
+     | **Removing** | `arr.filter()` | `splice()`, `pop()`, `shift()` |
+     | **Replacing** | `arr.map()` | `arr[i] = val`, `splice()` |
+     | **Sorting** | `[...arr].sort()` | `sort()`, `reverse()` |
 
-      If you use Immer library then you can able to use all array methods without any problem.
+     ### Example:
+     ```javascript
+     // Correct way to add an item
+     setItems(prevItems => [...prevItems, newItem]);
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-262. ### What will happen by defining nested function components?
+262. ### What will happen when defining nested function components?
 
-Technically it is possible to write nested function components but it is not suggested to write nested function definitions. Because it leads to unexpected bugs and performance issues.
+     Defining a component inside another component is a **performance anti-pattern**.
+
+     ### The Problem:
+     React recreates the inner component function on every render of the parent. This causes the inner component to **completely unmount and remount**, losing its internal state and causing a slow UI.
+
+     ```javascript
+     // ❌ AVOID THIS
+     function Parent() {
+       function Child() { // Recreated every time Parent renders
+         return <div>I am nested</div>;
+       }
+       return <Child />;
+     }
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
 263. ### Can I use keys for non-list items?
 
-     Keys are primarily used for rendering list items but they are not just for list items. You can also use them React to distinguish components. By default, React uses order of the components in
+     Yes. While `key` is commonly used for lists, it can also be used on a single component to **force React to reset its state**.
+
+     ### Example (Resetting a form):
+     When the `userId` changes, the `ProfileForm` will completely reset its internal state because the `key` has changed.
+
+     ```jsx
+     <ProfileForm key={userId} />
+     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
