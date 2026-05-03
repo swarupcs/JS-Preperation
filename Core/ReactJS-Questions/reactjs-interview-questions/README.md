@@ -2671,537 +2671,340 @@ class ParentComponent extends React.Component {
 
     **[⬆ Back to Top](#table-of-contents)**
 
-81. ### What are the `<Router>` components of React Router v6?
+81. ### What are the standard <Router> components in React Router v6?
 
-    React Router v6 provides these commonly used router components:
+    React Router v6 provides several router components depending on the environment:
 
-    1.  `<BrowserRouter>`: Uses the HTML5 history API for standard web apps.
-    2.  `<HashRouter>`: Uses hash-based routing for static servers.
-    3.  `<MemoryRouter>`: Uses in-memory routing for testing and non-browser environments.
-    4.  `<StaticRouter>`: Provides static routing for server-side rendering (SSR).
-
-    These routers manage browser, hash, memory, or static navigation behavior. In React Router v6, you usually navigate with hooks such as `useNavigate()` instead of working directly with a `history` object.
+    1.  **`<BrowserRouter>`:** The most common router for web applications. It uses the HTML5 history API to keep the UI in sync with the URL.
+    2.  **`<HashRouter>`:** Uses the hash portion of the URL (`#/`) to manage routing. Useful for legacy browsers or static hosting environments.
+    3.  **`<MemoryRouter>`:** Keeps the history of your "URL" in memory. Primarily used for testing and non-browser environments like React Native.
+    4.  **`<StaticRouter>`:** Used for **Server-Side Rendering (SSR)** to provide the location prop manually.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-82. ### What is the purpose of `push()` and `replace()` methods of `history`?
+82. ### What is the difference between `push()` and `replace()`?
 
-    A history instance has two methods commonly used for navigation:
+    These methods represent two different ways to interact with the browser's session history stack:
 
-    1.  `push()`
-    2.  `replace()`
+    - **`push()`:** Adds a **new entry** to the history stack. If the user clicks the "Back" button, they will return to the previous page.
+    - **`replace()`:** **Overwrites** the current entry on the history stack. If the user clicks the "Back" button, they will skip the current page and return to the page *before* it.
 
-    If you think of history as an array of visited locations, `push()` adds a new location to the stack and `replace()` replaces the current location with a new one.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-83. ### How do you programmatically navigate using React Router v4?
-
-    In React Router v4, there are three common ways to perform programmatic navigation inside components.
-
-    1.  **Using the `withRouter()` higher-order function:**
-
-        The `withRouter()` higher-order function injects the `history` object as a prop. This object provides methods such as `push()` and `replace()`.
-
-        ```jsx harmony
-        import { withRouter } from "react-router-dom"; // this also works with 'react-router-native'
-
-        const Button = withRouter(({ history }) => (
-          <button
-            type="button"
-            onClick={() => {
-              history.push("/new-location");
-            }}
-          >
-            {"Click Me!"}
-          </button>
-        ));
-        ```
-
-    2.  **Using `<Route>` component and render props pattern:**
-
-        The `<Route>` component passes route props to its render function, so you can access navigation methods through the `history` prop.
-
-        ```jsx harmony
-        import { Route } from "react-router-dom";
-
-        const Button = () => (
-          <Route
-            render={({ history }) => (
-              <button
-                type="button"
-                onClick={() => {
-                  history.push("/new-location");
-                }}
-              >
-                {"Click Me!"}
-              </button>
-            )}
-          />
-        );
-        ```
-
-    3.  **Using context:**
-
-        This option is not recommended because it relies on legacy context APIs.
-
-        ```jsx harmony
-        import PropTypes from "prop-types";
-
-        const Button = (props, context) => (
-          <button
-            type="button"
-            onClick={() => {
-              context.history.push("/new-location");
-            }}
-          >
-            {"Click Me!"}
-          </button>
-        );
-
-        Button.contextTypes = {
-          history: PropTypes.shape({
-            push: PropTypes.func.isRequired,
-          }),
-        };
-        ```
+    **Use Case for `replace()`:** Commonly used after a successful login or a form submission to prevent the user from navigating back to the login page.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-84. ### How to get query parameters in React Router v4?
+83. ### How do you programmatically navigate in React Router v6?
 
-    React Router v4 does not parse query strings for you. This lets applications choose the query-string implementation they prefer. A common approach is to use the `query-string` package.
+    In React Router v6, the `withRouter` HOC and `useHistory` hook have been replaced by the **`useNavigate`** hook.
 
-    ```javascript
-    const queryString = require("query-string");
-    const parsed = queryString.parse(props.location.search);
-    ```
-
-    You can also use `URLSearchParams` if you want something native:
-
-    ```javascript
-    const params = new URLSearchParams(props.location.search);
-    const foo = params.get("name");
-    ```
-
-    If you need to support older browsers, you may need a polyfill for `URLSearchParams`.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-85. ### Why you get "Router may have only one child element" warning?
-
-    In React Router v4, a `<Router>` must have only one child element. Wrap your routes in a single parent, commonly a `<Switch>`, because `<Switch>` renders the first matching route exclusively.
-
-    First, add `Switch` to your imports:
-
-    ```javascript
-    import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-    ```
-
-    Then define the routes inside the `<Switch>` block:
-
-    ```jsx harmony
-    <Router>
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/about" component={About} />
-      </Switch>
-    </Router>
-    ```
-
-**[⬆ Back to Top](#table-of-contents)**
-
-86. ### How to pass params to `history.push` method in React Router v4?
-
-    While navigating, you can pass location data to the `history` object:
-
-    ```javascript
-    this.props.history.push({
-      pathname: "/template",
-      search: "?name=sudheer",
-      state: { detail: response.data },
-    });
-    ```
-
-    The `search` property is used for query parameters, and the `state` property is used for additional location state.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-87. ### How to implement _default_ or _NotFound_ page?
-
-    In React Router v4/v5, a `<Switch>` renders the first child `<Route>` that matches. A `<Route>` with no `path` always matches, so place it last to render a default or `NotFound` page.
-
-    ```jsx harmony
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route path="/user" component={User} />
-      <Route component={NotFound} />
-    </Switch>
-    ```
-
-**[⬆ Back to Top](#table-of-contents)**
-
-88. ### How to get history on React Router v4?
-
-    Below are the steps to get a custom `history` object in React Router v4:
-
-    1.  Create a module that exports a `history` object and import this module across the project.
-
-        For example, create `history.js` file:
-
-        ```javascript
-        import { createBrowserHistory } from "history";
-
-        export default createBrowserHistory({
-          /* pass a configuration object here if needed */
-        });
-        ```
-
-    2.  Use the low-level `<Router>` component instead of a built-in router. Import the above `history.js` file inside `index.js`:
-
-        ```jsx harmony
-        import { Router } from "react-router-dom";
-        import history from "./history";
-        import App from "./App";
-
-        ReactDOM.render(
-          <Router history={history}>
-            <App />
-          </Router>,
-          document.getElementById("root")
-        );
-        ```
-
-    3.  You can also use the `push` method of the custom `history` object:
-
-        ```javascript
-        // some-other-file.js
-        import history from "./history";
-
-        history.push("/go-here");
-        ```
-
-**[⬆ Back to Top](#table-of-contents)**
-
-89. ### How to perform automatic redirect after login?
-
-    In React Router v6, use the `<Navigate>` component or the `useNavigate()` hook to redirect after login. Rendering `<Navigate>` changes the current location, and the `replace` prop prevents the login page from staying in the browser history.
-
+    **Example:**
     ```jsx
-    import { Navigate } from "react-router-dom";
+    import { useNavigate } from "react-router-dom";
 
-    export default function Login({ isLoggedIn }) {
-      if (isLoggedIn) {
-        return <Navigate to="/dashboard" replace />;
-      }
+    function Home() {
+      const navigate = useNavigate();
 
-      return <div>{"Login Please"}</div>;
+      const handleClick = () => {
+        // Equivalent to history.push('/about')
+        navigate("/about");
+        
+        // Equivalent to history.replace('/about')
+        // navigate("/about", { replace: true });
+      };
+
+      return <button onClick={handleClick}>Go to About</button>;
     }
     ```
 
-    In React Router v4/v5, the equivalent component is `<Redirect>`.
+**[⬆ Back to Top](#table-of-contents)**
 
-      <details><summary><b>See Class</b></summary>
-      <p>
+84. ### How do you get query parameters in React Router v6?
 
+    React Router v6 provides a built-in **`useSearchParams`** hook to easily access and manipulate query strings.
+
+    **Example:**
     ```jsx
-    import React, { Component } from "react";
-    import { Redirect } from "react-router-dom";
+    import { useSearchParams } from "react-router-dom";
 
-    export default class LoginComponent extends Component {
-      render() {
-        if (this.state.isLoggedIn === true) {
-          return <Redirect to="/your/redirect/page" />;
-        } else {
-          return <div>{"Login Please"}</div>;
-        }
-      }
-    }
-    ```
+    function UserList() {
+      const [searchParams, setSearchParams] = useSearchParams();
+      
+      // Get a specific parameter
+      const name = searchParams.get("name"); // e.g., ?name=John
 
-       </p>
-       </details>
-
-**[⬆ Back to Top](#table-of-contents)**
-
-## React Internationalization
-
-90. ### What is React Intl?
-
-    _React Intl_ is a React library for internationalization (i18n). It provides components, hooks, and imperative APIs for formatting translated messages, numbers, dates, times, relative time, and pluralized text.
-
-    React Intl is part of the _FormatJS_ ecosystem and is built on standard JavaScript internationalization APIs such as `Intl.NumberFormat`, `Intl.DateTimeFormat`, and `Intl.PluralRules`.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-91. ### What are the main features of React Intl?
-
-    The main features of React Intl are:
-
-    1.  Formats translated messages.
-    2.  Formats numbers, currencies, percentages, dates, and times.
-    3.  Displays relative time, such as "2 hours ago".
-    4.  Supports pluralization and parameterized messages.
-    5.  Works in the browser and Node.js.
-    6.  Uses standard `Intl` APIs.
-    7.  Supports many locales, depending on the available `Intl` data.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-92. ### What are the two ways of formatting in React Intl?
-
-    React Intl provides two common ways to format messages, numbers, and dates:
-
-    1.  **Using React components:**
-
-        ```jsx harmony
-        <FormattedMessage
-          id={"account"}
-          defaultMessage={"The amount is less than minimum balance."}
-        />
-        ```
-
-    2.  **Using the imperative API:**
-
-        ```javascript
-        const intl = useIntl();
-
-        const messages = defineMessages({
-          accountMessage: {
-            id: "account",
-            defaultMessage: "The amount is less than minimum balance.",
-          },
-        });
-
-        intl.formatMessage(messages.accountMessage);
-        ```
-
-**[⬆ Back to Top](#table-of-contents)**
-
-93. ### How to use `<FormattedMessage>` as placeholder using React Intl?
-
-    The `<Formatted... />` components from `react-intl` return React elements, not plain strings, so they are not suitable for attributes such as `placeholder`, `title`, or `alt`. For those cases, use the imperative `formatMessage()` API from `useIntl()`.
-
-    ```jsx harmony
-    import React from "react";
-    import { useIntl } from "react-intl";
-
-    const MyComponent = () => {
-      const intl = useIntl();
-      const placeholder = intl.formatMessage({ id: "messageId" });
-
-      return <input placeholder={placeholder} />;
-    };
-
-    export default MyComponent;
-    ```
-
-**[⬆ Back to Top](#table-of-contents)**
-
-94. ### How to access current locale with React Intl?
-
-    You can get the current locale in any component using the `useIntl()` hook:
-
-    ```jsx harmony
-    import { useIntl } from "react-intl";
-
-    const MyComponent = () => {
-      const intl = useIntl();
-
-      return <div>{`The current locale is ${intl.locale}`}</div>;
-    };
-
-    export default MyComponent;
-    ```
-
-**[⬆ Back to Top](#table-of-contents)**
-
-95. ### How to format date using React Intl?
-
-     The `useIntl()` hook gives you access to the `formatDate()` method. It returns a localized string representation of the date.
-
-     ```jsx harmony
-     import { useIntl } from "react-intl";
-
-     const MyComponent = ({ date }) => {
-       const intl = useIntl();
-
-       const stringDate = intl.formatDate(date, {
-         year: "numeric",
-         month: "long",
-         day: "numeric",
-       });
-
-       return <div>{`The formatted date is ${stringDate}`}</div>;
-     };
-
-     export default MyComponent;
-     ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-## React Testing
-
-96. ### What is Shallow Renderer in React testing?
-
-    _Shallow rendering_ renders a component only one level deep. It lets you assert what a component returns without rendering its child components. This was useful for isolated unit tests, especially with class components.
-
-    In modern React projects, React Testing Library is usually preferred because it tests behavior from the user's perspective. Still, shallow rendering is useful to understand for older test suites.
-
-    For example, if you have the following component:
-
-    ```javascript
-    function MyComponent() {
       return (
         <div>
-          <span className={"heading"}>{"Title"}</span>
-          <span className={"description"}>{"Description"}</span>
+          <p>Search Name: {name}</p>
+          <button onClick={() => setSearchParams({ name: "Jane" })}>
+            Set to Jane
+          </button>
         </div>
       );
     }
     ```
 
-    Then you can assert as follows:
+**[⬆ Back to Top](#table-of-contents)**
 
-    ```jsx harmony
-    import ShallowRenderer from "react-test-renderer/shallow";
+85. ### How do you handle the "Router may have only one child element" warning?
 
-    // in your test
-    const renderer = new ShallowRenderer();
-    renderer.render(<MyComponent />);
+    In older versions of React Router (v4/v5), a `<Router>` could only have one child. To solve this, you would wrap all `<Route>` components in a `<Switch>`.
 
-    const result = renderer.getRenderOutput();
+    In **React Router v6**, this is handled by the **`<Routes>`** component. All `<Route>` components must now be children of a `<Routes>` block, which handles the matching logic and renders only the first match.
 
-    expect(result.type).toBe("div");
-    expect(result.props.children).toEqual([
-      <span className={"heading"}>{"Title"}</span>,
-      <span className={"description"}>{"Description"}</span>,
-    ]);
+    **Example (v6):**
+    ```jsx
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-97. ### What is `TestRenderer` package in React?
+86. ### How to pass state to `navigate()` in React Router v6?
 
-    The `react-test-renderer` package renders React components to pure JavaScript objects without depending on the DOM or a native mobile environment. It can be used for snapshot testing or inspecting the rendered component tree without using a browser or `jsdom`.
+    You can pass data (state) to a new location using the second argument of the `navigate` function. This state is not visible in the URL and can be retrieved using the `useLocation` hook.
 
-    ```jsx harmony
-    import TestRenderer from "react-test-renderer";
+    **Example (Navigation):**
+    ```javascript
+    const navigate = useNavigate();
+    
+    navigate("/details", { state: { from: "home", id: 123 } });
+    ```
 
-    const Link = ({ page, children }) => <a href={page}>{children}</a>;
-
-    const testRenderer = TestRenderer.create(
-      <Link page={"https://www.facebook.com/"}>{"Facebook"}</Link>
-    );
-
-    console.log(testRenderer.toJSON());
-    // {
-    //   type: 'a',
-    //   props: { href: 'https://www.facebook.com/' },
-    //   children: [ 'Facebook' ]
-    // }
+    **Example (Retrieving State):**
+    ```javascript
+    const location = useLocation();
+    const { from, id } = location.state || {};
     ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-98. ### What is the purpose of ReactTestUtils package?
+87. ### How to implement a "NotFound" page in React Router v6?
 
-    `ReactTestUtils` provided low-level utilities for testing React components with a simulated DOM. It included helpers for rendering components and simulating events in unit tests.
+    In React Router v6, you create a "catch-all" route by setting the path to **`*`**. This route will match any URL that hasn't been matched by previous routes.
 
-    In modern React applications, React Testing Library is generally preferred because it encourages testing user-visible behavior instead of implementation details.
+    **Example:**
+    ```jsx
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      {/* Catch-all route for 404 */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+    ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+88. ### How do you navigate outside of a component?
+
+    If you need to navigate outside of a React component (e.g., in an Axios interceptor or a Redux action), the best approach in React Router v6 is to use the **Data Routers** (like `createBrowserRouter`) and export the `router` instance.
+
+    **Example:**
+    ```javascript
+    // router.js
+    export const router = createBrowserRouter([ ... ]);
+
+    // api.js
+    import { router } from './router';
+    
+    // You can now navigate imperatively
+    router.navigate('/login');
+    ```
+
+    For older versions (v4/v5), you would create a custom `history` object and pass it to a low-level `<Router>`.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+89. ### How to perform an automatic redirect after login?
+
+    In **React Router v6**, you can use the **`<Navigate />`** component or the **`useNavigate()`** hook. Using the `replace: true` option ensures the user cannot go back to the login page.
+
+    **Using Component:**
+    ```jsx
+    if (isLoggedIn) {
+      return <Navigate to="/dashboard" replace />;
+    }
+    ```
+
+    **Using Hook:**
+    ```jsx
+    const navigate = useNavigate();
+    
+    const handleLogin = () => {
+      // Logic...
+      navigate("/dashboard", { replace: true });
+    };
+    ```
+
+    **[⬆ Back to Top](#table-of-contents)**
+
+## React Internationalization
+
+90. ### What is React Intl?
+
+    **React Intl** is an internationalization (i18n) library for React applications. It is part of the **FormatJS** ecosystem and provides components and APIs to format dates, numbers, and strings, including pluralization and handling translations.
+
+    It leverages standard browser **`Intl`** APIs (like `Intl.DateTimeFormat`) to ensure consistent formatting across different locales without bloating your bundle size.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+91. ### What are the main features of React Intl?
+
+    **React Intl** provides a comprehensive set of features for internationalization:
+    - **Message Formatting:** Translating and formatting strings with support for variables.
+    - **Pluralization:** Handling singular/plural forms based on numeric values.
+    - **Date & Time Formatting:** Displaying dates and times according to local conventions.
+    - **Number Formatting:** Handling currencies, percentages, and decimals.
+    - **Relative Time:** Displaying human-readable time (e.g., "5 minutes ago").
+    - **Standardized:** It is built on top of the browser's native **`Intl`** APIs.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+92. ### What are the two ways of formatting in React Intl?
+
+    React Intl provides two ways to format data: **Declarative (Components)** and **Imperative (Hooks/API)**.
+
+    1.  **Declarative (Components):** Best for rendering text directly in the UI.
+        ```jsx
+        import { FormattedMessage } from "react-intl";
+
+        <FormattedMessage
+          id="app.greeting"
+          defaultMessage="Hello, {name}!"
+          values={{ name: "John" }}
+        />
+        ```
+
+    2.  **Imperative (API):** Best for non-UI strings (e.g., `placeholder`, `title`, or alerts).
+        ```jsx
+        import { useIntl } from "react-intl";
+
+        const intl = useIntl();
+        const label = intl.formatMessage({ id: "app.label" });
+        ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+93. ### How to use placeholders with React Intl?
+
+    Because `<FormattedMessage>` returns a React element (not a string), it cannot be used directly in attributes like `placeholder`. Instead, you must use the **`formatMessage`** method from the `useIntl` hook.
+
+    **Example:**
+    ```jsx
+    import { useIntl } from "react-intl";
+
+    const SearchBar = () => {
+      const intl = useIntl();
+      const placeholder = intl.formatMessage({ id: "search_placeholder" });
+
+      return <input type="text" placeholder={placeholder} />;
+    };
+    ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+94. ### How to access the current locale with React Intl?
+
+    You can access the current locale (e.g., `"en-US"`) using the **`locale`** property from the **`useIntl()`** hook.
+
+    **Example:**
+    ```jsx
+    import { useIntl } from "react-intl";
+
+    const CurrentLocale = () => {
+      const { locale } = useIntl();
+      return <p>The current language is: {locale}</p>;
+    };
+    ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+95. ### How to format a date using React Intl?
+
+    You can format dates using the **`intl.formatDate()`** method or the **`<FormattedDate>`** component.
+
+    **Example (Hook):**
+    ```jsx
+    const intl = useIntl();
+    const formatted = intl.formatDate(new Date(), {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    ```
+
+    **Example (Component):**
+    ```jsx
+    import { FormattedDate } from "react-intl";
+
+    <FormattedDate value={new Date()} year="numeric" month="long" day="numeric" />
+    ```
+
+**[⬆ Back to Top](#table-of-contents)**
+
+## React Testing
+
+96. ### What is Shallow Rendering in React testing?
+
+    **Shallow Rendering** allows you to render a component "one level deep." This means you can test a component in isolation without rendering any of its children.
+
+    ### Key Points:
+    1.  **Isolation:** It ensures that a test for `Parent` doesn't fail because of a bug in `Child`.
+    2.  **Performance:** It is faster as it ignores the entire sub-tree of components.
+    3.  **Modern Standard:** While shallow rendering was popular with Enzyme, **React Testing Library (RTL)** is now the industry standard. RTL discourages shallow rendering because it prefers testing from the user's perspective (rendering the full tree).
+
+**[⬆ Back to Top](#table-of-contents)**
+
+97. ### What is the `TestRenderer` package?
+
+    The **`react-test-renderer`** package allows you to render React components to pure JavaScript objects without depending on the DOM or a browser environment (like `jsdom`).
+
+    ### Use Cases:
+    - **Snapshot Testing:** Saving the output of a component to a file and comparing it in future tests.
+    - **DOM-less Testing:** Testing React logic in environments where a DOM is not available (e.g., Node.js scripts).
+
+**[⬆ Back to Top](#table-of-contents)**
+
+98. ### What is the purpose of the `ReactTestUtils` package?
+
+    **`ReactTestUtils`** is a legacy set of low-level utilities for testing React components. It provided ways to simulate DOM events and inspect the component tree.
+
+    **Note:** In modern React development, you should almost always use **React Testing Library (RTL)** instead. `ReactTestUtils` is considered an implementation detail that makes tests fragile and harder to maintain.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 99. ### What is Jest?
 
-    _Jest_ is a JavaScript testing framework created by Facebook. It includes a test runner, assertion library, mocking utilities, code coverage support, and optional `jsdom` environment for testing browser-like code.
+    **Jest** is a powerful JavaScript testing framework developed by Meta (Facebook). It is designed for simplicity and works out of the box for most React projects.
 
-    Jest is commonly used with React Testing Library to test React components, hooks, and application logic.
+    ### Key Features:
+    - **Test Runner:** Executes your test files.
+    - **Assertion Library:** Provides functions like `expect(a).toBe(b)`.
+    - **Mocking:** Easy-to-use APIs for mocking functions, modules, and timers.
+    - **Snapshots:** Allows you to capture the UI of a component to prevent unexpected regressions.
 
 **[⬆ Back to Top](#table-of-contents)**
 
 100. ### What are the advantages of Jest over Jasmine?
 
-     Jest has several advantages compared to Jasmine:
-
-     - Automatically finds and runs test files based on naming conventions.
-     - Provides built-in mocking and spying utilities.
-     - Supports async tests with promises, `async/await`, and fake timers.
-     - Runs your tests with a fake DOM implementation (via `jsdom`) so that your tests can be run on the command line.
-     - Runs tests in parallel processes for better performance.
-     - Includes snapshot testing and code coverage support.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-101. ### Give a simple example of Jest test case
-
-     Let's write a test for a function that adds two numbers in a `sum.js` file:
-
-     ```javascript
-     const sum = (a, b) => a + b;
-
-     export default sum;
-     ```
-
-     Create a file named `sum.test.js` that contains the actual test:
-
-     ```javascript
-     import sum from "./sum";
-
-     test("adds 1 + 2 to equal 3", () => {
-       expect(sum(1, 2)).toBe(3);
-     });
-     ```
-
-     And then add the following section to your `package.json`:
-
-     ```json
-     {
-       "scripts": {
-         "test": "jest"
-       }
-     }
-     ```
-
-     Finally, run `yarn test` or `npm test` and Jest will print a result:
-
-     ```console
-     $ yarn test
-     PASS ./sum.test.js
-     Test: adds 1 + 2 to equal 3 (2ms)
      ```
 
 ## React Redux
 
 **[⬆ Back to Top](#table-of-contents)**
 
-102. ### What is flux?
+102. ### What is Flux?
 
-       **Flux** is an **application architecture** designed by Facebook to manage data flow in React applications. It is not a framework by itself. Flux was created as an alternative to traditional MVC patterns and emphasizes **unidirectional data flow** to make state changes more predictable and easier to debug.
+    **Flux** is an application architecture pattern designed by Facebook for building client-side web applications. It complements React by emphasizing **unidirectional data flow**, making state changes more predictable.
 
-       Flux complements React by organizing how data moves through an application, especially in large or complex projects.
-
-       #### Core Concepts of Flux
-
-       Flux operates using **four key parts**, each with a specific responsibility:
-       *   **Actions**
-             *   Plain JavaScript objects or functions that describe _what happened_ (e.g., user interactions or API responses).
-             *   Example: `{ type: 'ADD_TODO', payload: 'Buy milk' }`
-       *   **Dispatcher**
-             *   A central hub that receives actions and **dispatches** them to the appropriate stores.
-             *   There is **only one dispatcher** in a Flux application.
-       *   **Stores**
-             *   Hold the **application state** and business logic.
-             *   Respond to actions from the dispatcher and update themselves accordingly.
-             *   They **emit change events** that views can listen to.
-       *   **Views (React Components)**
-             *   Subscribe to stores and **re-render** when the data changes.
-             *   They can also trigger new actions (e.g., on user input).
-
-
-       The workflow between dispatcher, stores, and views is shown below:
-
-       ![flux](images/flux.png)
+    ### Core Components of Flux:
+    1.  **Actions:** Plain objects describing what happened (e.g., `ADD_ITEM`).
+    2.  **Dispatcher:** The central hub that receives actions and broadcasts them to stores. There is only **one** dispatcher per app.
+    3.  **Stores:** Logic and state containers that respond to actions and emit change events.
+    4.  **Views:** React components that listen to stores and re-render the UI.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3214,32 +3017,10 @@ class ParentComponent extends React.Component {
 
 104. ### What are the core principles of Redux?
 
-     Redux follows three fundamental principles:
-
-     1. **Single source of truth:** The state of your whole application is stored in an object tree within a single store. The single state tree makes it easier to keep track of changes over time and debug or inspect the application.
-
-      ```jsx
-      const store = createStore(reducer);
-      ```
-     2. **State is read-only:** The only way to change state is to dispatch an action, which is an object describing what happened. This ensures that views and network callbacks do not write directly to state.
-      ```js
-      const action = { type: 'INCREMENT' };
-      store.dispatch(action);
-      ```
-     3. **Changes are made with pure functions (reducers):** Reducers specify how the state tree changes in response to actions. A reducer takes the previous state and an action, then returns the next state without mutating the previous state.
-
-      ```jsx
-      function counter(state = 0, action) {
-        switch (action.type) {
-          case 'INCREMENT':
-            return state + 1;
-          case 'DECREMENT':
-            return state - 1;
-          default:
-            return state;
-        }
-      }
-      ```
+    Redux follows three fundamental principles:
+    1.  **Single Source of Truth:** The entire state of your application is stored in a single object tree within a single store.
+    2.  **State is Read-Only:** The only way to change the state is to dispatch an **Action** (an object describing what happened).
+    3.  **Changes are made with Pure Functions:** To specify how the state tree is transformed by actions, you write **Reducers** (pure functions that take `(previousState, action)` and return `nextState`).
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3257,39 +3038,15 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-106. ### What is the difference between `mapStateToProps()` and `mapDispatchToProps()`?
+106. ### What is the difference between `mapStateToProps` and `mapDispatchToProps`?
 
-     `mapStateToProps()` is used with React Redux's `connect()` API. It selects data from the Redux store and passes it to the component as props:
+    In the legacy `connect()` API:
+    - **`mapStateToProps`:** Used to select data from the Redux store and pass it as props to your component.
+    - **`mapDispatchToProps`:** Used to pass action creators to your component as props, automatically wrapped in `dispatch()`.
 
-     ```javascript
-     const mapStateToProps = (state) => {
-       return {
-         todos: getVisibleTodos(state.todos, state.visibilityFilter),
-       };
-     };
-     ```
-
-     `mapDispatchToProps()` provides dispatching functions to the component as props. Those functions dispatch actions that may update the Redux state:
-
-     ```javascript
-     const mapDispatchToProps = (dispatch) => {
-       return {
-         onTodoClick: (id) => {
-           dispatch(toggleTodo(id));
-         },
-       };
-     };
-     ```
-
-     The object shorthand form is often recommended for `mapDispatchToProps` because it is shorter and easier to read:
-
-     ```javascript
-     const mapDispatchToProps = {
-       onTodoClick,
-     };
-     ```
-
-     React Redux wraps each action creator in `dispatch`, similar to `(...args) => dispatch(onTodoClick(...args))`, and passes the wrapped function as a prop.
+    **Modern Alternative:** In functional components, we now use hooks:
+    - **`useSelector`** instead of `mapStateToProps`.
+    - **`useDispatch`** instead of `mapDispatchToProps`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3317,12 +3074,13 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-109. ### What are the drawbacks of MVW pattern?
+109. ### What are the drawbacks of the MVW pattern?
 
-     1. DOM manipulation is very expensive which causes applications to behave slow and inefficient.
-     2. Due to circular dependencies, a complicated model was created around models and views.
-     3. Lot of data changes happens for collaborative applications(like Google Docs).
-     4. No way to do undo (travel back in time) easily without adding so much extra code.
+    The **MVW (Model-View-Whatever)** pattern (common in frameworks like early AngularJS) often led to several issues in large-scale apps:
+    1.  **Complexity:** Two-way data binding makes it difficult to track how data flows through the app.
+    2.  **Performance:** Heavy DOM manipulation and complex "watchers" can slow down the UI.
+    3.  **Unpredictability:** Circular dependencies between Models and Views make debugging extremely difficult.
+    4.  **No Time-Travel:** Because state is mutated in multiple places, it is nearly impossible to implement features like "Undo/Redo" or "Time-Travel Debugging" without massive extra code.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3376,11 +3134,12 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-112. ### What is the difference between React context and React Redux?
+112. ### What is the difference between React Context and Redux?
 
-     You can use **Context** in your application directly and is going to be great for passing down data to deeply nested components which what it was designed for.
+    - **React Context:** A mechanism for **Dependency Injection**. It allows you to pass data (like a theme or current user) deeply into the component tree without passing props manually at every level. It is *not* a state management tool by itself.
+    - **Redux:** A full **State Management** library. It provides a structured way to track *why* and *when* state changes occur, supports middleware, and offers advanced debugging tools (Time-Travel).
 
-     Whereas **Redux** is much more powerful and provides a large number of features that the Context API doesn't provide. Also, React Redux uses context internally but it doesn't expose this fact in the public API.
+    **Use Case:** Use Context for static data that rarely changes. Use Redux (or similar) for complex data fetching and highly interactive state.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3390,31 +3149,22 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-114. ### How to make AJAX request in Redux?
+114. ### How to make AJAX requests in Redux?
 
-     You can use `redux-thunk` middleware which allows you to define async actions.
+    In modern Redux, asynchronous logic (like AJAX) is handled using **Redux Toolkit's `createAsyncThunk`**. In older codebases, you might see `redux-thunk` or `redux-saga`.
 
-     Let's take an example of fetching specific account as an AJAX call using _fetch API_:
+    **Modern Example (RTK):**
+    ```javascript
+    import { createAsyncThunk } from '@reduxjs/toolkit';
 
-     ```javascript
-     export function fetchAccount(id) {
-       return (dispatch) => {
-         dispatch(setLoadingAccountState()); // Show a loading spinner
-         fetch(`/account/${id}`, (response) => {
-           dispatch(doneFetchingAccount()); // Hide loading spinner
-           if (response.status === 200) {
-             dispatch(setAccount(response.json)); // Use a normal function to set the received state
-           } else {
-             dispatch(someError);
-           }
-         });
-       };
-     }
-
-     function setAccount(data) {
-       return { type: "SET_Account", data: data };
-     }
-     ```
+    export const fetchUser = createAsyncThunk(
+      'users/fetchById',
+      async (userId) => {
+        const response = await fetch(`/api/users/${userId}`);
+        return response.json();
+      }
+    );
+    ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3424,39 +3174,25 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-116. ### What is the proper way to access Redux store?
+116. ### What is the modern way to access the Redux store?
 
-     The best way to access your store in a component is to use the `connect()` function, that creates a new component that wraps around your existing one. This pattern is called _Higher-Order Components_, and is generally the preferred way of extending a component's functionality in React. This allows you to map state and action creators to your component, and have them passed in automatically as your store updates.
+    While the `connect()` HOC was the standard for years, the modern and preferred way to access the store in functional components is via **React Redux Hooks**:
 
-     Let's take an example of `<FilterLink>` component using connect:
+    1.  **`useSelector`:** To extract data from the Redux store state.
+    2.  **`useDispatch`:** To get the `dispatch` function to trigger actions.
 
-     ```javascript
-     import { connect } from "react-redux";
-     import { setVisibilityFilter } from "../actions";
-     import Link from "../components/Link";
+    **Example:**
+    ```jsx
+    import { useSelector, useDispatch } from 'react-redux';
+    import { increment } from './counterSlice';
 
-     const mapStateToProps = (state, ownProps) => ({
-       active: ownProps.filter === state.visibilityFilter,
-     });
+    const Counter = () => {
+      const count = useSelector((state) => state.counter.value);
+      const dispatch = useDispatch();
 
-     const mapDispatchToProps = (dispatch, ownProps) => ({
-       onClick: () => dispatch(setVisibilityFilter(ownProps.filter)),
-     });
-
-     const FilterLink = connect(mapStateToProps, mapDispatchToProps)(Link);
-
-     export default FilterLink;
-     ```
-
-     Due to it having quite a few performance optimizations and generally being less likely to cause bugs, the Redux developers almost always recommend using `connect()` over accessing the store directly (using context API).
-
-     ```javascript
-     function MyComponent {
-       someMethod() {
-         doSomethingWith(this.context.store);
-       }
-     }
-     ```
+      return <button onClick={() => dispatch(increment())}>{count}</button>;
+    };
+    ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -3522,29 +3258,22 @@ class ParentComponent extends React.Component {
 
 **[⬆ Back to Top](#table-of-contents)**
 
-119. ### What are the different ways to write `mapDispatchToProps()`?
+119. ### What is the best way to write `mapDispatchToProps`?
 
-     There are a few ways of binding _action creators_ to `dispatch()` in `mapDispatchToProps()`.
+    If you are still using the legacy `connect()` API, the **Object Shorthand** is the most recommended and concise way to write `mapDispatchToProps`. You simply pass an object where each property is an action creator.
 
-     Below are the possible options:
+    **Example:**
+    ```javascript
+    import { addTodo, toggleTodo } from './actions';
 
-     ```javascript
-     const mapDispatchToProps = (dispatch) => ({
-       action: () => dispatch(action()),
-     });
-     ```
+    // Instead of a function, pass an object
+    const mapDispatchToProps = {
+      addTodo,
+      toggleTodo
+    };
 
-     ```javascript
-     const mapDispatchToProps = (dispatch) => ({
-       action: bindActionCreators(action, dispatch),
-     });
-     ```
-
-     ```javascript
-     const mapDispatchToProps = { action };
-     ```
-
-     The third option is just a shorthand for the first one.
+    export default connect(null, mapDispatchToProps)(TodoComponent);
+    ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
