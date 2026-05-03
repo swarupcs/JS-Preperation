@@ -1934,113 +1934,143 @@ class ParentComponent extends React.Component {
 
 42. ### How to use innerHTML in React?
 
-    The `dangerouslySetInnerHTML` attribute is React's replacement for using `innerHTML` in the browser DOM. Like `innerHTML`, it can expose your app to cross-site scripting (XSS) attacks if you render untrusted HTML. You need to pass an object with a `__html` key and the HTML string as its value.
+    In React, the `innerHTML` attribute is replaced by **`dangerouslySetInnerHTML`**. It is used to render raw HTML strings directly into a component.
 
-    In this example, `MyComponent` uses `dangerouslySetInnerHTML` to set HTML markup:
+    React requires you to pass an object with a `__html` key containing the string. This specific naming is a deliberate "warning" to developers that setting HTML from code is risky.
 
-    ```jsx harmony
-    function createMarkup() {
-      return { __html: "First &middot; Second" };
-    }
-
+    **Example Usage:**
+    ```jsx
     function MyComponent() {
-      return <div dangerouslySetInnerHTML={createMarkup()} />;
+      const htmlContent = { __html: "First &middot; Second" };
+
+      return <div dangerouslySetInnerHTML={htmlContent} />;
     }
     ```
+
+    ### Key Points to Remember:
+    1.  **Security Risk (XSS):** Directly setting HTML can expose your application to **Cross-Site Scripting (XSS)** attacks if the content comes from an untrusted source (like user input or an external API).
+    2.  **Sanitization:** Always sanitize HTML using a library like **DOMPurify** before passing it to `dangerouslySetInnerHTML`.
+        ```javascript
+        import DOMPurify from "dompurify";
+
+        const cleanHTML = DOMPurify.sanitize(dirtyHTML);
+        return <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />;
+        ```
+    3.  **Virtual DOM Bypass:** When using this prop, React skips the reconciliation process for the children of that element. It simply replaces the inner content of the DOM node.
+    4.  **Use Cases:** It should be used sparingly, primarily for rendering content from a CMS or trusted formatted strings.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 43. ### How to use styles in React?
 
-    The `style` attribute accepts a JavaScript object with camelCased properties rather than a CSS string. This is consistent with the DOM `style` property and avoids building inline CSS strings manually.
+    In React, the **`style`** attribute accepts a **JavaScript object** rather than a standard CSS string. The property names must be written in **camelCase** to align with the DOM `style` property API.
 
-    ```jsx harmony
+    **Example Usage:**
+    ```jsx
     const divStyle = {
       color: "blue",
-      backgroundImage: "url(" + imgUrl + ")",
+      backgroundColor: "lightgray", // camelCase instead of background-color
+      fontSize: 16,                // Numbers are automatically converted to "px"
+      padding: "10px 20px"
     };
 
-    function HelloWorldComponent() {
+    function HelloWorld() {
       return <div style={divStyle}>Hello World!</div>;
     }
     ```
 
-    Style keys are camelCased to stay consistent with how style properties are accessed on DOM nodes in JavaScript, such as `node.style.backgroundImage`.
+    ### Key Rules for Inline Styles:
+    1.  **CamelCase Property Names:** CSS properties with hyphens (e.g., `text-align`) must be converted to camelCase (e.g., `textAlign`).
+    2.  **Automatic 'px' Suffix:** For most numeric properties (like `width`, `height`, `fontSize`), React automatically appends `px` to the value. Some properties (like `opacity` or `lineHeight`) remain unitless.
+    3.  **JavaScript Expressions:** Since styles are objects, you can use JavaScript logic like ternary operators for dynamic styling:
+        ```jsx
+        <div style={{ display: isVisible ? "block" : "none" }}>Content</div>
+        ```
+
+    ### Common Styling Alternatives:
+    While inline styles are great for dynamic values, they lack support for media queries and pseudo-classes. Most developers use:
+    *   **External CSS / SCSS:** Using `import "./App.css"` and the `className` attribute.
+    *   **CSS Modules:** Provides local scoping to prevent class name collisions.
+    *   **Styled Components / Emotion:** (CSS-in-JS) Allows writing actual CSS inside JavaScript components.
+    *   **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 44. ### How events are different in React?
 
-    Handling events in React elements has a few syntactic differences from plain HTML:
+    Handling events in React has several key differences from standard HTML:
 
-    1. React event handlers are named using camelCase, rather than lowercase.
-    2. In JSX, you pass a function as the event handler rather than a string.
+    1.  **Naming Convention:** React events are named using **camelCase** (e.g., `onClick`) instead of lowercase (e.g., `onclick`).
+    2.  **Function vs String:** In JSX, you pass a **function reference** as the event handler rather than a string.
+        ```jsx
+        // React
+        <button onClick={handleClick}>Activate</button>
+        ```
+    3.  **Synthetic Events:** React wraps the browser's native events in a **`SyntheticEvent`** object. This ensures cross-browser consistency and provides the same interface as native events (like `stopPropagation()` and `preventDefault()`).
+    4.  **Preventing Default:** You cannot return `false` to prevent default behavior. You must explicitly call **`e.preventDefault()`**.
+    5.  **Event Delegation:** For performance, React doesn't attach handlers to individual nodes. Instead, it uses a single event listener at the root of the application to manage all events.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 45. ### What is the impact of indexes as keys?
 
-    Keys should be stable, predictable, and unique so that React can keep track of elements.
+    Using indexes as keys is considered an **anti-pattern** if the list can be modified (items added, removed, or reordered).
 
-    In the code snippet below, each element's key is based on its position in the array rather than the data it represents. This can limit React's ability to match items correctly and can create confusing bugs when items are inserted, removed, or reordered.
+    **Negative Impacts:**
+    1.  **Performance Issues:** If an item is added at the beginning, every subsequent item's index changes. React will re-render all those items unnecessarily because it thinks they have "changed."
+    2.  **State Mismatches:** If list items have internal state (like an `<input>` or a checkbox), that state might stay with the index rather than the data. This can cause the wrong item to appear as "checked" after a reorder.
+    3.  **Bugs in Reordering:** Sorting or filtering a list with index keys often leads to visual glitches where data and UI elements get out of sync.
 
-    ```jsx harmony
-    {
-      todos.map((todo, index) => <Todo {...todo} key={index} />);
-    }
-    ```
-
-    If you use a stable key from the data, such as `todo.id`, React can match and reorder elements more reliably.
-
-    ```jsx harmony
-    {
-      todos.map((todo) => <Todo {...todo} key={todo.id} />);
-    }
-    ```
-
-    **Note:** If you don't specify a `key` prop, React warns in development. Internally, it falls back to using the item's position, which has the same problems as using an index key.
+    **When is it safe?**
+    It is only safe to use the index as a key if the list is **static** (never changes, filters, or reorders) and the items do not have a unique ID.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 46. ### How do you conditionally render components?
 
-    In some cases, you want to render different UI depending on state or props. JSX does not render `false`, `null`, or `undefined`, so you can use conditional _short-circuiting_ to render part of your component only when a condition is true.
+    In React, you can render UI based on logic using standard JavaScript patterns:
 
-    ```jsx harmony
-    const MyComponent = ({ name, address }) => (
-      <div>
-        <h2>{name}</h2>
-        {address && <p>{address}</p>}
-      </div>
-    );
-    ```
+    1.  **Short-circuit Operator (`&&`):** Best for "if true, render this" scenarios.
+        ```jsx
+        {isLoggedIn && <LogoutButton />}
+        ```
+        *Note: Avoid numeric conditions like `count && <p>{count}</p>`. If count is 0, React will render "0" in the UI. Use `count > 0 && ...` instead.*
 
-    If you need an `if-else` condition, use the _ternary operator_.
+    2.  **Ternary Operator (`? :`):** Best for "if-else" scenarios.
+        ```jsx
+        {isAdmin ? <AdminPanel /> : <UserPanel />}
+        ```
 
-    ```jsx harmony
-    const MyComponent = ({ name, address }) => (
-      <div>
-        <h2>{name}</h2>
-        {address ? <p>{address}</p> : <p>{"Address is not available"}</p>}
-      </div>
-    );
-    ```
+    3.  **If-Else or Switch Statements:** Used outside the `return` block for complex logic.
+        ```jsx
+        let content;
+        if (isLoading) content = <Spinner />;
+        else content = <DataView />;
+
+        return <div>{content}</div>;
+        ```
+
+    4.  **Early Return:** Return `null` to prevent a component from rendering.
+        ```jsx
+        if (!isVisible) return null;
+        ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 47. ### Why we need to be careful when spreading props on DOM elements?
 
-    When we _spread props_ on a DOM element, we may accidentally pass props that are not valid DOM attributes or expose implementation details. Instead, destructure component-only props first and pass only the remaining DOM-safe props with the `...rest` operator.
+    When you *spread props* (`...props`) directly onto a DOM element, every property in that object is passed to the HTML. This can lead to several issues:
 
-    For example,
+    1.  **Invalid Attribute Warnings:** React will log warnings if you pass non-standard HTML attributes (e.g., `<div myCustomProp="val">`).
+    2.  **Overwriting Attributes:** You might accidentally overwrite critical attributes like `className` or `id` if they are included in the spread object.
+    3.  **Security Risks:** You might unintentionally expose sensitive data or internal logic to the DOM as plain text attributes.
 
-    ```jsx harmony
-    const ComponentA = () => (
-      <ComponentB isDisplay={true} className={"componentStyle"} />
-    );
-
-    const ComponentB = ({ isDisplay, ...domProps }) => (
-      <div {...domProps}>{"ComponentB"}</div>
+    **Best Practice:** Destructure component-specific props first, and pass only the remaining "rest" to the DOM.
+    ```jsx
+    const MyButton = ({ label, isPrimary, ...domProps }) => (
+      <button {...domProps} className={isPrimary ? "btn-p" : "btn-s"}>
+        {label}
+      </button>
     );
     ```
 
@@ -2048,44 +2078,47 @@ class ParentComponent extends React.Component {
 
 48. ### How do you memoize a component?
 
-    You can memoize a function component with `React.memo`. It returns a memoized version of the component that skips re-rendering when its props have not changed.
+    In React, you can memoize a functional component using the **`React.memo`** Higher-Order Component (HOC). It prevents a component from re-rendering if its props haven't changed.
 
-    For example:
+    **Key Features:**
+    1.  **Shallow Comparison:** By default, it only performs a shallow comparison of props.
+    2.  **Custom Comparison:** You can pass a second argument—a comparison function—to manually control the re-render logic.
+        ```jsx
+        const MemoizedComponent = React.memo(MyComponent, (prev, next) => {
+          return prev.id === next.id; // Only re-render if ID changes
+        });
+        ```
+    3.  **Pairing with Hooks:** To keep prop references stable, `React.memo` is often used alongside **`useMemo`** (for objects/arrays) and **`useCallback`** (for functions).
 
-    ```jsx harmony
-    const MemoizedComponent = React.memo(function Component({ name }) {
-      return <div>{name}</div>;
-    });
-    ```
-
-    You can also export a memoized component directly:
-
-    ```js
-    export default React.memo(MyFunctionComponent);
-    ```
+    *Note: Do not wrap every component in `React.memo`. Use it only for expensive components that re-render frequently with the same props.*
 
     **[⬆ Back to Top](#table-of-contents)**
 
 49. ### How you implement Server Side Rendering or SSR?
 
-    React can render components on a Node server using `react-dom/server`. On the server, you render the app to an HTML string or stream, send that HTML in the response, and then hydrate it on the client.
+    Server-Side Rendering (SSR) involves rendering your React components into HTML on the server and sending that HTML to the browser for faster initial loading and SEO.
 
-    ```jsx harmony
-    import ReactDOMServer from "react-dom/server";
-    import App from "./App";
-
-    ReactDOMServer.renderToString(<App />);
-    ```
-
-    This method outputs HTML as a string, which can be placed inside the page body as part of the server response. On the client side, React hydrates the pre-rendered HTML and attaches event handlers so the page becomes interactive.
+    **Core Implementation:**
+    1.  **Server Rendering:** On a Node.js server, use **`ReactDOMServer.renderToString()`** (standard) or **`renderToPipeableStream()`** (React 18+ streaming) to generate HTML.
+    2.  **Hydration:** On the client, use **`hydrateRoot()`** to attach event listeners and make the server-rendered HTML interactive.
+        ```javascript
+        // Client-side hydration (React 18)
+        import { hydrateRoot } from "react-dom/client";
+        hydrateRoot(document.getElementById("root"), <App />);
+        ```
+    3.  **Frameworks:** It is highly recommended to use frameworks like **Next.js** or **Remix**, which handle the complexities of SSR, routing, and data fetching automatically.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 50. ### How to enable production mode in React?
 
-    Production mode is normally enabled by using a production build command from your tooling, such as `npm run build` in Create React App, Vite, Next.js, or similar setups. These tools set `process.env.NODE_ENV` to `production`, minify the code, remove development warnings, and optimize the bundle.
+    React includes development-only warnings and checks that are removed in production for better performance.
 
-    If you configure Webpack manually, you can set `mode: "production"` or use `DefinePlugin` to set `process.env.NODE_ENV` to `"production"`.
+    **Ways to enable it:**
+    1.  **Build Command:** Use your tool's build command (e.g., `npm run build` for Vite or Create React App). This sets **`process.env.NODE_ENV`** to `"production"`.
+    2.  **Webpack/Vite Config:** In Webpack, set `mode: "production"`. In Vite, it is the default for the build command.
+    3.  **Minification:** Production builds automatically minify code and remove dead code (tree-shaking) to reduce bundle size.
+    4.  **Verification:** Use the **React Developer Tools** browser extension. A **black background** icon indicates production mode, while **orange** indicates development.
 
     **[⬆ Back to Top](#table-of-contents)**
 
