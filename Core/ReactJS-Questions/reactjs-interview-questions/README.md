@@ -1506,26 +1506,21 @@ Hide/Show table of contents
 
 41. ### What is ReactDOMServer?
 
-    The `ReactDOMServer` object enables you to render components to static markup (typically used on node server). This object is mainly used for _server-side rendering_ (SSR). The following methods can be used in both the server and browser environments:
+    **`ReactDOMServer`** is a module that allows you to render React components to static markup (HTML strings or streams) on the server. This is the foundation of **Server-Side Rendering (SSR)**.
 
-    1. `renderToString()`
-    2. `renderToStaticMarkup()`
+    **Main Methods:**
+    1.  **`renderToString()`**: Renders a React tree to an HTML string.
+    2.  **`renderToPipeableStream()` (React 18+)**: The modern way to stream HTML to the browser, supporting Suspense.
+    3.  **`renderToStaticMarkup()`**: Similar to `renderToString` but doesn't create extra DOM attributes (useful for static pages).
 
-    For example, you generally run a Node-based web server like Express, Hapi, or Koa, and you call `renderToString` to render your root component to a string, which you then send as response.
-
+    **Example (Express):**
     ```javascript
-    // using Express
-    import { renderToString } from "react-dom/server";
-    import MyPage from "./MyPage";
+    import { renderToString } from 'react-dom/server';
+    import App from './App';
 
-    app.get("/", (req, res) => {
-      res.write(
-        "<!DOCTYPE html><html><head><title>My Page</title></head><body>"
-      );
-      res.write('<div id="content">');
-      res.write(renderToString(<MyPage />));
-      res.write("</div></body></html>");
-      res.end();
+    app.get('/', (req, res) => {
+      const html = renderToString(<App />);
+      res.send(`<div id="root">${html}</div>`);
     });
     ```
 
@@ -1533,17 +1528,14 @@ Hide/Show table of contents
 
 42. ### How to use innerHTML in React?
 
-    The `dangerouslySetInnerHTML` attribute is React's replacement for using `innerHTML` in the browser DOM. Just like `innerHTML`, it is risky to use this attribute considering cross-site scripting (XSS) attacks. You just need to pass a `__html` object as key and HTML text as value.
+    React provides **`dangerouslySetInnerHTML`** to replace `innerHTML`. It is named this way to remind you that setting HTML from code is risky because it can lead to **Cross-Site Scripting (XSS)** attacks if the content is not sanitized.
 
-    In this example MyComponent uses `dangerouslySetInnerHTML` attribute for setting HTML markup:
+    **Example:**
 
-    ```jsx harmony
-    function createMarkup() {
-      return { __html: "First &middot; Second" };
-    }
-
+    ```jsx
     function MyComponent() {
-      return <div dangerouslySetInnerHTML={createMarkup()} />;
+      const markup = { __html: '<strong>Bold Text</strong>' };
+      return <div dangerouslySetInnerHTML={markup} />;
     }
     ```
 
@@ -1551,346 +1543,300 @@ Hide/Show table of contents
 
 43. ### How to use styles in React?
 
-    The `style` attribute accepts a JavaScript object with camelCased properties rather than a CSS string. This is consistent with the DOM style JavaScript property, is more efficient, and prevents XSS security holes.
+    In React, the `style` attribute accepts a JavaScript object with **camelCased** properties (e.g., `backgroundColor` instead of `background-color`).
 
-    ```jsx harmony
+    **Example:**
+
+    ```jsx
     const divStyle = {
-      color: "blue",
-      backgroundImage: "url(" + imgUrl + ")",
+      color: 'blue',
+      fontSize: '20px',
+      marginTop: '10px'
     };
 
-    function HelloWorldComponent() {
-      return <div style={divStyle}>Hello World!</div>;
+    function StyledComponent() {
+      return <div style={divStyle}>Styled Content</div>;
     }
     ```
-
-    Style keys are camelCased in order to be consistent with accessing the properties on DOM nodes in JavaScript (e.g. `node.style.backgroundImage`).
 
     **[⬆ Back to Top](#table-of-contents)**
 
 44. ### How events are different in React?
 
-    Handling events in React elements has some syntactic differences:
+    1.  **Naming**: React events are named using `camelCase` (e.g., `onClick`) instead of lowercase (`onclick`).
+    2.  **Values**: You pass a function as the event handler (e.g., `onClick={handleClick}`) instead of a string (`onclick="handleClick()"`).
+    3.  **Default Behavior**: You cannot return `false` to prevent default behavior. You must explicitly call `e.preventDefault()`.
 
-    1. React event handlers are named using camelCase, rather than lowercase.
-    2. With JSX you pass a function as the event handler, rather than a string.
+    **Example:**
+
+    ```jsx
+    function Form() {
+      const handleSubmit = (e) => {
+        e.preventDefault(); // Correct way in React
+        console.log('Submitted');
+      };
+
+      return <form onSubmit={handleSubmit}>...</form>;
+    }
+    ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 45. ### What is the impact of indexes as keys?
 
-    Keys should be stable, predictable, and unique so that React can keep track of elements.
+    Using indexes as keys is discouraged if the list can change (items added, removed, or reordered). It can cause:
+    1.  **Performance issues**: React may re-render items unnecessarily.
+    2.  **State bugs**: If an item has local state (like an input value) and the list is reordered, the state might stay with the index rather than the item, leading to incorrect UI behavior.
 
-    In the below code snippet each element's key will be based on ordering, rather than tied to the data that is being represented. This limits the optimizations that React can do and creates confusing bugs in the application.
-
-    ```jsx harmony
-    {
-      todos.map((todo, index) => <Todo {...todo} key={index} />);
-    }
-    ```
-
-    If you use element data for unique key, assuming `todo.id` is unique to this list and stable, React would be able to reorder elements without needing to reevaluate them as much.
-
-    ```jsx harmony
-    {
-      todos.map((todo) => <Todo {...todo} key={todo.id} />);
-    }
-    ```
-
-    **Note:** If you don't specify `key` prop at all, React will use index as a key's value while iterating over an array of data.
+    **Always prefer unique IDs from your data.**
 
     **[⬆ Back to Top](#table-of-contents)**
 
 46. ### How do you conditionally render components?
 
-    In some cases you want to render different components depending on some state. JSX does not render `false` or `undefined`, so you can use conditional _short-circuiting_ to render a given part of your component only if a certain condition is true.
+    There are several ways to render components based on conditions:
 
-    ```jsx harmony
-    const MyComponent = ({ name, address }) => (
-      <div>
-        <h2>{name}</h2>
-        {address && <p>{address}</p>}
-      </div>
-    );
-    ```
+    1.  **Logical AND (`&&`)**: Useful for rendering something only if a condition is true.
+    2.  **Ternary Operator (`? :`)**: Useful for if-else logic.
+    3.  **If-Else / Switch Statements**: Used outside the JSX return block.
 
-    If you need an `if-else` condition then use _ternary operator_.
+    **Example:**
 
-    ```jsx harmony
-    const MyComponent = ({ name, address }) => (
-      <div>
-        <h2>{name}</h2>
-        {address ? <p>{address}</p> : <p>{"Address is not available"}</p>}
-      </div>
-    );
+    ```jsx
+    function App({ isLoggedIn }) {
+      // 1. Ternary
+      return (
+        <div>
+          {isLoggedIn ? <LogoutButton /> : <LoginButton />}
+          {/* 2. Logical AND */}
+          {isLoggedIn && <WelcomeMessage />}
+        </div>
+      );
+    }
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 47. ### Why we need to be careful when spreading props on DOM elements?
 
-    When we _spread props_ we run into the risk of adding unknown HTML attributes, which is a bad practice. Instead we can use prop destructuring with `...rest` operator, so it will add only required props.
+    Spreading props (`{...props}`) onto a DOM element can cause **Unknown Prop Warnings** if you pass custom props that are not valid HTML attributes. This pollutes the DOM and can sometimes lead to unexpected behavior.
 
-    For example,
+    **Better Approach (Destructuring):**
 
-    ```jsx harmony
-    const ComponentA = () => (
-      <ComponentB isDisplay={true} className={"componentStyle"} />
-    );
-
-    const ComponentB = ({ isDisplay, ...domProps }) => (
-      <div {...domProps}>{"ComponentB"}</div>
-    );
+    ```jsx
+    function CustomInput({ label, isError, ...domProps }) {
+      // 'isError' is used here and NOT passed to the input
+      return (
+        <label>
+          {label}
+          <input {...domProps} className={isError ? 'error' : ''} />
+        </label>
+      );
+    }
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 48. ### How do you memoize a component?
 
-    There are memoize libraries available which can be used on function components.
+    **Memoization** prevents a component from re-rendering if its props haven't changed.
 
-    For example `moize` library can memoize the component in another component.
+    1.  **`React.memo`**: A Higher-Order Component for functional components. It performs a shallow comparison of props.
+    2.  **`useMemo`**: A hook used to memoize expensive calculations or objects.
+    3.  **`PureComponent`**: A base class for class components that implements `shouldComponentUpdate` with a shallow prop/state comparison.
 
-    ```jsx harmony
-    import moize from "moize";
-    import Component from "./components/Component"; // this module exports a non-memoized component
+    **Example:**
 
-    const MemoizedFoo = moize.react(Component);
-
-    const Consumer = () => {
-      <div>
-        {"I will memoize the following entry:"}
-        <MemoizedFoo />
-      </div>;
-    };
-    ```
-
-    **Update:** Since React v16.6.0, we have a `React.memo`. It provides a higher order component which memoizes component unless the props change. To use it, simply wrap the component using React.memo before you use it.
-
-    ```js
-    const MemoComponent = React.memo(function MemoComponent(props) {
-      /* render using props */
+    ```jsx
+    const MyComponent = React.memo(({ name }) => {
+      console.log("Rendered!");
+      return <div>{name}</div>;
     });
-    OR;
-    export default React.memo(MyFunctionComponent);
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 49. ### How you implement Server Side Rendering or SSR?
 
-    React is already equipped to handle rendering on Node servers. A special version of the DOM renderer is available, which follows the same pattern as on the client side.
+    SSR is implemented by rendering components to HTML on the server and then "hydrating" them on the client so they become interactive.
 
-    ```jsx harmony
-    import ReactDOMServer from "react-dom/server";
-    import App from "./App";
+    1.  **Server**: Use `ReactDOMServer.renderToString()` or `renderToPipeableStream()` (React 18).
+    2.  **Client**: Use `ReactDOM.hydrate()` or `hydrateRoot()` (React 18) to attach event listeners to the server-rendered HTML.
 
-    ReactDOMServer.renderToString(<App />);
+    **Example (Modern React 18 Hydration):**
+
+    ```jsx
+    // Client-side entry point
+    import { hydrateRoot } from 'react-dom/client';
+    hydrateRoot(document.getElementById('root'), <App />);
     ```
-
-    This method will output the regular HTML as a string, which can be then placed inside a page body as part of the server response. On the client side, React detects the pre-rendered content and seamlessly picks up where it left off.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 50. ### How to enable production mode in React?
 
-    You should use Webpack's `DefinePlugin` method to set `NODE_ENV` to `production`, by which it strip out things like propType validation and extra warnings. Apart from this, if you minify the code, for example, Uglify's dead-code elimination to strip out development only code and comments, it will drastically reduce the size of your bundle.
+    To enable production mode, you must set the `NODE_ENV` environment variable to `production`. This ensures that React strips out development-only warnings, prop-type checks, and optimizes the bundle for performance.
+
+    **Ways to enable it:**
+    1.  **Webpack**: Use the `mode: 'production'` configuration.
+    2.  **Vite**: Running `vite build` automatically sets this.
+    3.  **CLI**: `export NODE_ENV=production` (macOS/Linux) or `set NODE_ENV=production` (Windows).
 
     **[⬆ Back to Top](#table-of-contents)**
 
 51. ### Do Hooks replace render props and higher order components?
 
-    Both render props and higher-order components render only a single child but in most of the cases Hooks are a simpler way to serve this by reducing nesting in your tree.
+    **Hooks** replace many use cases for render props and HOCs, especially for **logic reuse**. They allow you to share stateful logic without adding extra layers to the component tree ("Wrapper Hell"). However, HOCs and render props are still useful for component injection or when wrapping a component with UI.
+
+    **Example (Logic Reuse with Hooks):**
+    ```javascript
+    // Custom Hook
+    function useWindowWidth() {
+      const [width, setWidth] = useState(window.innerWidth);
+      useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, []);
+      return width;
+    }
+    ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 52. ### What is a switching component?
 
-    A _switching component_ is a component that renders one of many components. We need to use object to map prop values to components.
+    A **switching component** is a component that renders one of several components based on a prop value. It is a clean way to handle conditional routing or page transitions within a component.
 
-    For example, a switching component to display different pages based on `page` prop:
-
-    ```jsx harmony
-    import HomePage from "./HomePage";
-    import AboutPage from "./AboutPage";
-    import ServicesPage from "./ServicesPage";
-    import ContactPage from "./ContactPage";
-
+    **Example:**
+    ```jsx
     const PAGES = {
       home: HomePage,
       about: AboutPage,
-      services: ServicesPage,
-      contact: ContactPage,
+      contact: ContactPage
     };
 
-    const Page = (props) => {
-      const Handler = PAGES[props.page] || ContactPage;
-
-      return <Handler {...props} />;
-    };
-
-    // The keys of the PAGES object can be used in the prop types to catch dev-time errors.
-    Page.propTypes = {
-      page: PropTypes.oneOf(Object.keys(PAGES)).isRequired,
-    };
+    function Page({ name }) {
+      const Component = PAGES[name] || NotFoundPage;
+      return <Component />;
+    }
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 53. ### What are React Mixins?
 
-    _Mixins_ are a way to totally separate components to have a common functionality. Mixins **should not be used** and can be replaced with _higher-order components_ or _decorators_.
+    **Mixins** were a legacy way to share functionality between `React.createClass` components. They are now **deprecated** and should not be used in modern React.
 
-    One of the most commonly used mixins is `PureRenderMixin`. You might be using it in some components to prevent unnecessary re-renders when the props and state are shallowly equal to the previous props and state:
+    **Why Mixins are bad:**
+    1.  **Implicit Dependencies**: It’s hard to tell where a method comes from.
+    2.  **Name Collisions**: Two mixins might define the same method name.
+    3.  **Complexity**: They make components harder to understand and maintain.
 
-    ```javascript
-    const PureRenderMixin = require("react-addons-pure-render-mixin");
-
-    const Button = React.createClass({
-      mixins: [PureRenderMixin],
-      // ...
-    });
-    ```
-
-     <!-- TODO: mixins are deprecated -->
+    **Modern Alternatives**: Use **Higher-Order Components (HOCs)**, **Render Props**, or most preferably, **Hooks**.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 54. ### What are the Pointer Events supported in React?
 
-    _Pointer Events_ provide a unified way of handling all input events. In the old days we had a mouse and respective event listeners to handle them but nowadays we have many devices which don't correlate to having a mouse, like phones with touch surface or pens. We need to remember that these events will only work in browsers that support the _Pointer Events_ specification.
+    **Pointer Events** provide a unified way to handle inputs from various devices like a mouse, touch screen, or pen.
 
-    The following event types are now available in _React DOM_:
+    **Supported Pointer Events:**
+    - `onPointerDown`, `onPointerMove`, `onPointerUp`
+    - `onPointerCancel`, `onPointerOver`, `onPointerOut`
+    - `onPointerEnter`, `onPointerLeave`
+    - `onGotPointerCapture`, `onLostPointerCapture`
 
-    1. `onPointerDown`
-    2. `onPointerMove`
-    3. `onPointerUp`
-    4. `onPointerCancel`
-    5. `onGotPointerCapture`
-    6. `onLostPointerCapture`
-    7. `onPointerEnter`
-    8. `onPointerLeave`
-    9. `onPointerOver`
-    10. `onPointerOut`
+    **Example:**
+    ```jsx
+    <div onPointerDown={(e) => console.log('Pointer down!')} />
+    ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 55. ### Why should component names start with capital letter?
 
-    If you are rendering your component using JSX, the name of that component has to begin with a capital letter otherwise React will throw an error as an unrecognized tag. This convention is because only HTML elements and SVG tags can begin with a lowercase letter.
+    In JSX, component names must start with a capital letter so React can distinguish them from standard HTML tags.
 
-    ```jsx harmony
-    function SomeComponent {
-      // Code goes here
+    - **Lowercase names** (e.g., `<div />`) are treated as built-in HTML tags and compiled as strings: `React.createElement('div')`.
+    - **Capitalized names** (e.g., `<MyComponent />`) are treated as variables and compiled as the component itself: `React.createElement(MyComponent)`.
+
+    **Example:**
+    ```jsx
+    // ✅ Correct
+    function Welcome() {
+      return <h1>Hello</h1>;
     }
-    ```
+    <Welcome /> // Compiles to React.createElement(Welcome)
 
-    You can define function component whose name starts with lowercase letter, but when it's imported it should have a capital letter. Here lowercase is fine:
-
-    ```jsx harmony
-    function myComponent {
-      render() {
-        return <div />;
-      }
+    // ❌ Incorrect
+    function welcome() {
+      return <h1>Hello</h1>;
     }
-
-    export default myComponent;
-    ```
-
-    While when imported in another file it should start with capital letter:
-
-    ```jsx harmony
-    import MyComponent from "./myComponent";
+    <welcome /> // Compiles to React.createElement('welcome'), which fails
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 56. ### Are custom DOM attributes supported in React v16?
 
-    Yes. In the past, React used to ignore unknown DOM attributes. If you wrote JSX with an attribute that React doesn't recognize, React would just skip it.
+    Yes. Starting from React v16, any unknown attributes will end up in the DOM. In previous versions, React used to ignore them unless they were prefixed with `data-` or `aria-`.
 
-    For example, let's take a look at the below attribute:
-
-    ```jsx harmony
-    <div mycustomattribute={"something"} />
+    **Example:**
+    ```jsx
+    <div my-custom-attribute="something" />
     ```
-
-    Would render an empty div to the DOM with React v15:
-
+    In React 16+, this will render as:
     ```html
-    <div />
+    <div my-custom-attribute="something"></div>
     ```
-
-    In React v16 any unknown attributes will end up in the DOM:
-
-    ```html
-    <div mycustomattribute="something" />
-    ```
-
-    This is useful for supplying browser-specific non-standard attributes, trying new DOM APIs, and integrating with opinionated third-party libraries.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 57. ### How to loop inside JSX?
 
-    You can simply use `Array.prototype.map` with ES6 _arrow function_ syntax.
+    You should use the **`map()`** function to iterate over an array and return a list of elements. It is essential to provide a unique **`key`** prop to each element to help React track which items have changed.
 
-    For example, the `items` array of objects is mapped into an array of components:
-
-    ```jsx harmony
-    <tbody>
+    **Example:**
+    ```jsx
+    <ul>
       {items.map((item) => (
-        <SomeComponent key={item.id} name={item.name} />
+        <li key={item.id}>{item.text}</li>
       ))}
-    </tbody>
+    </ul>
     ```
-
-    But you can't iterate using `for` loop:
-
-    ```jsx harmony
-    <tbody>
-      for (let i = 0; i < items.length; i++) {
-        <SomeComponent key={items[i].id} name={items[i].name} />
-      }
-    </tbody>
-    ```
-
-    This is because JSX tags are transpiled into _function calls_, and you can't use statements inside expressions. This may change thanks to `do` expressions which are _stage 1 proposal_.
 
     **[⬆ Back to Top](#table-of-contents)**
 
 58. ### How do you access props in attribute quotes?
 
-    React (or JSX) doesn't support variable interpolation inside an attribute value. The below representation won't work:
+    JSX does not support variable interpolation inside string quotes. Instead, you should use curly braces `{}` to include JavaScript expressions or **template literals** for combining strings and variables.
 
-    ```jsx harmony
-    <img className="image" src="images/{this.props.image}" />
+    **Wrong:**
+    ```jsx
+    <img src="images/{props.image}" />
     ```
 
-    But you can put any JS expression inside curly braces as the entire attribute value. So the below expression works:
-
-    ```jsx harmony
-    <img className="image" src={"images/" + this.props.image} />
-    ```
-
-    Using _template strings_ will also work:
-
-    ```jsx harmony
-    <img className="image" src={`images/${this.props.image}`} />
+    **Correct:**
+    ```jsx
+    <img src={`images/${props.image}`} />
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
 
 59. ### What is React proptype array with shape?
 
-    If you want to pass an array of objects to a component with a particular shape then use `React.PropTypes.shape()` as an argument to `React.PropTypes.arrayOf()`.
+    You can use **`PropTypes.arrayOf`** combined with **`PropTypes.shape`** to validate an array of objects with a specific structure.
 
+    **Example:**
     ```javascript
-    ReactComponent.propTypes = {
-      arrayWithShape: React.PropTypes.arrayOf(
-        React.PropTypes.shape({
-          color: React.PropTypes.string.isRequired,
-          fontSize: React.PropTypes.number.isRequired,
+    import PropTypes from 'prop-types';
+
+    MyComponent.propTypes = {
+      users: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number.isRequired,
+          name: PropTypes.string.isRequired,
         })
       ).isRequired,
     };
@@ -1900,22 +1846,17 @@ Hide/Show table of contents
 
 60. ### How to conditionally apply class attributes?
 
-    You shouldn't use curly braces inside quotes because it is going to be evaluated as a string.
+    You should use **template literals** or a library like **`classnames`** to conditionally join class names. Never use curly braces inside double quotes as they will be treated as plain strings.
 
-    ```jsx harmony
-    <div className="btn-panel {this.props.visible ? 'show' : 'hidden'}">
+    **Example (Template Literal):**
+    ```jsx
+    <div className={`btn ${isActive ? 'active' : 'inactive'}`} />
     ```
 
-    Instead you need to move curly braces outside (don't forget to include spaces between class names):
-
-    ```jsx harmony
-    <div className={'btn-panel ' + (this.props.visible ? 'show' : 'hidden')}>
-    ```
-
-    _Template strings_ will also work:
-
-    ```jsx harmony
-    <div className={`btn-panel ${this.props.visible ? 'show' : 'hidden'}`}>
+    **Example (classnames library):**
+    ```javascript
+    import classNames from 'classnames';
+    <div className={classNames('btn', { 'active': isActive })} />
     ```
 
     **[⬆ Back to Top](#table-of-contents)**
