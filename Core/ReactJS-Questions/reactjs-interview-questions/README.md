@@ -2605,9 +2605,9 @@ store.dispatch({ type: 'SOCKET_MESSAGE', payload: data });
 
 109. ### What are the drawbacks of MVW pattern?
 
-1.  **Bidirectional Flow**: Changes in models update views, and views update models, leading to "cascading updates" that are hard to debug.
-2.  **Scalability**: As the app grows, the web of dependencies between Models and Views becomes unmanageable.
-3.  **State Logic**: Business logic is often scattered across various models and controllers.
+      1.  **Bidirectional Flow**: Changes in models update views, and views update models, leading to "cascading updates" that are hard to debug.
+      2.  **Scalability**: As the app grows, the web of dependencies between Models and Views becomes unmanageable.
+      3.  **State Logic**: Business logic is often scattered across various models and controllers.
 
 **[⬆ Back to Top](#table-of-contents)**
 
