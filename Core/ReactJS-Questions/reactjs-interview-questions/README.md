@@ -2722,23 +2722,22 @@ import { ADD_TODO } from './constants';
 export const addTodo = (text) => ({ type: ADD_TODO, text });
 ```
 
-**[⬆ Back to Top](#table-of-contents)**
 
 
 **[⬆ Back to Top](#table-of-contents)**
 
-119. ### What are the different ways to write `mapDispatchToProps()`?
+119.   ### What are the different ways to write `mapDispatchToProps()`?
 
-1.  **Function Form**: Allows manual dispatching and access to `ownProps`.
-    ```javascript
-    const mapDispatchToProps = (dispatch) => ({
-      increment: () => dispatch({ type: 'INC' })
-    });
-    ```
-2.  **Object Shorthand (Recommended)**: Redux automatically wraps the action creators in `dispatch`.
-    ```javascript
-    const mapDispatchToProps = { increment };
-    ```
+       1.   **Function Form**: Allows manual dispatching and access to `ownProps`.
+         ```javascript
+         const mapDispatchToProps = (dispatch) => ({
+           increment: () => dispatch({ type: 'INC' })
+         });
+         ```
+       2.  **Object Shorthand (Recommended)**: Redux automatically wraps the action creators in `dispatch`.
+         ```javascript
+         const mapDispatchToProps = { increment };
+         ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
