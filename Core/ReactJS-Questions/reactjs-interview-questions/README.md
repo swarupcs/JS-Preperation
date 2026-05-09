@@ -2810,11 +2810,11 @@ function* fetchData(action) {
 
 128. ### What are the features of Redux DevTools?
 
-1.  **State Inspection**: View the entire state tree at any point in time.
-2.  **Action Logging**: See a history of every action dispatched and its payload.
-3.  **Time Travel**: Jump back to any previous state by "cancelling" or replaying actions.
-4.  **State Persistence**: Persist debug sessions across page reloads.
-5.  **Action Dispatching**: Manually dispatch actions directly from the DevTools UI.
+     1.  **State Inspection**: View the entire state tree at any point in time.
+     2.  **Action Logging**: See a history of every action dispatched and its payload.
+     3.  **Time Travel**: Jump back to any previous state by "cancelling" or replaying actions.
+     4.  **State Persistence**: Persist debug sessions across page reloads.
+     5.  **Action Dispatching**: Manually dispatch actions directly from the DevTools UI.
 
 **[⬆ Back to Top](#table-of-contents)**
 
