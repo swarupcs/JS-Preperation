@@ -2776,14 +2776,29 @@ Think of a **Saga** as a separate thread in your application that's solely respo
 
 124. ### What are the differences between `call()` and `put()` in redux-saga?
 
-- **`call()`**: Used to call a function (usually a promise). It creates an effect description that tells the middleware to call the function. This makes testing easy as you can assert the function was called with specific arguments without executing it.
-- **`put()`**: Used to dispatch an action to the Redux store.
+Both `call()` and `put()` are **Effect creators**. They don't perform the action themselves but return a plain JavaScript object (an "Effect") that the `redux-saga` middleware executes.
+
+-   **`call(fn, ...args)`**:
+    -   **Purpose**: Used to call asynchronous functions (Promises) or other Generator functions.
+    -   **Blocking**: It pauses the Saga until the Promise resolves or the called Saga finishes.
+    -   **Testing**: Makes testing easy as you can verify the function was called with specific arguments without actually executing it.
+
+-   **`put(action)`**:
+    -   **Purpose**: Used to dispatch an action to the Redux store.
+    -   **Non-blocking**: It schedules the dispatch and continues to the next line of the Saga immediately. It is the Saga equivalent of `dispatch`.
 
 **Example:**
 ```javascript
-function* fetchData(action) {
-   const data = yield call(Api.fetchUser, action.userId);
-   yield put({ type: 'FETCH_SUCCESS', data });
+function* fetchUserSaga(action) {
+  try {
+    // call() pauses execution until the API call resolves
+    const user = yield call(Api.fetchUser, action.payload.userId);
+
+    // put() dispatches a SUCCESS action
+    yield put({ type: 'FETCH_USER_SUCCESS', user });
+  } catch (error) {
+    yield put({ type: 'FETCH_USER_FAILURE', error });
+  }
 }
 ```
 
