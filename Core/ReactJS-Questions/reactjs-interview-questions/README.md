@@ -3935,35 +3935,35 @@ It extends React by providing features such as server-side rendering, routing, A
 
 ### Major Features of Next.js
 
-1. **Server-Side Rendering (SSR) and Static Site Generation (SSG)**
+1. **Server-Side Rendering (SSR) and Static Site Generation (SSG)** : 
    Next.js supports multiple rendering strategies:
 
    * SSR for dynamic content
    * SSG for pre-rendered static pages
    * Incremental Static Regeneration (ISR)
 
-2. **File-Based Routing**
+2. **File-Based Routing** : 
    Routes are automatically created based on the file structure inside the `pages` or `app` directory.
 
-3. **API Routes**
+3. **API Routes** : 
    Allows developers to create backend API endpoints directly inside the Next.js application using serverless functions.
 
-4. **Automatic Code Splitting**
+4. **Automatic Code Splitting** : 
    Only the required JavaScript for a page is loaded, improving performance and reducing bundle size.
 
-5. **Image Optimization**
+5. **Image Optimization** : 
    Provides the built-in `Image` component for optimized image loading, resizing, and lazy loading.
 
-6. **Middleware and Edge Functions**
+6. **Middleware and Edge Functions** : 
    Supports middleware execution at the edge for authentication, redirects, request handling, and personalization.
 
-7. **Built-in CSS and Styling Support**
+7. **Built-in CSS and Styling Support** : 
    Supports CSS Modules, Sass, Tailwind CSS, and other styling solutions.
 
-8. **SEO Optimization**
+8. **SEO Optimization** : 
    SSR and metadata support help improve search engine optimization.
 
-9. **Fast Refresh**
+9. **Fast Refresh** : 
    Provides instant feedback during development without losing component state.
 
 **[⬆ Back to Top](#table-of-contents)**
