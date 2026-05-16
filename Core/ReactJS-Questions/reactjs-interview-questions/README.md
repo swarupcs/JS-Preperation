@@ -4003,15 +4003,15 @@ In this example:
 
 To avoid unnecessary or repeated function calls in React or JavaScript applications, common techniques include:
 
-1. **Throttling**
+1. **Throttling** : 
    Throttling limits how often a function can execute within a specific time interval.
    It is useful for events like scrolling, resizing, or mouse movement.
 
-2. **Debouncing**
+2. **Debouncing** : 
    Debouncing delays function execution until a specified period of inactivity has passed.
    It is commonly used in search inputs, autocomplete, and API calls.
 
-3. **State or Ref Guards**
+3. **State or Ref Guards** : 
    Use flags such as `isLoading` or `isSubmitting` to prevent repeated execution while a process is already running.
 
 **Example using a state guard:**
@@ -4143,13 +4143,13 @@ In React, using the array index as a `key` is generally discouraged because it c
 
 However, using the index as a key is considered safe only when all of the following conditions are true:
 
-1. **The list is static**
+1. **The list is static** : 
    The list items never change after rendering.
 
-2. **Items do not have unique IDs**
+2. **Items do not have unique IDs** : 
    There is no stable unique identifier available for each item.
 
-3. **The list is never reordered, filtered, or updated**
+3. **The list is never reordered, filtered, or updated** : 
    Items are always rendered in the same order.
 
 **Example:**
@@ -4173,7 +4173,7 @@ This helps React correctly identify elements during re-rendering and improves pe
 
 **[⬆ Back to Top](#table-of-contents)**
 
-192.### Should keys be globally unique in React?
+192. ### Should keys be globally unique in React?
 
 No. In React, keys only need to be unique among sibling elements within the same list or array.
 
@@ -4210,14 +4210,14 @@ In React, forms can be managed using controlled components, but many developers 
 
 Some of the most popular form handling libraries are:
 
-1. **React Hook Form**
+1. **React Hook Form** :
 
    * Lightweight and highly performant
    * Uses uncontrolled components internally to reduce unnecessary re-renders
    * Easy integration with validation libraries
    * Well-suited for large and complex forms
 
-2. **Formik**
+2. **Formik** : 
 
    * Declarative and easy to use
    * Simplifies form state management, validation, and submission handling
@@ -4242,17 +4242,17 @@ Formik has several advantages over Redux Form for managing forms in React applic
 
 ### Advantages of Formik
 
-1. **Local State Management**
+1. **Local State Management** : 
    Formik stores form state locally inside the component instead of the global Redux store.
    This avoids dispatching Redux actions for every input change.
 
-2. **Better Performance**
+2. **Better Performance** : 
    Since form state is local, Formik reduces unnecessary global state updates and prevents excessive application-wide re-renders during typing.
 
-3. **Simpler Setup**
+3. **Simpler Setup** : 
    Formik does not require Redux configuration, reducers, or middleware, making it easier to integrate and maintain.
 
-4. **Smaller Boilerplate**
+4. **Smaller Boilerplate** : 
    It provides a cleaner and more declarative API for handling:
 
    * Form state
@@ -4260,7 +4260,7 @@ Formik has several advantages over Redux Form for managing forms in React applic
    * Errors
    * Submission
 
-5. **Easy Validation Integration**
+5. **Easy Validation Integration** : 
    Formik works seamlessly with Yup for schema-based form validation.
 
 Because of these benefits, Formik is often preferred for most React form-handling use cases unless the form state truly needs to be shared globally through Redux.
@@ -4552,10 +4552,10 @@ and calculates the minimum number of changes required to update the real DOM. Th
 
 ### Main Rules of the Diffing Algorithm
 
-1. **Elements with different types produce different trees**
+1. **Elements with different types produce different trees** : 
    If the element type changes (for example, from `<div>` to `<span>`), React destroys the old tree and creates a new one.
 
-2. **Keys help identify stable child elements**
+2. **Keys help identify stable child elements** : 
    The `key` prop helps React track list items between renders, making updates more efficient and preventing unnecessary re-renders.
 
 **Example:**
@@ -4583,7 +4583,7 @@ During the reconciliation process, React compares the old Virtual DOM tree with 
 
 The diffing algorithm follows these main rules:
 
-1. **Elements of Different Types**
+1. **Elements of Different Types** : 
    If the root elements are of different types, React destroys the old tree and creates a completely new tree.
 
    **Example:**
@@ -4592,7 +4592,7 @@ The diffing algorithm follows these main rules:
    <div /> → <span />
    ```
 
-2. **DOM Elements of the Same Type**
+2. **DOM Elements of the Same Type** : 
    If two DOM elements have the same type, React reuses the existing DOM node and updates only the changed attributes.
 
    **Example:**
@@ -4604,12 +4604,12 @@ The diffing algorithm follows these main rules:
 
    React updates only the `className` value.
 
-3. **Component Elements of the Same Type**
+3. **Component Elements of the Same Type** : 
    When React encounters the same component type, it preserves the component instance and state while updating the props.
 
    This allows stateful components to maintain their existing state across renders.
 
-4. **Recursing on Children**
+4. **Recursing on Children** : 
    React compares child elements recursively.
    By default, it compares children in order, which can become inefficient for dynamic lists.
 
@@ -4638,17 +4638,18 @@ In React, refs are used to directly access DOM elements or component instances w
 
 Refs should be used sparingly and mainly for imperative operations such as:
 
-1. **Managing Focus, Text Selection, or Media Playback**
-   Examples:
+1. **Managing Focus, Text Selection, or Media Playback** 
+   
+    Examples:
 
    * Automatically focusing an input
    * Controlling video/audio playback
    * Selecting text programmatically
 
-2. **Triggering Imperative Animations**
+2. **Triggering Imperative Animations** : 
    Useful when working with animations that require direct DOM manipulation.
 
-3. **Integrating with Third-Party DOM Libraries**
+3. **Integrating with Third-Party DOM Libraries** : 
    Refs are commonly used when integrating libraries such as:
 
    * D3.js
@@ -4761,7 +4762,7 @@ class Parent extends React.PureComponent {
 This helps preserve the optimization benefits of `React.PureComponent`.
 
 
-    **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 207. ### What is the windowing technique in React?
 
@@ -5310,19 +5311,19 @@ React Hooks were inspired by ideas and patterns from several existing libraries,
 
 Some major inspirations include:
 
-1. **Functional APIs in the `react-future` repository**
+1. **Functional APIs in the `react-future` repository** : 
    Early React experiments explored more functional approaches to component logic and state management.
 
-2. **Render Prop patterns**
+2. **Render Prop patterns** : 
    Patterns such as render props helped demonstrate reusable stateful logic between components.
 
-3. **State variables and state cells from DisplayScript**
+3. **State variables and state cells from DisplayScript** : 
    These ideas influenced the concept of isolated state variables inside functional components.
 
-4. **Subscriptions in RxJS**
+4. **Subscriptions in RxJS** : 
    Reactive subscription patterns influenced Hook-based side-effect handling and data flow.
 
-5. **Reducer components in ReasonReact**
+5. **Reducer components in ReasonReact** : 
    Reducer-based state management patterns inspired Hooks like `useReducer`.
 
 Hooks were designed to simplify:
@@ -5380,13 +5381,13 @@ Formik is a popular library used for handling forms in React applications.
 
 Formik simplifies form management by handling common form-related tasks such as:
 
-1. **Managing Form State**
+1. **Managing Form State** : 
    Handles input values and keeps form data synchronized.
 
-2. **Validation and Error Handling**
+2. **Validation and Error Handling** : 
    Makes it easy to validate fields and display error messages.
 
-3. **Form Submission**
+3. **Form Submission** : 
    Simplifies submission handling, including async requests.
 
 ### Benefits of Formik
@@ -5548,13 +5549,13 @@ MobX follows the concept of **reactive programming**, where application state au
 
 ### Core Concepts of MobX
 
-1. **Observables**
+1. **Observables** : 
    State values that MobX tracks for changes.
 
-2. **Observers**
+2. **Observers** : 
    Components or functions that automatically re-render when observable data changes.
 
-3. **Actions**
+3. **Actions** : 
    Functions used to modify observable state.
 
 MobX works similarly to a spreadsheet:
@@ -5694,10 +5695,10 @@ This helps create smoother and more responsive user experiences.
 
 ### Key Concepts of Concurrent Rendering
 
-1. **Interruptible Rendering**
+1. **Interruptible Rendering** : 
    React can pause and continue rendering work instead of rendering everything synchronously in one blocking operation.
 
-2. **Transitions**
+2. **Transitions** : 
    React provides `startTransition()` to mark non-urgent updates.
 
    **Example:**
@@ -5710,7 +5711,7 @@ This helps create smoother and more responsive user experiences.
 
    This tells React the update can be deferred if more important interactions occur.
 
-3. **Suspense Integration**
+3. **Suspense Integration** : 
    Concurrent Rendering works closely with `Suspense` for smoother loading states and asynchronous rendering.
 
 ### Benefits
@@ -5816,7 +5817,8 @@ eslint-plugin-react-hooks is an ESLint plugin provided by the React team to enfo
 
 The plugin ensures that:
 
-1. **Hooks are only called at the top level**
+1. **Hooks are only called at the top level** : 
+   
    Hooks should not be called inside:
 
    * Loops
@@ -5824,7 +5826,8 @@ The plugin ensures that:
    * Nested functions
    * Callbacks
 
-2. **Hooks are only called from React components or custom Hooks**
+2. **Hooks are only called from React components or custom Hooks** : 
+   
    Hooks can only be used inside:
 
    * React functional components
@@ -5914,7 +5917,7 @@ Here:
 This declarative approach is one of React’s core design principles.
 
 
-    **[⬆ Back to Top](#table-of-contents)**
+  **[⬆ Back to Top](#table-of-contents)**
 
 235. ### What are the benefits of using TypeScript with ReactJS?
 
@@ -5922,10 +5925,11 @@ Using TypeScript with React provides several advantages for building scalable an
 
 ### Benefits of TypeScript with React
 
-1. **Static Typing**
+1. **Static Typing** : 
    TypeScript detects type-related errors during development instead of at runtime, helping reduce bugs.
 
-2. **Improved IDE Support**
+2. **Improved IDE Support** : 
+   
    Provides better:
 
    * Autocomplete
@@ -5933,14 +5937,16 @@ Using TypeScript with React provides several advantages for building scalable an
    * Parameter hints
    * Code navigation
 
-3. **Safer Refactoring**
+3. **Safer Refactoring** : 
+   
    Makes large-scale code changes safer and easier, such as:
 
    * Renaming components
    * Updating props
    * Refactoring APIs
 
-4. **Self-Documenting Code**
+4. **Self-Documenting Code** : 
+   
    Interfaces and types clearly describe the structure of:
 
    * Props
@@ -5948,7 +5954,7 @@ Using TypeScript with React provides several advantages for building scalable an
    * API responses
    * Function parameters
 
-5. **Better Maintainability**
+5. **Better Maintainability** : 
    Strong typing improves code consistency and readability in large teams and long-term projects.
 
 6. **Improved Developer Experience**
@@ -6035,7 +6041,8 @@ The new JSX transform introduced in React 17 improves how JSX is compiled and si
 
 ### Benefits
 
-1. **No Need to Import React for JSX**
+1. **No Need to Import React for JSX** : 
+   
    Previously, every file using JSX required:
 
    ```javascript id="m4x8pk"
@@ -6044,13 +6051,13 @@ The new JSX transform introduced in React 17 improves how JSX is compiled and si
 
    With the new JSX transform, this import is no longer required just to use JSX.
 
-2. **Smaller Bundle Size**
+2. **Smaller Bundle Size** : 
    The new transform can slightly reduce bundle size because the compiler imports only the required JSX runtime helpers automatically.
 
-3. **Improved Compilation**
+3. **Improved Compilation** : 
    JSX is compiled more efficiently using the new JSX runtime.
 
-4. **Enables Future React Improvements**
+4. **Enables Future React Improvements** : 
    The new transform provides a foundation for future React optimizations and features.
 
 ### Example
@@ -6511,27 +6518,29 @@ React `StrictMode` helps developers identify potential problems and improve appl
 
 ### Benefits of Strict Mode
 
-1. **Identifies Unsafe Lifecycle Methods**
+1. **Identifies Unsafe Lifecycle Methods** : 
    Warns about deprecated or unsafe lifecycle methods that may cause issues in future React versions.
 
-2. **Warns About Legacy API Usage**
+2. **Warns About Legacy API Usage** : 
+   
    Detects usage of outdated APIs such as:
 
    * `findDOMNode`
    * Legacy Context API
    * Unsafe lifecycle methods
 
-3. **Detects Unexpected Side Effects**
+3. **Detects Unexpected Side Effects**  : 
+   
    React intentionally double-invokes certain functions in development mode to help identify:
 
    * Side effects during rendering
    * Impure component logic
    * Incorrect Hook behavior
 
-4. **Improves Compatibility with Future React Features**
+4. **Improves Compatibility with Future React Features**  : 
    Helps prepare applications for modern React features like Concurrent Rendering.
 
-5. **Encourages Best Practices**
+5. **Encourages Best Practices** : 
    Promotes cleaner, safer, and more maintainable React code.
 
 ### Important Note
@@ -6595,7 +6604,7 @@ In React, JSX follows rules similar to HTML but with JavaScript-specific syntax 
 
 ### Main Rules of JSX
 
-1. **Return a Single Root Element**
+1. **Return a Single Root Element** : 
    JSX expressions must return one parent element.
 
    **Example:**
@@ -6620,7 +6629,7 @@ In React, JSX follows rules similar to HTML but with JavaScript-specific syntax 
    );
    ```
 
-2. **Close All Tags**
+2. **Close All Tags** : 
    Every JSX tag must be properly closed.
 
    **Example:**
@@ -6630,7 +6639,7 @@ In React, JSX follows rules similar to HTML but with JavaScript-specific syntax 
    <input type="text" />
    ```
 
-3. **Use camelCase for Attributes**
+3. **Use camelCase for Attributes** : 
    JSX attributes use camelCase instead of HTML attribute naming.
 
    **Examples:**
