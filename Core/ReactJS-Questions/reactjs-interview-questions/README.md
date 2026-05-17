@@ -6824,14 +6824,15 @@ React updates the UI through a multi-step rendering process designed for efficie
 
 ### React Update Process
 
-1. **Trigger Phase**
+1. **Trigger Phase** : 
+   
    An update starts when:
 
    * The app renders initially using `createRoot()`
    * State changes (`setState`, `useState`)
    * Props change
 
-2. **Render Phase (Reconciliation)**
+2. **Render Phase (Reconciliation)** : 
    React calls components to generate a new Virtual DOM tree and compares it with the previous one using the diffing algorithm.
 
    During this phase, React determines:
@@ -6839,7 +6840,7 @@ React updates the UI through a multi-step rendering process designed for efficie
    * What changed
    * Which components need updating
 
-3. **Commit Phase**
+3. **Commit Phase** : 
    React applies only the necessary changes to the real DOM.
 
    This may include:
@@ -7197,10 +7198,11 @@ In React, state should be treated as immutable rather than being modified direct
 
 Preventing direct state mutations provides several important benefits:
 
-1. **Predictability**
+1. **Predictability** : 
    Immutable updates make state changes easier to track and reason about, resulting in more predictable application behavior.
 
-2. **Performance Optimization**
+2. **Performance Optimization** : 
+   
    React can efficiently detect changes using shallow reference comparisons such as:
 
    ```javascript id="m4x8pk"
@@ -7213,13 +7215,13 @@ Preventing direct state mutations provides several important benefits:
    * `PureComponent`
    * Efficient diffing
 
-3. **Time-Travel Debugging**
+3. **Time-Travel Debugging** : 
    Immutable state allows tools like Redux DevTools to store previous state snapshots and move backward or forward through application state history.
 
-4. **Easier Debugging**
+4. **Easier Debugging** : 
    Since state is not mutated unexpectedly, bugs become easier to reproduce and debug.
 
-5. **Safer State Updates**
+5. **Safer State Updates** : 
    Prevents accidental side effects caused by modifying shared objects or arrays.
 
 ### Incorrect Mutation
@@ -7316,7 +7318,7 @@ function Parent() {
 
 ### Problems with Nested Components
 
-1. **Performance Issues**
+1. **Performance Issues** : 
    The inner component is recreated every time the parent component renders.
 
    This can lead to:
@@ -7325,7 +7327,8 @@ function Parent() {
    * Additional memory usage
    * Reduced performance
 
-2. **State Loss**
+2. **State Loss** : 
+   
    Since React treats the nested component as a new component type on every render:
 
    * The old component is unmounted
