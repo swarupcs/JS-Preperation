@@ -678,30 +678,83 @@
 
       **[⬆ Back to Top](#table-of-contents)**
 
-2. ### What is a prototype chain
+2. ### What is the Prototype Chain?
 
-    The prototype chain is a core concept in JavaScript’s inheritance model. It allows objects to inherit properties and methods from other objects. When you try to access a property or method on an object, JavaScript first looks for it on that object itself. If it’s not found, the engine looks up the object's internal `[[Prototype]]` reference (accessible via `Object.getPrototypeOf(obj)` or the deprecated `__proto__` property) and continues searching up the chain until it finds the property or reaches the end (usually `null`).
+    The **prototype chain** is a core concept in JavaScript’s inheritance system. It allows objects to inherit properties and methods from other objects.
 
-    For objects created via constructor functions, the prototype chain starts with the instance, then refers to the constructor’s `.prototype` object, and continues from there. For example:
+    When you try to access a property or method on an object, JavaScript first checks whether that property exists directly on the object itself. If it is not found, JavaScript looks at the object’s prototype (its internal `[[Prototype]]` reference). If the property still is not found, the search continues up the prototype chain until the property is found or the chain ends with `null`.
+
+    You can access an object’s prototype using:
+
+    ```javascript
+    Object.getPrototypeOf(obj)
+    ```
+
+    or the deprecated:
+
+    ```javascript
+    obj.__proto__
+    ```
+
+    For objects created using constructor functions, the prototype chain works like this:
 
     ```javascript
     function Person() {}
+
     const person1 = new Person();
 
     console.log(Object.getPrototypeOf(person1) === Person.prototype); // true
     ```
 
-    This mechanism allows for property and method sharing among objects, enabling code reuse and a form of inheritance.
+    Here:
 
-    **Summary:**
+    * `person1` is an instance object.
+    * Its prototype is `Person.prototype`.
+    * `Person.prototype` itself inherits from `Object.prototype`.
+    * `Object.prototype` is the top of the standard prototype chain, whose prototype is `null`.
 
-    *   The prototype chain enables inheritance in JavaScript.
-    *   If a property isn’t found on an object, JavaScript looks up its prototype chain.
-    *   The prototype of an object instance can be accessed with `Object.getPrototypeOf(obj)` or `__proto__`.
-    *   The prototype of a constructor function is available via `Constructor.prototype`.
-    *   The chain ends when the prototype is `null`.
+    So the chain looks like:
 
-    The prototype chain among objects appears as below, 
+    ```text
+    person1
+      ↓
+    Person.prototype
+      ↓
+    Object.prototype
+      ↓
+    null
+    ```
+
+    Example of inheritance through the prototype chain:
+
+    ```javascript
+    function Person(name) {
+      this.name = name;
+    }
+
+    Person.prototype.greet = function () {
+      console.log(`Hello, my name is ${this.name}`);
+    };
+
+    const user = new Person("Swarup");
+
+    user.greet(); // Hello, my name is Swarup
+    ```
+
+    In this example:
+
+    * `greet()` is not directly inside `user`.
+    * JavaScript searches for it in `Person.prototype`.
+    * Since it finds the method there, it executes it.
+
+    ### Summary
+
+    * The prototype chain enables inheritance in JavaScript.
+    * If a property or method is not found on an object, JavaScript searches its prototype chain.
+    * An object’s prototype can be accessed using `Object.getPrototypeOf(obj)`.
+    * Constructor functions use their `.prototype` object for shared methods and properties.
+    * The prototype chain ends when the prototype becomes `null`.
+
     
     ![Screenshot](images/prototype_chain.png)
 
@@ -1380,1094 +1433,6471 @@ function message(name) {
 
 Because of hoisting, functions can be used before they are declared.
 
-    **[⬆ Back to Top](#table-of-contents)**
+  **[⬆ Back to Top](#table-of-contents)**
 
-27. ### What are classes in ES6
+27. ### What are Classes in ES6?
 
-    In ES6, JavaScript classes are primarily syntactic sugar over JavaScript’s existing prototype-based inheritance.
-    For example, the prototype based inheritance written in function expression as below,
+ES6 introduced **classes** as a cleaner and more intuitive syntax for creating objects and implementing inheritance in JavaScript. However, classes do **not** introduce a new inheritance model. They are primarily **syntactic sugar** over JavaScript's existing prototype-based inheritance system.
 
-    ```javascript
-    function Bike(model, color) {
-      this.model = model;
-      this.color = color;
-    }
+Before ES6, constructor functions and prototypes were commonly used to create objects and share methods:
 
-    Bike.prototype.getDetails = function () {
-      return this.model + " bike has" + this.color + " color";
-    };
-    ```
+```javascript
+function Bike(model, color) {
+  this.model = model;
+  this.color = color;
+}
 
-    Whereas ES6 classes can be defined as an alternative
+Bike.prototype.getDetails = function () {
+  return this.model + " bike has " + this.color + " color";
+};
+```
 
-    ```javascript
-    class Bike {
-      constructor(color, model) {
-        this.color = color;
-        this.model = model;
-      }
+The same functionality can be written using ES6 class syntax:
 
-      getDetails() {
-        return this.model + " bike has" + this.color + " color";
-      }
-    }
-    ```
+```javascript
+class Bike {
+  constructor(model, color) {
+    this.model = model;
+    this.color = color;
+  }
 
-    **[⬆ Back to Top](#table-of-contents)**
+  getDetails() {
+    return this.model + " bike has " + this.color + " color";
+  }
+}
+```
 
-28. ### What are closures
+Although the syntax is different, both approaches create objects that use prototypes under the hood. Methods defined inside a class are automatically added to the class's prototype rather than being copied to each instance.
 
-    A closure is the combination of a function bundled(enclosed) together with its lexical environment within which that function was declared. i.e, It is an inner function that has access to the outer or enclosing function’s variables, functions and other data even after the outer function has finished its execution. The closure has three scope chains.
+For example:
 
-    1. Own scope where variables defined between its curly brackets
-    2. Outer function's variables
-    3. Global variables
+```javascript
+const bike = new Bike("Honda", "Red");
 
-    Let's take an example of closure concept,
+console.log(bike.getDetails());
+// Honda bike has Red color
+```
 
-    ```javascript
-    function Welcome(name) {
-      var greetingInfo = function (message) {
-        console.log(message + " " + name);
-      };
-      return greetingInfo;
-    }
-    var myFunction = Welcome("John");
-    myFunction("Welcome "); //Output: Welcome John
-    myFunction("Hello Mr."); //output: Hello Mr. John
-    ```
+### Summary
 
-    As per the above code, the inner function(i.e, greetingInfo) has access to the variables in the outer function scope(i.e, Welcome) even after the outer function has returned.
+* ES6 classes provide a cleaner and more readable syntax for creating objects.
+* Classes are built on top of JavaScript's prototype-based inheritance system.
+* Methods defined in a class are stored on the class's prototype.
+* Classes support features such as constructors, inheritance (`extends`), and parent method access (`super`).
+* Under the hood, ES6 classes still use prototypes for inheritance.
+
 
     **[⬆ Back to Top](#table-of-contents)**
 
-29. ### What are modules
+28. ### What are Closures?
 
-    Modules refer to small units of independent, reusable code and also act as the foundation of many JavaScript design patterns. Most of the JavaScript modules export an object literal, a function, or a constructor
+A **closure** is the combination of a function and the **lexical environment** in which that function was declared. In other words, a closure allows a function to access variables from its outer (enclosing) scope even after the outer function has finished executing.
 
-    **[⬆ Back to Top](#table-of-contents)**
+A closure has access to:
 
-30. ### Why do you need modules
+1. Its own scope (variables declared inside the function).
+2. Variables and parameters of its outer (enclosing) function.
+3. Global variables.
 
-    Below are the list of benefits using modules in javascript ecosystem
+Consider the following example:
 
-    1. Maintainability
-    2. Reusability
-    3. Namespacing
+```javascript
+function welcome(name) {
+  function greetingInfo(message) {
+    console.log(message + " " + name);
+  }
 
-    **[⬆ Back to Top](#table-of-contents)**
+  return greetingInfo;
+}
 
-31. ### What is scope in javascript
+const myFunction = welcome("John");
 
-    Scope is the accessibility of variables, functions, and objects in some particular part of your code during runtime. In other words, scope determines the visibility of variables and other resources in areas of your code.
+myFunction("Welcome");   // Output: Welcome John
+myFunction("Hello Mr."); // Output: Hello Mr. John
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+### How does this work?
 
-32. ### What is a service worker
+When `welcome("John")` is called, it returns the inner function `greetingInfo`. Even after `welcome()` has finished executing, `greetingInfo` still has access to the parameter `name` because it forms a **closure** over the lexical environment of `welcome()`.
 
-    A Service worker is basically a script (JavaScript file) that runs in the background, separate from a web page and provides features that don't need a web page or user interaction. Some of the major features of service workers are Rich offline experiences(offline first web application development), periodic background syncs, push notifications, intercept and handle network requests and programmatically managing a cache of responses.
+As a result, whenever `myFunction` is invoked, it can access the value of `name` (`"John"`) that was available when the closure was created.
 
-    **[⬆ Back to Top](#table-of-contents)**
+### Summary
 
-33. ### How do you manipulate DOM using a service worker
+* A closure is a function bundled together with its lexical environment.
+* Closures allow inner functions to access variables from their outer scopes even after the outer function has returned.
+* They have access to their own scope, outer function scopes, and the global scope.
+* Closures are commonly used for data encapsulation, private variables, callbacks, and maintaining state between function calls.
 
-    Service worker can't access the DOM directly. But it can communicate with the pages it controls by responding to messages sent via the `postMessage` interface, and those pages can manipulate the DOM.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-34. ### How do you reuse information across service worker restarts
-
-    The problem with service worker is that it gets terminated when not in use, and restarted when it's next needed, so you cannot rely on global state within a service worker's `onfetch` and `onmessage` handlers. In this case, service workers will have access to IndexedDB API in order to persist and reuse across restarts.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-35. ### What is IndexedDB
-
-    IndexedDB is a low-level API for client-side storage of larger amounts of structured data, including files/blobs. This API uses indexes to enable high-performance searches of this data.
 
     **[⬆ Back to Top](#table-of-contents)**
 
-36. ### What is web storage
+29. ### What are Modules?
 
-    Web storage is an API that provides a mechanism by which browsers can store key/value pairs locally within the user's browser, in a much more intuitive fashion than using cookies. The web storage provides two mechanisms for storing data on the client.
+Modules are small, independent, and reusable pieces of code that encapsulate specific functionality. They help organize code into separate files, making applications easier to develop, maintain, test, and reuse.
 
-    1. **Local storage:** It stores data for current origin with no expiration date.
-    2. **Session storage:** It stores data for one session and the data is lost when the browser tab is closed.
+A module can export variables, functions, classes, or objects so that other modules can use them. Modules are a fundamental part of modern JavaScript and form the basis of many design patterns.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Benefits of Modules
 
-37. ### What is a post message
+1. **Code Reusability** – Write once and use in multiple places.
+2. **Maintainability** – Keep related code together in separate files.
+3. **Encapsulation** – Hide internal implementation details and expose only what is needed.
+4. **Avoid Global Scope Pollution** – Prevent naming conflicts by keeping variables scoped to the module.
+5. **Dependency Management** – Explicitly define what a module imports and exports.
 
-    Post message is a method that enables cross-origin communication between Window objects.(i.e, between a page and a pop-up that it spawned, or between a page and an iframe embedded within it). Generally, scripts on different pages are allowed to access each other if and only if the pages follow same-origin policy(i.e, pages share the same protocol, port number, and host).
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+**math.js**
 
-38. ### What is a Cookie
+```javascript
+export function add(a, b) {
+  return a + b;
+}
 
-    A cookie is a piece of data that is stored on your computer to be accessed by your browser. Cookies are saved as key/value pairs.
-    For example, you can create a cookie named username as below,
+export const PI = 3.14159;
+```
 
-    ```javascript
-    document.cookie = "username=John";
-    ```
+**app.js**
 
-    ![Screenshot](images/cookie.png)
+```javascript
+import { add, PI } from "./math.js";
 
-    **[⬆ Back to Top](#table-of-contents)**
+console.log(add(2, 3)); // 5
+console.log(PI); // 3.14159
+```
 
-39. ### Why do you need a Cookie
+In this example:
 
-    Cookies are used to remember information about the user profile(such as username). It basically involves two steps,
+* `math.js` exports a function and a constant.
+* `app.js` imports and uses them.
 
-    1. When a user visits a web page, the user profile can be stored in a cookie.
-    2. Next time the user visits the page, the cookie remembers the user profile.
+Most JavaScript modules export one or more of the following:
 
-    **[⬆ Back to Top](#table-of-contents)**
+* Variables
+* Functions
+* Classes
+* Objects
+* Constructor functions
 
-40. ### What are the options in a cookie
+This modular approach makes JavaScript applications more scalable and easier to manage.
 
-    There are few below options available for a cookie,
 
-    1. By default, the cookie is deleted when the browser is closed but you can change this behavior by setting expiry date (in UTC time).
+  **[⬆ Back to Top](#table-of-contents)**
 
-    ```javascript
-    document.cookie = "username=John; expires=Sat, 8 Jun 2019 12:00:00 UTC";
-    ```
+30. ### Why do you need modules?
 
-    2. By default, the cookie belongs to a current page. But you can tell the browser what path the cookie belongs to using a path parameter.
+Modules are used to organize JavaScript code into small, independent, and reusable units. They help improve code quality, maintainability, and scalability, especially in large applications.
 
-    ```javascript
-    document.cookie = "username=John; path=/services";
-    ```
+#### Benefits of Using Modules
 
-    **[⬆ Back to Top](#table-of-contents)**
+1. **Maintainability**
 
-41. ### How do you delete a cookie
+   * Code is divided into smaller, focused files.
+   * Easier to understand, debug, test, and update.
+   * Changes in one module are less likely to affect other parts of the application.
 
-    You can delete a cookie by setting the expiry date as a passed date. You don't need to specify a cookie value in this case.
-    For example, you can delete a username cookie in the current page as below.
+2. **Reusability**
 
-    ```javascript
-    document.cookie =
-      "username=; expires=Fri, 07 Jun 2019 00:00:00 UTC; path=/;";
-    ```
+   * Modules can be imported and used across different parts of an application or even in multiple projects.
+   * Reduces code duplication and promotes the DRY (Don't Repeat Yourself) principle.
 
-    **Note:** You should define the cookie path option to ensure that you delete the right cookie. Some browsers doesn't allow to delete a cookie unless you specify a path parameter.
+3. **Namespacing**
 
-    **[⬆ Back to Top](#table-of-contents)**
+   * Each module has its own scope.
+   * Prevents variables, functions, and classes from polluting the global scope.
+   * Avoids naming conflicts between different parts of the application.
 
-42. ### What are the differences between cookie, local storage and session storage
+#### Example
 
-    Below are some of the differences between cookie, local storage and session storage,
+```javascript
+// math.js
+export function add(a, b) {
+  return a + b;
+}
+```
 
-    | Feature                           | Cookie                                                                                                              | Local storage         | Session storage     |
-    | --------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------- | ------------------- |
-    | Accessed on client or server side | Both server-side & client-side. The `set-cookie` HTTP response header is used by server inorder to send it to user. | client-side only      | client-side only    |
-    | Expiry                            | Manually configured using Expires option                                                                            | Forever until deleted | until tab is closed |
-    | SSL support                       | Supported                                                                                                           | Not supported         | Not supported       |
-    | Maximum data size                 | 4KB                                                                                                                 | 5 MB                  | 5MB                 |
-    | Accessible from                   | Any window                                                                                                          | Any window            | Same tab            |
-    | Sent with requests                | Yes                                                                                                                 | No                    | No                  |
+```javascript
+// app.js
+import { add } from "./math.js";
 
-    **[⬆ Back to Top](#table-of-contents)**
+console.log(add(2, 3)); // 5
+```
 
-43. ### What is the main difference between localStorage and sessionStorage
+Here, the `add` function is encapsulated within `math.js` and can be reused wherever needed without affecting the global namespace.
 
-    LocalStorage is the same as SessionStorage but it persists the data even when the browser is closed and reopened(i.e it has no expiration time) whereas in sessionStorage data gets cleared when the page session ends.
+**[⬆ Back to Top](#table-of-contents)**
 
-    **[⬆ Back to Top](#table-of-contents)**
+31. ### What is Scope in JavaScript?
 
-44. ### How do you access web storage
+**Scope** refers to the accessibility or visibility of variables, functions, and objects in different parts of a JavaScript program during runtime. It determines where a variable can be accessed or referenced within the code.
 
-    The Window object implements the `WindowLocalStorage` and `WindowSessionStorage` objects which has `localStorage`(window.localStorage) and `sessionStorage`(window.sessionStorage) properties respectively. These properties create an instance of the Storage object, through which data items can be set, retrieved and removed for a specific domain and storage type (session or local).
-    For example, you can read and write on local storage objects as below
+In other words, **scope defines the region of code in which a variable or other resource is available and can be used**.
 
-    ```javascript
-    localStorage.setItem("logo", document.getElementById("logo").value);
-    localStorage.getItem("logo");
-    ```
+#### Types of Scope in JavaScript
 
-    **[⬆ Back to Top](#table-of-contents)**
+1. **Global Scope**
 
-45. ### What are the methods available on session storage
+   * Variables declared outside any function or block are accessible from anywhere in the program.
 
-    The session storage provided methods for reading, writing and clearing the session data
+   ```javascript
+   let name = "John";
 
-    ```javascript
-    // Save data to sessionStorage
-    sessionStorage.setItem("key", "value");
+   function greet() {
+     console.log(name);
+   }
 
-    // Get saved data from sessionStorage
-    let data = sessionStorage.getItem("key");
+   greet(); // John
+   ```
 
-    // Remove saved data from sessionStorage
-    sessionStorage.removeItem("key");
+2. **Function Scope**
 
-    // Remove all saved data from sessionStorage
-    sessionStorage.clear();
-    ```
+   * Variables declared inside a function are accessible only within that function.
 
-    **[⬆ Back to Top](#table-of-contents)**
+   ```javascript
+   function greet() {
+     let message = "Hello";
+     console.log(message);
+   }
 
-46. ### What is a storage event and its event handler
+   greet(); // Hello
+   // console.log(message); // ReferenceError
+   ```
 
-    The StorageEvent is an event that fires when a storage area has been changed in the context of another document. Whereas onstorage property is an EventHandler for processing storage events.
-    The syntax would be as below
+3. **Block Scope**
 
-    ```javascript
-    window.onstorage = functionRef;
-    ```
+   * Variables declared with `let` and `const` inside a block (`{}`) are accessible only within that block.
 
-    Let's take the example usage of onstorage event handler which logs the storage key and it's values
+   ```javascript
+   if (true) {
+     let age = 25;
+     const city = "Kolkata";
+     console.log(age, city);
+   }
 
-    ```javascript
-    window.onstorage = function (e) {
-      console.log(
-        "The " +
-          e.key +
-          " key has been changed from " +
-          e.oldValue +
-          " to " +
-          e.newValue +
-          "."
-      );
-    };
-    ```
+   // console.log(age);  // ReferenceError
+   // console.log(city); // ReferenceError
+   ```
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Why is Scope Important?
 
-47. ### Why do you need web storage
+* Prevents variable naming conflicts.
+* Improves code organization and maintainability.
+* Helps achieve data hiding and encapsulation.
+* Controls the lifetime and accessibility of variables.
 
-    Web storage is more secure, and large amounts of data can be stored locally, without affecting website performance. Also, the information is never transferred to the server. Hence this is a more recommended approach than Cookies.
+**In summary:** Scope is the mechanism that determines where variables, functions, and objects can be accessed in a JavaScript program.
 
-    **[⬆ Back to Top](#table-of-contents)**
+  **[⬆ Back to Top](#table-of-contents)**
 
-48. ### How do you check web storage browser support
+32. ### What is a Service Worker?
 
-    You need to check browser support for localStorage and sessionStorage before using web storage,
+A **Service Worker** is a JavaScript file that runs in the background, separate from the web page. It acts as a proxy between the web application and the network, enabling advanced features that do not require direct user interaction or an active webpage.
 
-    ```javascript
-    if (typeof Storage !== "undefined") {
-      // Code for localStorage/sessionStorage.
-    } else {
-      // Sorry! No Web Storage support..
-    }
-    ```
+Service workers are event-driven and can continue working even when the web page is closed, making them a key technology behind **Progressive Web Apps (PWAs)**.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Features of Service Workers
 
-49. ### How do you check web workers browser support
+1. **Offline Support**
 
-    You need to check browser support for web workers before using it
+   * Cache application assets and API responses.
+   * Allow applications to work even when the user has no internet connection.
 
-    ```javascript
+2. **Network Request Interception**
+
+   * Intercept and handle network requests.
+   * Serve cached content when appropriate.
+
+3. **Background Sync**
+
+   * Synchronize data with the server when connectivity is restored.
+   * Useful for sending queued requests after going back online.
+
+4. **Push Notifications**
+
+   * Receive and display notifications even when the application is not open.
+
+5. **Cache Management**
+
+   * Programmatically store, update, and remove cached resources.
+   * Improve application performance and reduce network usage.
+
+#### How Service Workers Work
+
+1. The browser registers the service worker.
+2. The service worker is installed and activated.
+3. It listens for events such as:
+
+   * `install`
+   * `activate`
+   * `fetch`
+   * `push`
+   * `sync`
+4. It can intercept network requests and respond with cached or network data.
+
+#### Example
+
+**Registering a Service Worker**
+
+```javascript
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/service-worker.js")
+    .then(() => console.log("Service Worker registered"))
+    .catch((error) => console.error("Registration failed:", error));
+}
+```
+
+**Basic Service Worker**
+
+```javascript
+self.addEventListener("fetch", (event) => {
+  console.log("Fetching:", event.request.url);
+});
+```
+
+#### Benefits
+
+* Faster page loading through caching.
+* Better user experience in poor network conditions.
+* Offline-first application support.
+* Background synchronization capabilities.
+* Push notification support.
+
+**In summary:** A Service Worker is a background script that enables offline experiences, caching, push notifications, background synchronization, and network request interception, making modern web applications faster, more reliable, and capable of working without a constant internet connection.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+33. ### How do you manipulate the DOM using a Service Worker?
+
+A **Service Worker cannot access or manipulate the DOM directly** because it runs in a separate background thread, independent of any web page.
+
+However, a service worker can communicate with the web pages it controls using the **`postMessage()`** API. The page can then receive the message and perform the required DOM manipulation.
+
+#### Service Worker (`service-worker.js`)
+
+```javascript
+self.addEventListener("message", (event) => {
+  console.log("Message received:", event.data);
+});
+
+self.clients.matchAll().then((clients) => {
+  clients.forEach((client) => {
+    client.postMessage({
+      type: "UPDATE_UI",
+      message: "Update the page content",
+    });
+  });
+});
+```
+
+#### Web Page (`app.js`)
+
+```javascript
+navigator.serviceWorker.addEventListener("message", (event) => {
+  if (event.data.type === "UPDATE_UI") {
+    document.getElementById("status").textContent =
+      event.data.message;
+  }
+});
+```
+
+#### How It Works
+
+1. The service worker runs in the background.
+2. It sends a message to one or more controlled pages using `postMessage()`.
+3. The page receives the message through the `message` event.
+4. The page updates the DOM based on the received data.
+
+#### Key Point
+
+> Service Workers **cannot directly access the DOM** because they run outside the browser's main UI thread. Any DOM manipulation must be performed by the web page after receiving messages from the service worker.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+34. ### How do you reuse information across Service Worker restarts?
+
+A **Service Worker is not always running**. The browser can terminate it when it is idle and restart it later when needed. Therefore, you **cannot rely on global variables or in-memory state** to persist data across service worker restarts.
+
+To store data that survives restarts, service workers can use persistent storage mechanisms such as **IndexedDB**.
+
+#### Why Global State Doesn't Work
+
+```javascript
+let counter = 0;
+
+self.addEventListener("fetch", () => {
+  counter++;
+  console.log(counter);
+});
+```
+
+In the example above, `counter` may be reset whenever the service worker is terminated and restarted by the browser.
+
+#### Using IndexedDB for Persistent Storage
+
+```javascript
+// Save data to IndexedDB
+async function saveData(key, value) {
+  const db = await openDatabase();
+  const transaction = db.transaction("store", "readwrite");
+  transaction.objectStore("store").put(value, key);
+}
+
+// Retrieve data from IndexedDB
+async function getData(key) {
+  const db = await openDatabase();
+  const transaction = db.transaction("store", "readonly");
+  return transaction.objectStore("store").get(key);
+}
+```
+
+#### Common Use Cases
+
+* Caching application data
+* Storing offline user actions
+* Saving application settings
+* Queueing requests for background sync
+* Maintaining state across service worker restarts
+
+#### Other Storage Options
+
+Service workers can also use:
+
+* **Cache Storage API** – for storing network requests and responses.
+* **IndexedDB** – for structured and persistent data storage.
+
+#### Key Point
+
+> Since service workers can be terminated and restarted at any time, any data that needs to persist across restarts should be stored in persistent storage such as **IndexedDB** rather than in global variables.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+35. ### What is IndexedDB?
+
+**IndexedDB** is a low-level, browser-based API for storing and retrieving large amounts of structured data on the client side. It allows web applications to persist data locally, including JavaScript objects, files, and blobs, even when the user is offline.
+
+Unlike `localStorage`, IndexedDB supports large datasets, transactions, and efficient querying through indexes.
+
+#### Key Features
+
+1. **Large Storage Capacity**
+
+   * Can store significantly more data than `localStorage`.
+
+2. **Structured Data Storage**
+
+   * Stores JavaScript objects directly without manual serialization.
+
+3. **Indexed Searches**
+
+   * Uses indexes to enable fast and efficient data retrieval.
+
+4. **Asynchronous API**
+
+   * Operations are non-blocking, preventing UI freezes.
+
+5. **Transactional**
+
+   * Supports transactions to ensure data integrity.
+
+6. **Offline Support**
+
+   * Commonly used by Progressive Web Apps (PWAs) and Service Workers.
+
+#### Example
+
+```javascript
+const request = indexedDB.open("MyDatabase", 1);
+
+request.onupgradeneeded = (event) => {
+  const db = event.target.result;
+
+  db.createObjectStore("users", {
+    keyPath: "id",
+  });
+};
+
+request.onsuccess = (event) => {
+  const db = event.target.result;
+
+  const transaction = db.transaction("users", "readwrite");
+  const store = transaction.objectStore("users");
+
+  store.add({
+    id: 1,
+    name: "John",
+  });
+};
+```
+
+#### IndexedDB vs localStorage
+
+| Feature          | IndexedDB                        | localStorage            |
+| ---------------- | -------------------------------- | ----------------------- |
+| Storage Capacity | Large (MBs to GBs)               | ~5–10 MB                |
+| Data Type        | Structured objects, files, blobs | Strings only            |
+| API Type         | Asynchronous                     | Synchronous             |
+| Querying         | Supports indexes and searches    | Key-value lookup only   |
+| Transactions     | Supported                        | Not supported           |
+| Performance      | Better for large datasets        | Suitable for small data |
+
+#### Common Use Cases
+
+* Offline web applications
+* Progressive Web Apps (PWAs)
+* Caching API responses
+* Storing user preferences and settings
+* Managing large datasets locally
+* Saving files and blobs in the browser
+
+#### Key Point
+
+> **IndexedDB** is a low-level, transactional, client-side database that stores large amounts of structured data and provides high-performance retrieval through indexes, making it ideal for offline-capable and data-intensive web applications.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+36. ### What is Web Storage?
+
+**Web Storage** is a browser API that allows web applications to store data locally in the user's browser as **key-value pairs**. It provides a simpler and more intuitive way to store client-side data compared to cookies.
+
+Unlike cookies, web storage data is not sent to the server with every HTTP request, making it more efficient for storing application data.
+
+#### Types of Web Storage
+
+1. **Local Storage (`localStorage`)**
+
+   * Stores data with **no expiration date**.
+   * Data persists even after the browser is closed and reopened.
+   * Available until explicitly removed by the application or user.
+
+   ```javascript
+   localStorage.setItem("username", "John");
+
+   const username = localStorage.getItem("username");
+
+   console.log(username); // John
+   ```
+
+2. **Session Storage (`sessionStorage`)**
+
+   * Stores data for a **single browser session**.
+   * Data is cleared when the browser tab or window is closed.
+   * Not shared across different tabs.
+
+   ```javascript
+   sessionStorage.setItem("theme", "dark");
+
+   const theme = sessionStorage.getItem("theme");
+
+   console.log(theme); // dark
+   ```
+
+#### Common Methods
+
+```javascript
+// Store data
+localStorage.setItem("key", "value");
+
+// Retrieve data
+localStorage.getItem("key");
+
+// Remove a specific item
+localStorage.removeItem("key");
+
+// Clear all items
+localStorage.clear();
+```
+
+#### localStorage vs sessionStorage
+
+| Feature            | localStorage             | sessionStorage             |
+| ------------------ | ------------------------ | -------------------------- |
+| Lifetime           | Persistent until removed | Until tab/window is closed |
+| Shared Across Tabs | Yes (same origin)        | No                         |
+| Storage Type       | Key-value pairs          | Key-value pairs            |
+| Capacity           | Typically 5–10 MB        | Typically 5–10 MB          |
+
+#### Advantages Over Cookies
+
+* Larger storage capacity.
+* Data is not sent with every HTTP request.
+* Simple JavaScript API.
+* Better performance for client-side storage.
+
+#### Key Point
+
+> **Web Storage** is a client-side storage API that allows browsers to store data as key-value pairs. It provides two storage mechanisms:
+>
+> * **`localStorage`**: Persistent storage with no expiration date.
+> * **`sessionStorage`**: Temporary storage that lasts only for the current browser session.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+37. ### What is `postMessage`?
+
+`postMessage()` is a method that enables **secure cross-origin communication** between different `Window` objects, such as:
+
+* A web page and a pop-up window it opened.
+* A web page and an embedded iframe.
+* Different browser windows or tabs.
+
+Normally, JavaScript follows the **Same-Origin Policy (SOP)**, which allows scripts to access each other only when they share the same:
+
+* Protocol (e.g., `https`)
+* Host (e.g., `example.com`)
+* Port (e.g., `443`)
+
+The `postMessage()` API provides a controlled way for windows from different origins to exchange data without violating the Same-Origin Policy.
+
+#### Sending a Message
+
+```javascript
+// Parent window
+iframe.contentWindow.postMessage(
+  "Hello from parent!",
+  "https://example.com"
+);
+```
+
+#### Receiving a Message
+
+```javascript
+window.addEventListener("message", (event) => {
+  // Verify the sender's origin
+  if (event.origin !== "https://example.com") {
+    return;
+  }
+
+  console.log(event.data);
+});
+```
+
+#### Parameters of `postMessage()`
+
+```javascript
+targetWindow.postMessage(message, targetOrigin);
+```
+
+* **message**: Data to send.
+* **targetOrigin**: The expected origin of the receiving window. Using a specific origin improves security.
+
+#### Common Use Cases
+
+1. Communication between a page and an iframe.
+2. Communication between a page and a popup window.
+3. Cross-origin data exchange.
+4. Integration with third-party widgets and payment gateways.
+5. Communication between browser extensions and web pages.
+
+#### Security Considerations
+
+Always verify the sender's origin before processing a message:
+
+```javascript
+window.addEventListener("message", (event) => {
+  if (event.origin !== "https://trusted-site.com") {
+    return;
+  }
+
+  // Process trusted message
+});
+```
+
+#### Key Point
+
+> `postMessage()` is a browser API that enables secure communication between different windows or frames, including those from different origins, while maintaining the security guarantees of the Same-Origin Policy.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+38. ### What is a Cookie?
+
+A **cookie** is a small piece of data stored by a web browser on a user's device. Cookies are stored as **key-value pairs** and are commonly used to remember user information, maintain sessions, and track user preferences across web pages.
+
+Unlike `localStorage` and `sessionStorage`, cookies are automatically sent to the server with every HTTP request that matches the cookie's domain and path.
+
+#### Creating a Cookie
+
+```javascript
+document.cookie = "username=John";
+```
+
+This creates a cookie with:
+
+* Key: `username`
+* Value: `John`
+
+#### Reading Cookies
+
+```javascript
+console.log(document.cookie);
+```
+
+Output:
+
+```text
+username=John
+```
+
+#### Setting an Expiration Date
+
+```javascript
+document.cookie =
+  "username=John; expires=Fri, 31 Dec 2027 23:59:59 GMT";
+```
+
+#### Common Uses of Cookies
+
+1. **Session Management**
+
+   * User login sessions
+   * Authentication tokens
+
+2. **Personalization**
+
+   * Language preferences
+   * Theme settings
+
+3. **Tracking and Analytics**
+
+   * User behavior tracking
+   * Website analytics
+
+#### Cookie Attributes
+
+```javascript
+document.cookie =
+  "username=John; expires=Fri, 31 Dec 2027 23:59:59 GMT; path=/; Secure; SameSite=Strict";
+```
+
+* **expires**: Specifies when the cookie expires.
+* **path**: Defines the URL path where the cookie is accessible.
+* **domain**: Specifies the domain for which the cookie is valid.
+* **Secure**: Sends the cookie only over HTTPS.
+* **HttpOnly**: Prevents JavaScript access (can only be set by the server).
+* **SameSite**: Controls cross-site cookie behavior.
+
+#### Cookies vs Web Storage
+
+| Feature                  | Cookies               | localStorage | sessionStorage   |
+| ------------------------ | --------------------- | ------------ | ---------------- |
+| Storage Limit            | ~4 KB                 | ~5–10 MB     | ~5–10 MB         |
+| Sent to Server           | Yes                   | No           | No               |
+| Expiration               | Configurable          | Persistent   | Until tab closes |
+| Accessible by JavaScript | Yes (unless HttpOnly) | Yes          | Yes              |
+
+#### Key Point
+
+> A **cookie** is a small piece of data stored in the browser as a key-value pair. It is commonly used for session management, personalization, and tracking, and is automatically included in relevant HTTP requests sent to the server.
+
+
+  ![Screenshot](images/cookie.png)
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+39. ### Why do you need Cookies?
+
+Cookies are used to **store and remember information about a user** across multiple visits to a website. They help websites provide a personalized and seamless user experience.
+
+#### How Cookies Work
+
+1. **Store User Information**
+
+   * When a user visits a website, information such as a username, session ID, language preference, or theme setting can be stored in a cookie.
+
+2. **Retrieve User Information**
+
+   * On subsequent visits, the browser sends the cookie back to the server, allowing the website to recognize the user and restore their preferences or session.
+
+#### Example
+
+```javascript
+document.cookie = "username=John";
+```
+
+When the user returns to the website, the application can read the cookie and display a personalized greeting:
+
+```javascript
+console.log(document.cookie);
+// username=John
+```
+
+#### Common Uses of Cookies
+
+1. **Authentication and Session Management**
+
+   * Keep users logged in across page requests.
+   * Store session identifiers.
+
+2. **Remembering User Preferences**
+
+   * Language settings.
+   * Theme preferences (light/dark mode).
+
+3. **Personalization**
+
+   * Display customized content based on previous visits.
+
+4. **Analytics and Tracking**
+
+   * Understand user behavior and website usage patterns.
+
+#### Example Scenario
+
+* User logs into a website.
+* The server creates a session cookie.
+* The browser stores the cookie.
+* On future requests, the browser automatically sends the cookie.
+* The server recognizes the user and maintains their logged-in state.
+
+#### Key Point
+
+> Cookies are primarily used to remember user information and maintain state between requests, enabling features such as user authentication, personalization, preference storage, and session management.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+40. ### What are the options in a Cookie?
+
+Cookies support several attributes (options) that control their behavior, lifetime, scope, and security.
+
+#### 1. `expires`
+
+By default, a cookie is deleted when the browser is closed (session cookie). You can make it persistent by specifying an expiration date in UTC/GMT format.
+
+```javascript id="a1b2c3"
+document.cookie =
+  "username=John; expires=Sat, 08 Jun 2029 12:00:00 UTC";
+```
+
+#### 2. `path`
+
+By default, a cookie belongs to the current page's path. You can specify a different path to make the cookie available to pages under that path.
+
+```javascript id="d4e5f6"
+document.cookie = "username=John; path=/services";
+```
+
+#### 3. `domain`
+
+Specifies the domain for which the cookie is valid.
+
+```javascript id="g7h8i9"
+document.cookie =
+  "username=John; domain=example.com";
+```
+
+This cookie will be available to `example.com` and its subdomains.
+
+#### 4. `max-age`
+
+Sets the lifetime of a cookie in seconds.
+
+```javascript id="j1k2l3"
+document.cookie =
+  "username=John; max-age=3600";
+```
+
+The cookie expires after 1 hour (3600 seconds).
+
+#### 5. `secure`
+
+Ensures the cookie is sent only over HTTPS connections.
+
+```javascript id="m4n5o6"
+document.cookie =
+  "username=John; Secure";
+```
+
+#### 6. `HttpOnly`
+
+Prevents JavaScript from accessing the cookie. This attribute can only be set by the server.
+
+```http
+Set-Cookie: username=John; HttpOnly
+```
+
+This helps protect against XSS attacks.
+
+#### 7. `SameSite`
+
+Controls whether cookies are sent with cross-site requests.
+
+```javascript id="p7q8r9"
+document.cookie =
+  "username=John; SameSite=Strict";
+```
+
+Possible values:
+
+* `Strict` – Sent only for same-site requests.
+* `Lax` – Sent for same-site requests and some top-level navigations.
+* `None` – Sent for all requests (must also use `Secure`).
+
+#### Example
+
+```javascript id="s1t2u3"
+document.cookie =
+  "username=John; expires=Sat, 08 Jun 2029 12:00:00 UTC; path=/; Secure; SameSite=Strict";
+```
+
+#### Summary of Common Cookie Options
+
+| Option     | Purpose                             |
+| ---------- | ----------------------------------- |
+| `expires`  | Sets the expiration date            |
+| `max-age`  | Sets lifetime in seconds            |
+| `path`     | Defines URL path accessibility      |
+| `domain`   | Defines domain accessibility        |
+| `secure`   | Sends cookie only over HTTPS        |
+| `HttpOnly` | Prevents JavaScript access          |
+| `SameSite` | Controls cross-site cookie behavior |
+
+#### Key Point
+
+> Cookie options (attributes) determine how long a cookie exists, where it is accessible, and how securely it is transmitted. Common attributes include `expires`, `path`, `domain`, `max-age`, `Secure`, `HttpOnly`, and `SameSite`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+41. ### How do you delete a Cookie?
+
+You can delete a cookie by setting its expiration date to a date in the past. Once the browser sees that the cookie has expired, it removes the cookie automatically.
+
+```javascript id="x7m2kq"
+document.cookie =
+  "username=; expires=Fri, 07 Jun 2019 00:00:00 UTC; path=/;";
+```
+
+In the example above:
+
+* The cookie name is `username`.
+* The value is set to an empty string.
+* The expiration date is set to a past date.
+* The `path` is specified to identify the correct cookie.
+
+#### Modern Alternative Using `max-age`
+
+You can also delete a cookie by setting `max-age` to `0`:
+
+```javascript id="r4n8tz"
+document.cookie =
+  "username=; max-age=0; path=/";
+```
+
+#### Important Note
+
+When deleting a cookie, you should use the **same attributes** that were used when the cookie was created, especially:
+
+* `path`
+* `domain` (if specified)
+
+For example:
+
+```javascript id="p9w6cy"
+document.cookie =
+  "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=example.com";
+```
+
+If the `path` or `domain` does not match the original cookie, some browsers may not delete the cookie.
+
+#### Key Point
+
+> To delete a cookie, set its expiration date to a past date (or `max-age=0`). Make sure to specify the same `path` and `domain` attributes that were used when the cookie was created so the browser can identify and remove the correct cookie.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+42. ### What are the differences between Cookies, Local Storage, and Session Storage?
+
+Cookies, Local Storage, and Session Storage are all used to store data in the browser, but they differ in terms of storage capacity, lifetime, accessibility, and usage.
+
+| Feature                               | Cookie                                                                                        | Local Storage                                       | Session Storage                                       |
+| ------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------- |
+| **Accessed on client or server side** | Both client-side and server-side. Servers can set cookies using the `Set-Cookie` HTTP header. | Client-side only                                    | Client-side only                                      |
+| **Expiry**                            | Configurable using `Expires` or `Max-Age`                                                     | Persists until explicitly deleted                   | Removed when the browser tab/window is closed         |
+| **Storage Capacity**                  | Approximately 4 KB                                                                            | Approximately 5–10 MB                               | Approximately 5–10 MB                                 |
+| **Sent with HTTP Requests**           | Yes, automatically                                                                            | No                                                  | No                                                    |
+| **Accessible From**                   | Any window/tab for the same domain (subject to path/domain restrictions)                      | Any window/tab of the same origin                   | Only the same browser tab/session                     |
+| **Security Attributes**               | Supports `Secure`, `HttpOnly`, and `SameSite` attributes                                      | No built-in security attributes                     | No built-in security attributes                       |
+| **Performance Impact**                | Can increase request size because cookies are sent with every request                         | Better performance for client-side storage          | Better performance for temporary client-side storage  |
+| **Typical Use Cases**                 | Authentication, session management, tracking                                                  | User preferences, application settings, cached data | Temporary form data, wizard steps, tab-specific state |
+
+#### Example
+
+**Cookie**
+
+```javascript id="c1a2b3"
+document.cookie = "username=John";
+```
+
+**Local Storage**
+
+```javascript id="d4e5f6"
+localStorage.setItem("username", "John");
+```
+
+**Session Storage**
+
+```javascript id="g7h8i9"
+sessionStorage.setItem("username", "John");
+```
+
+#### When to Use What?
+
+* **Cookies**
+
+  * Authentication tokens (preferably `HttpOnly` cookies)
+  * Session management
+  * Server-required user information
+
+* **Local Storage**
+
+  * Persistent user preferences
+  * Theme settings
+  * Cached application data
+
+* **Session Storage**
+
+  * Temporary data for the current tab
+  * Multi-step forms
+  * Data that should disappear when the tab closes
+
+#### Key Point
+
+> Use **Cookies** when data needs to be sent to the server, **Local Storage** for long-term client-side persistence, and **Session Storage** for temporary data that should exist only for the lifetime of a browser tab.
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+43. ### What is the main difference between `localStorage` and `sessionStorage`?
+
+The main difference between **`localStorage`** and **`sessionStorage`** is their **lifetime**.
+
+* **`localStorage`** stores data with no expiration date. The data remains available even after the browser is closed and reopened.
+* **`sessionStorage`** stores data only for the duration of the current page session. The data is automatically cleared when the browser tab or window is closed.
+
+#### Example
+
+**localStorage**
+
+```javascript id="ls1abc"
+localStorage.setItem("username", "John");
+```
+
+The data persists even after:
+
+* Refreshing the page
+* Closing the browser
+* Reopening the browser
+
+**sessionStorage**
+
+```javascript id="ss1def"
+sessionStorage.setItem("username", "John");
+```
+
+The data persists only until:
+
+* The current tab or window is closed
+
+#### Comparison
+
+| Feature                          | localStorage                        | sessionStorage                 |
+| -------------------------------- | ----------------------------------- | ------------------------------ |
+| Lifetime                         | Persistent until explicitly deleted | Until the tab/window is closed |
+| Survives Browser Restart         | Yes                                 | No                             |
+| Survives Page Refresh            | Yes                                 | Yes                            |
+| Shared Across Tabs (same origin) | Yes                                 | No                             |
+| Storage Capacity                 | ~5–10 MB                            | ~5–10 MB                       |
+
+#### Use Cases
+
+**localStorage**
+
+* Theme preferences
+* Language settings
+* User preferences
+* Cached application data
+
+**sessionStorage**
+
+* Multi-step form data
+* Temporary session information
+* Tab-specific state
+
+#### Key Point
+
+> `localStorage` persists data indefinitely until it is explicitly removed, whereas `sessionStorage` stores data only for the lifetime of the current browser tab or window.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+44. ### How do you access Web Storage?
+
+The **Web Storage API** is accessible through the `localStorage` and `sessionStorage` properties of the `window` object.
+
+* `window.localStorage` provides access to **Local Storage**.
+* `window.sessionStorage` provides access to **Session Storage**.
+
+Both properties return a **Storage** object that allows you to store, retrieve, update, and remove data as key-value pairs for a specific origin (domain).
+
+#### Storing Data
+
+```javascript id="w1x2y3"
+localStorage.setItem(
+  "logo",
+  document.getElementById("logo").value
+);
+```
+
+#### Retrieving Data
+
+```javascript id="z4a5b6"
+const logo = localStorage.getItem("logo");
+console.log(logo);
+```
+
+#### Removing Data
+
+```javascript id="c7d8e9"
+localStorage.removeItem("logo");
+```
+
+#### Clearing All Data
+
+```javascript id="f1g2h3"
+localStorage.clear();
+```
+
+#### Using Session Storage
+
+```javascript id="i4j5k6"
+sessionStorage.setItem("username", "John");
+
+const username =
+  sessionStorage.getItem("username");
+
+console.log(username);
+```
+
+#### Common Storage Methods
+
+| Method                | Description                          |
+| --------------------- | ------------------------------------ |
+| `setItem(key, value)` | Stores a value                       |
+| `getItem(key)`        | Retrieves a value                    |
+| `removeItem(key)`     | Removes a specific item              |
+| `clear()`             | Removes all stored items             |
+| `key(index)`          | Returns the key at a specified index |
+
+#### Access via `window`
+
+The following statements are equivalent:
+
+```javascript id="l7m8n9"
+localStorage.setItem("name", "John");
+```
+
+```javascript id="o1p2q3"
+window.localStorage.setItem("name", "John");
+```
+
+#### Key Point
+
+> Web Storage is accessed through the `localStorage` and `sessionStorage` properties of the `window` object. These properties provide a `Storage` object with methods such as `setItem()`, `getItem()`, `removeItem()`, and `clear()` for managing client-side data.
+
+
+   **[⬆ Back to Top](#table-of-contents)**
+
+45. ### What are the methods available on `sessionStorage`?
+
+The `sessionStorage` object provides methods for storing, retrieving, removing, and clearing data for the current browser session.
+
+#### 1. `setItem()`
+
+Stores a key-value pair in session storage.
+
+```javascript
+sessionStorage.setItem("key", "value");
+```
+
+#### 2. `getItem()`
+
+Retrieves the value associated with a key.
+
+```javascript
+let data = sessionStorage.getItem("key");
+console.log(data); // value
+```
+
+#### 3. `removeItem()`
+
+Removes a specific key-value pair from session storage.
+
+```javascript
+sessionStorage.removeItem("key");
+```
+
+#### 4. `clear()`
+
+Removes all data stored in session storage for the current origin.
+
+```javascript
+sessionStorage.clear();
+```
+
+#### Other Useful Methods and Properties
+
+##### `key()`
+
+Returns the key at the specified index.
+
+```javascript
+let firstKey = sessionStorage.key(0);
+```
+
+##### `length`
+
+Returns the number of items stored.
+
+```javascript
+console.log(sessionStorage.length);
+```
+
+#### Example
+
+```javascript
+// Save data to sessionStorage
+sessionStorage.setItem("key", "value");
+
+// Get saved data from sessionStorage
+let data = sessionStorage.getItem("key");
+
+// Remove saved data from sessionStorage
+sessionStorage.removeItem("key");
+
+// Remove all saved data from sessionStorage
+sessionStorage.clear();
+```
+
+#### Summary
+
+| Method/Property       | Description                        |
+| --------------------- | ---------------------------------- |
+| `setItem(key, value)` | Stores a value                     |
+| `getItem(key)`        | Retrieves a value                  |
+| `removeItem(key)`     | Removes a specific item            |
+| `clear()`             | Removes all items                  |
+| `key(index)`          | Returns the key at a given index   |
+| `length`              | Returns the number of stored items |
+
+#### Key Point
+
+> `sessionStorage` provides methods such as `setItem()`, `getItem()`, `removeItem()`, and `clear()` to manage data that persists only for the lifetime of the current browser tab or window.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+46. ### What is a Storage Event and its Event Handler?
+
+The **`StorageEvent`** is an event that fires when a storage area (`localStorage` or `sessionStorage`) is modified in the context of another document that shares the same origin.
+
+The **`onstorage`** property is an event handler that allows you to respond to storage changes.
+
+#### Syntax
+
+```javascript id="s9k3m1"
+window.onstorage = functionRef;
+```
+
+or using `addEventListener`:
+
+```javascript id="t7n2p8"
+window.addEventListener("storage", function (event) {
+  // Handle storage changes
+});
+```
+
+#### Example
+
+The following example logs the storage key and its old and new values whenever the storage changes:
+
+```javascript id="u5q8w4"
+window.onstorage = function (e) {
+  console.log(
+    "The " +
+      e.key +
+      " key has been changed from " +
+      e.oldValue +
+      " to " +
+      e.newValue +
+      "."
+  );
+};
+```
+
+#### StorageEvent Properties
+
+| Property      | Description                                                      |
+| ------------- | ---------------------------------------------------------------- |
+| `key`         | The key that was changed                                         |
+| `oldValue`    | The previous value of the key                                    |
+| `newValue`    | The new value of the key                                         |
+| `storageArea` | The affected storage object (`localStorage` or `sessionStorage`) |
+| `url`         | The URL of the document that made the change                     |
+
+#### Example Using `addEventListener`
+
+```javascript id="v6r9x2"
+window.addEventListener("storage", (event) => {
+  console.log("Key:", event.key);
+  console.log("Old Value:", event.oldValue);
+  console.log("New Value:", event.newValue);
+});
+```
+
+#### Important Note
+
+The `storage` event is **not fired in the same window/tab that made the change**. It is only fired in **other windows, tabs, or iframes** of the same origin.
+
+For example:
+
+* Tab A updates `localStorage`.
+* Tab B receives the `storage` event.
+* Tab A does **not** receive the event.
+
+#### Key Point
+
+> The `StorageEvent` is triggered when `localStorage` or `sessionStorage` changes in another document of the same origin. The `onstorage` event handler (or `storage` event listener) can be used to detect and respond to these changes across tabs or windows.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+47. ### Why do you need Web Storage?
+
+**Web Storage** provides a way to store data locally in the browser that is more convenient and efficient than cookies for many client-side use cases.
+
+#### Benefits of Web Storage
+
+1. **Larger Storage Capacity**
+
+   * Web Storage can typically store **5–10 MB** of data per origin.
+   * Cookies are limited to about **4 KB**.
+
+2. **Better Performance**
+
+   * Data is stored locally in the browser.
+   * Unlike cookies, web storage data is **not sent with every HTTP request**, reducing network overhead.
+
+3. **Client-Side Storage**
+
+   * Information remains on the user's device and is not automatically transferred to the server.
+
+4. **Simple API**
+
+   * Provides easy-to-use methods such as:
+
+     * `setItem()`
+     * `getItem()`
+     * `removeItem()`
+     * `clear()`
+
+5. **Supports Persistent and Session-Based Storage**
+
+   * `localStorage` for persistent data.
+   * `sessionStorage` for temporary session data.
+
+#### Example
+
+```javascript id="a7b8c9"
+localStorage.setItem("theme", "dark");
+
+const theme = localStorage.getItem("theme");
+
+console.log(theme); // dark
+```
+
+#### Web Storage vs Cookies
+
+| Feature                 | Web Storage                                 | Cookies                            |
+| ----------------------- | ------------------------------------------- | ---------------------------------- |
+| Storage Capacity        | ~5–10 MB                                    | ~4 KB                              |
+| Sent with HTTP Requests | No                                          | Yes                                |
+| Performance             | Better for client-side data                 | Can increase request size          |
+| API                     | Simple JavaScript API                       | String-based API                   |
+| Typical Use Cases       | Preferences, cached data, application state | Authentication, session management |
+
+#### When to Use Web Storage
+
+* Saving user preferences (theme, language, settings)
+* Storing application state
+* Caching client-side data
+* Maintaining data between page reloads
+* Storing temporary session data
+
+#### Important Security Note
+
+Web Storage is **not inherently more secure than cookies**. In fact, data stored in `localStorage` and `sessionStorage` is accessible via JavaScript, making it vulnerable to XSS attacks. Sensitive data such as authentication tokens are often better stored in **HttpOnly cookies**, which cannot be accessed by JavaScript.
+
+#### Key Point
+
+> Web Storage is useful because it provides larger storage capacity, better performance, and a simple API for storing client-side data. Since data is not automatically sent with every request, it is often a more efficient choice than cookies for storing non-sensitive application data.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+48. ### How do you check Web Storage browser support?
+
+Before using **Web Storage** (`localStorage` or `sessionStorage`), it is a good practice to check whether the browser supports the Web Storage API.
+
+You can do this by checking the existence of the `Storage` object:
+
+```javascript id="x3p7q2"
+if (typeof Storage !== "undefined") {
+  // Code for localStorage/sessionStorage.
+} else {
+  // Sorry! No Web Storage support.
+}
+```
+
+#### Example
+
+```javascript id="k8m4r1"
+if (typeof Storage !== "undefined") {
+  localStorage.setItem("username", "John");
+  console.log(localStorage.getItem("username"));
+} else {
+  console.log("Web Storage is not supported.");
+}
+```
+
+#### Checking Individual Storage Types
+
+You can also check support for `localStorage` and `sessionStorage` separately:
+
+```javascript id="n5t9v3"
+if (window.localStorage) {
+  console.log("localStorage is supported");
+}
+
+if (window.sessionStorage) {
+  console.log("sessionStorage is supported");
+}
+```
+
+#### Why Check for Support?
+
+* Ensures compatibility with older browsers.
+* Prevents runtime errors when storage APIs are unavailable.
+* Allows you to provide fallback mechanisms such as cookies or in-memory storage.
+
+#### Key Point
+
+> To check if Web Storage is supported, verify that the `Storage` object exists using `typeof Storage !== "undefined"`. If it does, you can safely use `localStorage` and `sessionStorage`; otherwise, provide an alternative storage mechanism.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+49. ### How do you check Web Workers browser support?
+
+Before using **Web Workers**, it is a good practice to check whether the browser supports the `Worker` API.
+
+You can do this by checking the existence of the `Worker` object:
+
+```javascript
+if (typeof Worker !== "undefined") {
+  // Code for Web Worker support.
+} else {
+  // Sorry! No Web Worker support.
+}
+```
+
+#### Example
+
+```javascript
+if (typeof Worker !== "undefined") {
+  const worker = new Worker("worker.js");
+
+  worker.onmessage = function (event) {
+    console.log("Message from worker:", event.data);
+  };
+} else {
+  console.log("Web Workers are not supported in this browser.");
+}
+```
+
+#### Why Check for Support?
+
+* Ensures compatibility with older browsers.
+* Prevents runtime errors when creating workers.
+* Allows you to provide a fallback solution if Web Workers are unavailable.
+
+#### What are Web Workers?
+
+Web Workers allow JavaScript code to run in a **background thread**, separate from the main UI thread. This helps perform computationally intensive tasks without blocking the user interface.
+
+#### Key Point
+
+> To check if Web Workers are supported, verify that the `Worker` object exists using `typeof Worker !== "undefined"`. If it does, you can safely create and use Web Workers; otherwise, provide an alternative implementation.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+50. ### Give an example of a Web Worker
+
+A **Web Worker** allows JavaScript code to run in a background thread without blocking the main UI thread. Below is a simple example that continuously increments a counter and sends the updated value back to the web page.
+
+#### 1. Create a Web Worker File (`counter.js`)
+
+```javascript id="wk1a2b"
+let i = 0;
+
+function timedCount() {
+  i = i + 1;
+  postMessage(i);
+  setTimeout(timedCount, 500);
+}
+
+timedCount();
+```
+
+Here:
+
+* `postMessage()` sends data from the worker back to the main thread.
+* The counter value is incremented every 500 milliseconds.
+
+#### 2. Create a Web Worker Object (`web_worker_example.js`)
+
+First, check whether the browser supports Web Workers and create a worker instance:
+
+```javascript id="wk3c4d"
+let w;
+
+if (typeof Worker !== "undefined") {
+  if (typeof w === "undefined") {
+    w = new Worker("counter.js");
+  }
+}
+```
+
+Receive messages from the worker:
+
+```javascript id="wk5e6f"
+w.onmessage = function (event) {
+  document.getElementById("message").innerHTML =
+    event.data;
+};
+```
+
+#### 3. Terminate a Web Worker
+
+A worker continues running until it is explicitly terminated.
+
+```javascript id="wk7g8h"
+w.terminate();
+```
+
+#### 4. Reuse the Web Worker
+
+After terminating the worker, you can reset the variable and create a new worker later.
+
+```javascript id="wk9i0j"
+w = undefined;
+```
+
+#### Complete HTML Example
+
+```html id="wkhtml1"
+<!DOCTYPE html>
+<html>
+<body>
+  <p>Count: <span id="message">0</span></p>
+
+  <script>
+    let w;
+
     if (typeof Worker !== "undefined") {
-      // code for Web worker support.
-    } else {
-      // Sorry! No Web Worker support..
-    }
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-50. ### Give an example of a web worker
-
-    You need to follow below steps to start using web workers for counting example
-
-    1. Create a Web Worker File: You need to write a script to increment the count value. Let's name it as counter.js
-
-    ```javascript
-    let i = 0;
-
-    function timedCount() {
-      i = i + 1;
-      postMessage(i);
-      setTimeout("timedCount()", 500);
-    }
-
-    timedCount();
-    ```
-
-    Here postMessage() method is used to post a message back to the HTML page
-
-    2. Create a Web Worker Object: You can create a web worker object by checking for browser support. Let's name this file as web_worker_example.js
-
-    ```javascript
-    if (typeof w == "undefined") {
       w = new Worker("counter.js");
-    }
-    ```
 
-    and we can receive messages from web worker
-
-    ```javascript
-    w.onmessage = function (event) {
-      document.getElementById("message").innerHTML = event.data;
-    };
-    ```
-
-    3. Terminate a Web Worker:
-       Web workers will continue to listen for messages (even after the external script is finished) until it is terminated. You can use the terminate() method to terminate listening to the messages.
-
-    ```javascript
-    w.terminate();
-    ```
-
-    4. Reuse the Web Worker: If you set the worker variable to undefined you can reuse the code
-
-    ```javascript
-    w = undefined;
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-51. ### What are the restrictions of web workers on DOM
-
-    WebWorkers don't have access to below javascript objects since they are defined in an external files
-
-    1. Window object
-    2. Document object
-    3. Parent object
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-52. ### What is a promise
-    A **Promise** is a JavaScript object that represents the eventual completion (or failure) of an asynchronous operation and its resulting value. It acts as a placeholder for a value that may not be available yet but will be resolved in the future.
-
-    A Promise can be in one of **three states**:
-    - `pending`: Initial state, neither fulfilled nor rejected.
-    - `fulfilled`: The operation completed successfully.
-    - `rejected`: The operation failed (e.g., due to a network error).
-
-
-    #### Promise Syntax
-
-    ```javascript
-    const promise = new Promise(function (resolve, reject) {
-      // Perform async operation
-    });
-    ```
-    #### Example: Creating and Using a Promise
-    ```javascript
-    const promise = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve("I'm a Promise!");
-      }, 5000);
-    });
-
-    promise
-      .then((value) => console.log(value)) // Logs after 5 seconds: "I'm a Promise!"
-      .catch((error) => console.error(error))  // Handles any rejection
-      .finally(() => console.log("Done"));     // Runs regardless of success or failure
-    ```
-    In the above example:
-
-    *   A `Promise` is created to handle an asynchronous operation with `resolve` and `reject` callbacks.
-    *   The `setTimeout` resolves the promise with a value after 5 seconds.
-    *   `.then()`, `.catch()`, and `.finally()` are used to handle success, errors, and cleanup respectively.
-
-    The action flow of a promise will be as below,
-
-    ![Screenshot](images/promises.png)
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-53. ### Why do you need a promise
-    Promises are **used to handle asynchronous operations**, especially in languages like JavaScript, which often work with non-blocking operations such as network requests, file I/O, and timers. When an operation is asynchronous, it doesn't immediately return a result; instead, it works in the background and provides the result later. Handling this in a clean, organized way can be difficult without a structured approach.
-
-    Promises are used to:
-
-    1.  **Handle asynchronous operations**.
-    2.  **Provide a cleaner alternative to callbacks**.
-    3.  **Avoid callback hell**.
-    4.  **Make code more readable and maintainable**.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-54. ### Explain the three states of promise
-
-    Promises have three states:
-
-    1. **Pending:** This is an initial state of the Promise before an operation begins
-    2. **Fulfilled:** This state indicates that the specified operation was completed.
-    3. **Rejected:** This state indicates that the operation did not complete. In this case an error value will be thrown.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-55. ### What is a callback function
-
-    A callback function is a function passed into another function as an argument. This function is invoked inside the outer function to complete an action.
-    Let's take a simple example of how to use callback function
-
-    ```javascript
-    function callbackFunction(name) {
-      console.log("Hello " + name);
-    }
-
-    function outerFunction(callback) {
-      let name = prompt("Please enter your name.");
-      callback(name);
-    }
-
-    outerFunction(callbackFunction);
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-56. ### Why do we need callbacks
-
-    The callbacks are needed because javascript is an event driven language. That means instead of waiting for a response, javascript will keep executing while listening for other events.
-    Let's take an example with the first function invoking an API call(simulated by setTimeout) and the next function which logs the message.
-
-    ```javascript
-    function firstFunction() {
-      // Simulate a code delay
-      setTimeout(function () {
-        console.log("First function called");
-      }, 1000);
-    }
-    function secondFunction() {
-      console.log("Second function called");
-    }
-    firstFunction();
-    secondFunction();
-
-    // Output:
-    // Second function called
-    // First function called
-    ```
-
-    As observed from the output, javascript didn't wait for the response of the first function and the remaining code block got executed. So callbacks are used in a way to make sure that certain code doesn’t execute until the other code finishes execution.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-57. ### What is a callback hell
-
-    Callback Hell is an anti-pattern with multiple nested callbacks which makes code hard to read and debug when dealing with asynchronous logic. The callback hell looks like below,
-
-    ```javascript
-    async1(function(){
-        async2(function(){
-            async3(function(){
-                async4(function(){
-                    ....
-                });
-            });
-        });
-    });
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-58. ### What are server-sent events
-
-    Server-sent events (SSE) is a server push technology enabling a browser to receive automatic updates from a server via HTTP connection without resorting to polling. These are a one way communications channel - events flow from server to client only. This has been used in Facebook/Twitter/X updates, stock price updates, news feeds etc.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-59. ### How do you receive server-sent event notifications
-
-    The EventSource object is used to receive server-sent event notifications. For example, you can receive messages from server as below,
-
-    ```javascript
-    if (typeof EventSource !== "undefined") {
-      var source = new EventSource("sse_generator.js");
-      source.onmessage = function (event) {
-        document.getElementById("output").innerHTML += event.data + "<br>";
+      w.onmessage = function (event) {
+        document.getElementById("message").innerHTML =
+          event.data;
       };
-    }
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-60. ### How do you check browser support for server-sent events
-
-    You can perform browser support for server-sent events before using it as below,
-
-    ```javascript
-    if (typeof EventSource !== "undefined") {
-      // Server-sent events supported. Let's have some code here!
     } else {
-      // No server-sent events supported
+      document.getElementById("message").innerHTML =
+        "Web Workers are not supported.";
     }
-    ```
+  </script>
+</body>
+</html>
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Points
 
-61. ### What are the events available for server sent events
+* Web Workers run JavaScript in a background thread.
+* `postMessage()` is used to communicate from the worker to the main thread.
+* `onmessage` receives messages from the worker.
+* `terminate()` stops the worker.
+* Workers help perform CPU-intensive tasks without freezing the user interface.
 
-    Below are the list of events available for server sent events
-    | Event | Description |
-    |---- | ---------
-    | onopen | It is used when a connection to the server is opened |
-    | onmessage | This event is used when a message is received |
-    | onerror | It happens when an error occurs|
 
-    **[⬆ Back to Top](#table-of-contents)**
+  **[⬆ Back to Top](#table-of-contents)**
 
-62. ### What are the main rules of promise
+51. ### What are the restrictions of Web Workers on the DOM?
 
-    A promise must follow a specific set of rules:
+Web Workers run in a separate background thread from the main JavaScript execution thread. Because of this isolation, they **cannot directly access or manipulate the DOM**.
 
-    1. A promise is an object that supplies a standard-compliant `.then()` method
-    2. A pending promise may transition into either fulfilled or rejected state
-    3. A fulfilled or rejected promise is settled and it must not transition into any other state.
-    4. Once a promise is settled, the value must not change.
+Web Workers do **not** have access to the following browser objects:
 
-    **[⬆ Back to Top](#table-of-contents)**
+1. **`window` object**
+2. **`document` object**
+3. **`parent` object** (for accessing the parent window's DOM)
 
-63. ### What is callback in callback
+For example, the following code will throw an error inside a Web Worker:
 
-    You can nest one callback inside in another callback to execute the actions sequentially one by one. This is known as callbacks in callbacks. Beware, too many levels of nesting lead to [Callback hell](https://github.com/sudheerj/javascript-interview-questions?tab=readme-ov-file#what-is-a-callback-hell)
+```javascript id="ww1a2b"
+document.getElementById("message").innerHTML =
+  "Hello World";
+```
 
-    ```javascript
-    loadScript("/script1.js", function (script) {
-      console.log("first script is loaded");
+#### Why These Restrictions Exist
 
-      loadScript("/script2.js", function (script) {
-        console.log("second script is loaded");
+* Web Workers are designed to run in the background.
+* Direct DOM manipulation is restricted to the main UI thread.
+* This prevents race conditions and keeps the user interface responsive.
 
-        loadScript("/script3.js", function (script) {
-          console.log("third script is loaded");
-          // after all scripts are loaded
-        });
+#### How Web Workers Interact with the DOM
+
+Although Web Workers cannot access the DOM directly, they can communicate with the main thread using `postMessage()`.
+
+**Worker (`worker.js`)**
+
+```javascript id="ww3c4d"
+postMessage("Update the page content");
+```
+
+**Main Thread**
+
+```javascript id="ww5e6f"
+worker.onmessage = function (event) {
+  document.getElementById("message").textContent =
+    event.data;
+};
+```
+
+#### What Web Workers Can Access
+
+Web Workers can still use many JavaScript APIs, including:
+
+* `setTimeout()` and `setInterval()`
+* `fetch()`
+* `XMLHttpRequest`
+* `WebSocket`
+* `IndexedDB`
+* `navigator`
+* `location`
+* `postMessage()`
+
+#### Key Point
+
+> Web Workers cannot directly access the DOM because they run in a separate thread. They do not have access to objects such as `window`, `document`, and `parent`. To update the UI, a worker must communicate with the main thread using `postMessage()`, and the main thread performs the DOM manipulation.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+52. ### What is a Promise?
+
+A **Promise** is a JavaScript object that represents the eventual completion - success or failure of an asynchronous operation and its resulting value. It acts as a placeholder for a value that may not be available immediately but will be available at some point in the future.
+
+Promises help manage asynchronous code in a cleaner and more readable way compared to nested callbacks.
+
+#### Promise States
+
+A Promise can be in one of **three states**:
+
+1. **`pending`**
+
+   * Initial state.
+   * The operation is still in progress.
+
+2. **`fulfilled`**
+
+   * The operation completed successfully.
+   * The promise is resolved with a value.
+
+3. **`rejected`**
+
+   * The operation failed.
+   * The promise is rejected with a reason (error).
+
+#### Promise Syntax
+
+```javascript id="pr1a2b"
+const promise = new Promise((resolve, reject) => {
+  // Perform asynchronous operation
+
+  if (/* success */) {
+    resolve(result);
+  } else {
+    reject(error);
+  }
+});
+```
+
+#### Example: Creating and Using a Promise
+
+```javascript id="pr3c4d"
+const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("I'm a Promise!");
+  }, 5000);
+});
+
+promise
+  .then((value) => console.log(value))
+  .catch((error) => console.error(error))
+  .finally(() => console.log("Done"));
+```
+
+**Output after 5 seconds:**
+
+```text
+I'm a Promise!
+Done
+```
+
+#### Promise Methods
+
+##### `then()`
+
+Handles a fulfilled promise.
+
+```javascript id="pr5e6f"
+promise.then((value) => {
+  console.log(value);
+});
+```
+
+##### `catch()`
+
+Handles a rejected promise.
+
+```javascript id="pr7g8h"
+promise.catch((error) => {
+  console.error(error);
+});
+```
+
+##### `finally()`
+
+Executes regardless of whether the promise is fulfilled or rejected.
+
+```javascript id="pr9i0j"
+promise.finally(() => {
+  console.log("Cleanup");
+});
+```
+
+#### Promise Lifecycle
+
+```text
+          Pending
+             |
+      ----------------
+      |              |
+   Resolve        Reject
+      |              |
+  Fulfilled      Rejected
+      |              |
+    then()        catch()
+      \            /
+       \          /
+        finally()
+```
+
+#### Why Use Promises?
+
+* Avoid callback hell.
+* Improve code readability.
+* Simplify asynchronous error handling.
+* Support chaining of asynchronous operations.
+* Serve as the foundation for `async/await`.
+
+#### Key Point
+
+> A Promise is an object that represents the future result of an asynchronous operation. It can be in one of three states: `pending`, `fulfilled`, or `rejected`, and is typically handled using `.then()`, `.catch()`, and `.finally()`.
+
+
+  ![Screenshot](images/promises.png)
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+53. ### Why do you need a Promise?
+
+Promises are used to **handle asynchronous operations** in JavaScript. Since operations such as API calls, file reading, database queries, and timers take time to complete, Promises provide a structured way to handle their results without blocking the main thread.
+
+#### Benefits of Promises
+
+1. **Handle Asynchronous Operations**
+
+   * Manage operations that complete in the future, such as network requests, file I/O, and timers.
+
+2. **Provide a Cleaner Alternative to Callbacks**
+
+   * Promises offer a more organized and readable approach compared to deeply nested callbacks.
+
+3. **Avoid Callback Hell**
+
+   * Reduce excessive nesting and make asynchronous code easier to follow.
+
+4. **Improve Readability and Maintainability**
+
+   * Promise chaining with `.then()` and `.catch()` makes code more structured and easier to debug.
+
+5. **Centralized Error Handling**
+
+   * Errors can be handled in one place using `.catch()` instead of multiple callback error checks.
+
+6. **Foundation for `async/await`**
+
+   * Modern JavaScript's `async/await` syntax is built on top of Promises.
+
+#### Without Promises (Callback Hell)
+
+```javascript id="cb1a2b"
+getUser(userId, function (user) {
+  getOrders(user.id, function (orders) {
+    getOrderDetails(orders[0].id, function (details) {
+      console.log(details);
+    });
+  });
+});
+```
+
+#### With Promises
+
+```javascript id="pr1c2d"
+getUser(userId)
+  .then((user) => getOrders(user.id))
+  .then((orders) => getOrderDetails(orders[0].id))
+  .then((details) => console.log(details))
+  .catch((error) => console.error(error));
+```
+
+#### With `async/await`
+
+```javascript id="aw1e2f"
+async function getData() {
+  try {
+    const user = await getUser(userId);
+    const orders = await getOrders(user.id);
+    const details = await getOrderDetails(orders[0].id);
+
+    console.log(details);
+  } catch (error) {
+    console.error(error);
+  }
+}
+```
+
+#### Key Point
+
+> Promises are used to handle asynchronous operations in a clean and structured way. They help avoid callback hell, improve readability and maintainability, provide centralized error handling, and serve as the foundation for modern `async/await` syntax.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+54. ### Explain the three states of a Promise
+
+A Promise represents the eventual result of an asynchronous operation. During its lifecycle, a Promise can be in one of **three states**:
+
+#### 1. `Pending`
+
+* This is the **initial state** of a Promise.
+* The asynchronous operation has not completed yet.
+* The Promise is neither fulfilled nor rejected.
+
+```javascript id="p1a2b3"
+const promise = new Promise((resolve, reject) => {
+  // Promise is pending here
+});
+```
+
+#### 2. `Fulfilled`
+
+* The asynchronous operation completed successfully.
+* The Promise is resolved with a value.
+* Any callbacks registered with `.then()` are executed.
+
+```javascript id="p4c5d6"
+const promise = new Promise((resolve) => {
+  resolve("Success");
+});
+
+promise.then((value) => {
+  console.log(value); // Success
+});
+```
+
+#### 3. `Rejected`
+
+* The asynchronous operation failed.
+* The Promise is rejected with a reason or error.
+* Any callbacks registered with `.catch()` are executed.
+
+```javascript id="p7e8f9"
+const promise = new Promise((resolve, reject) => {
+  reject(new Error("Something went wrong"));
+});
+
+promise.catch((error) => {
+  console.error(error.message);
+});
+```
+
+#### Promise State Transition
+
+A Promise starts in the **Pending** state and can transition only once:
+
+```text
+           Pending
+          /       \
+         /         \
+   Fulfilled     Rejected
+```
+
+* `Pending → Fulfilled`
+* `Pending → Rejected`
+
+Once a Promise is **fulfilled** or **rejected**, its state becomes **settled** and cannot change again.
+
+#### Example
+
+```javascript id="p0g1h2"
+const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("Data fetched successfully");
+  }, 2000);
+});
+
+promise.then((result) => {
+  console.log(result);
+});
+```
+
+State flow:
+
+1. Promise is **Pending**.
+2. After 2 seconds, `resolve()` is called.
+3. Promise becomes **Fulfilled**.
+4. The `.then()` callback executes.
+
+#### Key Point
+
+> A Promise has three states: **Pending** (operation in progress), **Fulfilled** (operation completed successfully), and **Rejected** (operation failed). Once a Promise becomes fulfilled or rejected, its state is final and cannot be changed.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+55. ### What is a Callback Function?
+
+A **callback function** is a function that is passed as an argument to another function and is executed later by that function. Callbacks are commonly used in JavaScript to handle asynchronous operations, event handling, and custom logic.
+
+#### Example
+
+```javascript id="cbf1a2"
+function callbackFunction(name) {
+  console.log("Hello " + name);
+}
+
+function outerFunction(callback) {
+  let name = prompt("Please enter your name.");
+  callback(name);
+}
+
+outerFunction(callbackFunction);
+```
+
+#### How It Works
+
+1. `callbackFunction` is defined to accept a `name` parameter.
+2. `outerFunction` accepts a function as an argument (`callback`).
+3. Inside `outerFunction`, the user's name is collected using `prompt()`.
+4. The callback function is invoked with the entered name.
+5. The output is displayed.
+
+For example, if the user enters `"John"`:
+
+```text id="cbfout"
+Hello John
+```
+
+#### Callback with Anonymous Function
+
+```javascript id="cbf3b4"
+function greet(callback) {
+  callback();
+}
+
+greet(function () {
+  console.log("Hello World!");
+});
+```
+
+#### Callback in Asynchronous Code
+
+```javascript id="cbf5c6"
+setTimeout(function () {
+  console.log("Executed after 2 seconds");
+}, 2000);
+```
+
+Here, the callback function is executed after the timer completes.
+
+#### Why Use Callback Functions?
+
+* Handle asynchronous operations.
+* Respond to events (clicks, key presses, etc.).
+* Customize the behavior of functions.
+* Promote code reusability and flexibility.
+
+#### Key Point
+
+> A callback function is a function passed as an argument to another function and executed later by that function. It is widely used in JavaScript for asynchronous programming, event handling, and creating flexible, reusable code.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+56. ### Why do we need Callbacks?
+
+Callbacks are needed because JavaScript is a **single-threaded, event-driven language**. Instead of blocking execution and waiting for a task to complete, JavaScript continues executing other code while asynchronous operations (such as API calls, timers, or file operations) run in the background.
+
+Callbacks provide a way to execute code **after** an asynchronous operation has completed.
+
+#### Example Without a Callback
+
+```javascript id="cb1a2b"
+function firstFunction() {
+  // Simulate a code delay
+  setTimeout(function () {
+    console.log("First function called");
+  }, 1000);
+}
+
+function secondFunction() {
+  console.log("Second function called");
+}
+
+firstFunction();
+secondFunction();
+```
+
+**Output:**
+
+```text id="cbout1"
+Second function called
+First function called
+```
+
+Even though `firstFunction()` is called first, `secondFunction()` executes before it because `setTimeout()` is asynchronous.
+
+#### Using a Callback
+
+```javascript id="cb3c4d"
+function firstFunction(callback) {
+  setTimeout(function () {
+    console.log("First function called");
+    callback();
+  }, 1000);
+}
+
+function secondFunction() {
+  console.log("Second function called");
+}
+
+firstFunction(secondFunction);
+```
+
+**Output:**
+
+```text id="cbout2"
+First function called
+Second function called
+```
+
+Now, `secondFunction()` executes only after `firstFunction()` has completed.
+
+#### Why Callbacks Are Useful
+
+1. **Handle Asynchronous Operations**
+
+   * API requests
+   * Database queries
+   * Timers
+   * File operations
+
+2. **Control Execution Order**
+
+   * Ensure certain code runs only after another task finishes.
+
+3. **Support Event-Driven Programming**
+
+   * Respond to user actions such as clicks, key presses, and form submissions.
+
+4. **Improve Flexibility**
+
+   * Functions can accept custom behavior as arguments.
+
+#### Common Examples
+
+```javascript id="cb5e6f"
+button.addEventListener("click", function () {
+  console.log("Button clicked");
+});
+```
+
+```javascript id="cb7g8h"
+setTimeout(function () {
+  console.log("Executed after 2 seconds");
+}, 2000);
+```
+
+#### Limitation: Callback Hell
+
+Excessive nesting of callbacks can make code difficult to read and maintain:
+
+```javascript id="cb9i0j"
+getUser(function (user) {
+  getOrders(user.id, function (orders) {
+    getOrderDetails(orders[0].id, function (details) {
+      console.log(details);
+    });
+  });
+});
+```
+
+This problem led to the introduction of **Promises** and **async/await**.
+
+#### Key Point
+
+> Callbacks are needed to handle asynchronous operations and control the order of execution in JavaScript. They allow code to run only after a task has completed, making them essential for event-driven and non-blocking programming.
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+57. ### What is Callback Hell?
+
+**Callback Hell** is an anti-pattern that occurs when multiple asynchronous operations are nested inside one another using callbacks. This results in deeply indented code that is difficult to read, understand, maintain, and debug.
+
+Callback Hell is also known as the **"Pyramid of Doom"** because the code structure resembles a pyramid.
+
+#### Example of Callback Hell
+
+```javascript id="ch1a2b"
+async1(function () {
+  async2(function () {
+    async3(function () {
+      async4(function () {
+        // More nested callbacks...
       });
     });
-    ```
+  });
+});
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+As the number of asynchronous operations grows, the code becomes increasingly difficult to manage.
 
-64. ### What is promise chaining
+#### Real-World Example
 
-    The process of executing a sequence of asynchronous tasks one after another using promises is known as Promise chaining. Let's take an example of promise chaining for calculating the final result,
-
-    ```javascript
-    new Promise(function (resolve, reject) {
-      setTimeout(() => resolve(1), 1000);
-    })
-      .then(function (result) {
-        console.log(result); // 1
-        return result * 2;
-      })
-      .then(function (result) {
-        console.log(result); // 2
-        return result * 3;
-      })
-      .then(function (result) {
-        console.log(result); // 6
-        return result * 4;
+```javascript id="ch3c4d"
+getUser(userId, function (user) {
+  getOrders(user.id, function (orders) {
+    getOrderDetails(orders[0].id, function (details) {
+      getPaymentInfo(details.id, function (payment) {
+        console.log(payment);
       });
-    ```
-
-    In the above handlers, the result is passed to the chain of .then() handlers with the below work flow,
-
-    1. The initial promise resolves in 1 second,
-    2. After that `.then` handler is called by logging the result(1) and then return a promise with the value of result \* 2.
-    3. After that the value passed to the next `.then` handler by logging the result(2) and return a promise with result \* 3.
-    4. Finally the value passed to the last `.then` handler by logging the result(6) and return a promise with result \* 4.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-65. ### What is promise.all
-
-    Promise.all is a promise that takes an array of promises as an input (an iterable), and it gets resolved when all the promises get resolved or any one of them gets rejected. For example, the syntax of promise.all method is below,
-
-    ```javascript
-    Promise.all([Promise1, Promise2, Promise3]) .then(result) => {   console.log(result) }) .catch(error => console.log(`Error in promises ${error}`))
-    ```
-
-    **Note:** Remember that the order of the promises(output the result) is maintained as per input order.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-66. ### What is the purpose of the race method in promise
-
-    Promise.race() method will return the promise instance which is firstly resolved or rejected. Let's take an example of race() method where promise2 is resolved first
-
-    ```javascript
-    var promise1 = new Promise(function (resolve, reject) {
-      setTimeout(resolve, 500, "one");
     });
-    var promise2 = new Promise(function (resolve, reject) {
-      setTimeout(resolve, 100, "two");
+  });
+});
+```
+
+#### Problems with Callback Hell
+
+1. **Poor Readability**
+
+   * Deep nesting makes the code difficult to follow.
+
+2. **Hard to Debug**
+
+   * Error handling becomes complicated.
+
+3. **Difficult Maintenance**
+
+   * Modifying or extending the code becomes challenging.
+
+4. **Error Propagation Issues**
+
+   * Errors must often be handled at multiple levels.
+
+#### Solutions to Callback Hell
+
+##### 1. Use Named Functions
+
+```javascript id="ch5e6f"
+function handlePayment(payment) {
+  console.log(payment);
+}
+
+function handleDetails(details) {
+  getPaymentInfo(details.id, handlePayment);
+}
+
+function handleOrders(orders) {
+  getOrderDetails(orders[0].id, handleDetails);
+}
+
+function handleUser(user) {
+  getOrders(user.id, handleOrders);
+}
+
+getUser(userId, handleUser);
+```
+
+##### 2. Use Promises
+
+```javascript id="ch7g8h"
+getUser(userId)
+  .then((user) => getOrders(user.id))
+  .then((orders) => getOrderDetails(orders[0].id))
+  .then((details) => getPaymentInfo(details.id))
+  .then((payment) => console.log(payment))
+  .catch((error) => console.error(error));
+```
+
+##### 3. Use `async/await`
+
+```javascript id="ch9i0j"
+async function getPayment() {
+  try {
+    const user = await getUser(userId);
+    const orders = await getOrders(user.id);
+    const details = await getOrderDetails(orders[0].id);
+    const payment = await getPaymentInfo(details.id);
+
+    console.log(payment);
+  } catch (error) {
+    console.error(error);
+  }
+}
+```
+
+#### Key Point
+
+> Callback Hell is an anti-pattern caused by deeply nested callbacks in asynchronous code. It makes code difficult to read, maintain, and debug. Modern JavaScript addresses this problem using **Promises** and **`async/await`**, which provide a cleaner and more manageable approach to asynchronous programming.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+58. ### What are Server-Sent Events (SSE)?
+
+**Server-Sent Events (SSE)** is a web technology that allows a server to push real-time updates to a browser over a single, long-lived HTTP connection. Unlike traditional polling, where the client repeatedly requests updates, SSE enables the server to automatically send data whenever new information is available.
+
+SSE provides **one-way communication**, meaning data flows only from the **server to the client**.
+
+#### Key Features
+
+1. **Server-to-Client Communication**
+
+   * The server can continuously send updates to the browser.
+
+2. **Uses Standard HTTP**
+
+   * No special protocol is required.
+
+3. **Automatic Reconnection**
+
+   * Browsers automatically attempt to reconnect if the connection is lost.
+
+4. **Lightweight**
+
+   * Simpler and more efficient than repeated polling.
+
+5. **One-Way Communication**
+
+   * Data flows only from the server to the client.
+   * If two-way communication is needed, use **WebSockets**.
+
+#### Common Use Cases
+
+* Social media feeds (Facebook, Twitter/X updates)
+* Live news feeds
+* Stock price updates
+* Sports score updates
+* Real-time notifications
+* Monitoring dashboards
+
+#### Client-Side Example
+
+```javascript id="sse1a2b"
+const eventSource = new EventSource("/events");
+
+eventSource.onmessage = function (event) {
+  console.log("Received:", event.data);
+};
+```
+
+#### Server-Side Example (Node.js)
+
+```javascript id="sse3c4d"
+app.get("/events", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  setInterval(() => {
+    res.write(`data: ${new Date().toISOString()}\n\n`);
+  }, 1000);
+});
+```
+
+#### SSE vs WebSockets
+
+| Feature                | SSE                           | WebSockets                           |
+| ---------------------- | ----------------------------- | ------------------------------------ |
+| Communication          | One-way (Server → Client)     | Two-way (Client ↔ Server)            |
+| Protocol               | HTTP                          | WebSocket Protocol                   |
+| Automatic Reconnection | Yes                           | Must be handled manually             |
+| Complexity             | Simple                        | More complex                         |
+| Best For               | Notifications, feeds, updates | Chat apps, games, collaborative apps |
+
+#### How SSE Works
+
+```text id="sseflow"
+Client (Browser)
+       |
+       | EventSource Connection
+       |
+       v
+Server
+       |
+       | Sends Events
+       v
+Client Receives Updates
+```
+
+#### Key Point
+
+> Server-Sent Events (SSE) is a technology that allows a server to push real-time updates to a browser over a persistent HTTP connection. It supports one-way communication (server to client) and is commonly used for live feeds, notifications, stock prices, and other real-time updates.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+59. ### How do you receive Server-Sent Event (SSE) notifications?
+
+The **`EventSource`** object is used to receive **Server-Sent Events (SSE)** from a server. It opens a persistent HTTP connection to the server and listens for incoming events automatically.
+
+Before creating an `EventSource`, it is a good practice to check whether the browser supports SSE.
+
+#### Example
+
+```javascript id="sse1r2c"
+if (typeof EventSource !== "undefined") {
+  const source = new EventSource("sse_generator.js");
+
+  source.onmessage = function (event) {
+    document.getElementById("output").innerHTML +=
+      event.data + "<br>";
+  };
+} else {
+  console.log(
+    "Sorry, your browser does not support Server-Sent Events."
+  );
+}
+```
+
+#### How It Works
+
+1. Create an `EventSource` object and provide the server endpoint URL.
+2. The browser establishes a persistent connection with the server.
+3. Whenever the server sends an event, the `onmessage` handler is triggered.
+4. The received data is available through `event.data`.
+
+#### Handling Custom Events
+
+The server can send named events, and the client can listen for them:
+
+```javascript id="sse3d4e"
+source.addEventListener("notification", function (event) {
+  console.log("Notification:", event.data);
+});
+```
+
+Server response:
+
+```text id="sseevent"
+event: notification
+data: New message received
+
+```
+
+#### Handling Errors
+
+```javascript id="sse5f6g"
+source.onerror = function (error) {
+  console.error("SSE connection error:", error);
+};
+```
+
+#### Closing the Connection
+
+```javascript id="sse7h8i"
+source.close();
+```
+
+#### Key Properties and Methods
+
+| Property/Method      | Description                |
+| -------------------- | -------------------------- |
+| `onmessage`          | Handles incoming messages  |
+| `addEventListener()` | Listens for custom events  |
+| `onerror`            | Handles connection errors  |
+| `close()`            | Closes the SSE connection  |
+| `readyState`         | Indicates connection state |
+
+#### Key Point
+
+> Server-Sent Event notifications are received using the `EventSource` object. The browser maintains a persistent HTTP connection with the server, and incoming messages can be handled through the `onmessage` event or custom event listeners.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+60. ### How do you check browser support for Server-Sent Events?
+
+Before using **Server-Sent Events (SSE)**, you should verify that the browser supports the `EventSource` API.
+
+You can check for support by testing whether the `EventSource` object is defined:
+
+```javascript id="sse9j0k"
+if (typeof EventSource !== "undefined") {
+  // Server-Sent Events are supported
+} else {
+  // Server-Sent Events are not supported
+}
+```
+
+#### Example
+
+```javascript id="sse1l2m"
+if (typeof EventSource !== "undefined") {
+  const source = new EventSource("/events");
+
+  source.onmessage = function (event) {
+    console.log(event.data);
+  };
+} else {
+  console.log(
+    "Sorry, your browser does not support Server-Sent Events."
+  );
+}
+```
+
+#### Why Check for Support?
+
+* Ensures compatibility with older browsers.
+* Prevents runtime errors when creating an `EventSource`.
+* Allows you to provide fallback mechanisms such as polling or WebSockets.
+
+#### Key Point
+
+> To check whether a browser supports Server-Sent Events, verify that the `EventSource` object exists using `typeof EventSource !== "undefined"`. If it exists, you can safely create an `EventSource` connection and receive server-sent updates.
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+61. ### What are the events available for Server-Sent Events (SSE)?
+
+The `EventSource` interface provides several event handlers that allow you to respond to different stages of the SSE connection lifecycle.
+
+| Event       | Description                                                                |
+| ----------- | -------------------------------------------------------------------------- |
+| `onopen`    | Fired when a connection to the server is successfully established.         |
+| `onmessage` | Fired when a message is received from the server.                          |
+| `onerror`   | Fired when an error occurs, such as a connection failure or network issue. |
+
+#### 1. `onopen`
+
+This event is triggered when the SSE connection is opened successfully.
+
+```javascript id="sseopen1"
+const source = new EventSource("/events");
+
+source.onopen = function () {
+  console.log("Connection established");
+};
+```
+
+#### 2. `onmessage`
+
+This event is triggered whenever the server sends a message.
+
+```javascript id="ssemsg1"
+source.onmessage = function (event) {
+  console.log("Received:", event.data);
+};
+```
+
+#### 3. `onerror`
+
+This event is triggered when an error occurs with the connection.
+
+```javascript id="sseerr1"
+source.onerror = function (error) {
+  console.error("SSE Error:", error);
+};
+```
+
+#### Complete Example
+
+```javascript id="ssefull1"
+const source = new EventSource("/events");
+
+source.onopen = function () {
+  console.log("Connected to server");
+};
+
+source.onmessage = function (event) {
+  console.log("Message:", event.data);
+};
+
+source.onerror = function (error) {
+  console.error("Connection error:", error);
+};
+```
+
+#### Custom Events
+
+In addition to the built-in events, SSE supports custom event types using `addEventListener()`:
+
+```javascript id="ssecustom1"
+source.addEventListener("notification", (event) => {
+  console.log("Notification:", event.data);
+});
+```
+
+#### Key Point
+
+> The three primary Server-Sent Events are:
+>
+> * **`onopen`** – Fired when the connection is established.
+> * **`onmessage`** – Fired when a message is received.
+> * **`onerror`** – Fired when an error occurs.
+>
+> These events allow the client to monitor and respond to the SSE connection lifecycle.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+62. ### What are the main rules of a Promise?
+
+A Promise follows a well-defined set of rules specified by the **Promises/A+** specification to ensure consistent and predictable behavior.
+
+#### Rules of a Promise
+
+1. **A Promise is an object that provides a `.then()` method**
+
+   * The `.then()` method is used to register callbacks for fulfilled and rejected states.
+
+2. **A pending Promise can transition only once**
+
+   * A Promise starts in the `pending` state.
+   * It may transition to either:
+
+     * `fulfilled`, or
+     * `rejected`.
+
+3. **A settled Promise cannot change state**
+
+   * Once a Promise becomes `fulfilled` or `rejected`, it is considered **settled**.
+   * A settled Promise cannot transition to any other state.
+
+4. **A settled Promise's value or reason is immutable**
+
+   * Once fulfilled, the fulfillment value cannot change.
+   * Once rejected, the rejection reason cannot change.
+
+#### Example
+
+```javascript id="prule1"
+const promise = new Promise((resolve, reject) => {
+  resolve("Success");
+
+  // Ignored because the Promise is already settled
+  reject("Error");
+});
+
+promise.then((value) => {
+  console.log(value);
+});
+```
+
+**Output:**
+
+```text id="pruleout"
+Success
+```
+
+The call to `reject()` is ignored because the Promise has already been fulfilled.
+
+#### State Transition Diagram
+
+```text id="prulestate"
+           Pending
+          /       \
+         /         \
+   Fulfilled     Rejected
+         \         /
+          \       /
+          Settled
+```
+
+#### Example Showing Immutability
+
+```javascript id="prule2"
+const promise = new Promise((resolve) => {
+  resolve("First Value");
+
+  // Ignored
+  resolve("Second Value");
+});
+
+promise.then((value) => {
+  console.log(value);
+});
+```
+
+**Output:**
+
+```text id="pruleout2"
+First Value
+```
+
+The second `resolve()` call has no effect.
+
+#### Key Point
+
+> A Promise starts in the **pending** state and can transition only once to either **fulfilled** or **rejected**. Once settled, its state and value (or rejection reason) become immutable and cannot be changed.
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+63. ### What is a Callback in Callback?
+
+A **callback in callback** refers to the practice of nesting one callback function inside another callback function. This is commonly done when multiple asynchronous operations need to be executed **sequentially**, where each operation depends on the completion of the previous one.
+
+#### Example
+
+```javascript id="cbcb1"
+loadScript("/script1.js", function (script) {
+  console.log("First script is loaded");
+
+  loadScript("/script2.js", function (script) {
+    console.log("Second script is loaded");
+
+    loadScript("/script3.js", function (script) {
+      console.log("Third script is loaded");
+
+      // All scripts are loaded
     });
+  });
+});
+```
 
-    Promise.race([promise1, promise2]).then(function (value) {
-      console.log(value); // "two" // Both promises will resolve, but promise2 is faster
-    });
-    ```
+#### How It Works
 
-    **[⬆ Back to Top](#table-of-contents)**
+1. Load `script1.js`.
+2. After it finishes loading, load `script2.js`.
+3. After `script2.js` finishes loading, load `script3.js`.
+4. Execute the final logic after all scripts have loaded.
 
-67. ### What is a strict mode in javascript
+This ensures that each operation runs only after the previous one has completed.
 
-    JavaScript’s "use strict" directive is used to opt into a stricter parsing and error-handling mode for your scripts or functions. It helps catch common bugs, makes your code more secure, and prepares it for future versions of JavaScript.
+#### Problem with Nested Callbacks
 
-    Strict Mode is a new feature in ECMAScript 5 that allows you to place a program, or a function, in a “strict” operating context. This way it prevents certain actions from being taken and throws more exceptions. The literal expression `"use strict";` instructs the browser to use the javascript code in the Strict mode. This also enables block-scoped variables.
+As the number of nested callbacks increases, the code becomes:
 
-    **[⬆ Back to Top](#table-of-contents)**
+* Difficult to read.
+* Difficult to maintain.
+* Difficult to debug.
 
-68. ### Why do you need strict mode
+This situation is commonly known as **Callback Hell** or the **Pyramid of Doom**.
 
-    Strict mode is useful to write "secure" JavaScript by notifying "bad syntax" into real errors. For example, it eliminates accidentally creating a global variable by throwing an error and also throws an error for assignment to a non-writable property, a getter-only property, a non-existing property, a non-existing variable, or a non-existing object.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-69. ### How do you declare strict mode
-
-    The strict mode is declared by adding "use strict"; to the beginning of a script or a function.
-    If declared at the beginning of a script, it has global scope.
-
-    ```javascript
-    "use strict";
-    x = 3.14; // This will cause an error because x is not declared
-    ```
-
-    and if you declare inside a function, it has local scope
-
-    ```javascript
-    x = 3.14; // This will not cause an error.
-    myFunction();
-
-    function myFunction() {
-      "use strict";
-      y = 3.14; // This will cause an error
-    }
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-70. ### What is the purpose of double exclamation
-
-    The double exclamation or negation(!!) ensures the resulting type is a boolean. If it was falsey (e.g. 0, null, undefined, etc.), it will be false, otherwise, it will be true.
-    For example, you can test IE version using this expression as below,
-
-    ```javascript
-    let isIE8 = false;
-    isIE8 = !!navigator.userAgent.match(/MSIE 8.0/);
-    console.log(isIE8); // returns true or false
-    ```
-
-    If you don't use this expression then it returns the original value.
-
-    ```javascript
-    console.log(navigator.userAgent.match(/MSIE 8.0/)); // returns either an Array or null
-    ```
-
-    **Note:** The expression !! is not an operator, but it is just twice of ! operator.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-71. ### What is the purpose of the delete operator
-
-    The delete operator is used to delete the property as well as its value.
-
-    ```javascript
-    var user = { firstName: "John", lastName: "Doe", age: 20 };
-    delete user.age;
-
-    console.log(user); // {firstName: "John", lastName:"Doe"}
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-72. ### What is typeof operator
-
-    You can use the JavaScript typeof operator to find the type of a JavaScript variable. It returns the type of a variable or an expression.
-
-    ```javascript
-    typeof "John Abraham"; // Returns "string"
-    typeof (1 + 2); // Returns "number"
-    typeof [1, 2, 3]; // Returns "object" because all arrays are also objects
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-73. ### What is undefined property
-
-    The undefined property indicates that a variable has not been assigned a value, or declared but not initialized at all. The type of undefined value is undefined too.
-
-    ```javascript
-    var user; // Value is undefined, type is undefined
-    console.log(typeof user); //undefined
-    ```
-
-    Any variable can be emptied by setting the value to undefined.
-
-    ```javascript
-    user = undefined;
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-74. ### What is null value
-
-    The value null represents the intentional absence of any object value. It is one of JavaScript's primitive values. The type of null value is object.
-    You can empty the variable by setting the value to null.
-
-    ```javascript
-    var user = null;
-    console.log(typeof user); //object
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-75. ### What is the difference between null and undefined
-
-    Below are the main differences between null and undefined,
-
-    | Null                                                                                            | Undefined                                                                                               |
-    | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-    | It is an assignment value which indicates that variable points to no object.                    | It is not an assignment value where a variable has been declared but has not yet been assigned a value. |
-    | Type of null is object                                                                          | Type of undefined is undefined                                                                          |
-    | The null value is a primitive value that represents the null, empty, or non-existent reference. | The undefined value is a primitive value used when a variable has not been assigned a value.            |
-    | Indicates the absence of a value for a variable                                                 | Indicates absence of variable itself                                                                    |
-    | Converted to zero (0) while performing primitive operations                                     | Converted to NaN while performing primitive operations                                                  |
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-76. ### What is eval
-
-    The eval() function evaluates JavaScript code represented as a string. The string can be a JavaScript expression, variable, statement, or sequence of statements.
-
-    ```javascript
-    console.log(eval("1 + 2")); //  3
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-77. ### What is the difference between window and document
-
-    Below are the main differences between window and document,
-
-    | Window                                                                        | Document                                                                                       |
-    | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-    | It is the root level element in any web page                                  | It is the direct child of the window object. This is also known as Document Object Model (DOM) |
-    | By default window object is available implicitly in the page                  | You can access it via window.document or document.                                             |
-    | It has methods like alert(), confirm() and properties like document, location | It provides methods like getElementById, getElementsByTagName, createElement etc               |
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-78. ### How do you access history in javascript
-
-    The window.history object contains the browser's history. You can load previous and next URLs in the history using back() and next() methods.
-
-    ```javascript
-    function goBack() {
-      window.history.back();
-    }
-    function goForward() {
-      window.history.forward();
-    }
-    ```
-
-    **Note:** You can also access history without window prefix.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-79. ### How do you detect caps lock key turned on or not
-
-    The `mouseEvent getModifierState()` is used to return a boolean value that indicates whether the specified modifier key is activated or not. The modifiers such as CapsLock, ScrollLock and NumLock are activated when they are clicked, and deactivated when they are clicked again.
-
-    Let's take an input element to detect the CapsLock on/off behavior with an example:
-
-    ```html
-    <input type="password" onmousedown="enterInput(event)" />
-
-    <p id="feedback"></p>
-
-    <script>
-      function enterInput(e) {
-        var flag = e.getModifierState("CapsLock");
-        if (flag) {
-          document.getElementById("feedback").innerHTML = "CapsLock activated";
-        } else {
-          document.getElementById("feedback").innerHTML =
-            "CapsLock not activated";
-        }
-      }
-    </script>
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-80. ### What is isNaN
-
-    The isNaN() function is used to determine whether a value is an illegal number (Not-a-Number) or not. i.e, This function returns true if the value equates to NaN. Otherwise it returns false.
-
-    ```javascript
-    isNaN("Hello"); //true
-    isNaN("100"); //false
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-81. ### What are the differences between undeclared and undefined variables
-
-    Below are the major differences between undeclared(not defined) and undefined variables,
-
-    | undeclared                                                                                  | undefined                                                                              |
-    | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-    | These variables do not exist in a program and are not declared                              | These variables declared in the program but have not assigned any value                |
-    | If you try to read the value of an undeclared variable, then a runtime error is encountered | If you try to read the value of an undefined variable, an undefined value is returned. |
-
-    ```javascript
-    var a;
-    a; // yields undefined
-
-    b; // Throws runtime error like "Uncaught ReferenceError: b is not defined"
-    ```
-    This can be confusing, because it says `not defined` instead of `not declared` (Chrome)
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-
-82. ### What are global variables
-
-    Global variables are those that are available throughout the length of the code without any scope. The var keyword is used to declare a local variable but if you omit it then it will become global variable
-
-    ```javascript
-    msg = "Hello"; // var is missing, it becomes global variable
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-83. ### What are the problems with global variables
-
-    The problem with global variables is the conflict of variable names of local and global scope. It is also difficult to debug and test the code that relies on global variables.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-84. ### What is NaN property
-
-    The NaN property is a global property that represents "Not-a-Number" value. i.e, It indicates that a value is not a legal number. It is very rare to use NaN in a program but it can be used as return value for few cases
-
-    ```javascript
-    Math.sqrt(-1);
-    parseInt("Hello");
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-85. ### What is the purpose of isFinite function
-
-    The isFinite() function is used to determine whether a number is a finite, legal number. It returns false if the value is +infinity, -infinity, or NaN (Not-a-Number), otherwise it returns true.
-
-    ```javascript
-    isFinite(Infinity); // false
-    isFinite(NaN); // false
-    isFinite(-Infinity); // false
-
-    isFinite(100); // true
-    ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-86. ### What is an event flow
-
-    Event flow refers to the order in which events are handled in the browser when a user interacts with elements on a webpage like clicking, typing, hovering, etc.
-
-    When you click an element that is nested in various other elements, before your click actually reaches its destination, or target element, it must trigger the click event for each of its parent elements first, starting at the top with the global window object.
-
-    Hence, there are three phases in JavaScript’s event flow:
-
-    1. Event Capturing(Top to Bottom): The event starts from the window/document and moves down the DOM tree toward the target element.
-    2. Target phase: The event reaches the target element — the element that was actually interacted with.
-    3. Event Bubbling(Bottom to Top): The event then bubbles back up from the target element to the root.
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-87. ### What is event capturing
-
-    Event capturing is a phase of event propagation in which an event is first intercepted by the outermost ancestor element, then travels downward through the DOM hierarchy until it reaches the target (innermost) element.
-
-    To handle events during the capturing phase, you need to pass `true` as the third argument to the `addEventListener` method.
-
-     ```javascript
-      <div>
-        <button class="child">Hello</button>
-      </div>
-
-      <script>
-        const parent = document.querySelector("div");
-        const child = document.querySelector(".child");
-
-        // Capturing phase: parent listener (runs first)
-        parent.addEventListener("click", function () {
-          console.log("Parent (capturing)");
-        }, true); // `true` enables capturing
-
-        // Bubbling phase: child listener (runs after)
-        child.addEventListener("click", function () {
-          console.log("Child (bubbling)");
-        });
-      </script>
-      // Parent (capturing)
-      // Child (bubbling)
-     ```
-
-    **[⬆ Back to Top](#table-of-contents)**
-
-88. ### What is event bubbling
-
-    Event bubbling is a type of event propagation in which an event first triggers on the innermost target element (the one the user interacted with), and then bubbles up through its ancestors in the DOM hierarchy — eventually reaching the outermost elements, like the document or window.
-
-    By default, event listeners in JavaScript are triggered during the bubbling phase, unless specified otherwise.
-
-    ```javascript
-    <div>
-      <button class="child">Hello</button>
-    </div>
-
-    <script>
-      const parent = document.querySelector("div");
-      const child = document.querySelector(".child");
-
-      // Bubbling phase (default)
-      parent.addEventListener("click", function () {
-        console.log("Parent");
+```javascript id="cbcb2"
+async1(function () {
+  async2(function () {
+    async3(function () {
+      async4(function () {
+        // More nesting...
       });
+    });
+  });
+});
+```
 
-      child.addEventListener("click", function () {
-        console.log("Child");
-      });
-    </script>
-    //Child
-    //Parent
-    ```
+#### Better Alternatives
 
-    Here, at first, the event triggers on the child button. Thereafter it bubbles up and triggers the parent div's event handler.
+Modern JavaScript provides cleaner ways to handle asynchronous operations:
+
+##### Using Promises
+
+```javascript id="cbcb3"
+loadScript("/script1.js")
+  .then(() => loadScript("/script2.js"))
+  .then(() => loadScript("/script3.js"))
+  .then(() => {
+    console.log("All scripts loaded");
+  })
+  .catch((error) => console.error(error));
+```
+
+##### Using `async/await`
+
+```javascript id="cbcb4"
+async function loadScripts() {
+  try {
+    await loadScript("/script1.js");
+    await loadScript("/script2.js");
+    await loadScript("/script3.js");
+
+    console.log("All scripts loaded");
+  } catch (error) {
+    console.error(error);
+  }
+}
+```
+
+#### Key Point
+
+> A callback in callback is the nesting of one callback function inside another to execute asynchronous operations sequentially. While it ensures the correct execution order, excessive nesting can lead to **Callback Hell**, which is why modern JavaScript often uses **Promises** and **`async/await`** instead.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+64. ### What is Promise Chaining?
+
+**Promise Chaining** is the process of executing a sequence of asynchronous operations one after another by chaining multiple `.then()` methods. Each `.then()` receives the result of the previous Promise and can return a new value or another Promise.
+
+This allows asynchronous code to be written in a clean and readable manner without deeply nested callbacks.
+
+#### Example
+
+```javascript id="pc1a2b"
+new Promise(function (resolve, reject) {
+  setTimeout(() => resolve(1), 1000);
+})
+  .then(function (result) {
+    console.log(result); // 1
+    return result * 2;
+  })
+  .then(function (result) {
+    console.log(result); // 2
+    return result * 3;
+  })
+  .then(function (result) {
+    console.log(result); // 6
+    return result * 4;
+  });
+```
+
+#### Output
+
+```text id="pcout1"
+1
+2
+6
+```
+
+#### How Promise Chaining Works
+
+1. The initial Promise resolves with the value `1` after 1 second.
+2. The first `.then()` receives `1`, logs it, and returns `1 * 2 = 2`.
+3. The second `.then()` receives `2`, logs it, and returns `2 * 3 = 6`.
+4. The third `.then()` receives `6`, logs it, and returns `6 * 4 = 24`.
+
+Each `.then()` returns a new Promise, allowing the chain to continue.
+
+#### Promise Chain Flow
+
+```text id="pcflow"
+Promise(1)
+    |
+    v
+then() -> 2
+    |
+    v
+then() -> 6
+    |
+    v
+then() -> 24
+```
+
+#### Chaining Asynchronous Operations
+
+A `.then()` can also return another Promise:
+
+```javascript id="pc3c4d"
+fetchUser()
+  .then((user) => fetchOrders(user.id))
+  .then((orders) => fetchOrderDetails(orders[0].id))
+  .then((details) => console.log(details))
+  .catch((error) => console.error(error));
+```
+
+Here, each asynchronous operation waits for the previous one to complete.
+
+#### Benefits of Promise Chaining
+
+1. **Avoids Callback Hell**
+2. **Improves Readability**
+3. **Simplifies Error Handling**
+4. **Makes Asynchronous Code Easier to Maintain**
+
+#### Error Handling in Chains
+
+Any error thrown in the chain can be caught by a single `.catch()`:
+
+```javascript id="pc5e6f"
+fetchData()
+  .then((data) => processData(data))
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+```
+
+#### Key Point
+
+> Promise Chaining is the technique of linking multiple `.then()` handlers together so that the result of one asynchronous operation is passed to the next. Each `.then()` returns a new Promise, enabling sequential execution of asynchronous tasks and avoiding callback hell.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+65. ### What is `Promise.all()`?
+
+`Promise.all()` is a static method that takes an **iterable (usually an array) of Promises** as input and returns a single Promise.
+
+The returned Promise:
+
+* **Resolves** when **all** input Promises are fulfilled.
+* **Rejects immediately** if **any one** of the input Promises is rejected.
+
+#### Syntax
+
+```javascript id="pa1a2b"
+Promise.all([promise1, promise2, promise3])
+  .then((results) => {
+    console.log(results);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+```
+
+#### Example
+
+```javascript id="pa3c4d"
+const promise1 = Promise.resolve(10);
+
+const promise2 = new Promise((resolve) => {
+  setTimeout(() => resolve(20), 1000);
+});
+
+const promise3 = Promise.resolve(30);
+
+Promise.all([promise1, promise2, promise3])
+  .then((results) => {
+    console.log(results);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+```
+
+**Output:**
+
+```text id="paout1"
+[10, 20, 30]
+```
+
+#### Important Characteristics
+
+##### 1. Waits for All Promises
+
+The returned Promise resolves only after every Promise in the array has been fulfilled.
+
+```javascript id="pa5e6f"
+Promise.all([
+  fetch("/users"),
+  fetch("/posts"),
+  fetch("/comments"),
+]).then((responses) => {
+  console.log("All requests completed");
+});
+```
+
+##### 2. Fails Fast
+
+If any Promise rejects, `Promise.all()` immediately rejects.
+
+```javascript id="pa7g8h"
+Promise.all([
+  Promise.resolve(1),
+  Promise.reject("Something went wrong"),
+  Promise.resolve(3),
+])
+  .then((results) => console.log(results))
+  .catch((error) => console.log(error));
+```
+
+**Output:**
+
+```text id="paout2"
+Something went wrong
+```
+
+##### 3. Maintains Input Order
+
+The results array preserves the order of the input Promises, regardless of which Promise completes first.
+
+```javascript id="pa9i0j"
+const p1 = new Promise((resolve) =>
+  setTimeout(() => resolve("First"), 3000)
+);
+
+const p2 = new Promise((resolve) =>
+  setTimeout(() => resolve("Second"), 1000)
+);
+
+Promise.all([p1, p2]).then((results) => {
+  console.log(results);
+});
+```
+
+**Output:**
+
+```text id="paout3"
+["First", "Second"]
+```
+
+Even though `p2` resolves first, the results are returned in the same order as the input array.
+
+#### Common Use Cases
+
+* Multiple API requests in parallel
+* Loading multiple resources simultaneously
+* Running independent asynchronous tasks together
+* Improving performance by avoiding sequential execution
+
+#### Key Point
+
+> `Promise.all()` takes an array of Promises and returns a single Promise that resolves when all input Promises are fulfilled or rejects immediately if any Promise is rejected. The order of results is always preserved according to the input order.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+66. ### What is the purpose of the `Promise.race()` method?
+
+`Promise.race()` is a static Promise method that takes an iterable (usually an array) of Promises and returns a new Promise that settles as soon as the **first input Promise settles**.
+
+The first Promise can either:
+
+* **Resolve** → the returned Promise resolves with that value.
+* **Reject** → the returned Promise rejects with that reason.
+
+#### Syntax
+
+```javascript id="prace1"
+Promise.race([promise1, promise2, promise3])
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+```
+
+#### Example
+
+```javascript id="prace2"
+const promise1 = new Promise((resolve, reject) => {
+  setTimeout(resolve, 500, "one");
+});
+
+const promise2 = new Promise((resolve, reject) => {
+  setTimeout(resolve, 100, "two");
+});
+
+Promise.race([promise1, promise2]).then((value) => {
+  console.log(value);
+});
+```
+
+**Output:**
+
+```text id="praceout1"
+two
+```
+
+Although both Promises resolve successfully, `promise2` resolves first, so its value is returned.
+
+#### Example with Rejection
+
+```javascript id="prace3"
+const promise1 = new Promise((resolve) => {
+  setTimeout(resolve, 500, "Success");
+});
+
+const promise2 = new Promise((resolve, reject) => {
+  setTimeout(reject, 100, "Error");
+});
+
+Promise.race([promise1, promise2])
+  .then((value) => console.log(value))
+  .catch((error) => console.log(error));
+```
+
+**Output:**
+
+```text id="praceout2"
+Error
+```
+
+Since `promise2` rejects first, the Promise returned by `Promise.race()` is rejected immediately.
+
+#### How `Promise.race()` Works
+
+```text id="praceflow"
+Promise 1 (500ms) -----> Resolve
+Promise 2 (100ms) -----> Resolve
+
+Winner: Promise 2
+Result: Resolve with Promise 2's value
+```
+
+#### Common Use Cases
+
+1. **Implementing Request Timeouts**
+
+```javascript id="prace4"
+const fetchData = fetch("/api/data");
+
+const timeout = new Promise((_, reject) =>
+  setTimeout(() => reject("Request timed out"), 5000)
+);
+
+Promise.race([fetchData, timeout])
+  .then((response) => console.log(response))
+  .catch((error) => console.error(error));
+```
+
+2. **Choosing the Fastest Response**
+
+   * Multiple servers or APIs.
+   * Use the first available result.
+
+#### `Promise.race()` vs `Promise.all()`
+
+| Feature                | `Promise.race()`                 | `Promise.all()`                |
+| ---------------------- | -------------------------------- | ------------------------------ |
+| Waits for all Promises | No                               | Yes                            |
+| Settles when           | First Promise settles            | All Promises fulfill           |
+| Rejection behavior     | First settled Promise can reject | Rejects if any Promise rejects |
+| Result                 | Single value/reason              | Array of values                |
+
+#### Key Point
+
+> `Promise.race()` returns a Promise that settles as soon as the first Promise in the iterable settles (either fulfills or rejects). It is commonly used for implementing timeouts and selecting the fastest asynchronous operation.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+67. ### What is Strict Mode in JavaScript?
+
+**Strict Mode** is a feature introduced in **ECMAScript 5 (ES5)** that enables a stricter parsing and error-handling mode for JavaScript code. It helps developers write cleaner, more secure, and less error-prone code by preventing certain unsafe actions and throwing errors for common mistakes that would otherwise fail silently.
+
+Strict Mode is enabled by adding the directive:
+
+```javascript
+"use strict";
+```
+
+#### Enabling Strict Mode
+
+For an entire script:
+
+```javascript id="sm1a2b"
+"use strict";
+
+x = 10; // ReferenceError
+```
+
+For a specific function:
+
+```javascript id="sm3c4d"
+function myFunction() {
+  "use strict";
+
+  y = 20; // ReferenceError
+}
+```
+
+#### Benefits of Strict Mode
+
+1. **Prevents Accidental Global Variables**
+
+```javascript id="sm5e6f"
+"use strict";
+
+x = 10; // ReferenceError: x is not defined
+```
+
+Without strict mode, `x` would become a global variable.
+
+2. **Throws Errors for Unsafe Operations**
+
+```javascript id="sm7g8h"
+"use strict";
+
+delete Object.prototype; // SyntaxError
+```
+
+3. **Disallows Duplicate Parameter Names**
+
+```javascript id="sm9i0j"
+"use strict";
+
+function add(a, a) { // SyntaxError
+  return a + a;
+}
+```
+
+4. **Makes `this` Safer**
+
+```javascript id="sm1k2l"
+"use strict";
+
+function show() {
+  console.log(this);
+}
+
+show(); // undefined
+```
+
+Without strict mode, `this` would refer to the global object (`window` in browsers).
+
+5. **Reserves Future JavaScript Keywords**
+
+```javascript id="sm3m4n"
+"use strict";
+
+// let public = "test"; // SyntaxError
+```
+
+#### Common Restrictions in Strict Mode
+
+* No implicit global variables.
+* No duplicate parameter names.
+* No deleting variables, functions, or function arguments.
+* `this` is `undefined` in standalone functions.
+* Certain silent errors become explicit errors.
+
+#### Important Note
+
+The statement:
+
+> "Strict mode enables block-scoped variables"
+
+is **not correct**.
+
+Block-scoped variables are provided by **`let`** and **`const`**, which were introduced in **ES6**, and they work independently of strict mode.
+
+```javascript id="sm5o6p"
+{
+  let x = 10;
+  const y = 20;
+}
+```
+
+#### Key Point
+
+> Strict Mode (`"use strict";`) is a special JavaScript mode that enforces stricter parsing and error handling. It helps catch common mistakes, prevents unsafe actions, improves code security, and makes JavaScript behavior more predictable. It was introduced in ECMAScript 5 and can be applied to an entire script or a specific function.
+
+
+   **[⬆ Back to Top](#table-of-contents)**
+
+68. ### Why do you need Strict Mode?
+
+**Strict Mode** helps you write safer, cleaner, and more reliable JavaScript code by converting many silent errors into explicit errors. It catches common programming mistakes early, making debugging easier and reducing the chances of unexpected behavior.
+
+#### Benefits of Strict Mode
+
+1. **Prevents Accidental Global Variables**
+
+   * Throws an error when assigning a value to an undeclared variable.
+
+   ```javascript id="sm1a2b"
+   "use strict";
+
+   x = 10; // ReferenceError
+   ```
+
+2. **Throws Errors for Invalid Assignments**
+
+   * Prevents assignment to read-only properties.
+
+   ```javascript id="sm3c4d"
+   "use strict";
+
+   const obj = {};
+
+   Object.defineProperty(obj, "id", {
+     value: 1,
+     writable: false,
+   });
+
+   obj.id = 2; // TypeError
+   ```
+
+3. **Prevents Use of Undeclared Variables**
+
+   ```javascript id="sm5e6f"
+   "use strict";
+
+   console.log(user); // ReferenceError
+   ```
+
+4. **Disallows Duplicate Function Parameters**
+
+   ```javascript id="sm7g8h"
+   "use strict";
+
+   function add(a, a) { // SyntaxError
+     return a + a;
+   }
+   ```
+
+5. **Makes `this` Behavior More Predictable**
+
+   ```javascript id="sm9i0j"
+   "use strict";
+
+   function show() {
+     console.log(this);
+   }
+
+   show(); // undefined
+   ```
+
+6. **Prevents Deleting Variables and Functions**
+
+   ```javascript id="sm1k2l"
+   "use strict";
+
+   let x = 10;
+
+   delete x; // SyntaxError
+   ```
+
+7. **Reserves Future JavaScript Keywords**
+
+   * Helps ensure compatibility with future ECMAScript versions.
+
+#### Example: Accidental Global Variable
+
+Without Strict Mode:
+
+```javascript id="sm3m4n"
+function test() {
+  message = "Hello";
+}
+
+test();
+
+console.log(message); // Hello
+```
+
+With Strict Mode:
+
+```javascript id="sm5o6p"
+"use strict";
+
+function test() {
+  message = "Hello"; // ReferenceError
+}
+
+test();
+```
+
+#### Why It Improves Security
+
+Strict Mode prevents several unsafe language features and common mistakes that can lead to bugs, security vulnerabilities, or unintended modifications to the global scope.
+
+#### Key Point
+
+> Strict Mode (`"use strict";`) is used to make JavaScript code more secure and reliable by catching common errors, preventing accidental globals, enforcing safer language behavior, and converting many silent failures into explicit exceptions.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+69. ### How do you declare Strict Mode?
+
+Strict Mode is declared by adding the string literal `"use strict";` at the beginning of a script or a function.
+
+#### 1. Strict Mode for an Entire Script (Global Scope)
+
+When `"use strict";` is placed at the top of a script, it applies to the entire script.
+
+```javascript id="sm1a2b"
+"use strict";
+
+x = 3.14; // ReferenceError: x is not defined
+```
+
+Since `x` is not declared using `let`, `const`, or `var`, Strict Mode throws an error instead of creating a global variable.
+
+#### 2. Strict Mode for a Specific Function (Local Scope)
+
+When `"use strict";` is placed inside a function, it applies only to that function.
+
+```javascript id="sm3c4d"
+x = 3.14; // No error (outside strict mode)
+
+myFunction();
+
+function myFunction() {
+  "use strict";
+
+  y = 3.14; // ReferenceError: y is not defined
+}
+```
+
+In this example:
+
+* `x = 3.14` does not throw an error because it is outside Strict Mode.
+* `y = 3.14` throws an error because it is inside a strict-mode function.
+
+#### Scope Comparison
+
+| Location of `"use strict"` | Scope              |
+| -------------------------- | ------------------ |
+| Top of a script            | Entire script      |
+| Inside a function          | That function only |
+
+#### Important Note
+
+The `"use strict";` directive must appear at the beginning of the script or function, before any executable statements.
+
+```javascript id="sm5e6f"
+function test() {
+  "use strict";
+
+  let x = 10;
+}
+```
+
+If it appears after other statements, it will not activate Strict Mode for that scope.
+
+#### Modern JavaScript Modules
+
+ES Modules (`import`/`export`) automatically run in Strict Mode, so you do not need to add `"use strict";`.
+
+```javascript id="sm7g8h"
+export function greet() {
+  // Strict Mode is enabled automatically
+}
+```
+
+#### Key Point
+
+> Strict Mode is enabled by placing `"use strict";` at the beginning of a script or function. When declared at the script level, it applies globally to the entire script; when declared inside a function, it applies only to that function.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+70. ### What is the purpose of Double Exclamation (`!!`)?
+
+The **double exclamation (`!!`)** is a common JavaScript technique used to convert any value into its corresponding **boolean** value.
+
+It works by applying the logical NOT operator (`!`) twice:
+
+1. The first `!` converts the value to a boolean and negates it.
+2. The second `!` negates the result again, producing the original truthiness as a boolean.
+
+#### Syntax
+
+```javascript id="de1a2b"
+!!value
+```
+
+#### Example
+
+```javascript id="de3c4d"
+let isIE8 = !!navigator.userAgent.match(/MSIE 8.0/);
+
+console.log(isIE8); // true or false
+```
+
+Without `!!`, the `match()` method returns either:
+
+* An `Array` (if a match is found)
+* `null` (if no match is found)
+
+```javascript id="de5e6f"
+console.log(
+  navigator.userAgent.match(/MSIE 8.0/)
+);
+
+// Returns an Array or null
+```
+
+Using `!!` converts these values to a boolean:
+
+```javascript id="de7g8h"
+console.log(
+  !!navigator.userAgent.match(/MSIE 8.0/)
+);
+
+// Returns true or false
+```
+
+#### Examples of Type Conversion
+
+```javascript id="de9i0j"
+console.log(!!"Hello");     // true
+console.log(!!123);         // true
+console.log(!![]);          // true
+console.log(!!{});          // true
+
+console.log(!!"");          // false
+console.log(!!0);           // false
+console.log(!!null);        // false
+console.log(!!undefined);   // false
+console.log(!!NaN);         // false
+```
+
+#### Truthy and Falsy Values
+
+| Value       | `!!value` |
+| ----------- | --------- |
+| `"Hello"`   | `true`    |
+| `1`         | `true`    |
+| `[]`        | `true`    |
+| `{}`        | `true`    |
+| `""`        | `false`   |
+| `0`         | `false`   |
+| `null`      | `false`   |
+| `undefined` | `false`   |
+| `NaN`       | `false`   |
+
+#### Alternative
+
+The `Boolean()` constructor can achieve the same result:
+
+```javascript id="de1k2l"
+Boolean("Hello"); // true
+Boolean(0);       // false
+```
+
+```javascript id="de3m4n"
+!!"Hello"; // true
+!!0;       // false
+```
+
+#### Important Note
+
+> `!!` is not a separate JavaScript operator. It is simply the logical NOT operator (`!`) applied twice.
+
+#### Key Point
+
+> The double exclamation (`!!`) is used to explicitly convert any value to a boolean. Truthy values become `true`, and falsy values become `false`. It is a concise alternative to using `Boolean(value)`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+71. ### What is the purpose of the `delete` operator?
+
+The **`delete`** operator is used to remove a property from an object. When a property is deleted, both the property and its associated value are removed from the object.
+
+#### Example
+
+```javascript id="del1a2b"
+const user = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 20,
+};
+
+delete user.age;
+
+console.log(user);
+```
+
+**Output:**
+
+```javascript id="delout1"
+{
+  firstName: "John",
+  lastName: "Doe"
+}
+```
+
+#### How `delete` Works
+
+```javascript id="del3c4d"
+const obj = {
+  name: "John",
+};
+
+delete obj.name;
+
+console.log(obj.name); // undefined
+```
+
+#### Important Notes
+
+##### 1. Deletes Object Properties Only
+
+```javascript id="del5e6f"
+const person = {
+  age: 25,
+};
+
+delete person.age;
+
+console.log(person); // {}
+```
+
+##### 2. Does Not Delete Local Variables
+
+```javascript id="del7g8h"
+let age = 25;
+
+delete age; // false
+
+console.log(age); // 25
+```
+
+Variables declared with `let`, `const`, or `var` cannot be deleted using `delete`.
+
+##### 3. Array Elements Are Not Removed Completely
+
+```javascript id="del9i0j"
+const numbers = [10, 20, 30];
+
+delete numbers[1];
+
+console.log(numbers);
+```
+
+**Output:**
+
+```javascript id="delout2"
+[10, empty, 30]
+```
+
+The array length remains unchanged:
+
+```javascript id="del1k2l"
+console.log(numbers.length); // 3
+```
+
+To remove array elements properly, use `splice()`:
+
+```javascript id="del3m4n"
+numbers.splice(1, 1);
+```
+
+##### 4. Returns a Boolean
+
+```javascript id="del5o6p"
+const user = {
+  name: "John",
+};
+
+console.log(delete user.name); // true
+```
+
+* `true` → Property deleted successfully.
+* `false` → Property could not be deleted.
+
+#### Key Point
+
+> The `delete` operator removes a property and its value from an object. It works on object properties but does not delete variables declared with `var`, `let`, or `const`. When used on arrays, it removes the element's value but does not change the array's length.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+72. ### What is the `typeof` operator?
+
+The **`typeof`** operator is a JavaScript operator used to determine the data type of a variable, value, or expression. It returns a string indicating the type of the operand.
+
+#### Syntax
+
+```javascript
+typeof operand
+```
+
+or
+
+```javascript
+typeof(operand)
+```
+
+#### Examples
+
+```javascript id="type1a2b"
+typeof "John Abraham"; // "string"
+typeof (1 + 2);        // "number"
+typeof true;           // "boolean"
+typeof undefined;      // "undefined"
+typeof [1, 2, 3];      // "object"
+typeof { name: "John" }; // "object"
+typeof function () {}; // "function"
+```
+
+#### Common Return Values
+
+| Value          | Result of `typeof` |
+| -------------- | ------------------ |
+| `"Hello"`      | `"string"`         |
+| `123`          | `"number"`         |
+| `true`         | `"boolean"`        |
+| `undefined`    | `"undefined"`      |
+| `null`         | `"object"`         |
+| `{}`           | `"object"`         |
+| `[]`           | `"object"`         |
+| `function(){}` | `"function"`       |
+| `Symbol()`     | `"symbol"`         |
+| `10n`          | `"bigint"`         |
+
+#### Important Notes
+
+##### Arrays Return `"object"`
+
+```javascript id="type3c4d"
+typeof [1, 2, 3]; // "object"
+```
+
+Arrays are a special type of object in JavaScript. To check if a value is an array, use:
+
+```javascript id="type5e6f"
+Array.isArray([1, 2, 3]); // true
+```
+
+##### `null` Returns `"object"`
+
+```javascript id="type7g8h"
+typeof null; // "object"
+```
+
+This is a well-known historical bug in JavaScript that has been preserved for backward compatibility.
+
+##### Functions Return `"function"`
+
+```javascript id="type9i0j"
+typeof function () {}; // "function"
+```
+
+Although functions are technically objects, JavaScript returns `"function"` for convenience.
+
+#### Practical Example
+
+```javascript id="type1k2l"
+let value = "Hello";
+
+if (typeof value === "string") {
+  console.log("Value is a string");
+}
+```
+
+#### Key Point
+
+> The `typeof` operator is used to determine the type of a variable, value, or expression. It returns a string such as `"string"`, `"number"`, `"boolean"`, `"object"`, `"function"`, `"undefined"`, `"symbol"`, or `"bigint"`. Be aware that `typeof null` returns `"object"` and `typeof []` returns `"object"` due to JavaScript's type system.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+73. ### What is `undefined` in JavaScript?
+
+`undefined` is a primitive value in JavaScript that indicates a variable has been declared but has not been assigned a value. The type of `undefined` is also `"undefined"`.
+
+#### Example: Declared but Not Initialized
+
+```javascript id="und1a2b"
+let user;
+
+console.log(user);         // undefined
+console.log(typeof user);  // "undefined"
+```
+
+In this example:
+
+* `user` is declared.
+* No value is assigned.
+* Therefore, its value is `undefined`.
+
+#### Assigning `undefined`
+
+A variable can be explicitly assigned the value `undefined`:
+
+```javascript id="und3c4d"
+let user = "John";
+
+user = undefined;
+
+console.log(user); // undefined
+```
+
+#### Other Cases Where `undefined` Appears
+
+##### Function Without a Return Value
+
+```javascript id="und5e6f"
+function greet() {
+  console.log("Hello");
+}
+
+const result = greet();
+
+console.log(result); // undefined
+```
+
+##### Accessing a Non-Existent Object Property
+
+```javascript id="und7g8h"
+const user = {
+  name: "John",
+};
+
+console.log(user.age); // undefined
+```
+
+##### Missing Function Arguments
+
+```javascript id="und9i0j"
+function greet(name) {
+  console.log(name);
+}
+
+greet(); // undefined
+```
+
+#### `undefined` vs `null`
+
+| Feature     | `undefined`        | `null`                                 |
+| ----------- | ------------------ | -------------------------------------- |
+| Meaning     | Value not assigned | Intentional absence of value           |
+| Type        | `"undefined"`      | `"object"` (historical JavaScript bug) |
+| Assigned by | JavaScript         | Developer                              |
+
+```javascript id="und1k2l"
+let a;
+console.log(a); // undefined
+
+let b = null;
+console.log(b); // null
+```
+
+#### Best Practice
+
+Instead of explicitly assigning `undefined`, it is generally better to use `null` when you intentionally want to indicate the absence of a value.
+
+```javascript id="und3m4n"
+let user = null;
+```
+
+#### Key Point
+
+> `undefined` is a primitive value that indicates a variable has been declared but not assigned a value. It is also returned when accessing non-existent properties, missing function arguments, or functions that do not return a value. The type of `undefined` is `"undefined"`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+74. ### What is `null` in JavaScript?
+
+`null` is a primitive value in JavaScript that represents the **intentional absence of any object value**. It is used when a variable should explicitly have **no value** or **no object reference**.
+
+Unlike `undefined`, which usually indicates that a value has not been assigned, `null` is assigned intentionally by the developer.
+
+#### Example
+
+```javascript id="null1a2b"
+let user = null;
+
+console.log(user);         // null
+console.log(typeof user);  // "object"
+```
+
+#### Why Does `typeof null` Return `"object"`?
+
+```javascript id="null3c4d"
+typeof null; // "object"
+```
+
+This is a **historical bug** in JavaScript that has been preserved for backward compatibility. Although `null` is a primitive value, `typeof null` returns `"object"`.
+
+#### Assigning `null`
+
+You can explicitly clear a variable by assigning `null`:
+
+```javascript id="null5e6f"
+let user = {
+  name: "John",
+};
+
+user = null;
+
+console.log(user); // null
+```
+
+#### `null` vs `undefined`
+
+| Feature        | `null`                         | `undefined`             |
+| -------------- | ------------------------------ | ----------------------- |
+| Meaning        | Intentional absence of a value | Value not assigned      |
+| Type           | `"object"` (historical bug)    | `"undefined"`           |
+| Assigned by    | Developer                      | JavaScript or developer |
+| Primitive Type | Yes                            | Yes                     |
+
+```javascript id="null7g8h"
+let a = null;
+let b;
+
+console.log(a); // null
+console.log(b); // undefined
+```
+
+#### Equality Comparison
+
+```javascript id="null9i0j"
+console.log(null == undefined);  // true
+console.log(null === undefined); // false
+```
+
+* `==` performs type coercion, so `null` and `undefined` are considered equal.
+* `===` checks both value and type, so they are different.
+
+#### Common Use Cases
+
+* Resetting object references.
+* Indicating that data is intentionally unavailable.
+* Representing "no value" in APIs and databases.
+
+#### Key Point
+
+> `null` is a primitive value that represents the intentional absence of a value or object reference. Although it is a primitive type, `typeof null` returns `"object"` due to a historical JavaScript bug. It is commonly used to explicitly indicate that a variable should have no value.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+75. ### What is the difference between `null` and `undefined`?
+
+Both `null` and `undefined` represent the absence of a value in JavaScript, but they have different meanings and use cases.
+
+| `null`                                                                                          | `undefined`                                                                       |
+| ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| It is an assignment value that indicates a variable intentionally points to no value or object. | It indicates that a variable has been declared but has not been assigned a value. |
+| `typeof null` returns `"object"` (a historical JavaScript bug).                                 | `typeof undefined` returns `"undefined"`.                                         |
+| It is a primitive value representing an intentional absence of value.                           | It is a primitive value representing an uninitialized or missing value.           |
+| Usually assigned explicitly by the developer.                                                   | Usually assigned automatically by JavaScript.                                     |
+| Indicates the absence of a value.                                                               | Indicates that a value has not been assigned.                                     |
+| Converted to `0` in numeric operations.                                                         | Converted to `NaN` in numeric operations.                                         |
+
+#### Example: `null`
+
+```javascript id="nu1a2b"
+let user = null;
+
+console.log(user);         // null
+console.log(typeof user);  // "object"
+```
+
+#### Example: `undefined`
+
+```javascript id="nu3c4d"
+let user;
+
+console.log(user);         // undefined
+console.log(typeof user);  // "undefined"
+```
+
+#### Numeric Conversion
+
+```javascript id="nu5e6f"
+console.log(Number(null));      // 0
+console.log(Number(undefined)); // NaN
+```
+
+#### Equality Comparison
+
+```javascript id="nu7g8h"
+console.log(null == undefined);  // true
+console.log(null === undefined); // false
+```
+
+* `==` performs type coercion, so they are considered equal.
+* `===` checks both type and value, so they are different.
+
+#### Common Scenarios
+
+##### `undefined`
+
+```javascript id="nu9i0j"
+let name;
+
+console.log(name); // undefined
+```
+
+```javascript id="nu1k2l"
+const user = {};
+
+console.log(user.age); // undefined
+```
+
+##### `null`
+
+```javascript id="nu3m4n"
+let selectedUser = null;
+
+// No user selected yet
+```
+
+#### Key Point
+
+> `undefined` means a variable exists but has not been assigned a value, whereas `null` is an intentional assignment that represents the absence of a value. Although both indicate "no value," `null` is typically set by the developer, while `undefined` is usually assigned by JavaScript automatically.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+76. ### What is `eval()`?
+
+The **`eval()`** function evaluates and executes JavaScript code represented as a string. The string passed to `eval()` can contain a JavaScript expression, statement, or a sequence of statements.
+
+#### Syntax
+
+```javascript id="eval1a2b"
+eval(string);
+```
+
+#### Example: Evaluating an Expression
+
+```javascript id="eval3c4d"
+console.log(eval("1 + 2")); // 3
+```
+
+#### Example: Executing Statements
+
+```javascript id="eval5e6f"
+let x = 10;
+
+eval("x = x + 5");
+
+console.log(x); // 15
+```
+
+#### Example: Declaring Variables
+
+```javascript id="eval7g8h"
+eval("let message = 'Hello World';");
+```
+
+#### Why is `eval()` Discouraged?
+
+Using `eval()` is generally considered a **bad practice** because:
+
+1. **Security Risks**
+
+   * Executing arbitrary strings can lead to code injection attacks.
+
+2. **Performance Issues**
+
+   * JavaScript engines cannot optimize code executed through `eval()` efficiently.
+
+3. **Harder to Debug**
+
+   * Dynamically generated code is difficult to read, maintain, and debug.
+
+#### Unsafe Example
+
+```javascript id="eval9i0j"
+const userInput = "alert('Hacked!')";
+
+eval(userInput);
+```
+
+If `userInput` comes from an untrusted source, malicious code could be executed.
+
+#### Alternatives to `eval()`
+
+Instead of:
+
+```javascript id="eval1k2l"
+eval("1 + 2");
+```
+
+Use:
+
+```javascript id="eval3m4n"
+Function("return 1 + 2")();
+```
+
+Or better yet, avoid executing strings as code whenever possible.
+
+For JSON parsing:
+
+```javascript id="eval5o6p"
+// Avoid
+eval("(" + jsonString + ")");
+```
+
+Use:
+
+```javascript id="eval7q8r"
+JSON.parse(jsonString);
+```
+
+#### Key Point
+
+> `eval()` executes JavaScript code contained in a string and returns the result of the evaluated code. Although powerful, it is generally discouraged because it introduces security risks, hurts performance, and makes code harder to maintain. Modern JavaScript applications should avoid `eval()` whenever possible.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+77. ### What is the difference between `window` and `document`?
+
+The `window` and `document` objects are fundamental parts of the Browser Object Model (BOM) and Document Object Model (DOM), respectively.
+
+| Window                                                                                       | Document                                                                                                 |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| It is the top-level (global) object in a browser environment.                                | It is a property of the `window` object that represents the HTML document loaded in the browser.         |
+| Represents the browser window or tab.                                                        | Represents the web page content (DOM).                                                                   |
+| Available implicitly throughout JavaScript code running in the browser.                      | Can be accessed as `window.document` or simply `document`.                                               |
+| Provides browser-related APIs and properties.                                                | Provides methods and properties for manipulating HTML elements.                                          |
+| Contains objects such as `document`, `location`, `history`, `navigator`, and `localStorage`. | Contains DOM methods such as `getElementById()`, `querySelector()`, and `createElement()`.               |
+| Has methods like `alert()`, `confirm()`, `prompt()`, `setTimeout()`, and `setInterval()`.    | Has methods like `getElementById()`, `getElementsByTagName()`, `querySelector()`, and `createElement()`. |
+
+#### Relationship Between `window` and `document`
+
+```text
+Window
+ ├── Document
+ ├── Location
+ ├── Navigator
+ ├── History
+ └── LocalStorage
+```
+
+The `document` object is a property of the `window` object:
+
+```javascript id="wd1a2b"
+console.log(window.document === document);
+// true
+```
+
+#### Example: Using `window`
+
+```javascript id="wd3c4d"
+window.alert("Hello World");
+```
+
+Since `window` is the global object, you can omit it:
+
+```javascript id="wd5e6f"
+alert("Hello World");
+```
+
+#### Example: Using `document`
+
+```javascript id="wd7g8h"
+const heading =
+  document.getElementById("title");
+
+console.log(heading);
+```
+
+#### Common `window` Properties
+
+```javascript id="wd9i0j"
+window.location;
+window.navigator;
+window.history;
+window.localStorage;
+```
+
+#### Common `document` Methods
+
+```javascript id="wd1k2l"
+document.getElementById("id");
+document.querySelector(".class");
+document.createElement("div");
+```
+
+#### Key Point
+
+> The **`window`** object represents the browser window and acts as the global object in the browser, while the **`document`** object represents the HTML page (DOM) loaded within that window. The `document` object is a property of the `window` object and is used to access and manipulate page content.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+78. ### How do you access History in JavaScript?
+
+The browser's session history can be accessed through the **`history`** object, which is a property of the `window` object.
+
+```javascript id="hist1a2b"
+window.history
+```
+
+Since `window` is the global object in browsers, you can also access it directly:
+
+```javascript id="hist3c4d"
+history
+```
+
+#### Navigating Through History
+
+##### Go Back to the Previous Page
+
+```javascript id="hist5e6f"
+function goBack() {
+  window.history.back();
+}
+```
+
+Equivalent to:
+
+```javascript id="hist7g8h"
+function goBack() {
+  history.back();
+}
+```
+
+##### Go Forward to the Next Page
+
+```javascript id="hist9i0j"
+function goForward() {
+  window.history.forward();
+}
+```
+
+#### Other Useful History Methods
+
+##### `history.go()`
+
+Moves to a specific page in the session history.
+
+```javascript id="hist1k2l"
+history.go(-1); // Same as back()
+history.go(1);  // Same as forward()
+history.go(0);  // Reload current page
+```
+
+##### `history.length`
+
+Returns the number of entries in the session history.
+
+```javascript id="hist3m4n"
+console.log(history.length);
+```
+
+#### Example
+
+```javascript id="hist5o6p"
+document
+  .getElementById("backBtn")
+  .addEventListener("click", () => {
+    history.back();
+  });
+
+document
+  .getElementById("forwardBtn")
+  .addEventListener("click", () => {
+    history.forward();
+  });
+```
+
+#### History API for Single-Page Applications (SPA)
+
+Modern applications often use additional History API methods:
+
+```javascript id="hist7q8r"
+history.pushState(
+  { page: 1 },
+  "",
+  "/profile"
+);
+```
+
+```javascript id="hist9s0t"
+history.replaceState(
+  { page: 1 },
+  "",
+  "/dashboard"
+);
+```
+
+These methods update the URL without reloading the page.
+
+#### Key Point
+
+> The browser history is accessed through the `window.history` object (or simply `history`). It provides methods such as `back()`, `forward()`, and `go()` to navigate through the browser's session history, along with modern APIs like `pushState()` and `replaceState()` for single-page applications.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+79. ### How do you detect whether the Caps Lock key is turned on?
+
+You can use the **`getModifierState()`** method of a keyboard or mouse event to determine whether a modifier key such as **CapsLock**, **NumLock**, or **ScrollLock** is currently active.
+
+The method returns:
+
+* `true` → Modifier key is active.
+* `false` → Modifier key is not active.
+
+#### Syntax
+
+```javascript id="caps1a2b"
+event.getModifierState("CapsLock");
+```
+
+#### Example
+
+```html
+<input type="password" onkeydown="checkCapsLock(event)" />
+
+<p id="feedback"></p>
+
+<script>
+  function checkCapsLock(event) {
+    const isCapsLockOn =
+      event.getModifierState("CapsLock");
+
+    document.getElementById("feedback").textContent =
+      isCapsLockOn
+        ? "Caps Lock is ON"
+        : "Caps Lock is OFF";
+  }
+</script>
+```
+
+#### Explanation
+
+1. The user types in the password field.
+2. The `keydown` event is triggered.
+3. `getModifierState("CapsLock")` checks whether Caps Lock is active.
+4. A message is displayed accordingly.
+
+#### Alternative Example
+
+```javascript id="caps3c4d"
+document.addEventListener(
+  "keydown",
+  function (event) {
+    if (event.getModifierState("CapsLock")) {
+      console.log("Caps Lock is ON");
+    } else {
+      console.log("Caps Lock is OFF");
+    }
+  }
+);
+```
+
+#### Other Supported Modifier Keys
+
+```javascript id="caps5e6f"
+event.getModifierState("CapsLock");
+event.getModifierState("NumLock");
+event.getModifierState("ScrollLock");
+event.getModifierState("Shift");
+event.getModifierState("Control");
+event.getModifierState("Alt");
+```
+
+#### Important Note
+
+Although `getModifierState()` works with mouse events, **keyboard events (`keydown`, `keyup`) are generally preferred** for detecting Caps Lock status because they provide more reliable and immediate feedback while the user is typing.
+
+#### Key Point
+
+> The `getModifierState()` method can be used to detect whether Caps Lock is enabled. Calling `event.getModifierState("CapsLock")` returns `true` if Caps Lock is active and `false` otherwise. It is commonly used in password fields to warn users when Caps Lock is turned on.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+80. ### What is `isNaN()`?
+
+The **`isNaN()`** function is used to determine whether a value is **Not-a-Number (`NaN`)** or cannot be converted to a valid number.
+
+It returns:
+
+* `true` → If the value is `NaN` or cannot be converted to a number.
+* `false` → If the value is a valid number or can be converted to one.
+
+#### Syntax
+
+```javascript id="isnan1a2b"
+isNaN(value);
+```
+
+#### Examples
+
+```javascript id="isnan3c4d"
+isNaN("Hello"); // true
+isNaN("100");   // false
+isNaN(100);     // false
+isNaN(NaN);     // true
+```
+
+#### How `isNaN()` Works
+
+The global `isNaN()` function first attempts to convert the value to a number before checking it.
+
+```javascript id="isnan5e6f"
+isNaN("123"); // false
+```
+
+Equivalent to:
+
+```javascript id="isnan7g8h"
+isNaN(Number("123")); // false
+```
+
+#### Some Surprising Results
+
+```javascript id="isnan9i0j"
+isNaN("");       // false
+isNaN(" ");      // false
+isNaN(null);     // false
+isNaN(true);     // false
+isNaN(undefined); // true
+```
+
+Explanation:
+
+```javascript id="isnan1k2l"
+Number("");        // 0
+Number(" ");       // 0
+Number(null);      // 0
+Number(true);      // 1
+Number(undefined); // NaN
+```
+
+#### `isNaN()` vs `Number.isNaN()`
+
+The modern and recommended approach is **`Number.isNaN()`** because it does not perform type coercion.
+
+```javascript id="isnan3m4n"
+Number.isNaN(NaN);       // true
+Number.isNaN("Hello");   // false
+```
+
+```javascript id="isnan5o6p"
+isNaN("Hello");          // true
+```
+
+Comparison:
+
+| Expression  | `isNaN()` | `Number.isNaN()` |
+| ----------- | --------- | ---------------- |
+| `NaN`       | `true`    | `true`           |
+| `"Hello"`   | `true`    | `false`          |
+| `undefined` | `true`    | `false`          |
+| `"100"`     | `false`   | `false`          |
+
+#### Best Practice
+
+To check specifically for the `NaN` value, prefer:
+
+```javascript id="isnan7q8r"
+Number.isNaN(value);
+```
+
+#### Key Point
+
+> `isNaN()` checks whether a value is not a valid number by first attempting to convert it to a number. It returns `true` for values that result in `NaN` and `false` otherwise. For more precise checks without type coercion, use `Number.isNaN()`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+81. ### What are the differences between undeclared and undefined variables?
+
+In JavaScript, **undeclared** and **undefined** are different concepts, although they are often confused.
+
+| Undeclared Variable                                        | Undefined Variable                                                |
+| ---------------------------------------------------------- | ----------------------------------------------------------------- |
+| The variable has never been declared in the current scope. | The variable has been declared but has not been assigned a value. |
+| Accessing it throws a `ReferenceError`.                    | Accessing it returns `undefined`.                                 |
+| `typeof` returns `"undefined"` without throwing an error.  | `typeof` returns `"undefined"`.                                   |
+| Does not exist in memory as a declared variable.           | Exists in memory but has no assigned value.                       |
+
+#### Undefined Variable Example
+
+```javascript id="uv1a2b"
+let a;
+
+console.log(a); // undefined
+console.log(typeof a); // "undefined"
+```
+
+Here, `a` is declared but not initialized, so its value is `undefined`.
+
+#### Undeclared Variable Example
+
+```javascript id="uv3c4d"
+console.log(b);
+```
+
+**Output:**
+
+```text id="uvout1"
+ReferenceError: b is not defined
+```
+
+Here, `b` was never declared, so JavaScript throws a runtime error.
+
+#### Comparison Example
+
+```javascript id="uv5e6f"
+let a;
+
+console.log(a); // undefined
+
+console.log(b); // ReferenceError
+```
+
+#### Using `typeof`
+
+One interesting behavior is that `typeof` does not throw an error for undeclared variables:
+
+```javascript id="uv7g8h"
+console.log(typeof a); // "undefined"
+console.log(typeof b); // "undefined"
+```
+
+Even though `b` is undeclared, `typeof b` safely returns `"undefined"`.
+
+#### Why the Error Says "not defined"
+
+```javascript id="uv9i0j"
+console.log(b);
+```
+
+Chrome typically reports:
+
+```text id="uvout2"
+Uncaught ReferenceError: b is not defined
+```
+
+This message can be confusing because `b` is actually **undeclared**, not merely **undefined**. The error message is a historical wording used by JavaScript engines.
+
+#### Key Point
+
+> An **undefined variable** has been declared but not assigned a value, whereas an **undeclared variable** has never been declared at all. Accessing an undefined variable returns `undefined`, while accessing an undeclared variable throws a `ReferenceError`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+
+82. ### What are Global Variables?
+
+**Global variables** are variables that are accessible from anywhere in the program. They are declared in the global scope and can be accessed by all functions and blocks within the application.
+
+#### Declaring a Global Variable
+
+A variable declared outside any function or block becomes a global variable.
+
+```javascript id="gv1a2b"
+let message = "Hello";
+
+function greet() {
+  console.log(message);
+}
+
+greet(); // Hello
+```
+
+#### Accidental Global Variables
+
+In non-strict mode, assigning a value to an undeclared variable creates a global variable:
+
+```javascript id="gv3c4d"
+msg = "Hello";
+
+console.log(msg); // Hello
+```
+
+This is equivalent to:
+
+```javascript id="gv5e6f"
+window.msg = "Hello";
+```
+
+in a browser environment.
+
+#### Example
+
+```javascript id="gv7g8h"
+let name = "John";
+
+function displayName() {
+  console.log(name);
+}
+
+displayName(); // John
+console.log(name); // John
+```
+
+The variable `name` is accessible both inside and outside the function.
+
+#### Global Variables and the `window` Object
+
+In browsers, global variables declared with `var` become properties of the `window` object:
+
+```javascript id="gv9i0j"
+var user = "John";
+
+console.log(window.user); // John
+```
+
+However, variables declared with `let` and `const` do not become properties of `window`:
+
+```javascript id="gv1k2l"
+let age = 25;
+
+console.log(window.age); // undefined
+```
+
+#### Strict Mode Prevents Accidental Globals
+
+```javascript id="gv3m4n"
+"use strict";
+
+msg = "Hello"; // ReferenceError
+```
+
+Strict Mode prevents accidental creation of global variables.
+
+#### Problems with Global Variables
+
+1. **Namespace Pollution**
+
+   * Global variables can conflict with other variables.
+
+2. **Harder to Maintain**
+
+   * Any part of the code can modify them.
+
+3. **Potential Bugs**
+
+   * Unintended changes can affect the entire application.
+
+#### Best Practice
+
+Prefer using `let` and `const` with the smallest possible scope instead of relying on global variables.
+
+```javascript id="gv5o6p"
+function greet() {
+  const message = "Hello";
+  console.log(message);
+}
+```
+
+#### Key Point
+
+> Global variables are variables declared in the global scope and can be accessed from anywhere in the program. In non-strict mode, assigning a value to an undeclared variable creates an accidental global variable. To avoid bugs and improve maintainability, use `let` and `const` with appropriate scope and enable Strict Mode.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+83. ### What are the problems with Global Variables?
+
+Global variables can be accessed and modified from anywhere in the program. While this may seem convenient, it can lead to several issues in large applications.
+
+#### Problems with Global Variables
+
+1. **Name Collisions**
+
+   * A global variable can conflict with a local variable or another global variable having the same name.
+
+   ```javascript
+   let user = "John";
+
+   function displayUser() {
+     let user = "Jane";
+     console.log(user); // Jane
+   }
+   ```
+
+   Such naming conflicts can make code confusing and error-prone.
+
+2. **Difficult to Debug**
+
+   * Since any part of the application can modify a global variable, it becomes difficult to track where its value changed.
+
+   ```javascript
+   let count = 0;
+
+   function increment() {
+     count++;
+   }
+
+   function reset() {
+     count = 0;
+   }
+   ```
+
+   Debugging unexpected changes to `count` can be challenging in large codebases.
+
+3. **Harder to Test**
+
+   * Functions that depend on global variables are less predictable and harder to test because their behavior depends on external state.
+
+   ```javascript
+   let taxRate = 0.18;
+
+   function calculateTax(amount) {
+     return amount * taxRate;
+   }
+   ```
+
+   Testing `calculateTax()` requires controlling the global `taxRate`.
+
+4. **Unintended Side Effects**
+
+   * Changes made in one part of the application can unexpectedly affect other parts.
+
+5. **Reduced Maintainability**
+
+   * As applications grow, managing and understanding global state becomes increasingly difficult.
+
+6. **Namespace Pollution**
+
+   * Too many global variables clutter the global namespace and increase the risk of naming conflicts.
+
+#### Best Practices
+
+* Minimize the use of global variables.
+* Use `let` and `const` with block or function scope.
+* Encapsulate data inside functions, modules, or classes.
+* Enable Strict Mode (`"use strict";`) to prevent accidental global variables.
+
+#### Example Using Local Scope
+
+```javascript
+function calculateTax(amount) {
+  const taxRate = 0.18;
+  return amount * taxRate;
+}
+```
+
+This approach avoids relying on global state and makes the function easier to test and maintain.
+
+#### Key Point
+
+> Global variables can lead to name collisions, unintended side effects, debugging difficulties, and testing challenges. To write maintainable and reliable code, minimize the use of global variables and prefer local scope, modules, or classes for encapsulating data.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+84. ### What is the `NaN` property?
+
+The **`NaN` (Not-a-Number)** property is a global property in JavaScript that represents a value that is **not a valid number**. It is typically produced when a mathematical operation or numeric conversion fails.
+
+`NaN` is a special value of the **Number** type.
+
+#### Examples
+
+```javascript id="nan1a2b"
+Math.sqrt(-1); // NaN
+```
+
+```javascript id="nan3c4d"
+parseInt("Hello"); // NaN
+```
+
+```javascript id="nan5e6f"
+Number("JavaScript"); // NaN
+```
+
+#### Type of `NaN`
+
+Although `NaN` means "Not-a-Number", its type is actually `"number"`:
+
+```javascript id="nan7g8h"
+console.log(typeof NaN); // "number"
+```
+
+#### Checking for `NaN`
+
+Since `NaN` is not equal to itself, a direct comparison does not work:
+
+```javascript id="nan9i0j"
+console.log(NaN === NaN); // false
+```
+
+Use `Number.isNaN()` instead:
+
+```javascript id="nan1k2l"
+console.log(Number.isNaN(NaN)); // true
+```
+
+or:
+
+```javascript id="nan3m4n"
+console.log(isNaN("Hello")); // true
+```
+
+#### Common Operations That Return `NaN`
+
+```javascript id="nan5o6p"
+0 / 0;               // NaN
+```
+
+```javascript id="nan7q8r"
+Math.sqrt(-1);       // NaN
+```
+
+```javascript id="nan9s0t"
+parseInt("Hello");   // NaN
+```
+
+```javascript id="nan1u2v"
+Number(undefined);   // NaN
+```
+
+#### Important Characteristics
+
+```javascript id="nan3w4x"
+console.log(NaN == NaN);   // false
+console.log(NaN === NaN);  // false
+```
+
+```javascript id="nan5y6z"
+console.log(Number.isNaN(NaN)); // true
+```
+
+#### Key Point
+
+> `NaN` (Not-a-Number) is a global property that represents an invalid numeric value. It is returned when a mathematical operation or numeric conversion fails. Although it represents "not a number," its type is `"number"`, and it is the only JavaScript value that is not equal to itself.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+85. ### What is the purpose of the `isFinite()` function?
+
+The **`isFinite()`** function is used to determine whether a value is a **finite number**. It returns:
+
+* `true` if the value is a finite number.
+* `false` if the value is:
+
+  * `Infinity`
+  * `-Infinity`
+  * `NaN` (Not-a-Number)
+
+#### Syntax
+
+```javascript
+isFinite(value);
+```
+
+#### Examples
+
+```javascript id="finite1a2b"
+isFinite(Infinity);   // false
+isFinite(-Infinity);  // false
+isFinite(NaN);        // false
+
+isFinite(100);        // true
+isFinite(3.14);       // true
+isFinite(-50);        // true
+```
+
+#### Type Coercion Behavior
+
+The global `isFinite()` function converts the value to a number before checking it:
+
+```javascript id="finite3c4d"
+isFinite("100"); // true
+isFinite(null);  // true
+isFinite(true);  // true
+```
+
+Equivalent conversions:
+
+```javascript id="finite5e6f"
+Number("100"); // 100
+Number(null);  // 0
+Number(true);  // 1
+```
+
+#### Some Interesting Examples
+
+```javascript id="finite7g8h"
+isFinite("Hello");    // false
+isFinite(undefined);  // false
+isFinite("");         // true
+isFinite("123");      // true
+```
+
+#### `isFinite()` vs `Number.isFinite()`
+
+Modern JavaScript provides `Number.isFinite()`, which is more strict because it does **not** perform type coercion.
+
+```javascript id="finite9i0j"
+Number.isFinite(100);   // true
+Number.isFinite("100"); // false
+```
+
+Comparison:
+
+| Expression | `isFinite()` | `Number.isFinite()` |
+| ---------- | ------------ | ------------------- |
+| `100`      | `true`       | `true`              |
+| `"100"`    | `true`       | `false`             |
+| `null`     | `true`       | `false`             |
+| `Infinity` | `false`      | `false`             |
+| `NaN`      | `false`      | `false`             |
+
+#### Practical Example
+
+```javascript id="finite1k2l"
+const value = Number(userInput);
+
+if (Number.isFinite(value)) {
+  console.log("Valid number");
+} else {
+  console.log("Invalid number");
+}
+```
+
+#### Key Point
+
+> The `isFinite()` function checks whether a value is a finite number. It returns `false` for `Infinity`, `-Infinity`, and `NaN`, and `true` for valid finite numbers. Since `isFinite()` performs type coercion, `Number.isFinite()` is generally preferred for stricter and more predictable checks.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+86. ### What is Event Flow?
+
+**Event Flow** refers to the order in which an event propagates through the DOM (Document Object Model) when a user interacts with a webpage, such as clicking a button, typing in an input field, or hovering over an element.
+
+When an event occurs on a nested element, the event travels through the DOM in three phases:
+
+1. **Event Capturing Phase (Top → Bottom)**
+2. **Target Phase**
+3. **Event Bubbling Phase (Bottom → Top)**
+
+#### Event Flow Diagram
+
+```text
+Window
+  ↓
+Document
+  ↓
+<html>
+  ↓
+<body>
+  ↓
+<div>
+  ↓
+<button>  ← Target Element
+  ↑
+<div>
+  ↑
+<body>
+  ↑
+<html>
+  ↑
+Document
+  ↑
+Window
+```
+
+#### 1. Event Capturing Phase
+
+The event starts at the root (`window`) and travels down through the DOM tree toward the target element.
+
+```javascript
+element.addEventListener(
+  "click",
+  handler,
+  true // Capturing phase
+);
+```
+
+#### 2. Target Phase
+
+The event reaches the target element—the element on which the event actually occurred.
+
+```html
+<button id="btn">Click Me</button>
+```
+
+If the user clicks the button, the button is the target element.
+
+#### 3. Event Bubbling Phase
+
+After reaching the target, the event bubbles back up through its ancestors toward the root.
+
+```javascript
+element.addEventListener(
+  "click",
+  handler
+); // Bubbling phase (default)
+```
+
+#### Example
+
+```html
+<div id="parent">
+  <button id="child">Click Me</button>
+</div>
+```
+
+```javascript
+document
+  .getElementById("parent")
+  .addEventListener("click", () => {
+    console.log("Parent clicked");
+  });
+
+document
+  .getElementById("child")
+  .addEventListener("click", () => {
+    console.log("Button clicked");
+  });
+```
+
+When the button is clicked:
+
+```text
+Button clicked
+Parent clicked
+```
+
+This happens because the event bubbles from the button to its parent.
+
+#### Stopping Event Propagation
+
+You can stop the event from continuing through the DOM using `stopPropagation()`:
+
+```javascript
+document
+  .getElementById("child")
+  .addEventListener("click", (event) => {
+    event.stopPropagation();
+    console.log("Button clicked");
+  });
+```
+
+Now only:
+
+```text
+Button clicked
+```
+
+is logged.
+
+#### Key Point
+
+> Event Flow is the process by which an event travels through the DOM. It consists of three phases: **Capturing** (top to bottom), **Target** (event reaches the target element), and **Bubbling** (bottom to top). By default, most event listeners handle events during the bubbling phase.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+87. ### What is Event Capturing?
+
+**Event Capturing** (also called **trickling**) is the first phase of event propagation in the DOM. During this phase, an event starts from the outermost ancestor (`window` → `document`) and travels downward through the DOM tree until it reaches the target element.
+
+#### Event Propagation Phases
+
+```text
+1. Capturing Phase  (Top → Bottom)
+2. Target Phase
+3. Bubbling Phase   (Bottom → Top)
+```
+
+#### Enabling Event Capturing
+
+To listen for an event during the capturing phase, pass `true` as the third argument to `addEventListener()`:
+
+```javascript
+element.addEventListener(
+  "click",
+  handler,
+  true
+);
+```
+
+A more modern approach is:
+
+```javascript
+element.addEventListener(
+  "click",
+  handler,
+  { capture: true }
+);
+```
+
+#### Example
+
+```html
+<div>
+  <button class="child">Hello</button>
+</div>
+
+<script>
+  const parent = document.querySelector("div");
+  const child = document.querySelector(".child");
+
+  // Capturing phase
+  parent.addEventListener(
+    "click",
+    function () {
+      console.log("Parent (capturing)");
+    },
+    true
+  );
+
+  // Bubbling phase (default)
+  child.addEventListener("click", function () {
+    console.log("Child (bubbling)");
+  });
+</script>
+```
+
+**Output when the button is clicked:**
+
+```text
+Parent (capturing)
+Child (bubbling)
+```
+
+#### Why Does the Parent Execute First?
+
+When the button is clicked:
+
+1. The event starts at the top of the DOM tree.
+2. It travels downward during the **capturing phase**.
+3. The parent's capturing listener executes before the event reaches the button.
+4. The event reaches the button (**target phase**).
+5. The event then bubbles upward (**bubbling phase**).
+
+#### Event Flow Visualization
+
+```text
+Window
+  ↓
+Document
+  ↓
+<html>
+  ↓
+<body>
+  ↓
+<div>      ← Parent (capturing listener)
+  ↓
+<button>   ← Target
+```
+
+#### Capturing vs Bubbling
+
+| Event Capturing                             | Event Bubbling                            |
+| ------------------------------------------- | ----------------------------------------- |
+| Event travels from parent to child.         | Event travels from child to parent.       |
+| Enabled with `addEventListener(..., true)`. | Default behavior of `addEventListener()`. |
+| Executed before the target phase.           | Executed after the target phase.          |
+
+#### Key Point
+
+> Event Capturing is the first phase of event propagation in which an event travels from the outermost ancestor down to the target element. To handle events during this phase, pass `true` (or `{ capture: true }`) as the third argument to `addEventListener()`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+88. ### What is Event Bubbling?
+
+**Event Bubbling** is a phase of event propagation in which an event first occurs on the **target element** (the element the user interacted with) and then propagates upward through its ancestor elements in the DOM hierarchy, eventually reaching the `document` and `window`.
+
+By default, event listeners added with `addEventListener()` listen during the **bubbling phase**.
+
+#### Event Bubbling Flow
+
+```text
+Window
+  ↑
+Document
+  ↑
+<html>
+  ↑
+<body>
+  ↑
+<div>      ← Parent
+  ↑
+<button>   ← Target Element
+```
+
+When the button is clicked:
+
+1. The event is triggered on the button (target element).
+2. The event bubbles up to the parent `<div>`.
+3. Then to `<body>`, `<html>`, `document`, and finally `window`.
+
+#### Example
+
+```html
+<div>
+  <button class="child">Hello</button>
+</div>
+
+<script>
+  const parent = document.querySelector("div");
+  const child = document.querySelector(".child");
+
+  // Bubbling phase (default)
+  parent.addEventListener("click", function () {
+    console.log("Parent");
+  });
+
+  child.addEventListener("click", function () {
+    console.log("Child");
+  });
+</script>
+```
+
+**Output when the button is clicked:**
+
+```text
+Child
+Parent
+```
+
+#### Why Does This Happen?
+
+* The click event first occurs on the button (`child`).
+* After executing the button's event handler, the event bubbles up to its parent (`div`).
+* The parent's event handler is then executed.
+
+#### Stopping Event Bubbling
+
+You can stop the event from propagating to parent elements using `stopPropagation()`:
+
+```javascript
+child.addEventListener("click", function (event) {
+  event.stopPropagation();
+  console.log("Child");
+});
+
+parent.addEventListener("click", function () {
+  console.log("Parent");
+});
+```
+
+**Output:**
+
+```text
+Child
+```
+
+The parent's event handler will not execute.
+
+#### Event Bubbling vs Event Capturing
+
+| Event Bubbling                            | Event Capturing                                                     |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| Event travels from child to parent.       | Event travels from parent to child.                                 |
+| Default behavior of `addEventListener()`. | Enabled using `addEventListener(..., true)` or `{ capture: true }`. |
+| Occurs after the target phase.            | Occurs before the target phase.                                     |
+
+#### Common Use Case: Event Delegation
+
+Event bubbling enables **event delegation**, where a parent element handles events for its child elements.
+
+```javascript
+document
+  .getElementById("list")
+  .addEventListener("click", function (event) {
+    if (event.target.tagName === "LI") {
+      console.log(event.target.textContent);
+    }
+  });
+```
+
+This approach is efficient because only one event listener is attached to the parent element.
+
+#### Key Point
+
+> Event Bubbling is the process by which an event propagates from the target element upward through its ancestor elements in the DOM. It is the default event propagation mechanism in JavaScript and forms the basis for techniques such as event delegation.
+
     
-    **[⬆ Back to Top](#table-of-contents)**
+  **[⬆ Back to Top](#table-of-contents)**
 
 
-89. ### How do you submit a form using JavaScript
+89. ### How do you submit a form using JavaScript?
 
-    You can submit a form using `document.forms[0].submit()`. All the form input's information is submitted using onsubmit event handler
+You can submit a form programmatically using the form's **`submit()`** method.
 
-    ```javascript
-    function submit() {
-      document.forms[0].submit();
+#### Using `document.forms`
+
+```javascript
+function submitForm() {
+  document.forms[0].submit();
+}
+```
+
+Here:
+
+* `document.forms` returns a collection of all forms in the document.
+* `document.forms[0]` refers to the first form.
+* `submit()` submits the form to the server.
+
+#### Example
+
+```html
+<form action="/submit" method="post">
+  <input type="text" name="username" />
+  <button type="button" onclick="submitForm()">
+    Submit
+  </button>
+</form>
+
+<script>
+  function submitForm() {
+    document.forms[0].submit();
+  }
+</script>
+```
+
+#### Using `getElementById()`
+
+A more readable approach is to select the form by its ID:
+
+```html
+<form id="userForm" action="/submit" method="post">
+  <input type="text" name="username" />
+</form>
+
+<script>
+  document
+    .getElementById("userForm")
+    .submit();
+</script>
+```
+
+#### Using the `onsubmit` Event
+
+The `onsubmit` event is triggered when a form is submitted:
+
+```html
+<form
+  id="userForm"
+  onsubmit="handleSubmit(event)"
+>
+  <input type="text" name="username" />
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    console.log("Form submitted");
+  }
+</script>
+```
+
+#### Important Note
+
+Calling `form.submit()`:
+
+```javascript
+form.submit();
+```
+
+**does not trigger**:
+
+* The `submit` event
+* HTML5 form validation
+
+If you want validation and the `submit` event to run, use:
+
+```javascript
+form.requestSubmit();
+```
+
+```javascript
+document
+  .getElementById("userForm")
+  .requestSubmit();
+```
+
+#### Key Point
+
+> A form can be submitted programmatically using the `submit()` method, such as `document.forms[0].submit()`. However, `submit()` bypasses form validation and the `submit` event. For modern applications, `requestSubmit()` is often preferred because it behaves like a user-initiated form submission and triggers validation and event handlers.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+90. ### How do you find operating system details in JavaScript?
+
+The **`navigator`** object provides information about the browser and the user's environment. You can use properties of the `navigator` object to get operating system-related information.
+
+#### Using `navigator.platform`
+
+The `platform` property returns information about the platform on which the browser is running.
+
+```javascript id="os1a2b"
+console.log(navigator.platform);
+```
+
+**Possible outputs:**
+
+```text id="osout1"
+Win32
+MacIntel
+Linux x86_64
+```
+
+#### Example
+
+```javascript id="os3c4d"
+if (navigator.platform.includes("Win")) {
+  console.log("Windows OS");
+} else if (navigator.platform.includes("Mac")) {
+  console.log("macOS");
+} else if (navigator.platform.includes("Linux")) {
+  console.log("Linux OS");
+}
+```
+
+#### Using `navigator.userAgent`
+
+You can also inspect the user agent string:
+
+```javascript id="os5e6f"
+console.log(navigator.userAgent);
+```
+
+Example output:
+
+```text id="osout2"
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...
+```
+
+#### Modern Alternative: `navigator.userAgentData`
+
+Some modern browsers provide the `userAgentData` API:
+
+```javascript id="os7g8h"
+if (navigator.userAgentData) {
+  console.log(
+    navigator.userAgentData.platform
+  );
+}
+```
+
+#### Important Note
+
+* `navigator.platform` and `navigator.userAgent` can be spoofed and should not be relied upon for security-sensitive decisions.
+* Some browsers are reducing the amount of information exposed for privacy reasons.
+* Feature detection is generally preferred over OS detection whenever possible.
+
+#### Key Point
+
+> Operating system details can be obtained from the `navigator` object, commonly using `navigator.platform` or `navigator.userAgent`. For example, `navigator.platform` returns information such as `"Win32"`, `"MacIntel"`, or `"Linux x86_64"` indicating the user's operating system platform.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+91. ### What is the difference between `DOMContentLoaded` and `load` events?
+
+Both `DOMContentLoaded` and `load` are browser events related to page loading, but they are triggered at different stages of the loading process.
+
+| `DOMContentLoaded`                                                          | `load`                                                                               |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Fired when the HTML document has been completely loaded and parsed.         | Fired when the entire page and all dependent resources have finished loading.        |
+| Does **not** wait for images, iframes, and most external resources to load. | Waits for images, stylesheets, iframes, fonts, scripts, and other resources to load. |
+| Occurs earlier.                                                             | Occurs later.                                                                        |
+| Commonly used to initialize DOM-related JavaScript.                         | Commonly used when you need all resources to be available.                           |
+
+#### `DOMContentLoaded` Example
+
+```javascript id="dom1a2b"
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    console.log("DOM is ready");
+  }
+);
+```
+
+This event fires as soon as the browser has:
+
+* Downloaded the HTML.
+* Parsed the HTML.
+* Built the DOM tree.
+
+It does **not** wait for images and other resources.
+
+#### `load` Example
+
+```javascript id="dom3c4d"
+window.addEventListener("load", () => {
+  console.log(
+    "Page and all resources loaded"
+  );
+});
+```
+
+This event fires only after:
+
+* HTML is parsed.
+* CSS files are loaded.
+* Images are loaded.
+* Fonts are loaded.
+* Iframes and other resources are loaded.
+
+#### Loading Timeline
+
+```text id="domtimeline"
+HTML Downloaded
+        ↓
+HTML Parsed
+        ↓
+DOMContentLoaded
+        ↓
+Images / CSS / Fonts Loaded
+        ↓
+load
+```
+
+#### Practical Example
+
+```html id="dom5e6f"
+<img src="large-image.jpg" />
+
+<script>
+  document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+      console.log("DOM Ready");
     }
-    ```
+  );
 
-    **[⬆ Back to Top](#table-of-contents)**
+  window.addEventListener(
+    "load",
+    () => {
+      console.log("Everything Loaded");
+    }
+  );
+</script>
+```
 
-90. ### How do you find operating system details
+**Output:**
 
-    The window.navigator object contains information about the visitor's browser OS details. Some of the OS properties are available under platform property,
+```text id="domout1"
+DOM Ready
+Everything Loaded
+```
 
-    ```javascript
-    console.log(navigator.platform);
-    ```
+The first message appears before the image finishes loading, while the second appears after the image is fully loaded.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### When to Use Which?
 
-91. ### What is the difference between document load and DOMContentLoaded events
+##### Use `DOMContentLoaded`
 
-    The `DOMContentLoaded` event is fired when the initial HTML document has been completely loaded and parsed, without waiting for assets(stylesheets, images, and subframes) to finish loading. Whereas The load event is fired when the whole page has loaded, including all dependent resources(stylesheets, images).
+```javascript id="dom7g8h"
+document.addEventListener(
+  "DOMContentLoaded",
+  initializeApp
+);
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+* Setting up event listeners.
+* Manipulating DOM elements.
+* Initializing UI components.
 
-92. ### What is the difference between native, host and user objects
+##### Use `load`
 
-    `Native objects` are objects that are part of the JavaScript language defined by the ECMAScript specification. For example, String, Math, RegExp, Object, Function etc core objects defined in the ECMAScript spec.
-    `Host objects` are objects provided by the browser or runtime environment (Node).
+```javascript id="dom9i0j"
+window.addEventListener(
+  "load",
+  initializeImageGallery
+);
+```
 
-    For example, window, XmlHttpRequest, DOM nodes etc are considered as host objects.
-    `User objects` are objects defined in the javascript code. For example, User objects created for profile information.
+* Working with image dimensions.
+* Canvas rendering based on images.
+* Tasks requiring all page resources.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Point
 
-93. ### What are the tools or techniques used for debugging JavaScript code
+> `DOMContentLoaded` fires when the HTML document has been fully parsed and the DOM is ready, without waiting for images or other resources. The `load` event fires later, after the entire page and all dependent resources (images, stylesheets, iframes, fonts, etc.) have finished loading.
 
-    You can use below tools or techniques for debugging javascript
+  **[⬆ Back to Top](#table-of-contents)**
 
-    1. Chrome Devtools
-    2. debugger statement
-    3. Good old console.log statement
+92. ### What is the difference between Native, Host, and User Objects?
 
-    **[⬆ Back to Top](#table-of-contents)**
+JavaScript objects can be broadly classified into **Native Objects**, **Host Objects**, and **User Objects** based on their origin.
 
-94. ### What are the pros and cons of promises over callbacks
+| Type               | Description                                                                                          | Examples                                                                                          |
+| ------------------ | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Native Objects** | Objects that are part of the JavaScript language itself and defined by the ECMAScript specification. | `Object`, `Array`, `String`, `Number`, `Boolean`, `Date`, `Math`, `RegExp`, `Function`, `Promise` |
+| **Host Objects**   | Objects provided by the environment in which JavaScript runs (browser, Node.js, etc.).               | `window`, `document`, `navigator`, `XMLHttpRequest`, `fetch`, DOM elements                        |
+| **User Objects**   | Objects created by developers in their own code.                                                     | User-defined objects, classes, and instances                                                      |
 
-    Below are the list of pros and cons of promises over callbacks,
+#### 1. Native Objects
 
-    **Pros:**
+Native objects are built into JavaScript and are available regardless of the execution environment.
 
-    1. It avoids callback hell which is unreadable
-    2. Easy to write sequential asynchronous code with .then()
-    3. Easy to write parallel asynchronous code with Promise.all()
-    4. Solves some of the common problems of callbacks(call the callback too late, too early, many times and swallow errors/exceptions)
+```javascript
+const name = new String("John");
 
-    **Cons:**
+console.log(name instanceof String); // true
+```
 
-    5. It makes little complex code
-    6. You need to load a polyfill if ES6 is not supported
+Other examples:
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+const arr = [1, 2, 3];
+const date = new Date();
+const regex = /abc/;
+```
 
-95. ### What is the difference between an attribute and a property
+#### 2. Host Objects
 
-    Attributes are defined on the HTML markup whereas properties are defined on the DOM. For example, the below HTML element has 2 attributes: `type` and `value`,
+Host objects are supplied by the runtime environment.
 
-    ```javascript
-    <input type="text" value="Name:">
-    ```
+**Browser Examples:**
 
-    You can retrieve the attribute value as below, for example after typing "Good morning" into the input field:
+```javascript
+window.alert("Hello");
+document.getElementById("title");
+```
 
-    ```javascript
-    const input = document.querySelector("input");
-    console.log(input.getAttribute("value")); // Good morning
-    console.log(input.value); // Good morning
-    ```
+```javascript
+const xhr = new XMLHttpRequest();
+```
 
-    And after you change the value of the text field to "Good evening", it becomes like
+**Node.js Examples:**
 
-    ```javascript
-    console.log(input.getAttribute("value")); // Good evening
-    console.log(input.value); // Good evening
-    ```
+```javascript
+setTimeout(() => {
+  console.log("Hello");
+}, 1000);
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+process.version;
+```
 
-96. ### What is same-origin policy
+These objects are not part of the ECMAScript specification; they are provided by the host environment.
 
-    The same-origin policy is a policy that prevents JavaScript from making requests across domain boundaries. An origin is defined as a combination of URI scheme, hostname, and port number. If you enable this policy then it prevents a malicious script on one page from obtaining access to sensitive data on another web page using Document Object Model(DOM).
+#### 3. User Objects
 
-    **[⬆ Back to Top](#table-of-contents)**
+User objects are created by developers to model application-specific data.
 
-97. ### What is the purpose of void 0
+```javascript
+const user = {
+  id: 1,
+  name: "John",
+  email: "john@example.com",
+};
+```
 
-    Void(0) is used to prevent the page from refreshing. This will be helpful to eliminate the unwanted side-effect, because it will return the undefined primitive value. It is commonly used for HTML documents that use href="JavaScript:Void(0);" within an `<a>` element. i.e, when you click a link, the browser loads a new page or refreshes the same page. But this behavior will be prevented using this expression.
-    For example, the below link notify the message without reloading the page
+Or using a class:
 
-    ```javascript
-    <a href="JavaScript:void(0);" onclick="alert('Well done!')">
-      Click Me!
-    </a>
-    ```
+```javascript
+class User {
+  constructor(name) {
+    this.name = name;
+  }
+}
 
-    **[⬆ Back to Top](#table-of-contents)**
+const user = new User("John");
+```
 
-98. ### Is JavaScript a compiled or interpreted language
+#### Visual Representation
 
-    JavaScript is an interpreted language, not a compiled language. An interpreter in the browser reads over the JavaScript code, interprets each line, and runs it. Nowadays modern browsers use a technology known as Just-In-Time (JIT) compilation, which compiles JavaScript to executable bytecode just as it is about to run.
+```text
+JavaScript Objects
+│
+├── Native Objects
+│   ├── Object
+│   ├── Array
+│   ├── String
+│   └── Promise
+│
+├── Host Objects
+│   ├── window
+│   ├── document
+│   ├── XMLHttpRequest
+│   └── fetch
+│
+└── User Objects
+    ├── user
+    ├── product
+    └── Employee
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Point
 
-99. ### Is JavaScript a case-sensitive language
+> **Native objects** are built into JavaScript and defined by the ECMAScript specification. **Host objects** are provided by the execution environment (such as browsers or Node.js). **User objects** are created by developers within their own applications to represent custom data and behavior.
 
-    Yes, JavaScript is a case sensitive language. The language keywords, variables, function & object names, and any other identifiers must always be typed with a consistent capitalization of letters.
 
-    **[⬆ Back to Top](#table-of-contents)**
+  **[⬆ Back to Top](#table-of-contents)**
 
-100. ### Is there any relation between Java and JavaScript
+93. ### What are the tools or techniques used for debugging JavaScript code?
 
-      No, they are entirely two different programming languages and have nothing to do with each other. But both of them are Object Oriented Programming languages and like many other languages, they follow similar syntax for basic features(if, else, for, switch, break, continue etc).
+Debugging is the process of identifying and fixing errors in your code. JavaScript provides several tools and techniques to help developers debug applications effectively.
 
-      **[⬆ Back to Top](#table-of-contents)**
+#### 1. Chrome DevTools
+
+**Chrome DevTools** is one of the most powerful debugging tools available in modern browsers.
+
+Features include:
+
+* Setting breakpoints
+* Stepping through code
+* Inspecting variables and scope
+* Viewing the call stack
+* Monitoring network requests
+* Profiling performance
+
+**Example:**
+
+1. Open DevTools (`F12` or `Ctrl + Shift + I`).
+2. Go to the **Sources** tab.
+3. Set a breakpoint by clicking on a line number.
+4. Execute the code and inspect its behavior.
+
+#### 2. `debugger` Statement
+
+The `debugger` statement programmatically pauses JavaScript execution when developer tools are open.
+
+```javascript id="debug1a2b"
+function calculateSum(a, b) {
+  debugger;
+
+  return a + b;
+}
+
+calculateSum(10, 20);
+```
+
+When execution reaches the `debugger` statement, the browser pauses and allows you to inspect variables and the execution context.
+
+#### 3. `console.log()` Statements
+
+The simplest and most commonly used debugging technique is logging values to the console.
+
+```javascript id="debug3c4d"
+const user = {
+  name: "John",
+  age: 25,
+};
+
+console.log(user);
+```
+
+You can also log multiple values:
+
+```javascript id="debug5e6f"
+const x = 10;
+const y = 20;
+
+console.log("x =", x, "y =", y);
+```
+
+#### Other Useful Console Methods
+
+##### `console.error()`
+
+```javascript id="debug7g8h"
+console.error("Something went wrong");
+```
+
+##### `console.warn()`
+
+```javascript id="debug9i0j"
+console.warn("Warning message");
+```
+
+##### `console.table()`
+
+```javascript id="debug1k2l"
+const users = [
+  { id: 1, name: "John" },
+  { id: 2, name: "Jane" },
+];
+
+console.table(users);
+```
+
+##### `console.time()` and `console.timeEnd()`
+
+```javascript id="debug3m4n"
+console.time("loop");
+
+for (let i = 0; i < 1000000; i++) {}
+
+console.timeEnd("loop");
+```
+
+#### 4. Browser Breakpoints
+
+You can set breakpoints directly in DevTools without modifying your code.
+
+Types of breakpoints:
+
+* Line breakpoints
+* Conditional breakpoints
+* Event listener breakpoints
+* DOM change breakpoints
+* XHR/Fetch breakpoints
+
+#### 5. Source Maps
+
+Source maps help debug original source code when working with transpiled or bundled JavaScript (e.g., TypeScript, Babel, Webpack).
+
+#### Best Practice
+
+* Use **Chrome DevTools** for in-depth debugging.
+* Use **`debugger`** for temporary breakpoints during development.
+* Use **`console.log()`** and related console methods for quick inspection.
+* Remove unnecessary debugging statements before production deployment.
+
+#### Key Point
+
+> The most common JavaScript debugging tools and techniques are **Chrome DevTools**, the **`debugger` statement**, and **`console.log()`**. Chrome DevTools provides advanced debugging capabilities, `debugger` pauses code execution for inspection, and `console.log()` helps quickly examine values and program flow.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+94. ### What are the pros and cons of Promises over Callbacks?
+
+Promises were introduced to improve the handling of asynchronous operations in JavaScript and address many limitations of callbacks.
+
+#### Pros of Promises
+
+1. **Avoid Callback Hell**
+
+   * Promises eliminate deeply nested callbacks, making code more readable and maintainable.
+
+   **Callback Hell:**
+
+   ```javascript
+   getUser(function (user) {
+     getOrders(user.id, function (orders) {
+       getOrderDetails(
+         orders[0].id,
+         function (details) {
+           console.log(details);
+         }
+       );
+     });
+   });
+   ```
+
+   **Using Promises:**
+
+   ```javascript
+   getUser()
+     .then((user) => getOrders(user.id))
+     .then((orders) =>
+       getOrderDetails(orders[0].id)
+     )
+     .then((details) => console.log(details));
+   ```
+
+2. **Easy Sequential Asynchronous Operations**
+
+   * Promise chaining with `.then()` makes it easy to execute asynchronous tasks one after another.
+
+   ```javascript
+   fetchUser()
+     .then((user) => fetchOrders(user.id))
+     .then((orders) => console.log(orders));
+   ```
+
+3. **Easy Parallel Execution**
+
+   * `Promise.all()` allows multiple asynchronous operations to run in parallel.
+
+   ```javascript
+   Promise.all([
+     fetchUsers(),
+     fetchPosts(),
+     fetchComments(),
+   ]).then((results) => {
+     console.log(results);
+   });
+   ```
+
+4. **Better Error Handling**
+
+   * Errors can be handled in one place using `.catch()`.
+
+   ```javascript
+   fetchData()
+     .then(processData)
+     .catch((error) =>
+       console.error(error)
+     );
+   ```
+
+5. **Prevents Common Callback Issues**
+
+   * Promises help avoid problems such as:
+
+     * Calling a callback too early.
+     * Calling a callback too late.
+     * Calling a callback multiple times.
+     * Swallowing exceptions.
+
+6. **Foundation for `async/await`**
+
+   * Modern JavaScript's `async/await` syntax is built on top of Promises.
+
+   ```javascript
+   async function loadData() {
+     const user = await fetchUser();
+     console.log(user);
+   }
+   ```
+
+#### Cons of Promises
+
+1. **Slightly More Complex Than Simple Callbacks**
+
+   * For very simple asynchronous tasks, Promises may introduce additional syntax and concepts.
+
+   ```javascript
+   Promise.resolve("Hello")
+     .then(console.log);
+   ```
+
+2. **Requires Polyfills in Older Environments**
+
+   * Older browsers that do not support ES6 Promises require a polyfill.
+
+3. **Can Lead to Long Promise Chains**
+
+   * Excessive chaining may still become difficult to read, though usually much better than nested callbacks.
+
+4. **No Built-In Cancellation**
+
+   * Native Promises cannot be canceled once started (although modern APIs such as `AbortController` help address this limitation).
+
+#### Callback vs Promise Comparison
+
+| Feature                            | Callbacks                    | Promises                    |
+| ---------------------------------- | ---------------------------- | --------------------------- |
+| Readability                        | Can lead to callback hell    | More readable with chaining |
+| Error Handling                     | Distributed across callbacks | Centralized with `.catch()` |
+| Sequential Operations              | Nested callbacks             | `.then()` chaining          |
+| Parallel Operations                | Manual coordination          | `Promise.all()`             |
+| Multiple Callback Execution Issues | Possible                     | Prevented by design         |
+| Foundation for `async/await`       | No                           | Yes                         |
+
+#### Key Point
+
+> Promises provide a cleaner and more reliable way to handle asynchronous operations than callbacks. They improve readability, support chaining and parallel execution, provide centralized error handling, and form the basis of `async/await`. Their main drawbacks are slightly increased complexity and the need for polyfills in older JavaScript environments.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+95. ### What is the difference between an Attribute and a Property?
+
+**Attributes** are defined in the HTML markup, whereas **properties** are part of the DOM object created by the browser when the HTML is parsed.
+
+#### Example
+
+```html
+<input type="text" value="Name:" />
+```
+
+In the above HTML:
+
+* `type` and `value` are **attributes**.
+* When the browser parses the HTML, it creates an `HTMLInputElement` object with corresponding **properties** such as `type` and `value`.
+
+#### Key Differences
+
+| Attribute                                        | Property                                                             |
+| ------------------------------------------------ | -------------------------------------------------------------------- |
+| Defined in HTML markup.                          | Defined on the DOM object.                                           |
+| Retrieved using `getAttribute()`.                | Accessed directly via JavaScript object properties.                  |
+| Represents the initial value from the HTML.      | Represents the current state of the element.                         |
+| Always stored as strings.                        | Can be of any JavaScript type (`string`, `boolean`, `number`, etc.). |
+| Changes in the DOM may not update the attribute. | Reflects the live state of the element.                              |
+
+#### Example: Input Value
+
+```html
+<input id="name" type="text" value="John" />
+```
+
+```javascript
+const input =
+  document.getElementById("name");
+
+console.log(
+  input.getAttribute("value")
+); // "John"
+
+console.log(input.value); // "John"
+```
+
+After the user types `"Good Morning"` into the input field:
+
+```javascript
+console.log(
+  input.getAttribute("value")
+); // "John"
+
+console.log(input.value); // "Good Morning"
+```
+
+> **Note:** The original question's example is incorrect. `getAttribute("value")` does **not** automatically change when the user edits the input. It continues to return the original HTML attribute value unless explicitly updated using `setAttribute()`.
+
+#### Example: Updating the Attribute
+
+```javascript
+input.setAttribute(
+  "value",
+  "Good Evening"
+);
+
+console.log(
+  input.getAttribute("value")
+); // "Good Evening"
+```
+
+#### Boolean Attribute Example
+
+```html
+<input type="checkbox" checked />
+```
+
+```javascript
+const checkbox =
+  document.querySelector("input");
+
+console.log(
+  checkbox.getAttribute("checked")
+); // ""
+
+console.log(checkbox.checked); // true
+```
+
+After unchecking the checkbox:
+
+```javascript
+console.log(
+  checkbox.getAttribute("checked")
+); // ""
+
+console.log(checkbox.checked); // false
+```
+
+Again, the attribute remains unchanged while the property reflects the current state.
+
+#### Relationship Between Attributes and Properties
+
+```text
+HTML Markup
+     ↓
+ Attributes
+     ↓
+Browser parses HTML
+     ↓
+DOM Object
+     ↓
+ Properties
+```
+
+#### Key Point
+
+> **Attributes** are the values defined in the HTML markup and represent the element's initial state, while **properties** are part of the DOM object and represent the element's current state. For form elements such as `<input>`, user interactions update the property (`input.value`) but do not automatically update the corresponding attribute (`getAttribute("value")`).
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+96. ### What is the Same-Origin Policy?
+
+The **Same-Origin Policy (SOP)** is a browser security mechanism that restricts how documents or scripts loaded from one origin can interact with resources from another origin.
+
+Its primary purpose is to prevent malicious websites from accessing sensitive data belonging to other websites.
+
+#### What is an Origin?
+
+An **origin** is defined by the combination of:
+
+1. **Protocol (Scheme)** – `http`, `https`
+2. **Hostname (Domain)** – `example.com`
+3. **Port Number** – `80`, `443`, `3000`, etc.
+
+Two URLs have the same origin only if all three components match.
+
+#### Examples
+
+| URL 1                 | URL 2                      | Same Origin?              |
+| --------------------- | -------------------------- | ------------------------- |
+| `https://example.com` | `https://example.com`      | ✅ Yes                     |
+| `https://example.com` | `http://example.com`       | ❌ No (different protocol) |
+| `https://example.com` | `https://api.example.com`  | ❌ No (different hostname) |
+| `https://example.com` | `https://example.com:3000` | ❌ No (different port)     |
+
+#### Why is Same-Origin Policy Important?
+
+Without SOP, a malicious website could:
+
+* Read another site's cookies.
+* Access a user's private data.
+* Manipulate another site's DOM.
+* Perform unauthorized actions on behalf of the user.
+
+For example:
+
+```text
+bank.com
+     ↑
+Sensitive user data
+
+evil.com
+     ↓
+Attempts to read bank.com data
+```
+
+The browser blocks this access.
+
+#### Example
+
+Suppose a user is logged in to:
+
+```text
+https://bank.com
+```
+
+If the user visits:
+
+```text
+https://evil.com
+```
+
+The JavaScript running on `evil.com` cannot:
+
+```javascript
+bankWindow.document.cookie;
+bankWindow.document.body.innerHTML;
+```
+
+because of the Same-Origin Policy.
+
+#### What Does SOP Restrict?
+
+##### DOM Access
+
+```javascript
+iframe.contentWindow.document;
+```
+
+Blocked if the iframe is from a different origin.
+
+##### AJAX / Fetch Requests
+
+```javascript
+fetch("https://api.otherdomain.com/data");
+```
+
+Blocked unless the server explicitly allows it through CORS.
+
+##### Cookies and Local Storage
+
+Scripts can only access cookies and storage belonging to their own origin.
+
+#### Cross-Origin Resource Sharing (CORS)
+
+Browsers allow controlled cross-origin requests using **CORS**.
+
+Server:
+
+```http
+Access-Control-Allow-Origin: https://example.com
+```
+
+Client:
+
+```javascript
+fetch("https://api.example.com/data")
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+```
+
+If the server permits the origin, the request succeeds.
+
+#### Important Note
+
+The Same-Origin Policy does **not** completely prevent sending cross-origin requests. Browsers can still send requests to other domains, but they prevent JavaScript from reading the response unless the server allows it via CORS.
+
+#### Key Point
+
+> The Same-Origin Policy (SOP) is a browser security feature that restricts scripts from accessing data from a different origin. An origin is defined by the combination of protocol, hostname, and port. SOP protects users by preventing malicious websites from accessing sensitive information, manipulating another site's DOM, or reading responses from unauthorized cross-origin requests.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+97. ### What is the purpose of `void(0)`?
+
+The **`void`** operator evaluates an expression and returns **`undefined`**, regardless of the expression's result.
+
+```javascript
+void expression;
+```
+
+or
+
+```javascript
+void(0);
+```
+
+Since `0` evaluates to `0`, and `void` always returns `undefined`, the result is:
+
+```javascript
+console.log(void(0)); // undefined
+```
+
+#### Why was `void(0)` commonly used?
+
+Historically, `void(0)` was used in hyperlinks to prevent navigation when the link was clicked.
+
+```html
+<a href="javascript:void(0);">
+  Click Me
+</a>
+```
+
+Since `javascript:void(0)` evaluates to `undefined`, the browser does not navigate to a new page.
+
+#### Example
+
+```html
+<a
+  href="javascript:void(0);"
+  onclick="alert('Well done!')"
+>
+  Click Me!
+</a>
+```
+
+When the link is clicked:
+
+1. The `onclick` handler executes.
+2. `void(0)` returns `undefined`.
+3. No navigation occurs.
+
+#### Important Clarification
+
+The statement:
+
+> "`void(0)` is used to prevent the page from refreshing"
+
+is not entirely accurate.
+
+`void(0)` does **not directly prevent page refreshes**. Instead, it prevents the browser from navigating to a new URL when used inside a JavaScript URL such as:
+
+```html
+href="javascript:void(0)"
+```
+
+#### Modern Best Practice
+
+Using `javascript:void(0)` in links is generally discouraged today.
+
+Instead, use a button:
+
+```html
+<button onclick="alert('Well done!')">
+  Click Me!
+</button>
+```
+
+Or prevent the default action with JavaScript:
+
+```html
+<a href="#" id="myLink">Click Me</a>
+
+<script>
+  document
+    .getElementById("myLink")
+    .addEventListener("click", function (event) {
+      event.preventDefault();
+      alert("Well done!");
+    });
+</script>
+```
+
+#### Other Uses of `void`
+
+```javascript
+const result = void(10 + 20);
+
+console.log(result); // undefined
+```
+
+No matter what expression is provided, `void` always returns `undefined`.
+
+#### Key Point
+
+> The `void` operator evaluates an expression and always returns `undefined`. `void(0)` was historically used in hyperlinks (`href="javascript:void(0)"`) to prevent navigation when a link was clicked. In modern web development, using buttons or `event.preventDefault()` is generally preferred over `javascript:void(0)`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+98. ### Is JavaScript a Compiled or Interpreted Language?
+
+JavaScript is often described as an **interpreted language**, but modern JavaScript engines make the answer more nuanced.
+
+Historically, JavaScript was interpreted line by line by the browser. However, modern JavaScript engines such as:
+
+* Google V8 (Chrome, Node.js)
+* Mozilla SpiderMonkey (Firefox)
+* Apple JavaScriptCore (Safari)
+
+use a combination of **interpretation and Just-In-Time (JIT) compilation** to improve performance.
+
+#### How Modern JavaScript Executes
+
+1. **Parsing**
+
+   * The JavaScript source code is parsed into an Abstract Syntax Tree (AST).
+
+2. **Compilation to Bytecode**
+
+   * The engine generates bytecode from the AST.
+
+3. **Interpretation**
+
+   * The bytecode is interpreted and executed.
+
+4. **JIT Compilation**
+
+   * Frequently executed ("hot") code is compiled into optimized machine code for faster execution.
+
+#### Simplified Flow
+
+```text
+JavaScript Source Code
+          ↓
+        Parser
+          ↓
+         AST
+          ↓
+      Bytecode
+          ↓
+     Interpreter
+          ↓
+   JIT Compiler
+          ↓
+   Machine Code
+```
+
+#### Example
+
+```javascript
+function add(a, b) {
+  return a + b;
+}
+
+console.log(add(10, 20));
+```
+
+The browser does not directly execute this source code. Instead, it parses, compiles, and optimizes it internally before execution.
+
+#### Interview Answer
+
+If asked in an interview:
+
+> JavaScript is traditionally considered an interpreted language, but modern JavaScript engines use Just-In-Time (JIT) compilation. The code is first parsed and converted into bytecode, then interpreted and optimized into machine code at runtime for better performance. Therefore, modern JavaScript is neither purely interpreted nor purely compiled—it uses a combination of both approaches.
+
+#### Key Point
+
+> JavaScript was originally an interpreted language, but modern JavaScript engines use **Just-In-Time (JIT) compilation**. They parse the source code, compile it into bytecode, interpret it, and then optimize frequently executed code into machine code. As a result, JavaScript today is best described as a language that uses both interpretation and compilation techniques.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+99. ### Is JavaScript a Case-Sensitive Language?
+
+Yes, **JavaScript is a case-sensitive language**. This means that uppercase and lowercase letters are treated as different characters.
+
+As a result:
+
+* Keywords must be written with the correct capitalization.
+* Variable names are case-sensitive.
+* Function names are case-sensitive.
+* Object properties and methods are case-sensitive.
+
+#### Example: Variables
+
+```javascript
+let name = "John";
+let Name = "Jane";
+
+console.log(name); // John
+console.log(Name); // Jane
+```
+
+Here, `name` and `Name` are treated as two different variables.
+
+#### Example: Functions
+
+```javascript
+function greet() {
+  console.log("Hello");
+}
+
+greet(); // Works
+
+// Greet(); // ReferenceError: Greet is not defined
+```
+
+`greet()` and `Greet()` are different identifiers.
+
+#### Example: Keywords
+
+JavaScript keywords must use the correct case:
+
+```javascript
+let age = 25; // Correct
+
+// Let age = 25; // SyntaxError
+```
+
+`let` is a valid keyword, but `Let` is not.
+
+#### Example: Object Properties
+
+```javascript
+const user = {
+  firstName: "John",
+};
+
+console.log(user.firstName); // John
+
+// console.log(user.firstname); // undefined
+```
+
+`firstName` and `firstname` are different property names.
+
+#### Why It Matters
+
+Case sensitivity helps JavaScript distinguish between identifiers, but it can also lead to bugs if naming conventions are not followed consistently.
+
+#### Best Practice
+
+Use consistent naming conventions:
+
+```javascript
+const firstName = "John";
+
+function getUser() {}
+
+class UserProfile {}
+```
+
+Common conventions:
+
+* Variables and functions: `camelCase`
+* Classes: `PascalCase`
+* Constants: `UPPER_SNAKE_CASE`
+
+#### Key Point
+
+> JavaScript is a case-sensitive language. Identifiers such as variables, functions, object properties, and keywords must be written with consistent capitalization because `name`, `Name`, and `NAME` are all considered different identifiers.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+100. ### Is there any relation between Java and JavaScript?
+
+**No, Java and JavaScript are completely different programming languages.** Despite their similar names, they were designed for different purposes and have different architectures, runtimes, and use cases.
+
+The name "JavaScript" was chosen largely for marketing reasons during its early development, but it is not a subset of Java and is not directly related to it.
+
+#### Similarities
+
+Both languages:
+
+* Support object-oriented programming concepts.
+* Use C-style syntax.
+* Have similar control flow statements such as:
+
+  * `if`
+  * `else`
+  * `for`
+  * `while`
+  * `switch`
+  * `break`
+  * `continue`
+
+Example:
+
+```java
+if (age >= 18) {
+    System.out.println("Adult");
+}
+```
+
+```javascript
+if (age >= 18) {
+  console.log("Adult");
+}
+```
+
+#### Key Differences
+
+| Java                                                                                 | JavaScript                                                                                                                                   |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Compiled to bytecode and runs on the JVM.                                            | Interpreted/JIT-compiled and runs in browsers or JavaScript runtimes.                                                                        |
+| Statically typed.                                                                    | Dynamically typed.                                                                                                                           |
+| Class-based object-oriented language.                                                | Prototype-based object-oriented language.                                                                                                    |
+| Requires compilation before execution.                                               | Executes directly in the browser or runtime.                                                                                                 |
+| Commonly used for enterprise applications, Android development, and backend systems. | Commonly used for web development, frontend applications, and backend development with [Node.js](https://nodejs.org?utm_source=chatgpt.com). |
+
+#### Example
+
+**Java**
+
+```java
+String name = "John";
+int age = 25;
+```
+
+**JavaScript**
+
+```javascript
+let name = "John";
+let age = 25;
+```
+
+Java requires explicit types, whereas JavaScript determines types at runtime.
+
+#### Interview Answer
+
+> Java and JavaScript are two entirely different programming languages with different purposes, runtimes, and type systems. They share some syntactic similarities because both were influenced by C-style languages, but JavaScript is not related to Java beyond the similarity in name.
+
+#### Key Point
+
+> Java and JavaScript are separate programming languages with different designs and use cases. Although they share some syntax and both support object-oriented programming concepts, Java is a statically typed, class-based language that runs on the JVM, while JavaScript is a dynamically typed, prototype-based language primarily used for web development.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 101. ### What are events
 
