@@ -8519,531 +8519,1262 @@ The BOM is **not fully standardized** by ECMAScript. While most browsers provide
 
 107. ### What is the use of setTimeout
 
-      The setTimeout() method is used to call a function or evaluate an expression after a specified number of milliseconds. For example, let's log a message after 2 seconds using setTimeout method,
+**`setTimeout()`** is a method used to execute a function or evaluate an expression once after a specified delay (in milliseconds).
 
-      ```javascript
-      setTimeout(function () {
-        console.log("Good morning");
-      }, 2000);
-      ```
+It allows you to defer the execution of code, making it non-blocking and allowing the rest of the script to continue running.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Syntax
+
+```javascript
+setTimeout(function, delay, arg1, arg2, ...);
+```
+
+#### Example: Basic Usage
+
+For example, let's log a message after 2 seconds (2000 milliseconds) using the `setTimeout` method:
+
+```javascript
+setTimeout(function () {
+  console.log("Good morning");
+}, 2000);
+```
+
+#### Example: With Arguments and Arrow Functions
+
+You can also pass arguments to the callback function and use arrow functions for a cleaner syntax:
+
+```javascript
+const greet = (name) => {
+  console.log(`Hello, ${name}!`);
+};
+
+setTimeout(greet, 1500, "Alice"); // Logs "Hello, Alice!" after 1.5 seconds
+```
+
+#### Key Point
+
+> The `setTimeout()` method allows you to schedule a function to run once after a specified number of milliseconds without blocking the execution of the main thread.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 108. ### What is the use of setInterval
 
-      The setInterval() method is used to call a function or evaluate an expression at specified intervals (in milliseconds). For example, let's log a message after 2 seconds using setInterval method,
+**`setInterval()`** is a method used to repeatedly execute a function or evaluate an expression at specified time intervals (in milliseconds).
 
-      ```javascript
-      setInterval(function () {
-        console.log("Good morning");
-      }, 2000);
-      ```
+Unlike `setTimeout()`, which only runs once, `setInterval()` will continue to execute the code block until it is explicitly stopped using `clearInterval()`.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Syntax
+
+```javascript
+setInterval(function, interval, arg1, arg2, ...);
+```
+
+#### Example: Basic Usage
+
+For example, let's log a message every 2 seconds using the `setInterval` method:
+
+```javascript
+setInterval(function () {
+  console.log("Good morning");
+}, 2000);
+```
+
+#### Example: Counter
+
+Here is an example of using `setInterval` to create a simple counter:
+
+```javascript
+let count = 0;
+const intervalId = setInterval(() => {
+  count++;
+  console.log(`Count: ${count}`);
+  if (count === 3) {
+    clearInterval(intervalId); // Stops after 3 iterations
+  }
+}, 1000);
+```
+
+#### Key Point
+
+> The `setInterval()` method repeatedly calls a function or executes a code snippet with a fixed time delay between each call. It continues until `clearInterval()` is called or the window is closed.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 109. ### Why is JavaScript treated as Single threaded
 
-      JavaScript is a single-threaded language. Because the language specification does not allow the programmer to write code so that the interpreter can run parts of it in parallel in multiple threads or processes. Whereas languages like java, go, C++ can make multi-threaded and multi-process programs.
+**JavaScript is treated as a single-threaded language** because its engine contains only one Call Stack and one Memory Heap. It executes code sequentially, one line at a time, and must finish executing a piece of code before moving on to the next.
 
-    **[⬆ Back to Top](#table-of-contents)**
+The language specification does not allow the programmer to write code so that the interpreter can run parts of it in parallel across multiple threads or processes, unlike languages like Java, Go, or C++.
+
+#### How JavaScript Handles Concurrency
+
+Even though the main thread is single-threaded, JavaScript can handle concurrent operations (like fetching data, timers, etc.) asynchronously using the **Event Loop** and Web APIs provided by the browser environment.
+
+1. **Call Stack:** Executes synchronous code.
+2. **Web APIs:** Browser features (like `setTimeout`, DOM events, Fetch) handle asynchronous tasks in the background.
+3. **Callback Queue:** Once an asynchronous task completes, its callback is placed in the queue.
+4. **Event Loop:** Continuously checks if the Call Stack is empty. If it is, it pushes the first callback from the Callback Queue onto the Call Stack to be executed.
+
+#### Flow Diagram
+
+```text
+Call Stack -> Web APIs (Background) -> Callback Queue -> Event Loop -> (Back to Call Stack)
+```
+
+#### Key Point
+
+> JavaScript is fundamentally single-threaded, executing one command at a time in its Call Stack. However, it achieves concurrency and non-blocking behavior by leveraging asynchronous Web APIs, the Callback Queue, and the Event Loop.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 110. ### What is an event delegation
 
-      Event delegation is a technique for listening to events where you delegate a parent element as the listener for all of the events that happen inside it.
+**Event delegation** is a pattern based on the concept of **Event Bubbling**. It is a technique where you delegate a single parent element as the listener for events that happen inside its child elements, rather than attaching individual event listeners to each child.
 
-      For example, if you wanted to detect field changes inside a specific form, you can use event delegation technique,
+When an event occurs on a child element, it "bubbles up" the DOM tree to the parent element, where the single event listener catches and handles it.
 
-      ```javascript
-      var form = document.querySelector("#registration-form");
+#### Benefits
 
-      // Listen for changes to fields inside the form
-      form.addEventListener(
-        "input",
-        function (event) {
-          // Log the field that was changed
-          console.log(event.target);
-        },
-        false
-      );
-      ```
+* **Performance and Memory:** Reduces the number of event listeners in memory, improving performance.
+* **Dynamic Elements:** Automatically handles events on child elements that are added to the DOM dynamically after the listener was attached.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example: Without Event Delegation
+
+If you have a list and want to listen for clicks on each item, attaching listeners to every item is inefficient:
+
+```javascript
+const listItems = document.querySelectorAll("li");
+listItems.forEach(item => {
+  item.addEventListener("click", () => console.log("Item clicked"));
+});
+```
+
+#### Example: With Event Delegation
+
+Instead, attach a single listener to the parent `<ul>` and check the event target:
+
+```javascript
+const list = document.getElementById("my-list");
+
+list.addEventListener("click", function(event) {
+  // Check if a list item was clicked
+  if (event.target && event.target.nodeName === "LI") {
+    console.log("List item clicked:", event.target.textContent);
+  }
+});
+```
+
+#### Key Point
+
+> Event delegation is an optimization technique that takes advantage of event bubbling by attaching a single event listener to a parent element to manage events for all of its current and future descendants.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 111. ### What is ECMAScript
 
-      ECMAScript is the scripting language that forms the basis of JavaScript. ECMAScript standardized by the ECMA International standards organization in the ECMA-262 and ECMA-402 specifications. The first edition of ECMAScript was released in 1997.
+**ECMAScript** is a standardized specification for scripting languages. It forms the foundation and defines the core rules and features that JavaScript implements. 
 
-    **[⬆ Back to Top](#table-of-contents)**
+It is standardized by the ECMA International standards organization within the ECMA-262 and ECMA-402 specifications. 
+
+#### History and Evolution
+
+The first edition of ECMAScript was released in 1997. Since then, it has evolved significantly:
+
+| Edition | Year | Notable Features |
+| :--- | :--- | :--- |
+| ES5 | 2009 | Strict mode, JSON support, Array methods (forEach, map, filter) |
+| ES6 (ES2015) | 2015 | Let/const, arrow functions, classes, promises, template literals |
+| ES7+ | 2016+ | Async/await, optional chaining, nullish coalescing, and yearly updates |
+
+#### JavaScript vs. ECMAScript
+
+* **ECMAScript** is the blueprint or rulebook.
+* **JavaScript** is the language that implements those rules (along with environment-specific APIs like the DOM or Node.js modules).
+
+#### Key Point
+
+> ECMAScript is the official standard specification that dictates how JavaScript and other conforming languages should operate, ensuring consistency and cross-platform compatibility.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 112. ### What is JSON
 
-      JSON (JavaScript Object Notation) is a lightweight format that is used for data interchanging. It is based on a subset of JavaScript language in the way objects are built in JavaScript.
+**JSON (JavaScript Object Notation)** is a lightweight, text-based data-interchange format. It is easy for humans to read and write, and it is easy for machines to parse and generate.
 
-    **[⬆ Back to Top](#table-of-contents)**
+Although it is derived from the JavaScript object syntax, JSON is entirely language-independent. Most modern programming languages have built-in support for parsing and generating JSON data.
+
+#### Structure and Types
+
+JSON supports a limited set of data types:
+* **String:** `"Hello"`
+* **Number:** `42` or `3.14`
+* **Boolean:** `true` or `false`
+* **Null:** `null`
+* **Object:** `{"key": "value"}`
+* **Array:** `[1, 2, 3]`
+
+#### Example
+
+```json
+{
+  "user": {
+    "name": "John Doe",
+    "age": 30,
+    "isActive": true,
+    "roles": ["admin", "editor"],
+    "profilePic": null
+  }
+}
+```
+
+#### Key Point
+
+> JSON is a universal format for structuring and transmitting data between a server and a web application. It acts as a common language for data exchange across different programming environments.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 113. ### What are the syntax rules of JSON
 
-      Below are the list of syntax rules of JSON
+JSON has strict syntax rules that must be followed for the data to be considered valid. Unlike JavaScript objects, JSON does not forgive trailing commas or unquoted keys.
 
-      1. The data is in name/value pairs
-      2. The data is separated by commas
-      3. Curly braces hold objects
-      4. Square brackets hold arrays
+#### Syntax Rules
 
-    **[⬆ Back to Top](#table-of-contents)**
+Below is the list of syntax rules for JSON:
+
+1. **The data is in name/value pairs.**
+2. **The data is separated by commas.** (No trailing comma allowed after the last item).
+3. **Curly braces `{}` hold objects.**
+4. **Square brackets `[]` hold arrays.**
+5. **Keys must be strings enclosed in double quotes `""`.**
+6. **String values must also be enclosed in double quotes `""`.** (Single quotes are not allowed).
+
+#### Example: Valid vs Invalid
+
+**Valid JSON:**
+```json
+{
+  "name": "John",
+  "age": 31
+}
+```
+
+**Invalid JSON:**
+```javascript
+{
+  name: 'John', // Keys need double quotes, string values need double quotes
+  "age": 31,    // Trailing comma is not allowed in JSON
+}
+```
+
+#### Key Point
+
+> JSON strict syntax rules require all keys and string values to be wrapped in double quotes. It does not support functions, undefined, or trailing commas.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 114. ### What is the purpose JSON stringify
 
-      When sending data to a web server, the data has to be in a string format. You can achieve this by converting JSON object into a string using stringify() method.
+The **`JSON.stringify()`** method is used to convert a JavaScript object, array, or primitive value into a JSON-formatted string.
 
-      ```javascript
-      var userJSON = { name: "John", age: 31 };
-      var userString = JSON.stringify(userJSON);
-      console.log(userString); //"{"name":"John","age":31}"
-      ```
+When sending data to a web server or storing it in `localStorage`, the data must be in a string format. `JSON.stringify()` accomplishes this serialization.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Syntax
+
+```javascript
+JSON.stringify(value, replacer, space);
+```
+
+#### Example: Basic Usage
+
+```javascript
+const userJSON = { name: "John", age: 31 };
+const userString = JSON.stringify(userJSON);
+
+console.log(userString); 
+// Output: '{"name":"John","age":31}'
+```
+
+#### Example: Formatting with the `space` argument
+
+You can pass a third argument to format the output string for readability:
+
+```javascript
+const userJSON = { name: "John", age: 31 };
+const formattedString = JSON.stringify(userJSON, null, 2);
+
+console.log(formattedString);
+/* Output:
+{
+  "name": "John",
+  "age": 31
+}
+*/
+```
+
+#### Key Point
+
+> `JSON.stringify()` serializes native JavaScript objects into a valid JSON string, which is necessary for transmitting data over a network or saving it in text-based storage.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 115. ### How do you parse JSON string
 
-      When receiving the data from a web server, the data is always in a string format. But you can convert this string value to a javascript object using parse() method.
+The **`JSON.parse()`** method is used to parse a JSON-formatted string and construct the native JavaScript value or object described by the string.
 
-      ```javascript
-      var userString = '{"name":"John","age":31}';
-      var userJSON = JSON.parse(userString);
-      console.log(userJSON); // {name: "John", age: 31}
-      ```
+When receiving data from a web server or reading from `localStorage`, the data arrives as a string. You must convert this string back into a usable JavaScript object using `parse()`.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Syntax
+
+```javascript
+JSON.parse(text, reviver);
+```
+
+#### Example: Basic Usage
+
+```javascript
+const userString = '{"name":"John","age":31}';
+const userObject = JSON.parse(userString);
+
+console.log(userObject.name); // "John"
+console.log(userObject.age);  // 31
+```
+
+#### Example: Handling Errors
+
+If the string is not valid JSON, `JSON.parse()` will throw a `SyntaxError`. It is common to use a `try...catch` block when parsing data from unknown sources:
+
+```javascript
+const malformedData = '{"name": "John",}'; // Trailing comma is invalid
+
+try {
+  const data = JSON.parse(malformedData);
+} catch (error) {
+  console.error("Failed to parse JSON:", error.message);
+}
+```
+
+#### Key Point
+
+> `JSON.parse()` takes a valid JSON string and deserializes it into a JavaScript object, array, or primitive, allowing your application to interact with the data programmatically.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 116. ### Why do you need JSON
 
-      When exchanging data between a browser and a server, the data can only be text. Since JSON is text only, it can easily be sent to and from a server, and used as a data format by any programming language.
+You need **JSON** because it serves as a lightweight, standard format for data exchange across the web. When exchanging data between a browser and a server, the data can only be text. 
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Benefits of JSON
+
+1. **Language Independent:** Since JSON is a text-only format, it can be parsed and generated by virtually any programming language (Python, Java, PHP, C#, etc.), making it ideal for API communication.
+2. **Lightweight:** It has a minimal syntax compared to alternatives like XML, resulting in smaller file sizes and faster transmission over networks.
+3. **Human-Readable:** Its structure is clean and easy to read and debug.
+4. **Native JavaScript Compatibility:** Because it is based on JavaScript object syntax, it is exceptionally fast and easy to use within JS applications.
+
+#### JSON vs XML
+
+| Feature | JSON | XML |
+| :--- | :--- | :--- |
+| **Syntax** | Minimal and clean | Verbose, uses closing tags |
+| **Parsing** | Native `JSON.parse()` in JS | Requires an XML DOM parser |
+| **Data Types** | Supports strings, numbers, arrays, booleans | Everything is a string by default |
+
+#### Key Point
+
+> JSON is the de facto standard for data transmission on the web because it is lightweight, language-agnostic, easily readable by humans, and natively supported by JavaScript.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 117. ### What are PWAs
 
-      Progressive web applications (PWAs) are a type of mobile app delivered through the web, built using common web technologies including HTML, CSS and JavaScript. These PWAs are deployed to servers, accessible through URLs, and indexed by search engines.
+**Progressive Web Applications (PWAs)** are web applications built using common web technologies (HTML, CSS, and JavaScript) that are designed to deliver a native app-like user experience across all devices and platforms.
 
-    **[⬆ Back to Top](#table-of-contents)**
+They leverage modern web capabilities to combine the best of web and mobile apps.
+
+#### Core Characteristics
+
+1. **Progressive:** Work for every user, regardless of browser choice.
+2. **Responsive:** Fit any form factor (desktop, mobile, tablet).
+3. **Offline Capable:** Use **Service Workers** to cache assets and allow the app to function even without a network connection.
+4. **Installable:** Can be installed on the user's home screen or desktop without going through an app store, using a **Web App Manifest**.
+5. **Safe:** Delivered via HTTPS to prevent snooping and ensure content hasn't been tampered with.
+
+#### Example Scenario
+
+A news website built as a PWA allows users to install it on their phone. If the user loses internet connection while on the subway, the PWA can still display previously loaded articles because the Service Worker cached them locally.
+
+#### Key Point
+
+> PWAs bridge the gap between traditional websites and native mobile applications by offering offline capabilities, installability, and responsive design, all delivered securely over the web.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 118. ### What is the purpose of clearTimeout method
 
-      The clearTimeout() function is used in javascript to clear the timeout which has been set by setTimeout()function before that. i.e, The return value of setTimeout() function is stored in a variable and it’s passed into the clearTimeout() function to clear the timer.
+The **`clearTimeout()`** function is used to cancel a timeout that was previously established by calling `setTimeout()`. 
 
-      For example, the below setTimeout method is used to display the message after 3 seconds. This timeout can be cleared by the clearTimeout() method.
+When you call `setTimeout()`, it returns a unique numeric ID representing the timer. If you want to prevent the scheduled function from executing, you pass this ID to `clearTimeout()`.
 
-      ```javascript
-      <script>
-           var msg;
-           function greeting() {
-              alert('Good morning');
-           }
-           function start() {
-             msg =setTimeout(greeting, 3000);
+#### Example: Canceling a Timer
 
-           }
+In the example below, a message is scheduled to appear after 3 seconds. However, if the `stop()` function is called before the 3 seconds elapse, the timeout is cleared and the message will never appear.
 
-           function stop() {
-               clearTimeout(msg);
-           }
-      </script>
-      ```
+```javascript
+let timerId;
 
-    **[⬆ Back to Top](#table-of-contents)**
+function greeting() {
+  console.log('Good morning!');
+}
+
+function start() {
+  // Store the timer ID
+  timerId = setTimeout(greeting, 3000);
+}
+
+function stop() {
+  // Clear the timeout using the stored ID
+  clearTimeout(timerId);
+  console.log("Timer stopped.");
+}
+
+start();
+stop(); // The greeting will not execute
+```
+
+#### Use Case
+
+`clearTimeout()` is heavily used in patterns like **Debouncing**, where you want to wait for a user to stop performing an action (like typing or scrolling) before executing a function.
+
+#### Key Point
+
+> `clearTimeout()` gives you the control to abort a delayed execution initiated by `setTimeout()`, provided the delay period has not yet finished.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 119. ### What is the purpose of clearInterval method
 
-      The clearInterval() function is used in javascript to clear the interval which has been set by setInterval() function. i.e, The return value returned by setInterval() function is stored in a variable and it’s passed into the clearInterval() function to clear the interval.
+The **`clearInterval()`** function is used to cancel a repeating timed action that was previously established by calling `setInterval()`.
 
-      For example, the below setInterval method is used to display the message for every 3 seconds. This interval can be cleared by the clearInterval() method.
+When you call `setInterval()`, it returns a unique numeric ID for the interval. Passing this ID into `clearInterval()` halts the repeated execution immediately.
 
-      ```javascript
-      <script>
-           var msg;
-           function greeting() {
-              alert('Good morning');
-           }
-           function start() {
-             msg = setInterval(greeting, 3000);
+#### Example: Stopping a Repeating Action
 
-           }
+In this example, a message logs every 1 second. The interval is cleared after 3 seconds.
 
-           function stop() {
-               clearInterval(msg);
-           }
-      </script>
-      ```
+```javascript
+let intervalId;
+let counter = 0;
 
-    **[⬆ Back to Top](#table-of-contents)**
+function greeting() {
+  counter++;
+  console.log(`Good morning! (Count: ${counter})`);
+  
+  // Stop after 3 greetings
+  if (counter >= 3) {
+    stop();
+  }
+}
+
+function start() {
+  // Store the interval ID
+  intervalId = setInterval(greeting, 1000);
+}
+
+function stop() {
+  // Clear the interval using the stored ID
+  clearInterval(intervalId);
+  console.log("Interval cleared.");
+}
+
+start();
+```
+
+#### Important Note
+
+Failing to call `clearInterval()` when an interval is no longer needed can lead to **memory leaks** and degraded application performance, as the code will run endlessly in the background.
+
+#### Key Point
+
+> `clearInterval()` is essential for stopping the continuous execution loop created by `setInterval()`, preventing unwanted behavior and infinite loops.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 120. ### How do you redirect new page in javascript
 
-      In vanilla javascript, you can redirect to a new page using the `location` property of window object. The syntax would be as follows,
+In vanilla JavaScript, you can redirect a user to a new page or URL using the **`window.location`** object.
 
-      ```javascript
-      function redirect() {
-        window.location.href = "newPage.html";
-      }
-      ```
+There are multiple ways to achieve this, each with slightly different behavior regarding the browser's history stack.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Methods for Redirection
+
+| Method | Description | Browser History |
+| :--- | :--- | :--- |
+| `location.href = "url"` | Assigns a new URL. The most common way to redirect. | Saves the current page in history. The user can click the "Back" button. |
+| `location.assign("url")` | Same as assigning to `href`. | Saves the current page in history. |
+| `location.replace("url")` | Replaces the current document with a new one. | **Does not** save the current page in history. The user cannot click "Back" to return. |
+
+#### Examples
+
+**1. Using `location.href` (Standard Navigation)**
+
+```javascript
+function standardRedirect() {
+  window.location.href = "https://example.com/newpage";
+}
+```
+
+**2. Using `location.replace()` (No Back Button History)**
+
+Use this when redirecting a user after a successful form submission or a login, so they can't hit "Back" to resubmit the form.
+
+```javascript
+function strictRedirect() {
+  window.location.replace("https://example.com/dashboard");
+}
+```
+
+#### Key Point
+
+> You can redirect to a new page using `window.location.href`. If you want to prevent the user from returning to the original page via the browser's back button, use `window.location.replace()` instead.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 121. ### How do you check whether a string contains a substring
 
-      There are 3 possible ways to check whether a string contains a substring or not,
+There are several ways to check whether a string contains a specific substring in JavaScript, depending on your environment and specific requirements.
 
-      1. **Using includes:** ES6 provided `String.prototype.includes` method to test a string contains a substring
+#### 1. Using `includes()` (ES6+)
+The most modern and readable approach is the `String.prototype.includes()` method. It returns `true` if the substring is found, and `false` otherwise.
 
-      ```javascript
-      var mainString = "hello",
-        subString = "hell";
-      mainString.includes(subString);
-      ```
+```javascript
+const mainString = "hello world";
+const subString = "world";
 
-      2. **Using indexOf:** In an ES5 or older environment, you can use `String.prototype.indexOf` which returns the index of a substring. If the index value is not equal to -1 then it means the substring exists in the main string.
+console.log(mainString.includes(subString)); // true
+console.log(mainString.includes("planet")); // false
+```
 
-      ```javascript
-      var mainString = "hello",
-        subString = "hell";
-      mainString.indexOf(subString) !== -1;
-      ```
+#### 2. Using `indexOf()` (ES5 and older)
+For older browser compatibility, you can use `String.prototype.indexOf()`. It returns the starting index of the substring. If the substring is not found, it returns `-1`.
 
-      3. **Using RegEx:** The advanced solution is using Regular expression's test method(`RegExp.test`), which allows for testing for against regular expressions
+```javascript
+const mainString = "hello world";
+const subString = "world";
 
-      ```javascript
-      var mainString = "hello",
-        regex = /hell/;
-      regex.test(mainString);
-      ```
+console.log(mainString.indexOf(subString) !== -1); // true
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### 3. Using Regular Expressions
+If you need to perform a case-insensitive search or complex pattern matching, use `RegExp.prototype.test()`.
+
+```javascript
+const mainString = "Hello World";
+const regex = /world/i; // 'i' flag makes it case-insensitive
+
+console.log(regex.test(mainString)); // true
+```
+
+#### Key Point
+
+> Use `includes()` for simple substring checks in modern JavaScript. Use `indexOf()` for legacy support, and Regular Expressions (`.test()`) for complex or case-insensitive matching.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 122. ### How do you validate an email in javascript
 
-      You can validate an email in javascript using regular expressions. It is recommended to do validations on the server side instead of the client side. Because the javascript can be disabled on the client side.
+You can validate an email in JavaScript using **Regular Expressions (RegEx)**. However, it is important to remember that client-side validation is primarily for user experience (providing immediate feedback). **Always perform server-side validation** as well, because client-side JavaScript can be bypassed or disabled.
 
-      ```javascript
-      function validateEmail(email) {
-        var re =
-          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-      }
-      ```
+#### Example: Regular Expression Validation
 
-    **[⬆ Back to Top](#table-of-contents)**
+Here is a standard, widely-used regular expression for email validation:
 
-      The above regular expression accepts unicode characters.
+```javascript
+function validateEmail(email) {
+  const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return emailRegex.test(String(email).toLowerCase());
+}
+
+console.log(validateEmail("user@example.com")); // true
+console.log(validateEmail("invalid-email"));    // false
+```
+
+#### HTML5 Validation
+In modern web development, you can also leverage native HTML5 validation before falling back to JavaScript:
+
+```html
+<input type="email" id="emailInput" required>
+```
+
+#### Key Point
+
+> Use a Regular Expression via `RegExp.test()` to validate email format in JavaScript, but always ensure you validate the email address on your backend server for security.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 123. ### How do you get the current url with javascript
 
-      You can use `window.location.href` expression to get the current url path and you can use the same expression for updating the URL too. You can also use `document.URL` for read-only purposes but this solution has issues in FF.
+You can get the full current URL of the page using the **`window.location.href`** property. 
 
-      ```javascript
-      console.log("location.href", window.location.href); // Returns full URL
-      ```
+The `window.location` object contains a wealth of information about the current page's URL, and modifying its `href` property can also be used to navigate the user to a new page.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example: Getting the URL
+
+```javascript
+// Retrieve the current URL
+const currentUrl = window.location.href;
+console.log("The current URL is:", currentUrl); 
+// Output e.g., "https://www.example.com/page?user=123#section"
+```
+
+#### Alternative: `document.URL`
+You can also use `document.URL` for read-only purposes. However, `window.location.href` is generally preferred as it is completely consistent across all browsers and allows both reading and writing.
+
+```javascript
+console.log(document.URL);
+```
+
+#### Key Point
+
+> Read the `window.location.href` property to retrieve the complete URL of the current webpage as a string.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 124. ### What are the various url properties of location object
 
-      The below `Location` object properties can be used to access URL components of the page,
+The `window.location` object provides several properties that allow you to access specific components of the current URL individually.
 
-      1. href - The entire URL
-      2. protocol - The protocol of the URL
-      3. host - The hostname and port of the URL
-      4. hostname - The hostname of the URL
-      5. port - The port number in the URL
-      6. pathname - The path name of the URL
-      7. search - The query portion of the URL
-      8. hash - The anchor portion of the URL
+#### Location Object Properties
 
-    **[⬆ Back to Top](#table-of-contents)**
+Assume the current URL is: 
+`http://www.example.com:8080/path/page.html?search=query#section1`
+
+1. **`href`**: The entire URL.
+   * `http://www.example.com:8080/path/page.html?search=query#section1`
+2. **`protocol`**: The protocol scheme (including the colon).
+   * `http:`
+3. **`host`**: The hostname and port number.
+   * `www.example.com:8080`
+4. **`hostname`**: Just the domain name without the port.
+   * `www.example.com`
+5. **`port`**: The port number.
+   * `8080`
+6. **`pathname`**: The path to the file/page.
+   * `/path/page.html`
+7. **`search`**: The query string portion (including the question mark).
+   * `?search=query`
+8. **`hash`**: The fragment identifier (including the pound sign).
+   * `#section1`
+
+#### Example
+
+```javascript
+console.log(window.location.protocol); // "https:"
+console.log(window.location.hostname); // "github.com"
+console.log(window.location.pathname); // "/sudheerj/javascript-questions"
+```
+
+#### Key Point
+
+> The `location` object breaks down the current URL into accessible properties like `protocol`, `hostname`, `pathname`, `search`, and `hash`, making it easy to parse and manipulate URL components.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 125. ### How do you get query string values in javascript
 
-      You can use URLSearchParams to get query string values in javascript. Let's see an example to get the client code value from URL query string,
+The most modern and robust way to extract values from the URL query string (e.g., `?name=John&age=30`) is by using the **`URLSearchParams`** interface.
 
-      ```javascript
-      const urlParams = new URLSearchParams(window.location.search);
-      const clientCode = urlParams.get("clientCode");
-      ```
+#### Example: Using `URLSearchParams`
 
-    **[⬆ Back to Top](#table-of-contents)**
+Assuming your current URL is `https://example.com/?clientCode=1001&status=active`:
+
+```javascript
+// 1. Pass the query string into URLSearchParams
+const urlParams = new URLSearchParams(window.location.search);
+
+// 2. Use the .get() method to retrieve specific values
+const clientCode = urlParams.get("clientCode");
+const status = urlParams.get("status");
+
+console.log(clientCode); // "1001"
+console.log(status);     // "active"
+```
+
+#### Example: Checking for Existence
+You can also check if a parameter exists using `has()`:
+
+```javascript
+if (urlParams.has("clientCode")) {
+  console.log("Client code is provided.");
+}
+```
+
+#### Key Point
+
+> Use the `URLSearchParams` API in combination with `window.location.search` to easily parse, extract, and manipulate query string parameters in modern JavaScript.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 126. ### How do you check if a key exists in an object
 
-      You can check whether a key exists in an object or not using three approaches,
+There are three primary ways to check whether a specific key (property) exists within a JavaScript object.
 
-      1. **Using in operator:** You can use the in operator whether a key exists in an object or not
+#### 1. Using the `in` operator
+The `in` operator checks if the key exists in the object itself **or anywhere in its prototype chain**.
 
-         ```javascript
-         "key" in obj;
-         ```
+```javascript
+const user = { name: "John", age: 30 };
 
-         and If you want to check if a key doesn't exist, remember to use parenthesis,
+console.log("name" in user); // true
+console.log("toString" in user); // true (inherited from Object prototype)
+```
 
-         ```javascript
-         !("key" in obj);
-         ```
+#### 2. Using `hasOwnProperty()` method
+The `hasOwnProperty()` method checks if the key exists **directly on the object itself**, ignoring inherited properties. This is usually the safest method.
 
-      2. **Using hasOwnProperty method:** You can use `hasOwnProperty` to particularly test for properties of the object instance (and not inherited properties)
+```javascript
+const user = { name: "John", age: 30 };
 
-         ```javascript
-         obj.hasOwnProperty("key"); // true
-         ```
+console.log(user.hasOwnProperty("name")); // true
+console.log(user.hasOwnProperty("toString")); // false
+```
 
-      3. **Using undefined comparison:** If you access a non-existing property from an object, the result is undefined. Let’s compare the properties against undefined to determine the existence of the property.
+#### 3. Using `undefined` comparison
+If you access a non-existent property, JavaScript returns `undefined`. You can use this to check for existence, **but this fails if the key exists but is explicitly set to `undefined`**.
 
-         ```javascript
-         const user = {
-           name: "John",
-         };
+```javascript
+const user = { name: "John", age: undefined };
 
-         console.log(user.name !== undefined); // true
-         console.log(user.nickName !== undefined); // false
-         ```
+console.log(user.name !== undefined); // true
+console.log(user.nickName !== undefined); // false
+console.log(user.age !== undefined); // false (Fails! The key exists but value is undefined)
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Point
+
+> Use `hasOwnProperty()` to check if an object specifically owns a key without looking at its prototype chain. Use the `in` operator if you also want to check inherited properties.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 127. ### How do you loop through or enumerate javascript object
 
-      You can use the `for-in` loop to loop through javascript object. You can also make sure that the key you get is an actual property of an object, and doesn't come from the prototype using `hasOwnProperty` method.
+You can iterate through the properties of an object using several techniques, ranging from the traditional `for...in` loop to modern `Object` methods.
 
-      ```javascript
-      var object = {
-        k1: "value1",
-        k2: "value2",
-        k3: "value3",
-      };
+#### 1. Using `Object.keys()`, `Object.values()`, or `Object.entries()` (Modern/ES6+)
+These methods return arrays, allowing you to use array methods like `forEach()` or `for...of` loops. They only enumerate **own, enumerable** properties.
 
-      for (var key in object) {
-        if (object.hasOwnProperty(key)) {
-          console.log(key + " -> " + object[key]); // k1 -> value1 ...
-        }
-      }
-      ```
+```javascript
+const user = { name: "John", age: 30 };
 
-    **[⬆ Back to Top](#table-of-contents)**
+// Iterate over keys and values using Object.entries
+for (const [key, value] of Object.entries(user)) {
+  console.log(`${key}: ${value}`);
+}
+// Output:
+// name: John
+// age: 30
+```
+
+#### 2. Using `for...in` loop
+The `for...in` loop iterates over all enumerable properties, **including inherited ones**. To prevent iterating over inherited properties, you must combine it with `hasOwnProperty()`.
+
+```javascript
+const user = { name: "John", age: 30 };
+
+for (let key in user) {
+  if (user.hasOwnProperty(key)) {
+    console.log(key + " -> " + user[key]);
+  }
+}
+```
+
+#### Key Point
+
+> Use `Object.keys()`, `Object.values()`, or `Object.entries()` in modern JavaScript to safely loop through an object's own properties without accidentally iterating over its prototype chain.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 128. ### How do you test for an empty object
 
-      There are different solutions based on ECMAScript versions
+Testing if an object is entirely empty (i.e., `{}`) depends on the ECMAScript version you are using. Since `typeof {}` is "object" and `{} === {}` is false (reference comparison), you must check its keys.
 
-      1. **Using Object entries(ECMA 7+):** You can use object entries length along with constructor type.
+#### 1. Using `Object.keys()` (Modern/ES5+)
+This is the most common and robust approach. It checks if the array of keys has a length of 0. Adding a constructor check ensures it's specifically an Object (and not an instance of `Date`, `Map`, etc.).
 
-      ```javascript
-      Object.entries(obj).length === 0 && obj.constructor === Object; // Since date object length is 0, you need to check constructor check as well
-      ```
+```javascript
+const obj = {};
 
-      2. **Using Object keys(ECMA 5+):** You can use object keys length along with constructor type.
+const isEmpty = Object.keys(obj).length === 0 && obj.constructor === Object;
+console.log(isEmpty); // true
+```
 
-      ```javascript
-      Object.keys(obj).length === 0 && obj.constructor === Object; // Since date object length is 0, you need to check constructor check as well
-      ```
+#### 2. Using `Object.entries()` (ES8/ECMA 7+)
+Similar to `Object.keys()`, but uses entries.
 
-      3. **Using for-in with hasOwnProperty(Pre-ECMA 5):** You can use a for-in loop along with hasOwnProperty.
+```javascript
+const isEmpty = Object.entries(obj).length === 0 && obj.constructor === Object;
+```
 
-      ```javascript
-      function isEmpty(obj) {
-        for (var prop in obj) {
-          if (obj.hasOwnProperty(prop)) {
-            return false;
-          }
-        }
+#### 3. Using a `for...in` loop (Legacy Pre-ES5)
+If you need to support very old environments, loop through the properties. If the loop executes even once for an own property, the object is not empty.
 
-        return JSON.stringify(obj) === JSON.stringify({});
-      }
-      ```
+```javascript
+function isObjectEmpty(obj) {
+  for (let prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      return false;
+    }
+  }
+  return true;
+}
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Point
+
+> The most standard and reliable way to check for an empty object is by verifying that `Object.keys(obj).length === 0` and ensuring `obj.constructor === Object`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 129. ### What is an arguments object
 
-      The arguments object is an Array-like object accessible inside functions that contains the values of the arguments passed to that function. For example, let's see how to use arguments object inside sum function,
+The **`arguments` object** is a local, Array-like object available inside all non-arrow functions. It contains the values of the arguments passed to that function.
 
-      ```javascript
-      function sum() {
-        var total = 0;
-        for (var i = 0, len = arguments.length; i < len; ++i) {
-          total += arguments[i];
-        }
-        return total;
-      }
+Even if a function is defined without parameters, you can still access any passed arguments using this object.
 
-      sum(1, 2, 3); // returns 6
-      ```
+#### Example
 
-      **Note:** You can't apply array methods on arguments object. But you can convert into a regular array as below.
+```javascript
+function sum() {
+  let total = 0;
+  // arguments is array-like, so it has a .length property
+  for (let i = 0; i < arguments.length; i++) {
+    total += arguments[i];
+  }
+  return total;
+}
 
-      ```javascript
-      var argsArray = Array.prototype.slice.call(arguments);
-      ```
+console.log(sum(1, 2, 3)); // Returns 6
+console.log(sum(10, 20));  // Returns 30
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Important Limitations
+
+1. **Not a true Array:** While it has a `.length` property and indexed elements, it lacks array methods like `map()`, `forEach()`, or `filter()`. 
+2. **Arrow Functions:** The `arguments` object is **not available** in ES6 Arrow Functions.
+
+#### Modern Alternative: Rest Parameters
+In modern JavaScript (ES6+), **Rest Parameters (`...args`)** are strongly preferred over the `arguments` object because they return a real Array and work in arrow functions.
+
+```javascript
+const sum = (...args) => args.reduce((acc, val) => acc + val, 0);
+```
+
+#### Key Point
+
+> The `arguments` object is an array-like structure inside standard functions containing all passed parameters. In modern JavaScript, ES6 Rest Parameters (`...args`) are preferred as they provide a real array.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 130. ### How do you make first letter of the string in an uppercase
 
-      You can create a function which uses a chain of string methods such as charAt, toUpperCase and slice methods to generate a string with the first letter in uppercase.
+JavaScript does not have a built-in `capitalize()` method. To capitalize the first letter of a string, you must isolate the first character, convert it to uppercase, and then concatenate it with the rest of the string.
 
-      ```javascript
-      function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-      }
-      ```
+#### Example: Using `charAt()` and `slice()`
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+function capitalizeFirstLetter(string) {
+  if (!string) return ''; // Handle empty strings safely
+  
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+console.log(capitalizeFirstLetter("javascript")); // "Javascript"
+```
+
+* `string.charAt(0).toUpperCase()` grabs the first letter ('j') and makes it 'J'.
+* `string.slice(1)` grabs the rest of the string from index 1 onwards ('avascript').
+
+#### Example: Using Array Destructuring (ES6)
+
+You can also use string destructuring combined with template literals:
+
+```javascript
+function capitalize([first, ...rest]) {
+  if (!first) return '';
+  return first.toUpperCase() + rest.join('');
+}
+
+console.log(capitalize("hello")); // "Hello"
+```
+
+#### Key Point
+
+> Capitalize the first letter of a string by combining `string.charAt(0).toUpperCase()` with `string.slice(1)` which appends the remaining characters.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 131. ### What are the pros and cons of for loops
 
-      The for-loop is a commonly used iteration syntax in javascript. It has both pros and cons
+The standard `for` loop (`for (let i = 0; i < len; i++)`) is a foundational control flow statement in JavaScript used for iterating over arrays or executing code a specific number of times.
 
-      #### Pros
+#### Pros
 
-      1. Works on every environment
-      2. You can use break and continue flow control statements
+1. **Universally Supported:** It works in every JavaScript environment and is compatible with very old browsers.
+2. **Maximum Control:** You have complete control over the iteration step (e.g., incrementing by 2, iterating backwards).
+3. **Flow Control:** You can use `break` to exit the loop early, or `continue` to skip an iteration. (Methods like `forEach()` cannot be broken out of early).
+4. **Performance:** It is historically one of the fastest iteration methods natively available in JavaScript engines.
 
-      #### Cons
+#### Cons
 
-      3. Too verbose
-      4. Imperative
-      5. You might face off-by-one errors.
+1. **Verbose and Imperative:** It requires a lot of boilerplate code (initialization, condition, final expression), making it harder to read than declarative methods.
+2. **Off-by-One Errors:** It is highly susceptible to logical bugs, such as `i <= array.length` instead of `i < array.length`.
+3. **Scope Issues (Historically):** Before ES6 `let`, declaring the iterator with `var` leaked it into the outer scope.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Point
+
+> Traditional `for` loops offer high performance and excellent control flow (like `break`/`continue`), but they are verbose and prone to manual "off-by-one" calculation errors compared to modern declarative methods like `map()` or `for...of`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 132. ### How do you display the current date in javascript
 
-      You can use `new Date()` to generate a new Date object containing the current date and time. For example, let's display the current date in mm/dd/yyyy
+You can instantiate a new **`Date`** object to capture the current date and time from the user's system. You can then use its built-in methods to extract the day, month, and year to format it as desired.
 
-      ```javascript
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, "0");
-      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-      var yyyy = today.getFullYear();
+#### Example: Formatting to MM/DD/YYYY
 
-      today = mm + "/" + dd + "/" + yyyy;
-      document.write(today);
-      ```
+```javascript
+const today = new Date();
 
-    **[⬆ Back to Top](#table-of-contents)**
+// .getDate() returns the day of the month (1-31)
+const dd = String(today.getDate()).padStart(2, "0");
+
+// .getMonth() returns 0-11 (January is 0!), so we add 1
+const mm = String(today.getMonth() + 1).padStart(2, "0"); 
+
+// .getFullYear() returns the 4 digit year
+const yyyy = today.getFullYear();
+
+const formattedDate = mm + "/" + dd + "/" + yyyy;
+console.log(formattedDate); // e.g., "06/07/2026"
+```
+
+*(Note: `padStart(2, "0")` ensures single-digit days/months are prefixed with a zero).*
+
+#### Example: Native Localization
+
+For easier, localized formatting without manual concatenation, use `toLocaleDateString()`:
+
+```javascript
+const date = new Date();
+console.log(date.toLocaleDateString("en-US")); // Output: "6/7/2026"
+```
+
+#### Key Point
+
+> Create a `new Date()` object to capture the current time, and use methods like `getFullYear()`, `getMonth()`, and `getDate()` to format it, or simply rely on `toLocaleDateString()` for regional formatting.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 133. ### How do you compare two date objects
 
-      You need to use date.getTime() method in order to compare unix timestamp values
+Directly comparing two `Date` objects using equality operators (`==` or `===`) will yield `false` because they refer to different objects in memory, even if they represent the exact same moment in time.
 
-      ```javascript
-      var d1 = new Date();
-      var d2 = new Date(d1);
-      console.log(d1.getTime() === d2.getTime()); //True
-      console.log(d1 === d2); // False
-      ```
+To properly compare two dates, you must convert them to their numeric **Unix Timestamp** values using the `.getTime()` method.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example: Equality Comparison
+
+```javascript
+const d1 = new Date("2026-01-01");
+const d2 = new Date("2026-01-01");
+
+// Incorrect approach (compares memory references)
+console.log(d1 === d2); // false
+
+// Correct approach (compares numeric timestamps)
+console.log(d1.getTime() === d2.getTime()); // true
+```
+
+#### Example: Greater Than / Less Than
+
+For inequalities, you can actually use `>` and `<` directly on the `Date` objects because JavaScript automatically coerces them into numeric timestamps during these specific comparisons:
+
+```javascript
+const past = new Date("2020-01-01");
+const future = new Date("2030-01-01");
+
+console.log(future > past); // true
+```
+
+#### Key Point
+
+> Use `date.getTime()` to convert `Date` objects into numeric Unix timestamps for accurate strict equality (`===`) comparisons.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 134. ### How do you check if a string starts with another string
 
-      You can use ECMAScript 6's `String.prototype.startsWith()` method to check if a string starts with another string or not. But it is not yet supported in all browsers. Let's see an example to see this usage,
+In modern JavaScript (ES6+), you can use the **`String.prototype.startsWith()`** method. It determines whether a string begins with the characters of a specified substring, returning `true` or `false`.
 
-      ```javascript
-      "Good morning".startsWith("Good"); // true
-      "Good morning".startsWith("morning"); // false
-      ```
+#### Example: Using `startsWith()`
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+const phrase = "Good morning everyone";
+
+console.log(phrase.startsWith("Good"));    // true
+console.log(phrase.startsWith("morning")); // false
+```
+
+#### Using an Offset
+You can also pass a second argument specifying the index at which to start the search:
+
+```javascript
+console.log(phrase.startsWith("morning", 5)); // true
+```
+
+#### Pre-ES6 Alternative
+If you must support ancient browsers (like IE), use `indexOf()`:
+
+```javascript
+const str = "Good morning";
+console.log(str.indexOf("Good") === 0); // true if it starts at index 0
+```
+
+#### Key Point
+
+> The ES6 `startsWith()` method is the cleanest and most semantic way to check if a string begins with a specific substring.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 135. ### How do you trim a string in javascript
 
-      JavaScript provided a trim method on string types to trim any whitespaces present at the beginning or ending of the string.
+JavaScript provides the **`trim()`** method on the String prototype to remove whitespace characters from both the beginning and the end of a string.
 
-      ```javascript
-      "  Hello World   ".trim(); //Hello World
-      ```
+Whitespace includes spaces, tabs, and newline characters. It does *not* affect spaces between words in the middle of the string.
 
-      If your browser(<IE9) doesn't support this method then you can use below polyfill.
+#### Example: Using `trim()`
 
-      ```javascript
-      if (!String.prototype.trim) {
-        (function () {
-          // Make sure we trim BOM and NBSP
-          var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-          String.prototype.trim = function () {
-            return this.replace(rtrim, "");
-          };
-        })();
-      }
-      ```
+```javascript
+const messyString = "   Hello World   \n";
+const cleanString = messyString.trim();
 
-    **[⬆ Back to Top](#table-of-contents)**
+console.log(cleanString); // "Hello World"
+```
+
+#### Related Methods
+If you only need to trim one side of the string, you can use:
+* **`trimStart()`** (or `trimLeft()`)
+* **`trimEnd()`** (or `trimRight()`)
+
+```javascript
+console.log("   Hello".trimStart()); // "Hello"
+console.log("Hello   ".trimEnd());   // "Hello"
+```
+
+#### Key Point
+
+> Use the `String.prototype.trim()` method to sanitize input by stripping out leading and trailing whitespace.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 136. ### How do you add a key value pair in javascript
 
-      There are two possible solutions to add new properties to an object.
+You can add a new key-value pair to an existing JavaScript object using either **Dot Notation** or **Square Bracket Notation**.
 
-      Let's take a simple object to explain these solutions.
+#### 1. Using Dot Notation
+This is the most common and readable syntax. Use this when the key is a valid JavaScript identifier (no spaces, doesn't start with a number, and isn't a reserved keyword).
 
-      ```javascript
-      var object = {
-        key1: value1,
-        key2: value2,
-      };
-      ```
+```javascript
+const user = { name: "John" };
 
-      1. **Using dot notation:** This solution is useful when you know the name of the property
+// Adding a new key-value pair
+user.age = 30;
 
-      ```javascript
-      object.key3 = "value3";
-      ```
+console.log(user); // { name: "John", age: 30 }
+```
 
-      2. **Using square bracket notation:** This solution is useful when the name of the property is dynamically determined or the key's name is non-JS like "user-name"
+#### 2. Using Square Bracket Notation
+Use this method when the key name is stored in a variable, contains spaces, or uses special characters (e.g., "user-name").
 
-      ```javascript
-      obj["key3"] = "value3";
-      ```
+```javascript
+const user = { name: "John" };
 
-    **[⬆ Back to Top](#table-of-contents)**
+// Adding via dynamic variable
+const dynamicKey = "country";
+user[dynamicKey] = "USA";
+
+// Adding a key with special characters
+user["favorite-color"] = "blue";
+
+console.log(user); 
+// { name: "John", country: "USA", "favorite-color": "blue" }
+```
+
+#### Key Point
+
+> Add properties to an object using dot notation (`obj.key = value`) for static, valid identifiers, and bracket notation (`obj["key"] = value`) for dynamic variables or invalid identifiers.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 137. ### Is the !-- notation represents a special operator
 
-      No,that's not a special operator. But it is a combination of 2 standard operators one after the other,
+No, **`!--`** is not a special, single operator in JavaScript. 
 
-      1. A logical not (!)
-      2. A prefix decrement (--)
+It is actually the combination of two completely separate standard operators placed consecutively:
+1. **`!` (Logical NOT):** Evaluates a value to a boolean and reverses it.
+2. **`--` (Prefix Decrement):** Subtracts one from its operand and returns the updated value.
 
-      At first, the value decremented by one and then tested to see if it is equal to zero or not for determining the truthy/falsy value.
+#### Example Breakdown
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+let x = 1;
+
+// The expression
+if (!--x) {
+  console.log("It was falsy!");
+}
+```
+
+Here is exactly what the engine does:
+1. **`--x`** executes first. The variable `x` (which was 1) is decremented to `0`.
+2. The expression now looks like **`!(0)`**.
+3. In JavaScript, `0` is a falsy value. Applying the Logical NOT (`!`) to a falsy value evaluates to `true`.
+4. Therefore, the `if` condition passes.
+
+#### Key Point
+
+> `!--` is not a unique operator; it is simply a Logical NOT (`!`) being applied to the result of a Prefix Decrement (`--`).
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 138. ### How do you assign default values to variables
 
-      You can use the logical or operator `||` in an assignment expression to provide a default value. The syntax looks like as below,
+There are a few ways to assign default values to variables, with ES6 introducing the most robust methods.
 
-      ```javascript
-      var a = b || c;
-      ```
+#### 1. Default Parameters (ES6+)
+When defining functions, you can assign default values directly in the parameter list. The default is applied only if the argument passed is `undefined`.
 
-      As per the above expression, variable 'a 'will get the value of 'c' only if 'b' is falsy (if is null, false, undefined, 0, empty string, or NaN), otherwise 'a' will get the value of 'b'.
+```javascript
+function greet(name = "Guest") {
+  console.log("Hello, " + name);
+}
 
-    **[⬆ Back to Top](#table-of-contents)**
+greet();        // "Hello, Guest"
+greet("Alice"); // "Hello, Alice"
+```
+
+#### 2. Logical OR Operator (`||`)
+Historically, developers used `||` to provide fallbacks. This checks for *any* falsy value (e.g., `0`, `""`, `null`, `undefined`, `NaN`, `false`).
+
+```javascript
+let input = ""; // User leaves input blank
+let value = input || "Default Value"; 
+console.log(value); // "Default Value" (because "" is falsy)
+```
+
+#### 3. Nullish Coalescing Operator (`??`) (ES2020)
+If you only want to provide a default when the value is strictly `null` or `undefined` (but allow `0` or empty strings), use `??`.
+
+```javascript
+let count = 0;
+let finalCount = count ?? 10; 
+console.log(finalCount); // 0 (unlike ||, which would have output 10)
+```
+
+#### Key Point
+
+> Assign default function parameters directly using `param = default`. For variable assignment, use the Nullish Coalescing Operator (`??`) to fall back only on `null` or `undefined`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 139. ### How do you define multiline strings
 
-      You can define multiline string literals using the '\n' character followed by line terminator('\').
+Modern JavaScript provides **Template Literals** (introduced in ES6) to cleanly define multi-line strings without needing concatenation or escape characters.
 
-      ```javascript
-      var str = "This is a \n very lengthy \n sentence!";
-      console.log(str);
-      ```
+#### 1. Template Literals (Recommended)
+By using backticks (` ` ` `), the string will literally respect line breaks exactly as they appear in the source code.
 
-      But if you have a space after the '\n' character, there will be indentation inconsistencies.
+```javascript
+const poem = `Roses are red,
+Violets are blue,
+JavaScript is great,
+And so are you.`;
 
-    **[⬆ Back to Top](#table-of-contents)**
+console.log(poem);
+```
+
+#### 2. Using the Escaped Line Terminator (Legacy)
+Prior to ES6, you had to use a backslash (`\`) at the very end of a line to indicate that the string continues on the next line. 
+
+```javascript
+var str = "This is a very \
+lengthy sentence spanning \
+multiple lines.";
+```
+*Warning: If you accidentally place a space after the backslash, it will throw a SyntaxError.*
+
+#### 3. String Concatenation (Legacy)
+```javascript
+var str = "This is line one\n" + 
+          "This is line two";
+```
+
+#### Key Point
+
+> Use ES6 Template Literals (wrapped in backticks) to easily and cleanly define strings spanning multiple lines.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 140. ### What is an app shell model
 
-      An application shell (or app shell) architecture is one way to build a Progressive Web App that reliably and instantly loads on your users' screens, similar to what you see in native applications. It is useful for getting some initial HTML to the screen fast without a network.
+The **App Shell Model** is a design pattern used in building **Progressive Web Apps (PWAs)** to provide a fast, app-like user experience.
 
-    **[⬆ Back to Top](#table-of-contents)**
+An application "shell" is the minimal HTML, CSS, and JavaScript required to power the user interface (such as the header, navigation bar, and footer layout). 
+
+#### How It Works
+1. **Caching:** The shell is cached locally on the device by a Service Worker upon the first visit.
+2. **Instant Loading:** On subsequent visits, the shell is loaded instantly from the cache, making the app appear blazingly fast and providing immediate feedback.
+3. **Dynamic Content:** Once the shell is on screen, the dynamic content specific to that page is pulled from the network or a local database and injected into the shell.
+
+#### Analogy
+Think of it like a native mobile app downloaded from an app store. The UI framework (the shell) is already installed on your phone. When you open the app, the UI loads instantly, and only the specific data (like news feed items) is fetched from the internet.
+
+#### Key Point
+
+> The App Shell Model is a PWA architectural pattern where the core UI layout is cached locally to load instantly, separating the application's framework from its dynamic content.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 141. ### Can we define properties for functions
 
