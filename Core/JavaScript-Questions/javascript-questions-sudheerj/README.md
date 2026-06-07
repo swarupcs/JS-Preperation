@@ -7997,69 +7997,525 @@ Window
 
     **[⬆ Back to Top](#table-of-contents)**
 
-102. ### Who created javascript
+102. ### Who created JavaScript?
 
-      JavaScript was created by Brendan Eich in 1995 during his time at Netscape Communications. Initially it was developed under the name `Mocha`, but later the language was officially called `LiveScript` when it first shipped in beta releases of Netscape.
+JavaScript was created by Brendan Eich in **1995** while working at [Netscape Communications](https://www.netscape.com?utm_source=chatgpt.com).
 
-    **[⬆ Back to Top](#table-of-contents)**
+The language was originally developed in just **10 days** to add scripting capabilities to web browsers and make web pages interactive.
 
-103. ### What is the use of preventDefault method
+#### Evolution of the Name
 
-      The preventDefault() method cancels the event if it is cancelable, meaning that the default action or behaviour that belongs to the event will not occur. For example, prevent form submission when clicking on submit button and prevent opening the page URL when clicking on hyperlink are some common use cases.
+JavaScript went through several names before becoming what we know today:
 
-      ```javascript
-      document
-        .getElementById("link")
-        .addEventListener("click", function (event) {
-          event.preventDefault();
-        });
-      ```
+1. **Mocha** (initial internal name)
+2. **LiveScript** (used in early beta releases of Netscape Navigator)
+3. **JavaScript** (final name)
 
-      **Note:** Remember that not all events are cancelable.
+The name **JavaScript** was chosen primarily for marketing purposes due to the popularity of the Java language at the time, even though Java and JavaScript are completely different languages.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Timeline
 
-104. ### What is the use of stopPropagation method
+```text
+1995
+  ↓
+Mocha
+  ↓
+LiveScript
+  ↓
+JavaScript
+```
 
-      The stopPropagation method is used to stop the event from bubbling up the event chain. For example, the below nested divs with stopPropagation method prevents default event propagation when clicking on nested div(Div1)
+#### Why Was JavaScript Created?
 
-      ```javascript
-      <p>Click DIV1 Element</p>
-      <div onclick="secondFunc()">DIV 2
-        <div onclick="firstFunc(event)">DIV 1</div>
-      </div>
+JavaScript was designed to:
 
-      <script>
-      function firstFunc(event) {
-        alert("DIV 1");
-        event.stopPropagation();
-      }
+* Add interactivity to web pages.
+* Validate form inputs in the browser.
+* Respond to user actions such as clicks and keyboard events.
+* Manipulate HTML and CSS dynamically.
 
-      function secondFunc() {
-        alert("DIV 2");
-      }
-      </script>
-      ```
+#### Key Point
 
-    **[⬆ Back to Top](#table-of-contents)**
+> JavaScript was created by Brendan Eich in 1995 at [Netscape Communications](https://www.netscape.com?utm_source=chatgpt.com). It was initially called **Mocha**, then **LiveScript**, and was later renamed **JavaScript** before its official release.
 
-105. ### What are the steps involved in return false usage
 
-      The return false statement in event handlers performs the below steps,
+  **[⬆ Back to Top](#table-of-contents)**
 
-      1. First it stops the browser's default action or behaviour.
-      2. It prevents the event from propagating the DOM
-      3. Stops callback execution and returns immediately when called.
+103. ### What is the use of `preventDefault()` method?
 
-    **[⬆ Back to Top](#table-of-contents)**
+The **`preventDefault()`** method is used to prevent the browser's default action associated with an event from occurring.
 
-106. ### What is BOM
+When an event is **cancelable**, calling `event.preventDefault()` tells the browser not to perform its default behavior.
 
-      The Browser Object Model (BOM) allows JavaScript to "talk to" the browser. It consists of the objects navigator, history, screen, location and document which are children of the window. The Browser Object Model is not standardized and can change based on different browsers.
+#### Syntax
+
+```javascript
+event.preventDefault();
+```
+
+#### Common Use Cases
+
+##### 1. Prevent Form Submission
+
+By default, submitting a form reloads the page and sends data to the server.
+
+```html
+<form id="myForm">
+  <input type="text" />
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  document
+    .getElementById("myForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      console.log("Form submission prevented");
+    });
+</script>
+```
+
+##### 2. Prevent Link Navigation
+
+By default, clicking a hyperlink navigates to another page.
+
+```html
+<a id="link" href="https://example.com">
+  Visit Website
+</a>
+
+<script>
+  document
+    .getElementById("link")
+    .addEventListener("click", function (event) {
+      event.preventDefault();
+
+      console.log("Navigation prevented");
+    });
+</script>
+```
+
+#### `preventDefault()` vs `stopPropagation()`
+
+Many developers confuse these methods.
+
+| Method              | Purpose                                              |
+| ------------------- | ---------------------------------------------------- |
+| `preventDefault()`  | Prevents the browser's default action.               |
+| `stopPropagation()` | Prevents the event from propagating through the DOM. |
+
+```javascript
+event.preventDefault();   // Stops default behavior
+event.stopPropagation();  // Stops event propagation
+```
+
+#### Example
+
+```html
+<a href="https://google.com" id="link">
+  Google
+</a>
+
+<script>
+  document
+    .getElementById("link")
+    .addEventListener("click", function (event) {
+      event.preventDefault();
+
+      alert("Link click intercepted");
+    });
+</script>
+```
+
+When the link is clicked:
+
+* The alert is shown.
+* The browser does **not** navigate to Google.
+
+#### Important Note
+
+Not all events are cancelable.
+
+You can check whether an event is cancelable:
+
+```javascript
+element.addEventListener("click", (event) => {
+  console.log(event.cancelable);
+});
+```
+
+If `event.cancelable` is `false`, calling `preventDefault()` has no effect.
+
+#### Key Point
+
+> The `preventDefault()` method prevents the browser's default action associated with an event. It is commonly used to stop form submissions, prevent link navigation, disable context menus, and customize browser behavior. It only works for events that are cancelable.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+104. ### What is the use of `stopPropagation()` method?
+
+The **`stopPropagation()`** method is used to stop an event from propagating further through the DOM tree.
+
+When an event occurs, it normally travels through the event flow phases:
+
+1. **Capturing Phase**
+2. **Target Phase**
+3. **Bubbling Phase**
+
+Calling `event.stopPropagation()` prevents the event from continuing to parent or ancestor elements.
+
+#### Syntax
+
+```javascript id="sp1a2b"
+event.stopPropagation();
+```
+
+#### Example
+
+```html id="sp3c4d"
+<p>Click DIV 1 Element</p>
+
+<div onclick="secondFunc()">
+  DIV 2
+
+  <div onclick="firstFunc(event)">
+    DIV 1
+  </div>
+</div>
+
+<script>
+  function firstFunc(event) {
+    alert("DIV 1");
+
+    event.stopPropagation();
+  }
+
+  function secondFunc() {
+    alert("DIV 2");
+  }
+</script>
+```
+
+#### Output
+
+When **DIV 1** is clicked:
+
+```text id="spout1"
+DIV 1
+```
+
+Without `stopPropagation()`, the output would be:
+
+```text id="spout2"
+DIV 1
+DIV 2
+```
+
+This happens because click events normally bubble from the child element to its parent.
+
+#### Event Flow Visualization
+
+```text id="spflow1"
+DIV 2 (Parent)
+   ↑
+DIV 1 (Child - Clicked)
+```
+
+Without `stopPropagation()`:
+
+```text id="spflow2"
+Click DIV 1
+    ↓
+DIV 1 Handler
+    ↓
+DIV 2 Handler
+```
+
+With `stopPropagation()`:
+
+```text id="spflow3"
+Click DIV 1
+    ↓
+DIV 1 Handler
+    ↓
+Propagation Stopped
+```
+
+#### Modern Example
+
+```html id="sp5e6f"
+<div id="parent">
+  Parent
+  <button id="child">Click Me</button>
+</div>
+
+<script>
+  document
+    .getElementById("parent")
+    .addEventListener("click", () => {
+      console.log("Parent clicked");
+    });
+
+  document
+    .getElementById("child")
+    .addEventListener("click", (event) => {
+      console.log("Button clicked");
+
+      event.stopPropagation();
+    });
+</script>
+```
+
+**Output:**
+
+```text id="spout4"
+Button clicked
+```
+
+#### `stopPropagation()` vs `preventDefault()`
+
+| Method              | Purpose                                           |
+| ------------------- | ------------------------------------------------- |
+| `stopPropagation()` | Stops the event from propagating through the DOM. |
+| `preventDefault()`  | Prevents the browser's default action.            |
+
+```javascript id="sp7g8h"
+event.stopPropagation(); // Stop bubbling/capturing
+event.preventDefault();  // Stop default browser behavior
+```
+
+#### `stopImmediatePropagation()`
+
+JavaScript also provides:
+
+```javascript id="sp9i0j"
+event.stopImmediatePropagation();
+```
+
+This not only stops propagation but also prevents other event listeners attached to the same element from executing.
+
+#### Key Point
+
+> The `stopPropagation()` method prevents an event from propagating further through the DOM tree during the capturing or bubbling phases. It is commonly used to prevent parent elements from responding to events triggered on their child elements.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+105. ### What are the steps involved in `return false` usage?
+
+The behavior of `return false` depends on **how the event handler is attached**.
+
+Traditionally, in **inline event handlers**, `return false` performs the following actions:
+
+1. Prevents the browser's default action.
+2. Stops event propagation.
+3. Stops further execution of the current handler and returns immediately.
+
+#### Example (Inline Event Handler)
+
+```html
+<a
+  href="https://example.com"
+  onclick="return false;"
+>
+  Click Me
+</a>
+```
+
+When the link is clicked:
+
+* Navigation is prevented.
+* Event propagation is stopped.
+* The handler returns immediately.
+
+#### Important Modern JavaScript Note
+
+The statement:
+
+> "`return false` prevents the event from propagating the DOM"
+
+is **not universally true**.
+
+When using `addEventListener()`, `return false` has **no special meaning**:
+
+```javascript
+document
+  .getElementById("link")
+  .addEventListener("click", function () {
+    return false;
+  });
+```
+
+The above code **does not**:
+
+* Prevent default behavior.
+* Stop propagation.
+
+To achieve those effects, you must explicitly call:
+
+```javascript
+element.addEventListener(
+  "click",
+  function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+);
+```
+
+#### Comparison
+
+| Technique                           | Prevent Default | Stop Propagation |
+| ----------------------------------- | --------------- | ---------------- |
+| `return false` (inline handler)     | ✅ Yes           | ✅ Yes            |
+| `return false` (`addEventListener`) | ❌ No            | ❌ No             |
+| `event.preventDefault()`            | ✅ Yes           | ❌ No             |
+| `event.stopPropagation()`           | ❌ No            | ✅ Yes            |
+| Both methods together               | ✅ Yes           | ✅ Yes            |
+
+#### Example
+
+```html
+<a
+  href="https://google.com"
+  onclick="alert('Clicked'); return false;"
+>
+  Google
+</a>
+```
+
+**Result:**
+
+* Alert is shown.
+* Browser does not navigate to Google.
+* Event propagation stops.
+
+#### Best Practice
+
+In modern JavaScript, avoid relying on `return false`.
+
+Instead, use:
+
+```javascript
+element.addEventListener(
+  "click",
+  function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+);
+```
+
+This makes your intent explicit and works consistently across environments.
+
+#### Key Point
+
+> In traditional inline event handlers, `return false` prevents the browser's default action, stops event propagation, and immediately exits the handler. However, when using `addEventListener()`, `return false` has no special effect. Modern JavaScript code should use `event.preventDefault()` and `event.stopPropagation()` explicitly.
+
+
+   **[⬆ Back to Top](#table-of-contents)**
+
+106. ### What is BOM?
+
+**BOM (Browser Object Model)** is a collection of objects provided by the browser that allows JavaScript to interact with and control the browser window, rather than the web page content itself.
+
+Through the BOM, JavaScript can perform tasks such as:
+
+* Access browser information.
+* Navigate between pages.
+* Read the current URL.
+* Access screen details.
+* Display dialogs.
+* Manage browser history.
+
+The **`window`** object is the top-level object of the BOM.
+
+#### BOM Structure
+
+```text
+Window
+├── Document (DOM)
+├── Navigator
+├── Location
+├── History
+├── Screen
+├── LocalStorage
+└── SessionStorage
+```
+
+#### Common BOM Objects
+
+| Object      | Purpose                                                                 |
+| ----------- | ----------------------------------------------------------------------- |
+| `window`    | Represents the browser window.                                          |
+| `navigator` | Provides information about the browser and operating system.            |
+| `location`  | Contains information about the current URL.                             |
+| `history`   | Allows navigation through browser history.                              |
+| `screen`    | Provides information about the user's screen.                           |
+| `document`  | Represents the HTML document (part of the DOM, accessible through BOM). |
+
+#### Examples
+
+##### Window Object
+
+```javascript
+window.alert("Hello World");
+```
+
+##### Navigator Object
+
+```javascript
+console.log(navigator.userAgent);
+console.log(navigator.platform);
+```
+
+##### Location Object
+
+```javascript
+console.log(location.href);
+```
+
+```javascript
+location.reload();
+```
+
+##### History Object
+
+```javascript
+history.back();
+history.forward();
+```
+
+##### Screen Object
+
+```javascript
+console.log(screen.width);
+console.log(screen.height);
+```
+
+#### BOM vs DOM
+
+| BOM                                                         | DOM                                                       |
+| ----------------------------------------------------------- | --------------------------------------------------------- |
+| Interacts with the browser.                                 | Interacts with the web page content.                      |
+| Root object is `window`.                                    | Root object is `document`.                                |
+| Includes `navigator`, `location`, `history`, `screen`, etc. | Includes HTML elements and nodes.                         |
+| Browser-specific APIs.                                      | Standardized API for manipulating HTML and XML documents. |
+
+#### Important Note
+
+The BOM is **not fully standardized** by ECMAScript. While most browsers provide similar BOM APIs, some features and behaviors may vary across browsers.
+
+#### Key Point
+
+> The **Browser Object Model (BOM)** is a set of browser-provided objects that allow JavaScript to interact with the browser environment. The `window` object is the root of the BOM and provides access to objects such as `navigator`, `location`, `history`, `screen`, and `document`. BOM enables tasks like navigation, URL manipulation, browser information retrieval, and window management.
+
 
       ![Screenshot](images/bom.png)
 
-    **[⬆ Back to Top](#table-of-contents)**
+  **[⬆ Back to Top](#table-of-contents)**
 
 107. ### What is the use of setTimeout
 
