@@ -7899,39 +7899,109 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
   **[⬆ Back to Top](#table-of-contents)**
 
-101. ### What are events
+101. ### What are Events?
 
-      Events are "things" that happen to HTML elements. When JavaScript is used in HTML pages, JavaScript can `react` on these events. Some of the examples of HTML events are,
+**Events** are actions or occurrences that happen in the browser and can be detected and handled by JavaScript. They allow web pages to respond to user interactions and browser activities.
 
-      1. Web page has finished loading
-      2. Input field was changed
-      3. Button was clicked
+When an event occurs, JavaScript can execute a function known as an **event handler** to react to that event.
 
-      Let's describe the behavior of click event for button element,
+#### Common Examples of Events
 
-      ```javascript
-      <!doctype html>
-      <html>
-       <head>
-         <script>
-           function greeting() {
-             alert('Hello! Good morning');
-           }
-         </script>
-       </head>
-       <body>
-         <button type="button" onclick="greeting()">Click me</button>
-       </body>
-      </html>
-      ```
+1. A web page has finished loading (`load`)
+2. A user clicks a button (`click`)
+3. An input field value changes (`change`)
+4. A key is pressed (`keydown`)
+5. The mouse moves over an element (`mouseover`)
+6. A form is submitted (`submit`)
 
-      **[⬆ Back to Top](#table-of-contents)**
+#### Example: Click Event
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    function greeting() {
+      alert("Hello! Good morning");
+    }
+  </script>
+</head>
+<body>
+  <button type="button" onclick="greeting()">
+    Click Me
+  </button>
+</body>
+</html>
+```
+
+When the user clicks the button:
+
+1. A `click` event is triggered.
+2. The `greeting()` function is executed.
+3. An alert box is displayed.
+
+#### Modern Approach Using `addEventListener()`
+
+Instead of inline event handlers, modern JavaScript prefers `addEventListener()`:
+
+```html
+<button id="btn">Click Me</button>
+
+<script>
+  const button = document.getElementById("btn");
+
+  button.addEventListener("click", function () {
+    alert("Hello! Good morning");
+  });
+</script>
+```
+
+#### Event Flow
+
+When an event occurs, it goes through three phases:
+
+1. **Capturing Phase** (Top → Bottom)
+2. **Target Phase**
+3. **Bubbling Phase** (Bottom → Top)
+
+```text
+Window
+  ↓
+Document
+  ↓
+Target Element
+  ↑
+Document
+  ↑
+Window
+```
+
+#### Common Event Types
+
+| Event       | Description                         |
+| ----------- | ----------------------------------- |
+| `click`     | User clicks an element              |
+| `dblclick`  | User double-clicks an element       |
+| `keydown`   | A keyboard key is pressed           |
+| `keyup`     | A keyboard key is released          |
+| `change`    | Value of an input element changes   |
+| `submit`    | A form is submitted                 |
+| `load`      | A page or resource finishes loading |
+| `mouseover` | Mouse enters an element             |
+| `mouseout`  | Mouse leaves an element             |
+
+#### Key Point
+
+> Events are actions or occurrences that happen in the browser, such as clicks, key presses, form submissions, or page loads. JavaScript can listen for these events and execute code in response, making web pages interactive and dynamic.
+
+
+    **[⬆ Back to Top](#table-of-contents)**
 
 102. ### Who created javascript
 
       JavaScript was created by Brendan Eich in 1995 during his time at Netscape Communications. Initially it was developed under the name `Mocha`, but later the language was officially called `LiveScript` when it first shipped in beta releases of Netscape.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 103. ### What is the use of preventDefault method
 
@@ -7947,7 +8017,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** Remember that not all events are cancelable.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 104. ### What is the use of stopPropagation method
 
@@ -7971,7 +8041,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       </script>
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 105. ### What are the steps involved in return false usage
 
@@ -7981,7 +8051,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       2. It prevents the event from propagating the DOM
       3. Stops callback execution and returns immediately when called.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 106. ### What is BOM
 
@@ -7989,7 +8059,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       ![Screenshot](images/bom.png)
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 107. ### What is the use of setTimeout
 
@@ -8001,7 +8071,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }, 2000);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 108. ### What is the use of setInterval
 
@@ -8013,13 +8083,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }, 2000);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 109. ### Why is JavaScript treated as Single threaded
 
       JavaScript is a single-threaded language. Because the language specification does not allow the programmer to write code so that the interpreter can run parts of it in parallel in multiple threads or processes. Whereas languages like java, go, C++ can make multi-threaded and multi-process programs.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 110. ### What is an event delegation
 
@@ -8041,19 +8111,19 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       );
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 111. ### What is ECMAScript
 
       ECMAScript is the scripting language that forms the basis of JavaScript. ECMAScript standardized by the ECMA International standards organization in the ECMA-262 and ECMA-402 specifications. The first edition of ECMAScript was released in 1997.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 112. ### What is JSON
 
       JSON (JavaScript Object Notation) is a lightweight format that is used for data interchanging. It is based on a subset of JavaScript language in the way objects are built in JavaScript.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 113. ### What are the syntax rules of JSON
 
@@ -8064,7 +8134,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. Curly braces hold objects
       4. Square brackets hold arrays
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 114. ### What is the purpose JSON stringify
 
@@ -8076,7 +8146,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(userString); //"{"name":"John","age":31}"
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 115. ### How do you parse JSON string
 
@@ -8088,19 +8158,19 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(userJSON); // {name: "John", age: 31}
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 116. ### Why do you need JSON
 
       When exchanging data between a browser and a server, the data can only be text. Since JSON is text only, it can easily be sent to and from a server, and used as a data format by any programming language.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 117. ### What are PWAs
 
       Progressive web applications (PWAs) are a type of mobile app delivered through the web, built using common web technologies including HTML, CSS and JavaScript. These PWAs are deployed to servers, accessible through URLs, and indexed by search engines.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 118. ### What is the purpose of clearTimeout method
 
@@ -8125,7 +8195,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       </script>
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 119. ### What is the purpose of clearInterval method
 
@@ -8150,7 +8220,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       </script>
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 120. ### How do you redirect new page in javascript
 
@@ -8162,7 +8232,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 121. ### How do you check whether a string contains a substring
 
@@ -8192,7 +8262,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       regex.test(mainString);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 122. ### How do you validate an email in javascript
 
@@ -8206,7 +8276,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
       The above regular expression accepts unicode characters.
 
@@ -8218,7 +8288,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log("location.href", window.location.href); // Returns full URL
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 124. ### What are the various url properties of location object
 
@@ -8233,7 +8303,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       7. search - The query portion of the URL
       8. hash - The anchor portion of the URL
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 125. ### How do you get query string values in javascript
 
@@ -8244,7 +8314,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       const clientCode = urlParams.get("clientCode");
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 126. ### How do you check if a key exists in an object
 
@@ -8279,7 +8349,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
          console.log(user.nickName !== undefined); // false
          ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 127. ### How do you loop through or enumerate javascript object
 
@@ -8299,7 +8369,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 128. ### How do you test for an empty object
 
@@ -8331,7 +8401,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 129. ### What is an arguments object
 
@@ -8355,7 +8425,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       var argsArray = Array.prototype.slice.call(arguments);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 130. ### How do you make first letter of the string in an uppercase
 
@@ -8367,7 +8437,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 131. ### What are the pros and cons of for loops
 
@@ -8384,7 +8454,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       4. Imperative
       5. You might face off-by-one errors.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 132. ### How do you display the current date in javascript
 
@@ -8400,7 +8470,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       document.write(today);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 133. ### How do you compare two date objects
 
@@ -8413,7 +8483,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(d1 === d2); // False
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 134. ### How do you check if a string starts with another string
 
@@ -8424,7 +8494,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       "Good morning".startsWith("morning"); // false
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 135. ### How do you trim a string in javascript
 
@@ -8448,7 +8518,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 136. ### How do you add a key value pair in javascript
 
@@ -8475,7 +8545,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       obj["key3"] = "value3";
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 137. ### Is the !-- notation represents a special operator
 
@@ -8486,7 +8556,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       At first, the value decremented by one and then tested to see if it is equal to zero or not for determining the truthy/falsy value.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 138. ### How do you assign default values to variables
 
@@ -8498,7 +8568,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       As per the above expression, variable 'a 'will get the value of 'c' only if 'b' is falsy (if is null, false, undefined, 0, empty string, or NaN), otherwise 'a' will get the value of 'b'.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 139. ### How do you define multiline strings
 
@@ -8511,13 +8581,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       But if you have a space after the '\n' character, there will be indentation inconsistencies.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 140. ### What is an app shell model
 
       An application shell (or app shell) architecture is one way to build a Progressive Web App that reliably and instantly loads on your users' screens, similar to what you see in native applications. It is useful for getting some initial HTML to the screen fast without a network.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 141. ### Can we define properties for functions
 
@@ -8535,7 +8605,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       };
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 142. ### What is the way to find the number of parameters expected by a function
 
@@ -8548,7 +8618,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       sum.length; // 4 is the number of parameters expected.
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 143. ### What is a polyfill
 
@@ -8559,7 +8629,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       1. **Core.js**: It is a modular javascript library used for cutting-edge ECMAScript features.
       2. **Polyfill.io:** It provides polyfills that are required for browser needs.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 144. ### What are break and continue statements
 
@@ -8585,7 +8655,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 145. ### What are js labels
 
@@ -8609,7 +8679,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       //   "i = 2, j = 1"
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 146. ### What are the benefits of keeping declarations at the top
 
@@ -8620,7 +8690,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. Easy to avoid unwanted global variables
       4. It reduces the possibility of unwanted re-declarations
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 147. ### What are the benefits of initializing variables
 
@@ -8630,7 +8700,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       2. It provides a single place to initialize variables
       3. Avoid undefined values in the code
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 148. ### What are the recommendations to create new object
 
@@ -8656,7 +8726,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       var v7 = function () {};
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 149. ### How do you define JSON arrays
 
@@ -8670,7 +8740,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       ]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 150. ### How do you generate random integers
 
@@ -8683,7 +8753,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** `Math.random()` returns a random number between 0 (inclusive), and 1 (exclusive)
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 151. ### Can you write a random integers function to print integers within a range
 
@@ -8697,25 +8767,25 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       randomInteger(1, 1000); // returns a random integer from 1 to 1000
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 152. ### What is tree shaking
 
       Tree shaking is a form of dead code elimination. It means that unused modules will not be included in the bundle during the build process and for that it relies on the static structure of ES2015 module syntax,( i.e. import and export). Initially this has been popularized by the ES2015 module bundler `rollup`, these days practically all bundlers use this technique.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 153. ### What is the need of tree shaking
 
       Tree Shaking can significantly reduce the code size in any application. i.e, The less code we send over the wire the more performant the application will be. For example, if we just want to create a “Hello World” Application using SPA frameworks then it will take around a few MBs, but by tree shaking it can bring down the size to just a few hundred KBs. Tree shaking is implemented in Rollup and Webpack bundlers.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 154. ### Is it recommended to use eval
 
       No, it allows arbitrary code to be run which causes a security problem. As we know that the eval() function is used to run text as code. In most of the cases, it should not be necessary to use it.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 155. ### What is a Regular Expression
 
@@ -8731,7 +8801,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       /John/i;
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 156. ### What are the string methods that accept Regular expression
 
@@ -8767,7 +8837,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       var n = msg.split(/\s/); // ["Hello", "John"]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 157. ### What are modifiers in regular expression
 
@@ -8787,7 +8857,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       var result = text.match(pattern); // one,one
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 158. ### What are regular expression patterns
 
@@ -8809,7 +8879,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
          2. n\*: Used to find matches for any string that contains zero or more occurrences of n
          3. n?: Used to find matches for any string that contains zero or one occurrences of n
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 159. ### What is a RegExp object
 
@@ -8821,7 +8891,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       // expected output: /\w+/
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 160. ### How do you search a string for a pattern
 
@@ -8832,7 +8902,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(pattern.test("How are you?")); //true
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 161. ### What is the purpose of exec method
 
@@ -8843,7 +8913,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(pattern.exec("How are you?")); //["you", index: 8, input: "How are you?", groups: undefined]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 162. ### How do you change the style of a HTML element
 
@@ -8861,13 +8931,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       document.getElementById("title").className = "custom-title";
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 163. ### What would be the result of 1+2+'3'
 
       The output is going to be `33`. Since `1` and `2` are numeric values, the result of the first two digits is going to be a numeric value `3`. The next digit is a string type value because of that the addition of numeric value `3` and string type value `3` is just going to be a concatenation value `33`. Other operations like `3 * '3'` do yield correct results because the string is coerced into a number.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 164. ### What is a debugger statement
 
@@ -8883,13 +8953,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 165. ### What is the purpose of breakpoints in debugging
 
       You can set breakpoints in the javascript code once the debugger statement is executed and the debugger window pops up. At each breakpoint, javascript will stop executing, and let you examine the JavaScript values. After examining values, you can resume the execution of code using the play button.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 166. ### Can I use reserved words as identifiers
 
@@ -8899,7 +8969,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       var else = "hello"; // Uncaught SyntaxError: Unexpected token else
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 167. ### How do you detect a mobile browser
 
@@ -8923,7 +8993,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       };
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 168. ### How do you detect a mobile browser without regexp
 
@@ -8947,7 +9017,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 169. ### How do you get the image width and height using JS
 
@@ -8961,7 +9031,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       img.src = "http://www.google.com/intl/en_ALL/images/logo.gif";
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 170. ### How do you make synchronous HTTP request
 
@@ -8976,7 +9046,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 171. ### How do you make asynchronous HTTP request
 
@@ -8996,7 +9066,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       Today this is considered deprecated, because an async `fetch` call (in browsers later than 2016) is simpler and more robust.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 172. ### How do you convert date to another timezone in javascript
 
@@ -9006,7 +9076,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(new Date().toLocaleString("en-GB", { timeZone: "UTC" })); //29/06/2019, 09:56:00
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 173. ### What are the properties used to get size of window
 
@@ -9024,7 +9094,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
         document.body.clientHeight;
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 174. ### What is a conditional operator in javascript
 
@@ -9037,7 +9107,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       ); // Sorry, you are not authenticated
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 175. ### Can you apply chaining on conditional operator
 
@@ -9069,7 +9139,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+     **[⬆ Back to Top](#table-of-contents)**
 
 176. ### What are the ways to execute javascript after a page load
 
@@ -9093,7 +9163,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       <body onload="script();">
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 177. ### What is the difference between proto and prototype
 
@@ -9113,7 +9183,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       | ECMAScript | Introduced in ES6                                            | Introduced in ES5                                          |
       | Usage      | Frequently used                                              | Rarely used                                                |
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 178. ### Can you give an example of when you really need a semicolon
 
@@ -9145,7 +9215,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       In this case, we are passing the second function as an argument to the first function and then trying to call the result of the first function call as a function. Hence, the second function will fail with a "... is not a function" error at runtime.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 179. ### What is the freeze method
 
@@ -9179,7 +9249,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** It causes a TypeError if the argument passed is not an object.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 180. ### What is the purpose of the freeze method
 
@@ -9188,13 +9258,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       1. It is used for freezing objects and arrays.
       2. It is used to make an object immutable.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 181. ### Why do I need to use the freeze method
 
       In the Object-oriented paradigm, an existing API contains certain elements that are not intended to be extended, modified, or re-used outside of their current context. Hence it works as the `final` keyword which is used in various languages.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 182. ### How do you detect a browser language preference
 
@@ -9209,7 +9279,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(language);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 183. ### How to convert a string to title case with javascript
 
@@ -9224,7 +9294,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       toTitleCase("good morning john"); // Good Morning John
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 184. ### How do you detect if javascript is disabled on the page
 
@@ -9239,7 +9309,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       </noscript>
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 185. ### What are various operators supported by javascript
 
@@ -9252,7 +9322,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       5. **Ternary Operators:** It includes conditional(: ?) Operator
       6. **typeof Operator:** It uses to find type of variable. The syntax looks like `typeof variable`
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 186. ### What is a rest parameter
 
@@ -9283,7 +9353,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** Rest parameter is added in ES2015 or ES6
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 187. ### What happens if you do not use rest parameter as a last argument
 
@@ -9296,7 +9366,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 188. ### What are the bitwise operators available in javascript
 
@@ -9310,7 +9380,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       6. Sign Propagating Right Shift ( >> )
       7. Zero fill Right Shift ( >>> )
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 189. ### What is a spread operator
 
@@ -9326,7 +9396,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(calculateSum(...numbers)); // 6
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 190. ### How do you determine whether object is frozen or not
 
@@ -9345,7 +9415,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(Object.isFrozen(object));
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 191. ### How do you determine two values same or not using object
 
@@ -9370,7 +9440,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
          both NaN
          both non-zero and both not NaN and both have the same value.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 192. ### What is the purpose of using object is method
 
@@ -9381,7 +9451,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. It is used for comparing the polarity of two numbers.
       4. It is used for comparison of two objects.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 193. ### How do you copy properties from one object to other
 
@@ -9406,7 +9476,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       As observed in the above code, there is a common property(`b`) from source to target so it's value has been overwritten.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 194. ### What are the applications of the assign method
 
@@ -9415,7 +9485,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       1. It is used for cloning an object.
       2. It is used to merge objects with the same properties.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 195. ### What is a proxy object
 
@@ -9473,7 +9543,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** This feature was introduced with ES6.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 196. ### What is the purpose of the seal method
 
@@ -9490,7 +9560,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(object.property); //Welcome to object world
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 197. ### What are the applications of the seal method
 
@@ -9499,13 +9569,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       1. It is used for sealing objects and arrays.
       2. It is used to make properties of an object non-configurable.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 198. ### What are the differences between the freeze and seal methods
 
       If an object is frozen using the `Object.freeze()` method then its properties become immutable and no changes can be made in them whereas if an object is sealed using the `Object.seal()` method then the changes can be made in the existing properties of the object.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 199. ### How do you determine if an object is sealed or not
 
@@ -9526,7 +9596,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(Object.isSealed(object)); // checking whether the object is sealed or not
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 200. ### How do you get enumerable key and value pairs
 
@@ -9546,7 +9616,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** The order is not guaranteed as object defined.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 201. ### What is the main difference between Object.values and Object.entries method
 
@@ -9563,7 +9633,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 202. ### How can you get the list of keys of any object
 
@@ -9579,7 +9649,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(Object.keys(user)); //['name', 'gender', 'age']
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 203. ### How do you create an object with a prototype
 
@@ -9600,7 +9670,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       admin.printInfo(); // My name is Nick
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 204. ### What is a WeakSet
 
@@ -9621,7 +9691,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       ws.has(user); // false, user has been removed
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 205. ### What are the differences between WeakSet and Set
 
@@ -9633,7 +9703,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. `WeakSet` does not have methods such as clear, keys, values, entries, forEach.
       4. `WeakSet` is not iterable.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 206. ### List down the collection of methods available on WeakSet
 
@@ -9656,7 +9726,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       weakSetObject.delete(secondObject);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 207. ### What is a WeakMap
 
@@ -9677,7 +9747,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       ws.has(user); // false, user has been removed
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 208. ### What are the differences between WeakMap and Map
 
@@ -9689,7 +9759,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. `WeakMap` does not have methods such as clear, keys, values, entries, forEach.
       4. `WeakMap` is not iterable.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 209. ### List down the collection of methods available on WeakMap
 
@@ -9713,7 +9783,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       weakMapObject.delete(secondObject);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 210. ### What is the purpose of uneval
 
@@ -9732,7 +9802,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(user.toString()); // returns "(function user(){})"
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 211. ### How do you encode an URL
 
@@ -9744,7 +9814,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(encoded); // https://mozilla.org/?x=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 212. ### How do you decode an URL
 
@@ -9762,7 +9832,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 213. ### How do you print the contents of web page
 
@@ -9774,7 +9844,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** In most browsers, it will block while the print dialog is open.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 214. ### What is the difference between uneval and eval
 
@@ -9788,7 +9858,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       greeting(); // returns "Hello, Good morning"
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 215. ### What is an anonymous function
 
@@ -9818,7 +9888,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(z); // 50
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 216. ### What is the precedence order between local and global variables
 
@@ -9833,7 +9903,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       greeting();
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 217. ### What are javascript accessors
 
@@ -9856,7 +9926,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(user.lang); // setter used to set lang as fr
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 218. ### How do you define property on Object constructor
 
@@ -9875,13 +9945,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       newObject.newProperty = 200; // It throws an error in strict mode due to writable setting
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 219. ### What is the difference between get and defineProperty
 
       Both have similar results unless you use classes. If you use `get` the property will be defined on the prototype of the object whereas using `Object.defineProperty()` the property will be defined on the instance it is applied to.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 220. ### What are the advantages of Getters and Setters
 
@@ -9893,7 +9963,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       4. They can provide better data quality
       5. Useful for doing things behind the scenes with the encapsulated logic.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 221. ### Can I add getters and setters using defineProperty method
 
@@ -9934,7 +10004,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(obj.decrement); //5
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 222. ### What is the purpose of switch-case
 
@@ -9961,7 +10031,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       The above multi-way branch statement provides an easy way to dispatch execution to different parts of code based on the value of the expression.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 223. ### What are the conventions to be followed for the usage of switch case
 
@@ -9973,7 +10043,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       4. The break statement is used inside the switch to terminate a statement sequence.
       5. The break statement is optional. But if it is omitted, the execution will continue on into the next case.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 224. ### What are primitive data types
 
@@ -9987,7 +10057,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       6. bigint
       7. symbol
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 225. ### What are the different ways to access object properties
 
@@ -10011,7 +10081,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       objectName[expression];
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 226. ### What are the function parameter rules
 
@@ -10029,7 +10099,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       functionName(1);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 227. ### What is an error object
 
@@ -10043,7 +10113,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 228. ### When do you get a syntax error
 
@@ -10057,7 +10127,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 229. ### What are the different error names from error object
 
@@ -10072,7 +10142,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       | `TypeError` | An error due to a type error |
       | `URIError` | An error due to encodeURI() |
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 230. ### What are the various statements in error handling
 
@@ -10083,26 +10153,26 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. **throw:** This statement is used to create custom errors.
       4. **finally:** This statement is used to execute code after try and catch regardless of the result.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 231. ### What are the two types of loops in javascript
 
       1. **Entry Controlled loops:** In this kind of loop type, the test condition is tested before entering the loop body. For example, For Loop and While Loop comes under this category.
       2. **Exit Controlled Loops:** In this kind of loop type, the test condition is tested or evaluated at the end of the loop body. i.e, the loop body will execute at least once irrespective of test condition true or false. For example, do-while loop comes under this category.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 232. ### What is nodejs
 
       Node.js is a server-side platform built on Chrome's JavaScript runtime for easily building fast and scalable network applications. It is an event-based, non-blocking, asynchronous I/O runtime that uses Google's V8 JavaScript engine and libuv library.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 233. ### What is the Intl object
 
       The `Intl` object is the namespace for the ECMAScript Internationalization API, which provides language sensitive string comparison, number formatting, and date and time formatting. It provides access to several constructors and language sensitive functions.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 234. ### How do you perform language specific date and time formatting
 
@@ -10114,13 +10184,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(new Intl.DateTimeFormat("en-AU").format(date)); // 07/08/2019
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 235. ### What is an Iterator
 
       An iterator is an object which defines a sequence and a return value upon its termination. It implements the Iterator protocol with a `next()` method which returns an object with two properties: `value` (the next value in the sequence) and `done` (which is true if the last value in the sequence has been consumed).
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 236. ### How does synchronous iteration works
 
@@ -10143,7 +10213,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(iterator.next()); // { value: 'undefined, done: true }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 237. ### What is the event loop
 
@@ -10151,7 +10221,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** The event loop allows Node.js to perform non-blocking I/O operations, even though JavaScript is single-threaded, by offloading operations to the system kernel whenever possible. Since most modern kernels are multi-threaded, they can handle multiple operations executing in the background.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 238. ### What is the call stack
 
@@ -10183,7 +10253,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       ![Screenshot](images/call-stack.png)
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 239. ### What is the event queue
 
@@ -10193,7 +10263,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       The event loop constantly checks whether or not the call stack is empty. Once the call stack is empty and there is a callback in the event queue, the event loop moves the callback into the call stack. But if there is a callback in the microtask queue as well, it is moved first. The microtask queue has a higher priority than the event queue.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 240. ### What is a decorator
 
@@ -10217,7 +10287,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
        console.log(User.isAdmin); //false
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 241. ### What are the properties of the Intl object
 
@@ -10230,7 +10300,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       5. **PluralRules:** Objects that enable plural-sensitive formatting and language-specific rules for plurals.
       6. **RelativeTimeFormat:** Objects that enable language-sensitive relative time formatting.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 242. ### What is an Unary operator
 
@@ -10246,7 +10316,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(typeof a, typeof b, b); // string, number, NaN
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 243. ### How do you sort elements in an array
 
@@ -10260,7 +10330,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Beware:** `sort()` is changing the original array.
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 244. ### What is the purpose of compareFunction while sorting arrays
 
@@ -10274,7 +10344,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(numbers); // [5, 4, 3, 2, 1]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 245. ### How do you reverse an array
 
@@ -10287,7 +10357,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(numbers); // [1, 2, 3, 4 ,5]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 246. ### How do you find the min and max values in an array
 
@@ -10306,7 +10376,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(findMax(marks));
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 247. ### How do you find the min and max values without Math functions
 
@@ -10340,7 +10410,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(findMax(marks));
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 248. ### What is an empty statement and purpose of it
 
@@ -10351,7 +10421,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       for (let i = 0; i < a.length; a[i++] = 0);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 249. ### How do you get the metadata of a module
 
@@ -10362,7 +10432,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(import.meta); // { url: "file:///home/user/welcome-module.js" }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 250. ### What is the comma operator
 
@@ -10375,7 +10445,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(x); // 2
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+    **[⬆ Back to Top](#table-of-contents)**
 
 251. ### What is the advantage of the comma operator
 
