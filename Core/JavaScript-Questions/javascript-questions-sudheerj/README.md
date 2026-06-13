@@ -7899,475 +7899,3402 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
   **[⬆ Back to Top](#table-of-contents)**
 
-101. ### What are events
+101. ### What are Events?
 
-      Events are "things" that happen to HTML elements. When JavaScript is used in HTML pages, JavaScript can `react` on these events. Some of the examples of HTML events are,
+**Events** are actions or occurrences that happen in the browser, either due to **user interactions** or **browser-generated activities**. JavaScript can listen for these events and execute code in response, making web pages interactive and dynamic.
 
-      1. Web page has finished loading
-      2. Input field was changed
-      3. Button was clicked
+Examples of events include:
 
-      Let's describe the behavior of click event for button element,
+1. A web page has finished loading.
+2. A button has been clicked.
+3. An input field's value has changed.
+4. A key has been pressed.
+5. The mouse pointer has moved over an element.
+6. A form has been submitted.
 
-      ```javascript
-      <!doctype html>
-      <html>
-       <head>
-         <script>
-           function greeting() {
-             alert('Hello! Good morning');
-           }
-         </script>
-       </head>
-       <body>
-         <button type="button" onclick="greeting()">Click me</button>
-       </body>
-      </html>
-      ```
+#### Example: Click Event
 
-      **[⬆ Back to Top](#table-of-contents)**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    function greeting() {
+      alert("Hello! Good morning");
+    }
+  </script>
+</head>
 
-102. ### Who created javascript
+<body>
+  <button
+    type="button"
+    onclick="greeting()"
+  >
+    Click Me
+  </button>
+</body>
+</html>
+```
 
-      JavaScript was created by Brendan Eich in 1995 during his time at Netscape Communications. Initially it was developed under the name `Mocha`, but later the language was officially called `LiveScript` when it first shipped in beta releases of Netscape.
+When the user clicks the button:
 
-      **[⬆ Back to Top](#table-of-contents)**
+1. A **`click`** event is triggered.
+2. The `greeting()` function is executed.
+3. An alert box is displayed.
 
-103. ### What is the use of preventDefault method
+#### Common HTML Events
 
-      The preventDefault() method cancels the event if it is cancelable, meaning that the default action or behaviour that belongs to the event will not occur. For example, prevent form submission when clicking on submit button and prevent opening the page URL when clicking on hyperlink are some common use cases.
+| Event       | Description                                        |
+| ----------- | -------------------------------------------------- |
+| `click`     | Occurs when an element is clicked.                 |
+| `dblclick`  | Occurs when an element is double-clicked.          |
+| `change`    | Occurs when the value of an input element changes. |
+| `submit`    | Occurs when a form is submitted.                   |
+| `keydown`   | Occurs when a keyboard key is pressed.             |
+| `keyup`     | Occurs when a keyboard key is released.            |
+| `mouseover` | Occurs when the mouse pointer enters an element.   |
+| `mouseout`  | Occurs when the mouse pointer leaves an element.   |
+| `load`      | Occurs when a page or resource finishes loading.   |
 
-      ```javascript
-      document
-        .getElementById("link")
-        .addEventListener("click", function (event) {
-          event.preventDefault();
-        });
-      ```
+#### Modern Approach: `addEventListener()`
 
-      **Note:** Remember that not all events are cancelable.
+Although inline event handlers work, the recommended approach is to use `addEventListener()`:
 
-      **[⬆ Back to Top](#table-of-contents)**
+```html
+<button id="btn">Click Me</button>
 
-104. ### What is the use of stopPropagation method
+<script>
+  document
+    .getElementById("btn")
+    .addEventListener("click", function () {
+      alert("Hello! Good morning");
+    });
+</script>
+```
 
-      The stopPropagation method is used to stop the event from bubbling up the event chain. For example, the below nested divs with stopPropagation method prevents default event propagation when clicking on nested div(Div1)
+This separates JavaScript from HTML and allows multiple event listeners to be attached to the same element.
 
-      ```javascript
-      <p>Click DIV1 Element</p>
-      <div onclick="secondFunc()">DIV 2
-        <div onclick="firstFunc(event)">DIV 1</div>
-      </div>
+#### Key Point
 
-      <script>
-      function firstFunc(event) {
-        alert("DIV 1");
-        event.stopPropagation();
-      }
+> Events are actions or occurrences that happen in the browser, such as clicks, key presses, form submissions, or page loads. JavaScript can listen for these events and execute event handlers in response, enabling interactive web applications.
 
-      function secondFunc() {
-        alert("DIV 2");
-      }
-      </script>
-      ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+  **[⬆ Back to Top](#table-of-contents)**
 
-105. ### What are the steps involved in return false usage
+102. ### Who created JavaScript?
 
-      The return false statement in event handlers performs the below steps,
+JavaScript was created by Brendan Eich in **1995** while he was working at [Netscape Communications](https://www.netscape.com?utm_source=chatgpt.com).
 
-      1. First it stops the browser's default action or behaviour.
-      2. It prevents the event from propagating the DOM
-      3. Stops callback execution and returns immediately when called.
+The language was originally developed in **10 days** to add scripting capabilities to web browsers and make web pages interactive.
 
-      **[⬆ Back to Top](#table-of-contents)**
+#### Evolution of the Name
 
-106. ### What is BOM
+JavaScript went through several names before its official release:
 
-      The Browser Object Model (BOM) allows JavaScript to "talk to" the browser. It consists of the objects navigator, history, screen, location and document which are children of the window. The Browser Object Model is not standardized and can change based on different browsers.
+1. **Mocha** – The initial internal project name.
+2. **LiveScript** – The name used in early beta releases of Netscape Navigator.
+3. **JavaScript** – The final name adopted before the official release.
+
+The name **JavaScript** was chosen largely for marketing reasons because the Java language was very popular at that time. Despite the similarity in names, **Java and JavaScript are entirely different languages**.
+
+#### Timeline
+
+```text id="jscreator1"
+1995
+  ↓
+Mocha
+  ↓
+LiveScript
+  ↓
+JavaScript
+```
+
+#### Interesting Fact
+
+Brendan Eich developed the first version of JavaScript in just **10 days** in May 1995.
+
+#### Key Point
+
+> JavaScript was created by Brendan Eich in 1995 at [Netscape Communications](https://www.netscape.com?utm_source=chatgpt.com). The language was initially called **Mocha**, then renamed **LiveScript**, and finally became **JavaScript** before its official release.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
+
+103. ### What is the use of `preventDefault()` method?
+
+The **`preventDefault()`** method is used to prevent the browser's **default action** associated with an event from occurring.
+
+If the event is **cancelable**, calling `event.preventDefault()` tells the browser not to perform its built-in behavior for that event.
+
+#### Syntax
+
+```javascript
+event.preventDefault();
+```
+
+#### Common Use Cases
+
+1. **Prevent form submission**
+
+```javascript
+document
+  .querySelector("form")
+  .addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    console.log("Form submission prevented");
+  });
+```
+
+2. **Prevent hyperlink navigation**
+
+```javascript
+document
+  .getElementById("link")
+  .addEventListener("click", function (event) {
+    event.preventDefault();
+
+    console.log("Navigation prevented");
+  });
+```
+
+#### Example
+
+```html
+<a id="link" href="https://example.com">
+  Visit Website
+</a>
+
+<script>
+  document
+    .getElementById("link")
+    .addEventListener("click", function (event) {
+      event.preventDefault();
+
+      alert("Default action prevented");
+    });
+</script>
+```
+
+When the link is clicked:
+
+* The alert is displayed.
+* The browser **does not navigate** to `https://example.com`.
+
+#### Checking Whether an Event Is Cancelable
+
+Not all events support `preventDefault()`. You can check this using the `cancelable` property:
+
+```javascript
+element.addEventListener("click", (event) => {
+  console.log(event.cancelable);
+});
+```
+
+If `event.cancelable` is `false`, calling `preventDefault()` will have no effect.
+
+#### `preventDefault()` vs `stopPropagation()`
+
+| Method              | Purpose                                              |
+| ------------------- | ---------------------------------------------------- |
+| `preventDefault()`  | Prevents the browser's default behavior.             |
+| `stopPropagation()` | Prevents the event from propagating through the DOM. |
+
+```javascript
+event.preventDefault();   // Stop default action
+event.stopPropagation();  // Stop event propagation
+```
+
+#### Key Point
+
+> The `preventDefault()` method cancels the browser's default action associated with a cancelable event. It is commonly used to prevent form submissions, stop link navigation, and customize browser behavior. However, it does **not** stop the event from propagating through the DOM.
+
+
+104. ### What is the use of `stopPropagation()` method?
+
+The **`stopPropagation()`** method is used to prevent an event from propagating further through the DOM tree during the **capturing** or **bubbling** phases.
+
+By default, when an event occurs on an element, it propagates through the DOM. Calling `event.stopPropagation()` stops this propagation, preventing ancestor elements from receiving the event.
+
+#### Syntax
+
+```javascript id="sp1x2y"
+event.stopPropagation();
+```
+
+#### Example
+
+```html id="sp3a4b"
+<p>Click DIV 1 Element</p>
+
+<div onclick="secondFunc()">
+  DIV 2
+  <div onclick="firstFunc(event)">
+    DIV 1
+  </div>
+</div>
+
+<script>
+  function firstFunc(event) {
+    alert("DIV 1");
+
+    event.stopPropagation();
+  }
+
+  function secondFunc() {
+    alert("DIV 2");
+  }
+</script>
+```
+
+#### Output
+
+When **DIV 1** is clicked:
+
+```text id="sp5c6d"
+DIV 1
+```
+
+Without `stopPropagation()`, the output would be:
+
+```text id="sp7e8f"
+DIV 1
+DIV 2
+```
+
+This happens because the click event normally **bubbles** from the child element to its parent.
+
+#### Event Bubbling Flow
+
+```text id="sp9g0h"
+DIV 2 (Parent)
+   ↑
+DIV 1 (Target)
+```
+
+Without `stopPropagation()`:
+
+```text id="sp1i2j"
+Click DIV 1
+    ↓
+DIV 1 Handler
+    ↓
+DIV 2 Handler
+```
+
+With `stopPropagation()`:
+
+```text id="sp3k4l"
+Click DIV 1
+    ↓
+DIV 1 Handler
+    ↓
+Propagation Stopped
+```
+
+#### `stopPropagation()` vs `preventDefault()`
+
+| Method              | Purpose                                           |
+| ------------------- | ------------------------------------------------- |
+| `stopPropagation()` | Stops the event from propagating through the DOM. |
+| `preventDefault()`  | Prevents the browser's default action.            |
+
+```javascript id="sp5m6n"
+event.stopPropagation(); // Stops propagation
+event.preventDefault();  // Prevents default behavior
+```
+
+#### Important Note
+
+The statement:
+
+> "The `stopPropagation` method is used to stop the event from bubbling up the event chain."
+
+is **mostly correct**, but more precisely:
+
+> `stopPropagation()` prevents further propagation of the current event in both the **capturing** and **bubbling** phases.
+
+It does **not**:
+
+* Prevent the browser's default action.
+* Prevent other event listeners attached to the **same element** from executing.
+
+To stop other listeners on the same element, use:
+
+```javascript id="sp7o8p"
+event.stopImmediatePropagation();
+```
+
+#### Key Point
+
+> The `stopPropagation()` method prevents an event from propagating further through the DOM during the capturing or bubbling phases. It is commonly used to prevent parent elements from responding to events triggered on their child elements.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+105. ### What are the steps involved in `return false` usage?
+
+The behavior of `return false` depends on **how the event handler is attached**.
+
+#### In Inline Event Handlers
+
+When `return false` is used in an **inline event handler** (e.g., `onclick`), it performs the following actions:
+
+1. **Prevents the browser's default action** associated with the event.
+2. **Stops the event from propagating** through the DOM.
+3. **Stops the execution of the current event handler** and returns immediately.
+
+```html id="rf1a2b"
+<a
+  href="https://example.com"
+  onclick="alert('Clicked'); return false;"
+>
+  Click Me
+</a>
+```
+
+When the link is clicked:
+
+* The alert is displayed.
+* The browser does **not** navigate to `https://example.com`.
+* The event does **not** propagate to ancestor elements.
+
+#### Important Note: `addEventListener()`
+
+When using `addEventListener()`, **`return false` has no special meaning**.
+
+```javascript id="rf3c4d"
+document
+  .getElementById("link")
+  .addEventListener("click", function () {
+    return false;
+  });
+```
+
+The above code **does not**:
+
+* Prevent the default action.
+* Stop event propagation.
+
+Instead, you must explicitly call:
+
+```javascript id="rf5e6f"
+element.addEventListener(
+  "click",
+  function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+);
+```
+
+#### Comparison
+
+| Technique                           | Prevent Default Action | Stop Propagation |
+| ----------------------------------- | ---------------------- | ---------------- |
+| `return false` (inline handlers)    | ✅ Yes                  | ✅ Yes            |
+| `return false` (`addEventListener`) | ❌ No                   | ❌ No             |
+| `event.preventDefault()`            | ✅ Yes                  | ❌ No             |
+| `event.stopPropagation()`           | ❌ No                   | ✅ Yes            |
+| Both methods together               | ✅ Yes                  | ✅ Yes            |
+
+#### Example
+
+```html id="rf7g8h"
+<div onclick="alert('Parent')">
+  <a
+    href="https://example.com"
+    onclick="alert('Link'); return false;"
+  >
+    Click Me
+  </a>
+</div>
+```
+
+**Output when the link is clicked:**
+
+```text id="rfout1"
+Link
+```
+
+The parent's click handler does not execute, and the browser does not navigate to the URL.
+
+#### Best Practice
+
+In modern JavaScript, avoid relying on `return false` because its behavior differs depending on how the event listener is registered.
+
+Prefer explicit methods:
+
+```javascript id="rf9i0j"
+element.addEventListener(
+  "click",
+  function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+);
+```
+
+#### Key Point
+
+> In traditional inline event handlers, `return false` prevents the browser's default action, stops event propagation, and immediately exits the handler. However, when using `addEventListener()`, `return false` has no special effect. Modern JavaScript code should use `event.preventDefault()` and `event.stopPropagation()` explicitly for clearer and more predictable behavior.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+106. ### What is BOM?
+
+The **Browser Object Model (BOM)** is a collection of objects provided by the browser that allows JavaScript to interact with and control the **browser environment**, rather than just the content of the web page.
+
+Using the BOM, JavaScript can:
+
+* Access browser information.
+* Navigate between pages.
+* Read and modify the current URL.
+* Display alert dialogs.
+* Access screen information.
+* Manage browser history.
+
+The **`window`** object is the **top-level object** of the BOM.
+
+#### BOM Structure
+
+```text id="bom1"
+Window
+├── Document (DOM)
+├── Navigator
+├── Location
+├── History
+├── Screen
+├── LocalStorage
+└── SessionStorage
+```
+
+#### Common BOM Objects
+
+| Object      | Purpose                                                                      |
+| ----------- | ---------------------------------------------------------------------------- |
+| `window`    | Represents the browser window and acts as the global object in browsers.     |
+| `navigator` | Provides information about the browser and operating system.                 |
+| `location`  | Contains information about the current URL and allows URL manipulation.      |
+| `history`   | Provides access to the browser's session history.                            |
+| `screen`    | Contains information about the user's screen.                                |
+| `document`  | Represents the HTML document (part of the DOM, accessible through `window`). |
+
+#### Examples
+
+##### Window Object
+
+```javascript id="bom2"
+window.alert("Hello World");
+```
+
+Since `window` is the global object, you can omit it:
+
+```javascript id="bom3"
+alert("Hello World");
+```
+
+##### Navigator Object
+
+```javascript id="bom4"
+console.log(navigator.userAgent);
+console.log(navigator.platform);
+```
+
+##### Location Object
+
+```javascript id="bom5"
+console.log(location.href);
+```
+
+```javascript id="bom6"
+location.reload();
+```
+
+##### History Object
+
+```javascript id="bom7"
+history.back();
+history.forward();
+```
+
+##### Screen Object
+
+```javascript id="bom8"
+console.log(screen.width);
+console.log(screen.height);
+```
+
+#### BOM vs DOM
+
+| BOM                                                         | DOM                                          |
+| ----------------------------------------------------------- | -------------------------------------------- |
+| Interacts with the browser environment.                     | Interacts with the HTML document.            |
+| Root object is `window`.                                    | Root object is `document`.                   |
+| Includes `navigator`, `location`, `history`, `screen`, etc. | Includes HTML elements and nodes.            |
+| Mostly browser-specific APIs.                               | Standardized API for manipulating documents. |
+
+#### Important Note
+
+The statement:
+
+> "The Browser Object Model is not standardized and can change based on different browsers."
+
+is **partially true**. Historically, BOM APIs were not formally standardized. However, many commonly used BOM features are now defined by **WHATWG HTML specifications** and are consistently implemented across modern browsers.
+
+#### Key Point
+
+> The **Browser Object Model (BOM)** is a set of browser-provided objects that enable JavaScript to interact with the browser environment. The `window` object is the root of the BOM and provides access to objects such as `navigator`, `location`, `history`, `screen`, and `document`, allowing developers to control browser behavior and access browser-specific information.
+
 
       ![Screenshot](images/bom.png)
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
-107. ### What is the use of setTimeout
+107. ### What is the use of `setTimeout()`?
 
-      The setTimeout() method is used to call a function or evaluate an expression after a specified number of milliseconds. For example, let's log a message after 2 seconds using setTimeout method,
+The **`setTimeout()`** method is used to execute a function or evaluate an expression **once after a specified delay** (in milliseconds).
 
-      ```javascript
-      setTimeout(function () {
-        console.log("Good morning");
-      }, 2000);
-      ```
+#### Syntax
 
-      **[⬆ Back to Top](#table-of-contents)**
+```javascript id="st1a2b"
+setTimeout(function, delay, arg1, arg2, ...);
+```
 
-108. ### What is the use of setInterval
+* **`function`** – The function to execute.
+* **`delay`** – Time to wait before execution (in milliseconds).
+* **`arg1, arg2, ...`** *(optional)* – Arguments passed to the function.
 
-      The setInterval() method is used to call a function or evaluate an expression at specified intervals (in milliseconds). For example, let's log a message after 2 seconds using setInterval method,
+#### Example
 
-      ```javascript
-      setInterval(function () {
-        console.log("Good morning");
-      }, 2000);
-      ```
+```javascript id="st3c4d"
+setTimeout(function () {
+  console.log("Good morning");
+}, 2000);
+```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**Output after approximately 2 seconds:**
 
-109. ### Why is JavaScript treated as Single threaded
+```text id="stout1"
+Good morning
+```
 
-      JavaScript is a single-threaded language. Because the language specification does not allow the programmer to write code so that the interpreter can run parts of it in parallel in multiple threads or processes. Whereas languages like java, go, C++ can make multi-threaded and multi-process programs.
+#### Using an Arrow Function
 
-      **[⬆ Back to Top](#table-of-contents)**
+```javascript id="st5e6f"
+setTimeout(() => {
+  console.log("Hello World");
+}, 1000);
+```
 
-110. ### What is an event delegation
+#### Passing Arguments
 
-      Event delegation is a technique for listening to events where you delegate a parent element as the listener for all of the events that happen inside it.
+```javascript id="st7g8h"
+function greet(name) {
+  console.log(`Hello, ${name}`);
+}
 
-      For example, if you wanted to detect field changes inside a specific form, you can use event delegation technique,
+setTimeout(greet, 2000, "John");
+```
 
-      ```javascript
-      var form = document.querySelector("#registration-form");
+**Output after approximately 2 seconds:**
 
-      // Listen for changes to fields inside the form
-      form.addEventListener(
-        "input",
-        function (event) {
-          // Log the field that was changed
-          console.log(event.target);
-        },
-        false
-      );
-      ```
+```text id="stout2"
+Hello, John
+```
 
-      **[⬆ Back to Top](#table-of-contents)**
+#### Return Value
 
-111. ### What is ECMAScript
+`setTimeout()` returns a **timeout ID**, which can be used to cancel the scheduled execution.
 
-      ECMAScript is the scripting language that forms the basis of JavaScript. ECMAScript standardized by the ECMA International standards organization in the ECMA-262 and ECMA-402 specifications. The first edition of ECMAScript was released in 1997.
+```javascript id="st9i0j"
+const timeoutId = setTimeout(() => {
+  console.log("This won't run");
+}, 5000);
 
-      **[⬆ Back to Top](#table-of-contents)**
+clearTimeout(timeoutId);
+```
 
-112. ### What is JSON
+#### How `setTimeout()` Works
 
-      JSON (JavaScript Object Notation) is a lightweight format that is used for data interchanging. It is based on a subset of JavaScript language in the way objects are built in JavaScript.
+`setTimeout()` does **not block** JavaScript execution.
 
-      **[⬆ Back to Top](#table-of-contents)**
+```javascript id="st1k2l"
+console.log("Start");
 
-113. ### What are the syntax rules of JSON
+setTimeout(() => {
+  console.log("Timer");
+}, 0);
 
-      Below are the list of syntax rules of JSON
+console.log("End");
+```
 
-      1. The data is in name/value pairs
-      2. The data is separated by commas
-      3. Curly braces hold objects
-      4. Square brackets hold arrays
+**Output:**
 
-      **[⬆ Back to Top](#table-of-contents)**
+```text id="stout3"
+Start
+End
+Timer
+```
 
-114. ### What is the purpose JSON stringify
+Even though the delay is `0`, the callback is placed in the **Task Queue** and executes only after the **Call Stack** becomes empty.
 
-      When sending data to a web server, the data has to be in a string format. You can achieve this by converting JSON object into a string using stringify() method.
+#### Event Loop Flow
 
-      ```javascript
-      var userJSON = { name: "John", age: 31 };
-      var userString = JSON.stringify(userJSON);
-      console.log(userString); //"{"name":"John","age":31}"
-      ```
+```text id="stflow1"
+Call Stack
+     ↓
+setTimeout()
+     ↓
+Web APIs
+     ↓
+Task Queue
+     ↓
+Event Loop
+     ↓
+Call Stack
+```
 
-      **[⬆ Back to Top](#table-of-contents)**
+#### Important Notes
 
-115. ### How do you parse JSON string
+* The delay specifies the **minimum** time before execution, not the exact time.
+* Actual execution depends on the state of the Call Stack.
+* Passing a string to `setTimeout()` is possible but **not recommended**:
 
-      When receiving the data from a web server, the data is always in a string format. But you can convert this string value to a javascript object using parse() method.
+```javascript id="st3m4n"
+setTimeout("console.log('Hello')", 1000);
+```
 
-      ```javascript
-      var userString = '{"name":"John","age":31}';
-      var userJSON = JSON.parse(userString);
-      console.log(userJSON); // {name: "John", age: 31}
-      ```
+Prefer passing a function instead.
 
-      **[⬆ Back to Top](#table-of-contents)**
+#### Key Point
 
-116. ### Why do you need JSON
+> The `setTimeout()` method schedules a function to execute **once after a specified delay**. It is commonly used for delaying execution, scheduling tasks, and creating asynchronous behavior. The callback is executed only after the delay has elapsed **and** the JavaScript Call Stack is empty.
 
-      When exchanging data between a browser and a server, the data can only be text. Since JSON is text only, it can easily be sent to and from a server, and used as a data format by any programming language.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
-117. ### What are PWAs
+108. ### What is the use of `setInterval()`?
 
-      Progressive web applications (PWAs) are a type of mobile app delivered through the web, built using common web technologies including HTML, CSS and JavaScript. These PWAs are deployed to servers, accessible through URLs, and indexed by search engines.
+The **`setInterval()`** method is used to repeatedly execute a function or evaluate an expression at **specified time intervals** (in milliseconds) until it is explicitly stopped.
 
-      **[⬆ Back to Top](#table-of-contents)**
+#### Syntax
 
-118. ### What is the purpose of clearTimeout method
+```javascript id="si1a2b"
+setInterval(function, delay, arg1, arg2, ...);
+```
 
-      The clearTimeout() function is used in javascript to clear the timeout which has been set by setTimeout()function before that. i.e, The return value of setTimeout() function is stored in a variable and it’s passed into the clearTimeout() function to clear the timer.
+* **`function`** – The function to execute repeatedly.
+* **`delay`** – Time interval between executions (in milliseconds).
+* **`arg1, arg2, ...`** *(optional)* – Arguments passed to the function.
 
-      For example, the below setTimeout method is used to display the message after 3 seconds. This timeout can be cleared by the clearTimeout() method.
+#### Example
 
-      ```javascript
-      <script>
-           var msg;
-           function greeting() {
-              alert('Good morning');
-           }
-           function start() {
-             msg =setTimeout(greeting, 3000);
+```javascript id="si3c4d"
+setInterval(function () {
+  console.log("Good morning");
+}, 2000);
+```
 
-           }
+**Output:**
 
-           function stop() {
-               clearTimeout(msg);
-           }
-      </script>
-      ```
+```text id="siout1"
+Good morning   // after ~2 seconds
+Good morning   // after ~4 seconds
+Good morning   // after ~6 seconds
+...
+```
 
-      **[⬆ Back to Top](#table-of-contents)**
+The function continues to execute every **2 seconds** until the interval is cleared.
 
-119. ### What is the purpose of clearInterval method
+#### Using an Arrow Function
 
-      The clearInterval() function is used in javascript to clear the interval which has been set by setInterval() function. i.e, The return value returned by setInterval() function is stored in a variable and it’s passed into the clearInterval() function to clear the interval.
+```javascript id="si5e6f"
+setInterval(() => {
+  console.log("Hello World");
+}, 1000);
+```
 
-      For example, the below setInterval method is used to display the message for every 3 seconds. This interval can be cleared by the clearInterval() method.
+#### Stopping the Interval
 
-      ```javascript
-      <script>
-           var msg;
-           function greeting() {
-              alert('Good morning');
-           }
-           function start() {
-             msg = setInterval(greeting, 3000);
+`setInterval()` returns an **interval ID**, which can be used with `clearInterval()` to stop repeated execution.
 
-           }
+```javascript id="si7g8h"
+const intervalId = setInterval(() => {
+  console.log("Running...");
+}, 1000);
 
-           function stop() {
-               clearInterval(msg);
-           }
-      </script>
-      ```
+setTimeout(() => {
+  clearInterval(intervalId);
 
-      **[⬆ Back to Top](#table-of-contents)**
+  console.log("Interval stopped");
+}, 5000);
+```
 
-120. ### How do you redirect new page in javascript
+**Output:**
 
-      In vanilla javascript, you can redirect to a new page using the `location` property of window object. The syntax would be as follows,
+```text id="siout2"
+Running...
+Running...
+Running...
+Running...
+Interval stopped
+```
 
-      ```javascript
-      function redirect() {
-        window.location.href = "newPage.html";
+#### Passing Arguments
+
+```javascript id="si9i0j"
+function greet(name) {
+  console.log(`Hello, ${name}`);
+}
+
+setInterval(greet, 2000, "John");
+```
+
+#### `setInterval()` vs `setTimeout()`
+
+| `setInterval()`                              | `setTimeout()`                              |
+| -------------------------------------------- | ------------------------------------------- |
+| Executes repeatedly at fixed intervals.      | Executes only once after a specified delay. |
+| Continues until `clearInterval()` is called. | Stops automatically after execution.        |
+| Returns an interval ID.                      | Returns a timeout ID.                       |
+
+```javascript id="si1k2l"
+setInterval(callback, 1000); // Repeats every second
+
+setTimeout(callback, 1000);  // Executes once after one second
+```
+
+#### Important Notes
+
+* The interval specifies the **minimum delay** between executions.
+* If the Call Stack is busy, execution may be delayed.
+* Avoid long-running operations inside `setInterval()` callbacks, as they may cause overlapping executions.
+
+#### Key Point
+
+> The `setInterval()` method repeatedly executes a function at specified time intervals until it is stopped using `clearInterval()`. It is commonly used for tasks such as updating clocks, polling APIs, animations, and performing periodic operations.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+109. ### Why is JavaScript treated as Single-Threaded?
+
+**JavaScript is treated as a single-threaded language because it executes code using a single Call Stack, allowing only one piece of JavaScript code to run at a time.** The ECMAScript specification does not provide constructs for developers to directly execute JavaScript code in parallel across multiple threads.
+
+As a result, JavaScript executes statements sequentially and must complete the current task before moving on to the next one.
+
+#### How JavaScript Executes Code
+
+The JavaScript engine maintains:
+
+1. **Memory Heap** – Stores objects and variables.
+2. **Call Stack** – Tracks function execution.
+
+Since there is only **one Call Stack**, JavaScript can process only one task at a time.
+
+```javascript id="jss1"
+console.log("First");
+console.log("Second");
+console.log("Third");
+```
+
+**Output:**
+
+```text id="jss2"
+First
+Second
+Third
+```
+
+#### Why Was JavaScript Designed This Way?
+
+JavaScript was originally created to run in web browsers and manipulate the **DOM (Document Object Model)**.
+
+If multiple threads could simultaneously modify the DOM, it could lead to **race conditions** and inconsistent states.
+
+For example:
+
+```text id="jss3"
+Thread 1: Removes a button from the DOM
+Thread 2: Updates the button text
+```
+
+Running these operations in parallel could cause unpredictable behavior.
+
+Using a single thread simplifies programming and avoids synchronization issues.
+
+#### How Does JavaScript Handle Asynchronous Operations?
+
+Although JavaScript is single-threaded, it achieves **concurrency** through the help of the browser or runtime environment.
+
+The process involves:
+
+1. **Call Stack** – Executes synchronous JavaScript code.
+2. **Web APIs / Node.js APIs** – Handle asynchronous tasks such as timers and network requests.
+3. **Task Queue (Callback Queue)** – Stores completed callbacks waiting to execute.
+4. **Microtask Queue** – Stores Promise callbacks.
+5. **Event Loop** – Moves callbacks to the Call Stack when it becomes empty.
+
+#### Event Loop Flow
+
+```text id="jss4"
+Call Stack
+     ↓
+Web APIs / Node APIs
+     ↓
+Task Queue / Microtask Queue
+     ↓
+Event Loop
+     ↓
+Call Stack
+```
+
+#### Example
+
+```javascript id="jss5"
+console.log("Start");
+
+setTimeout(() => {
+  console.log("Timer");
+}, 0);
+
+console.log("End");
+```
+
+**Output:**
+
+```text id="jss6"
+Start
+End
+Timer
+```
+
+Even with a delay of `0`, the callback executes only after the Call Stack becomes empty.
+
+#### Important Note
+
+The statement:
+
+> "JavaScript is a single-threaded language because the specification does not allow programmers to write parallel code."
+
+is **partially true**.
+
+A more accurate explanation is:
+
+> JavaScript is single-threaded because it uses a single Call Stack for executing JavaScript code. However, modern environments provide mechanisms such as **Web Workers** (browsers) and **Worker Threads** (Node.js) to achieve true parallelism outside the main thread.
+
+#### Key Point
+
+> JavaScript is treated as a single-threaded language because it executes code using a single Call Stack, processing one task at a time. It achieves concurrency and non-blocking behavior through the Event Loop and environment-provided APIs, while keeping the main JavaScript execution thread single-threaded.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+110. ### What is Event Delegation?
+
+**Event delegation** is a technique in JavaScript where you attach a single event listener to a **parent element** to handle events triggered by its **child elements**. It works because of **event bubbling**, where an event propagates from the target element up through its ancestors.
+
+Instead of attaching separate event listeners to multiple child elements, you delegate the responsibility to a common parent.
+
+#### How It Works
+
+1. An event occurs on a child element.
+2. The event bubbles up through the DOM tree.
+3. The parent element's event listener intercepts the event.
+4. The actual element that triggered the event can be identified using `event.target`.
+
+#### Example
+
+Suppose you want to detect changes in any input field inside a form:
+
+```javascript id="ed1a2b"
+const form = document.querySelector(
+  "#registration-form"
+);
+
+// Listen for changes to fields inside the form
+form.addEventListener(
+  "input",
+  function (event) {
+    console.log(event.target);
+  },
+  false
+);
+```
+
+Here:
+
+* The listener is attached only to the **form**.
+* When any input field triggers an `input` event, the event bubbles up to the form.
+* `event.target` refers to the actual field that generated the event.
+
+#### Practical Example: Handling Multiple Buttons
+
+Without event delegation:
+
+```javascript id="ed3c4d"
+document
+  .querySelectorAll(".btn")
+  .forEach((button) => {
+    button.addEventListener(
+      "click",
+      () => {
+        console.log(
+          "Button clicked"
+        );
       }
-      ```
+    );
+  });
+```
 
-      **[⬆ Back to Top](#table-of-contents)**
+With event delegation:
 
-121. ### How do you check whether a string contains a substring
-
-      There are 3 possible ways to check whether a string contains a substring or not,
-
-      1. **Using includes:** ES6 provided `String.prototype.includes` method to test a string contains a substring
-
-      ```javascript
-      var mainString = "hello",
-        subString = "hell";
-      mainString.includes(subString);
-      ```
-
-      2. **Using indexOf:** In an ES5 or older environment, you can use `String.prototype.indexOf` which returns the index of a substring. If the index value is not equal to -1 then it means the substring exists in the main string.
-
-      ```javascript
-      var mainString = "hello",
-        subString = "hell";
-      mainString.indexOf(subString) !== -1;
-      ```
-
-      3. **Using RegEx:** The advanced solution is using Regular expression's test method(`RegExp.test`), which allows for testing for against regular expressions
-
-      ```javascript
-      var mainString = "hello",
-        regex = /hell/;
-      regex.test(mainString);
-      ```
-
-      **[⬆ Back to Top](#table-of-contents)**
-
-122. ### How do you validate an email in javascript
-
-      You can validate an email in javascript using regular expressions. It is recommended to do validations on the server side instead of the client side. Because the javascript can be disabled on the client side.
-
-      ```javascript
-      function validateEmail(email) {
-        var re =
-          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
+```javascript id="ed5e6f"
+document
+  .getElementById("container")
+  .addEventListener(
+    "click",
+    function (event) {
+      if (
+        event.target.matches(".btn")
+      ) {
+        console.log(
+          "Button clicked"
+        );
       }
-      ```
+    }
+  );
+```
 
-      **[⬆ Back to Top](#table-of-contents)**
+```html id="ed7g8h"
+<div id="container">
+  <button class="btn">
+    Button 1
+  </button>
 
-      The above regular expression accepts unicode characters.
+  <button class="btn">
+    Button 2
+  </button>
 
-123. ### How do you get the current url with javascript
+  <button class="btn">
+    Button 3
+  </button>
+</div>
+```
 
-      You can use `window.location.href` expression to get the current url path and you can use the same expression for updating the URL too. You can also use `document.URL` for read-only purposes but this solution has issues in FF.
+#### Why Use Event Delegation?
 
-      ```javascript
-      console.log("location.href", window.location.href); // Returns full URL
-      ```
+##### 1. Improved Performance
 
-      **[⬆ Back to Top](#table-of-contents)**
+Instead of attaching many listeners:
 
-124. ### What are the various url properties of location object
+```text id="ed9i0j"
+1000 buttons
+↓
+1000 event listeners
+```
 
-      The below `Location` object properties can be used to access URL components of the page,
+You use:
 
-      1. href - The entire URL
-      2. protocol - The protocol of the URL
-      3. host - The hostname and port of the URL
-      4. hostname - The hostname of the URL
-      5. port - The port number in the URL
-      6. pathname - The path name of the URL
-      7. search - The query portion of the URL
-      8. hash - The anchor portion of the URL
+```text id="ed1k2l"
+1 parent element
+↓
+1 event listener
+```
 
-      **[⬆ Back to Top](#table-of-contents)**
+##### 2. Handles Dynamically Added Elements
 
-125. ### How do you get query string values in javascript
+```javascript id="ed3m4n"
+list.innerHTML +=
+  "<li class='item'>New Item</li>";
+```
 
-      You can use URLSearchParams to get query string values in javascript. Let's see an example to get the client code value from URL query string,
+The parent listener automatically handles events from newly added elements.
 
-      ```javascript
-      const urlParams = new URLSearchParams(window.location.search);
-      const clientCode = urlParams.get("clientCode");
-      ```
+##### 3. Cleaner and More Maintainable Code
 
-      **[⬆ Back to Top](#table-of-contents)**
+Less repetitive code and easier event management.
 
-126. ### How do you check if a key exists in an object
+#### `event.target` vs `event.currentTarget`
 
-      You can check whether a key exists in an object or not using three approaches,
+| Property              | Description                                          |
+| --------------------- | ---------------------------------------------------- |
+| `event.target`        | The actual element that triggered the event.         |
+| `event.currentTarget` | The element on which the event listener is attached. |
 
-      1. **Using in operator:** You can use the in operator whether a key exists in an object or not
+```javascript id="ed5o6p"
+parent.addEventListener(
+  "click",
+  function (event) {
+    console.log(event.target);
+    console.log(
+      event.currentTarget
+    );
+  }
+);
+```
 
-         ```javascript
-         "key" in obj;
-         ```
+#### Important Note
 
-         and If you want to check if a key doesn't exist, remember to use parenthesis,
+Event delegation relies on **event bubbling**, so it works best with events that bubble, such as:
 
-         ```javascript
-         !("key" in obj);
-         ```
+* `click`
+* `input`
+* `change`
+* `keydown`
 
-      2. **Using hasOwnProperty method:** You can use `hasOwnProperty` to particularly test for properties of the object instance (and not inherited properties)
+Some events, such as `focus` and `blur`, do **not** bubble (although `focusin` and `focusout` can be used instead).
 
-         ```javascript
-         obj.hasOwnProperty("key"); // true
-         ```
+#### Key Point
 
-      3. **Using undefined comparison:** If you access a non-existing property from an object, the result is undefined. Let’s compare the properties against undefined to determine the existence of the property.
+> Event delegation is a technique where a single event listener is attached to a parent element to handle events from its child elements using event bubbling. It improves performance, simplifies code, and automatically supports dynamically added elements.
 
-         ```javascript
-         const user = {
-           name: "John",
-         };
 
-         console.log(user.name !== undefined); // true
-         console.log(user.nickName !== undefined); // false
-         ```
+**[⬆ Back to Top](#table-of-contents)**
 
-      **[⬆ Back to Top](#table-of-contents)**
+111. ### What is ECMAScript?
 
-127. ### How do you loop through or enumerate javascript object
+**ECMAScript (ES)** is the **standardized specification** on which JavaScript is based. It defines the syntax, semantics, language features, and behavior that JavaScript engines must implement.
 
-      You can use the `for-in` loop to loop through javascript object. You can also make sure that the key you get is an actual property of an object, and doesn't come from the prototype using `hasOwnProperty` method.
+In simple terms:
 
-      ```javascript
-      var object = {
-        k1: "value1",
-        k2: "value2",
-        k3: "value3",
-      };
+> **ECMAScript is the specification, and JavaScript is an implementation of that specification.**
 
-      for (var key in object) {
-        if (object.hasOwnProperty(key)) {
-          console.log(key + " -> " + object[key]); // k1 -> value1 ...
-        }
-      }
-      ```
+ECMAScript is standardized by the Ecma International through the **ECMA-262** specification. Internationalization features are specified in **ECMA-402**.
 
-      **[⬆ Back to Top](#table-of-contents)**
+The **first edition of ECMAScript was released in 1997**.
 
-128. ### How do you test for an empty object
+#### Why Was ECMAScript Created?
 
-      There are different solutions based on ECMAScript versions
+In the mid-1990s, different browsers implemented JavaScript differently. To ensure consistency across browsers, Netscape submitted JavaScript for standardization, resulting in the ECMAScript specification.
 
-      1. **Using Object entries(ECMA 7+):** You can use object entries length along with constructor type.
+#### ECMAScript vs JavaScript
 
-      ```javascript
-      Object.entries(obj).length === 0 && obj.constructor === Object; // Since date object length is 0, you need to check constructor check as well
-      ```
+| ECMAScript                                      | JavaScript                                                           |
+| ----------------------------------------------- | -------------------------------------------------------------------- |
+| A language specification (standard).            | An implementation of the ECMAScript specification.                   |
+| Defines the rules and features of the language. | Executes code according to those rules.                              |
+| Published and maintained by Ecma International. | Implemented by engines such as V8, SpiderMonkey, and JavaScriptCore. |
 
-      2. **Using Object keys(ECMA 5+):** You can use object keys length along with constructor type.
+#### ECMAScript Versions
 
-      ```javascript
-      Object.keys(obj).length === 0 && obj.constructor === Object; // Since date object length is 0, you need to check constructor check as well
-      ```
+| Version      | Year        | Major Features                                              |
+| ------------ | ----------- | ----------------------------------------------------------- |
+| ES1          | 1997        | First edition                                               |
+| ES3          | 1999        | Regular expressions, exception handling                     |
+| ES5          | 2009        | Strict mode, JSON support, array methods                    |
+| ES6 (ES2015) | 2015        | `let`, `const`, arrow functions, classes, promises, modules |
+| ES2016+      | 2016 onward | Annual releases with incremental improvements               |
 
-      3. **Using for-in with hasOwnProperty(Pre-ECMA 5):** You can use a for-in loop along with hasOwnProperty.
+#### Example: ES6 Features
 
-      ```javascript
-      function isEmpty(obj) {
-        for (var prop in obj) {
-          if (obj.hasOwnProperty(prop)) {
-            return false;
-          }
-        }
+```javascript id="es1"
+const greet = (name) => {
+  return `Hello, ${name}`;
+};
 
-        return JSON.stringify(obj) === JSON.stringify({});
-      }
-      ```
+console.log(greet("John"));
+```
 
-      **[⬆ Back to Top](#table-of-contents)**
+Features such as `const`, template literals, and arrow functions were introduced in **ECMAScript 2015 (ES6)**.
 
-129. ### What is an arguments object
+#### Important Note
 
-      The arguments object is an Array-like object accessible inside functions that contains the values of the arguments passed to that function. For example, let's see how to use arguments object inside sum function,
+People often use **"JavaScript"** and **"ECMAScript"** interchangeably, but they are not exactly the same:
 
-      ```javascript
-      function sum() {
-        var total = 0;
-        for (var i = 0, len = arguments.length; i < len; ++i) {
-          total += arguments[i];
-        }
-        return total;
-      }
+```text id="es2"
+ECMAScript  →  Specification
+JavaScript  →  Implementation
+```
 
-      sum(1, 2, 3); // returns 6
-      ```
+For example:
 
-      **Note:** You can't apply array methods on arguments object. But you can convert into a regular array as below.
+* ECMAScript defines how `Promise` should behave.
+* JavaScript engines implement that behavior.
 
-      ```javascript
-      var argsArray = Array.prototype.slice.call(arguments);
-      ```
+#### Key Point
 
-      **[⬆ Back to Top](#table-of-contents)**
+> ECMAScript is the standardized specification that defines the core features and behavior of the JavaScript language. It is maintained by Ecma International through the ECMA-262 specification, while JavaScript is the most widely used implementation of that specification. The first edition of ECMAScript was released in 1997.
 
-130. ### How do you make first letter of the string in an uppercase
 
-      You can create a function which uses a chain of string methods such as charAt, toUpperCase and slice methods to generate a string with the first letter in uppercase.
+**[⬆ Back to Top](#table-of-contents)**
 
-      ```javascript
-      function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-      }
-      ```
+112. ### What is JSON?
 
-      **[⬆ Back to Top](#table-of-contents)**
+**JSON (JavaScript Object Notation)** is a **lightweight, text-based data interchange format** used to store and exchange data between systems.
+
+Although JSON is derived from JavaScript object syntax, it is **language-independent** and is supported by most modern programming languages.
+
+#### Example of JSON
+
+```json
+{
+  "name": "John",
+  "age": 30,
+  "isStudent": false,
+  "skills": ["JavaScript", "React"],
+  "address": {
+    "city": "New York",
+    "country": "USA"
+  }
+}
+```
+
+#### JSON Characteristics
+
+* Lightweight and easy to read.
+* Human-readable text format.
+* Language-independent.
+* Commonly used for communication between clients and servers.
+* Supports hierarchical (nested) data structures.
+
+#### JSON Data Types
+
+JSON supports the following data types:
+
+1. **String**
+
+```json
+"name": "John"
+```
+
+2. **Number**
+
+```json
+"age": 30
+```
+
+3. **Boolean**
+
+```json
+"isActive": true
+```
+
+4. **Array**
+
+```json
+"skills": ["JavaScript", "React"]
+```
+
+5. **Object**
+
+```json
+"address": {
+  "city": "London"
+}
+```
+
+6. **Null**
+
+```json
+"middleName": null
+```
+
+#### Converting JavaScript Objects to JSON
+
+Use `JSON.stringify()`:
+
+```javascript id="json1"
+const user = {
+  name: "John",
+  age: 30,
+};
+
+const jsonString =
+  JSON.stringify(user);
+
+console.log(jsonString);
+```
+
+**Output:**
+
+```text id="jsonout1"
+{"name":"John","age":30}
+```
+
+#### Converting JSON to JavaScript Objects
+
+Use `JSON.parse()`:
+
+```javascript id="json2"
+const jsonString =
+  '{"name":"John","age":30}';
+
+const user =
+  JSON.parse(jsonString);
+
+console.log(user.name);
+```
+
+**Output:**
+
+```text id="jsonout2"
+John
+```
+
+#### JSON vs JavaScript Objects
+
+| JSON                                              | JavaScript Object                                 |
+| ------------------------------------------------- | ------------------------------------------------- |
+| Text format.                                      | In-memory JavaScript data structure.              |
+| Property names must be enclosed in double quotes. | Property names may be unquoted.                   |
+| Cannot contain functions or `undefined`.          | Can contain functions and `undefined`.            |
+| Used for data exchange.                           | Used for application logic and data manipulation. |
+
+#### Example
+
+**Valid JSON:**
+
+```json
+{
+  "name": "John",
+  "age": 30
+}
+```
+
+**JavaScript Object:**
+
+```javascript id="json3"
+const user = {
+  name: "John",
+  age: 30,
+  greet() {
+    console.log("Hello");
+  },
+};
+```
+
+The JavaScript object above cannot be directly represented as JSON because JSON does not support functions.
+
+#### Important Note
+
+The statement:
+
+> "JSON is based on a subset of JavaScript."
+
+is historically true. However, **JSON has evolved into an independent data format specification** (RFC 8259) and is no longer considered tied exclusively to JavaScript.
+
+#### Key Point
+
+> **JSON (JavaScript Object Notation)** is a lightweight, text-based data interchange format used to exchange structured data between systems. It is easy for humans to read and write, easy for machines to parse and generate, and is widely used in web APIs and client-server communication.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+113. ### What are the syntax rules of JSON?
+
+JSON (**JavaScript Object Notation**) follows a strict set of rules for representing data.
+
+#### JSON Syntax Rules
+
+1. **Data is represented as name/value pairs.**
+2. **Data items are separated by commas.**
+3. **Objects are enclosed within curly braces `{}`.**
+4. **Arrays are enclosed within square brackets `[]`.**
+5. **Property names (keys) must be enclosed in double quotes `"`.**
+6. **String values must be enclosed in double quotes `"`.**
+7. **JSON supports only these data types:** string, number, object, array, boolean, and `null`.
+8. **Functions, `undefined`, comments, and trailing commas are not allowed in JSON.**
+
+#### Example of Valid JSON
+
+```json id="jsonrule1"
+{
+  "name": "John",
+  "age": 30,
+  "isStudent": false,
+  "skills": ["JavaScript", "React"],
+  "address": {
+    "city": "New York",
+    "country": "USA"
+  }
+}
+```
+
+#### Rule 1: Data is in Name/Value Pairs
+
+```json id="jsonrule2"
+{
+  "name": "John",
+  "age": 30
+}
+```
+
+Here:
+
+* `"name"` is the key.
+* `"John"` is the value.
+
+#### Rule 2: Data is Separated by Commas
+
+```json id="jsonrule3"
+{
+  "name": "John",
+  "age": 30,
+  "city": "London"
+}
+```
+
+Each name/value pair is separated by a comma.
+
+#### Rule 3: Objects Use Curly Braces `{}`
+
+```json id="jsonrule4"
+{
+  "employee": {
+    "id": 101,
+    "department": "Engineering"
+  }
+}
+```
+
+Objects can be nested within other objects.
+
+#### Rule 4: Arrays Use Square Brackets `[]`
+
+```json id="jsonrule5"
+{
+  "colors": ["red", "green", "blue"]
+}
+```
+
+Arrays can contain values of any valid JSON type.
+
+#### Valid JSON Data Types
+
+| Data Type | Example               |
+| --------- | --------------------- |
+| String    | `"John"`              |
+| Number    | `25`, `3.14`          |
+| Boolean   | `true`, `false`       |
+| Object    | `{ "city": "Paris" }` |
+| Array     | `[1, 2, 3]`           |
+| Null      | `null`                |
+
+#### Invalid JSON Examples
+
+##### Single Quotes
+
+❌ Invalid:
+
+```json
+{
+  'name': 'John'
+}
+```
+
+✅ Valid:
+
+```json id="jsonrule6"
+{
+  "name": "John"
+}
+```
+
+##### Functions
+
+❌ Invalid:
+
+```javascript
+{
+  "greet": function () {
+    console.log("Hello");
+  }
+}
+```
+
+##### Trailing Commas
+
+❌ Invalid:
+
+```json
+{
+  "name": "John",
+  "age": 30,
+}
+```
+
+#### Key Point
+
+> JSON follows strict syntax rules: data is stored as name/value pairs, pairs are separated by commas, objects are enclosed in curly braces `{}`, arrays are enclosed in square brackets `[]`, and both property names and string values must use double quotes. JSON supports only strings, numbers, objects, arrays, booleans, and `null`.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+114. ### What is the purpose of `JSON.stringify()`?
+
+The **`JSON.stringify()`** method is used to **convert a JavaScript value or object into a JSON string**.
+
+This is commonly required when sending data to a web server, storing data in `localStorage`, or transmitting data over a network because these mechanisms typically work with **strings**.
+
+#### Syntax
+
+```javascript id="js1"
+JSON.stringify(value, replacer, space);
+```
+
+* **`value`** – The JavaScript value to convert to JSON.
+* **`replacer`** *(optional)* – A function or array used to filter or transform values.
+* **`space`** *(optional)* – Adds indentation and whitespace for readability.
+
+#### Example
+
+```javascript id="js2"
+const user = {
+  name: "John",
+  age: 31,
+};
+
+const userString =
+  JSON.stringify(user);
+
+console.log(userString);
+```
+
+**Output:**
+
+```text id="jsout1"
+{"name":"John","age":31}
+```
+
+#### Common Use Cases
+
+##### 1. Sending Data to a Server
+
+```javascript id="js3"
+const user = {
+  name: "John",
+  age: 31,
+};
+
+fetch("/api/users", {
+  method: "POST",
+  headers: {
+    "Content-Type":
+      "application/json",
+  },
+  body: JSON.stringify(user),
+});
+```
+
+##### 2. Storing Objects in `localStorage`
+
+Since `localStorage` stores only strings:
+
+```javascript id="js4"
+const settings = {
+  theme: "dark",
+};
+
+localStorage.setItem(
+  "settings",
+  JSON.stringify(settings)
+);
+```
+
+#### Converting Back to an Object
+
+Use `JSON.parse()`:
+
+```javascript id="js5"
+const json =
+  '{"name":"John","age":31}';
+
+const user = JSON.parse(json);
+
+console.log(user.name);
+```
+
+**Output:**
+
+```text id="jsout2"
+John
+```
+
+#### What Happens to Different Data Types?
+
+```javascript id="js6"
+JSON.stringify("Hello"); // '"Hello"'
+JSON.stringify(100); // '100'
+JSON.stringify(true); // 'true'
+JSON.stringify(null); // 'null'
+```
+
+#### Unsupported Values
+
+Properties with `undefined`, functions, or symbols are omitted from objects.
+
+```javascript id="js7"
+const obj = {
+  name: "John",
+  age: undefined,
+  greet: function () {},
+};
+
+console.log(
+  JSON.stringify(obj)
+);
+```
+
+**Output:**
+
+```text id="jsout3"
+{"name":"John"}
+```
+
+#### Pretty Printing JSON
+
+```javascript id="js8"
+const user = {
+  name: "John",
+  age: 31,
+};
+
+console.log(
+  JSON.stringify(user, null, 2)
+);
+```
+
+**Output:**
+
+```json id="jsout4"
+{
+  "name": "John",
+  "age": 31
+}
+```
+
+#### Key Point
+
+> The `JSON.stringify()` method converts a JavaScript value or object into a JSON-formatted string. It is commonly used when sending data to servers, storing objects in `localStorage`, or transmitting structured data, since these operations generally require data to be in string format.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+115. ### How do you parse a JSON string?
+
+The **`JSON.parse()`** method is used to **convert a JSON-formatted string into a JavaScript object**.
+
+When data is received from a web server, it is often transmitted as a JSON string. To work with that data in JavaScript, you need to parse it into a JavaScript object.
+
+#### Syntax
+
+```javascript id="jp1"
+JSON.parse(text, reviver);
+```
+
+* **`text`** – The JSON string to parse.
+* **`reviver`** *(optional)* – A function that transforms the parsed values before they are returned.
+
+#### Example
+
+```javascript id="jp2"
+const userString =
+  '{"name":"John","age":31}';
+
+const userObject =
+  JSON.parse(userString);
+
+console.log(userObject);
+```
+
+**Output:**
+
+```text id="jpout1"
+{ name: "John", age: 31 }
+```
+
+You can then access properties like a normal JavaScript object:
+
+```javascript id="jp3"
+console.log(userObject.name); // John
+console.log(userObject.age);  // 31
+```
+
+#### Parsing JSON Received from a Server
+
+```javascript id="jp4"
+fetch("/api/user")
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data.name);
+  });
+```
+
+> **Note:** `response.json()` internally uses `JSON.parse()` to convert the JSON response into a JavaScript object.
+
+#### Using the `reviver` Function
+
+The `reviver` function allows you to modify values during parsing.
+
+```javascript id="jp5"
+const json =
+  '{"name":"John","age":"31"}';
+
+const user = JSON.parse(
+  json,
+  (key, value) => {
+    if (key === "age") {
+      return Number(value);
+    }
+
+    return value;
+  }
+);
+
+console.log(user);
+```
+
+**Output:**
+
+```text id="jpout2"
+{ name: "John", age: 31 }
+```
+
+#### Invalid JSON Example
+
+```javascript id="jp6"
+const invalidJSON =
+  "{ name: 'John' }";
+
+JSON.parse(invalidJSON);
+```
+
+**Output:**
+
+```text id="jpout3"
+SyntaxError: Unexpected token ...
+```
+
+This happens because valid JSON requires:
+
+* Property names to be enclosed in **double quotes**.
+* String values to use **double quotes**.
+
+#### Handling Parsing Errors
+
+```javascript id="jp7"
+try {
+  const data = JSON.parse(
+    jsonString
+  );
+
+  console.log(data);
+} catch (error) {
+  console.error(
+    "Invalid JSON:",
+    error.message
+  );
+}
+```
+
+#### `JSON.stringify()` vs `JSON.parse()`
+
+| Method             | Purpose                                          |
+| ------------------ | ------------------------------------------------ |
+| `JSON.stringify()` | Converts a JavaScript object into a JSON string. |
+| `JSON.parse()`     | Converts a JSON string into a JavaScript object. |
+
+```javascript id="jp8"
+const user = {
+  name: "John",
+};
+
+const json =
+  JSON.stringify(user);
+
+const object =
+  JSON.parse(json);
+```
+
+#### Key Point
+
+> The `JSON.parse()` method converts a JSON-formatted string into a JavaScript object. It is commonly used to process data received from web servers, APIs, and storage mechanisms that represent structured data as JSON strings.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+116. ### Why do you need JSON?
+
+**JSON (JavaScript Object Notation)** is widely used because it provides a **standard, lightweight, and language-independent format for exchanging structured data** between systems.
+
+When data is transmitted over a network (for example, between a browser and a server), it is typically sent as **text**. Since JSON is a text-based format, it can be easily transmitted, stored, and processed by virtually any programming language.
+
+#### Why JSON is Needed
+
+1. **Data Exchange Between Client and Server**
+
+   * JSON is commonly used to send and receive data in web applications.
+
+2. **Language Independence**
+
+   * Although derived from JavaScript syntax, JSON can be parsed and generated by languages such as Java, Python, C#, Go, PHP, and many others.
+
+3. **Lightweight and Efficient**
+
+   * JSON is more compact and easier to read compared to formats such as XML.
+
+4. **Human Readable**
+
+   * Developers can easily understand and debug JSON data.
+
+5. **Native JavaScript Support**
+
+   * JavaScript provides built-in methods:
+
+     * `JSON.stringify()`
+     * `JSON.parse()`
+
+#### Example: Browser and Server Communication
+
+**Client Request:**
+
+```javascript id="jn1"
+fetch("/api/users")
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+```
+
+**Server Response:**
+
+```json id="jn2"
+{
+  "id": 1,
+  "name": "John",
+  "email": "john@example.com"
+}
+```
+
+The server sends JSON text, which the browser converts into a JavaScript object.
+
+#### JSON vs XML
+
+| Feature            | JSON               | XML                         |
+| ------------------ | ------------------ | --------------------------- |
+| Format             | Text-based         | Markup-based                |
+| Readability        | Easier to read     | More verbose                |
+| Parsing            | Faster and simpler | Relatively complex          |
+| Data Size          | Lightweight        | Larger due to tags          |
+| JavaScript Support | Native support     | Requires additional parsing |
+
+#### Other Uses of JSON
+
+* API responses (REST APIs)
+* Configuration files (`package.json`, `tsconfig.json`)
+* Storing structured data
+* Communication between microservices
+* Data serialization
+
+#### Important Note
+
+The statement:
+
+> "When exchanging data between a browser and a server, the data can only be text."
+
+is **not entirely accurate**.
+
+Modern web applications can exchange various types of data, including:
+
+* Text
+* Binary data (`Blob`, `ArrayBuffer`)
+* Form data (`FormData`)
+* Streams
+
+However, **JSON remains the most popular format for exchanging structured data** because of its simplicity and widespread support.
+
+#### Key Point
+
+> JSON is needed because it provides a lightweight, human-readable, and language-independent format for representing and exchanging structured data. It is widely used in web applications, particularly for communication between clients and servers, due to its simplicity and broad support across programming languages.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+117. ### What are PWAs?
+
+**Progressive Web Applications (PWAs)** are web applications that use modern web technologies to provide an **app-like experience** to users. They are built using standard web technologies such as **HTML, CSS, and JavaScript**, but offer features traditionally associated with native mobile applications.
+
+PWAs are delivered through the web, accessible via URLs, and can be installed on a user's device without requiring an app store.
+
+#### Characteristics of PWAs
+
+1. **Progressive**
+
+   * Work for every user regardless of browser choice, enhancing functionality when supported features are available.
+
+2. **Responsive**
+
+   * Adapt to different screen sizes and devices, including desktops, tablets, and mobile phones.
+
+3. **Offline Capability**
+
+   * Can function even with poor or no network connectivity using **Service Workers**.
+
+4. **Installable**
+
+   * Users can install PWAs on their home screen without downloading them from an app store.
+
+5. **App-like Experience**
+
+   * Provide a user experience similar to native applications.
+
+6. **Secure**
+
+   * Must be served over **HTTPS** to prevent tampering and ensure secure communication.
+
+7. **Discoverable**
+
+   * Since they are web applications, they can be indexed by search engines.
+
+#### Core Technologies Behind PWAs
+
+##### 1. Web App Manifest
+
+Provides metadata about the application.
+
+```json id="pwa1"
+{
+  "name": "My App",
+  "short_name": "App",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2196f3",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
+```
+
+##### 2. Service Workers
+
+Enable features such as:
+
+* Offline support
+* Background synchronization
+* Push notifications
+* Request caching
+
+##### 3. HTTPS
+
+PWAs must be served over a secure connection.
+
+#### Benefits of PWAs
+
+* Faster loading times.
+* Reduced development cost compared to separate native apps.
+* Cross-platform compatibility.
+* Improved user engagement.
+* No dependency on app stores for installation.
+* Automatic updates through the web.
+
+#### PWA vs Native Apps
+
+| Feature               | PWA                           | Native App                    |
+| --------------------- | ----------------------------- | ----------------------------- |
+| Installation          | Via browser                   | Via app store                 |
+| Offline Support       | Yes (Service Workers)         | Yes                           |
+| Push Notifications    | Supported (browser-dependent) | Yes                           |
+| Cross-Platform        | Yes                           | Separate development required |
+| App Store Approval    | Not required                  | Required                      |
+| Access to Device APIs | Limited                       | Extensive                     |
+
+#### Example PWA Flow
+
+```text id="pwa2"
+User visits website
+          ↓
+Browser detects PWA support
+          ↓
+User installs app
+          ↓
+Service Worker caches assets
+          ↓
+Works offline and behaves like an app
+```
+
+#### Important Note
+
+The statement:
+
+> "PWAs are a type of mobile app"
+
+is **partially true**.
+
+A more accurate description is:
+
+> **PWAs are web applications enhanced with modern browser capabilities to provide an app-like experience across multiple platforms, including mobile and desktop devices.**
+
+#### Key Point
+
+> Progressive Web Applications (PWAs) are web applications built using HTML, CSS, and JavaScript that leverage technologies such as Service Workers, Web App Manifests, and HTTPS to deliver reliable, installable, and app-like experiences. They combine the reach of the web with many of the capabilities of native applications.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+118. ### What is the purpose of `clearTimeout()` method?
+
+The **`clearTimeout()`** method is used to **cancel a timer that was previously created using `setTimeout()`** before the scheduled function executes.
+
+When `setTimeout()` is called, it returns a **timeout ID**. This ID can be passed to `clearTimeout()` to prevent the callback from running.
+
+#### Syntax
+
+```javascript id="ct1"
+clearTimeout(timeoutId);
+```
+
+* **`timeoutId`** – The identifier returned by `setTimeout()`.
+
+#### Example
+
+```javascript id="ct2"
+function greeting() {
+  console.log("Good morning");
+}
+
+const timeoutId = setTimeout(
+  greeting,
+  3000
+);
+
+// Cancel the timeout
+clearTimeout(timeoutId);
+```
+
+In this example:
+
+1. `setTimeout()` schedules `greeting()` to execute after **3 seconds**.
+2. `clearTimeout()` cancels the timer before it expires.
+3. `"Good morning"` is **never displayed**.
+
+#### Practical Example
+
+```html id="ct3"
+<button onclick="start()">
+  Start Timer
+</button>
+
+<button onclick="stop()">
+  Stop Timer
+</button>
+
+<script>
+  let timeoutId;
+
+  function greeting() {
+    alert("Good morning");
+  }
+
+  function start() {
+    timeoutId = setTimeout(
+      greeting,
+      3000
+    );
+  }
+
+  function stop() {
+    clearTimeout(timeoutId);
+  }
+</script>
+```
+
+If the **Stop Timer** button is clicked within 3 seconds, the alert will not appear.
+
+#### `setTimeout()` vs `clearTimeout()`
+
+| Method           | Purpose                                                       |
+| ---------------- | ------------------------------------------------------------- |
+| `setTimeout()`   | Schedules a function to execute once after a specified delay. |
+| `clearTimeout()` | Cancels a timeout created by `setTimeout()`.                  |
+
+```javascript id="ct4"
+const id = setTimeout(
+  callback,
+  5000
+);
+
+clearTimeout(id);
+```
+
+#### Important Notes
+
+* Calling `clearTimeout()` with an invalid or already executed timeout ID has **no effect**.
+* `clearTimeout()` only works with timers created by `setTimeout()`.
+
+#### Key Point
+
+> The `clearTimeout()` method is used to cancel a timer previously established by `setTimeout()`. It prevents the scheduled callback function from executing if the timeout has not yet expired.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+119. ### What is the purpose of `clearInterval()` method?
+
+The **`clearInterval()`** method is used to **stop the repeated execution of a function that was started using `setInterval()`**.
+
+When `setInterval()` is called, it returns an **interval ID**. This ID can be passed to `clearInterval()` to cancel the interval and prevent further executions.
+
+#### Syntax
+
+```javascript id="ci1"
+clearInterval(intervalId);
+```
+
+* **`intervalId`** – The identifier returned by `setInterval()`.
+
+#### Example
+
+```javascript id="ci2"
+function greeting() {
+  console.log("Good morning");
+}
+
+const intervalId = setInterval(
+  greeting,
+  3000
+);
+
+// Stop the interval after some time
+clearInterval(intervalId);
+```
+
+In this example:
+
+1. `setInterval()` schedules `greeting()` to execute every **3 seconds**.
+2. `clearInterval()` stops the interval.
+3. The function will no longer execute repeatedly.
+
+#### Practical Example
+
+```html id="ci3"
+<button onclick="start()">
+  Start Interval
+</button>
+
+<button onclick="stop()">
+  Stop Interval
+</button>
+
+<script>
+  let intervalId;
+
+  function greeting() {
+    alert("Good morning");
+  }
+
+  function start() {
+    intervalId = setInterval(
+      greeting,
+      3000
+    );
+  }
+
+  function stop() {
+    clearInterval(intervalId);
+  }
+</script>
+```
+
+If the **Stop Interval** button is clicked, the repeated alerts stop appearing.
+
+#### `setInterval()` vs `clearInterval()`
+
+| Method            | Purpose                                                |
+| ----------------- | ------------------------------------------------------ |
+| `setInterval()`   | Repeatedly executes a function at specified intervals. |
+| `clearInterval()` | Stops an interval created by `setInterval()`.          |
+
+```javascript id="ci4"
+const id = setInterval(
+  callback,
+  1000
+);
+
+clearInterval(id);
+```
+
+#### Example: Stop After 5 Seconds
+
+```javascript id="ci5"
+const intervalId = setInterval(
+  () => {
+    console.log("Running...");
+  },
+  1000
+);
+
+setTimeout(() => {
+  clearInterval(intervalId);
+
+  console.log("Interval stopped");
+}, 5000);
+```
+
+**Output:**
+
+```text id="ciout1"
+Running...
+Running...
+Running...
+Running...
+Interval stopped
+```
+
+#### Important Notes
+
+* Calling `clearInterval()` with an invalid or already cleared interval ID has **no effect**.
+* `clearInterval()` only stops intervals created by `setInterval()`.
+* In browsers, timeout IDs and interval IDs come from the same pool, although it's a best practice to use `clearTimeout()` with `setTimeout()` and `clearInterval()` with `setInterval()`.
+
+#### Key Point
+
+> The `clearInterval()` method is used to stop the repeated execution of a function scheduled by `setInterval()`. It prevents the interval callback from continuing to run by clearing the interval using its identifier returned by `setInterval()`.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+120. ### How do you redirect to a new page in JavaScript?
+
+In JavaScript, you can redirect the browser to another page using the **`location`** property of the `window` object.
+
+#### Using `window.location.href`
+
+```javascript id="rd1"
+function redirect() {
+  window.location.href = "newPage.html";
+}
+```
+
+When this code executes, the browser navigates to `"newPage.html"`.
+
+Since `window` is the global object in browsers, you can also omit it:
+
+```javascript id="rd2"
+location.href = "newPage.html";
+```
+
+#### Redirecting to an External URL
+
+```javascript id="rd3"
+window.location.href =
+  "https://www.example.com";
+```
+
+#### Other Ways to Redirect
+
+##### 1. `location.assign()`
+
+Loads a new document and keeps the current page in the browser history.
+
+```javascript id="rd4"
+window.location.assign(
+  "newPage.html"
+);
+```
+
+The user can navigate back using the browser's Back button.
+
+##### 2. `location.replace()`
+
+Replaces the current document without creating a new history entry.
+
+```javascript id="rd5"
+window.location.replace(
+  "newPage.html"
+);
+```
+
+The user **cannot** return to the previous page using the Back button.
+
+##### 3. `location.reload()`
+
+Reloads the current page.
+
+```javascript id="rd6"
+window.location.reload();
+```
+
+#### Comparison
+
+| Method                    | Adds Entry to Browser History? |
+| ------------------------- | ------------------------------ |
+| `location.href = "url"`   | ✅ Yes                          |
+| `location.assign("url")`  | ✅ Yes                          |
+| `location.replace("url")` | ❌ No                           |
+| `location.reload()`       | N/A (Reloads current page)     |
+
+#### Example
+
+```html id="rd7"
+<button onclick="redirect()">
+  Go to Home Page
+</button>
+
+<script>
+  function redirect() {
+    window.location.href =
+      "home.html";
+  }
+</script>
+```
+
+#### Key Point
+
+> You can redirect to a new page in JavaScript using the `window.location` object. The most common approach is `window.location.href = "url"`, which navigates to the specified page and preserves browser history. Methods such as `location.assign()` and `location.replace()` provide additional control over navigation behavior.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+121. ### How do you check whether a string contains a substring?
+
+There are several ways to check whether a string contains a substring in JavaScript.
+
+#### 1. Using `includes()` (ES6)
+
+The **`String.prototype.includes()`** method returns `true` if the specified substring exists within the string; otherwise, it returns `false`.
+
+```javascript id="sc1"
+const mainString = "hello";
+const subString = "hell";
+
+console.log(
+  mainString.includes(subString)
+); // true
+```
+
+You can also specify the starting position:
+
+```javascript id="sc2"
+console.log(
+  "JavaScript".includes("Script", 4)
+); // true
+```
+
+#### 2. Using `indexOf()` (ES5)
+
+The **`String.prototype.indexOf()`** method returns the index of the first occurrence of the substring. If the substring is not found, it returns `-1`.
+
+```javascript id="sc3"
+const mainString = "hello";
+const subString = "hell";
+
+console.log(
+  mainString.indexOf(subString) !== -1
+); // true
+```
+
+Example when the substring does not exist:
+
+```javascript id="sc4"
+console.log(
+  "hello".indexOf("world")
+); // -1
+```
+
+#### 3. Using Regular Expressions (`RegExp.test()`)
+
+The **`test()`** method checks whether a string matches a regular expression pattern.
+
+```javascript id="sc5"
+const mainString = "hello";
+const regex = /hell/;
+
+console.log(
+  regex.test(mainString)
+); // true
+```
+
+This approach is useful for more advanced pattern matching.
+
+Example with case-insensitive matching:
+
+```javascript id="sc6"
+const regex = /hello/i;
+
+console.log(
+  regex.test("HELLO")
+); // true
+```
+
+#### Comparison
+
+| Method          | Return Type | Supported Since | Best Use Case                          |
+| --------------- | ----------- | --------------- | -------------------------------------- |
+| `includes()`    | `boolean`   | ES6             | Simple substring checks                |
+| `indexOf()`     | `number`    | ES5             | Older environments                     |
+| `RegExp.test()` | `boolean`   | ES3             | Pattern matching and advanced searches |
+
+#### Important Notes
+
+* `includes()` is **case-sensitive**.
+
+```javascript id="sc7"
+console.log(
+  "Hello".includes("hello")
+); // false
+```
+
+* To perform a case-insensitive search:
+
+```javascript id="sc8"
+console.log(
+  "Hello"
+    .toLowerCase()
+    .includes("hello".toLowerCase())
+); // true
+```
+
+#### Key Point
+
+> To check whether a string contains a substring, you can use `includes()` (recommended for modern JavaScript), `indexOf()` (for older environments), or `RegExp.test()` (for advanced pattern matching). The `includes()` method is the most readable and commonly used approach.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+122. ### How do you validate an email in JavaScript?
+
+You can validate an email address in JavaScript using **regular expressions (RegEx)**. The `RegExp.prototype.test()` method is commonly used to check whether an email string matches a valid email pattern.
+
+> **Note:** Client-side validation improves user experience, but it should **never be the only validation mechanism**. Email validation must also be performed on the **server side**, since client-side JavaScript can be bypassed or disabled.
+
+#### Example Using Regular Expression
+
+```javascript id="ev1"
+function validateEmail(email) {
+  const re =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  return re.test(email);
+}
+```
+
+#### Usage
+
+```javascript id="ev2"
+console.log(
+  validateEmail("john@example.com")
+); // true
+
+console.log(
+  validateEmail("invalid-email")
+); // false
+```
+
+#### Explanation of the Pattern
+
+```text id="ev3"
+^[^\s@]+     → One or more characters before @
+@            → Literal @ symbol
+[^\s@]+      → One or more characters after @
+\.           → Literal dot (.)
+[^\s@]+$     → One or more characters after the dot
+```
+
+#### More Comprehensive Validation Pattern
+
+If you need broader compatibility, you can use a more detailed regular expression:
+
+```javascript id="ev4"
+function validateEmail(email) {
+  const re =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}(\.[0-9]{1,3}){3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  return re.test(
+    String(email).toLowerCase()
+  );
+}
+```
+
+#### Using HTML5 Email Validation
+
+Modern browsers also provide built-in email validation:
+
+```html id="ev5"
+<input
+  type="email"
+  required
+/>
+```
+
+The browser automatically checks whether the entered value follows the basic email format.
+
+#### Important Notes
+
+* Regular expressions can validate the **format** of an email address but **cannot verify whether the email actually exists**.
+* The most reliable approach is:
+
+  1. Perform client-side validation for immediate feedback.
+  2. Validate again on the server.
+  3. Verify ownership using an email confirmation link if necessary.
+
+#### Key Point
+
+> Email validation in JavaScript is commonly performed using regular expressions and the `test()` method. While client-side validation improves the user experience, server-side validation is essential because client-side checks can be bypassed. Regular expressions validate the email format, but they cannot confirm that the email address actually exists.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+123.   ### How do you get the current URL with JavaScript?
+
+You can use the **`window.location`** object to retrieve information about the current page URL. The most common way to get the complete URL is through the **`window.location.href`** property.
+
+#### Get the Full URL
+
+```javascript id="cu1"
+console.log(
+  window.location.href
+);
+```
+
+**Example Output:**
+
+```text id="cu2"
+https://example.com/products?id=10#details
+```
+
+Since `window` is the global object in browsers, you can also write:
+
+```javascript id="cu3"
+console.log(location.href);
+```
+
+#### Other Useful `location` Properties
+
+Assume the current URL is:
+
+```text id="cu4"
+https://example.com:8080/products/item.html?id=10#details
+```
+
+| Property            | Description                | Value                                                       |
+| ------------------- | -------------------------- | ----------------------------------------------------------- |
+| `location.href`     | Complete URL               | `https://example.com:8080/products/item.html?id=10#details` |
+| `location.protocol` | Protocol used              | `https:`                                                    |
+| `location.host`     | Hostname and port          | `example.com:8080`                                          |
+| `location.hostname` | Domain name                | `example.com`                                               |
+| `location.port`     | Port number                | `8080`                                                      |
+| `location.pathname` | Path portion of the URL    | `/products/item.html`                                       |
+| `location.search`   | Query string               | `?id=10`                                                    |
+| `location.hash`     | Fragment identifier        | `#details`                                                  |
+| `location.origin`   | Protocol + hostname + port | `https://example.com:8080`                                  |
+
+#### Example
+
+```javascript id="cu5"
+console.log(location.href);
+console.log(location.hostname);
+console.log(location.pathname);
+console.log(location.search);
+console.log(location.hash);
+```
+
+#### Using `document.URL`
+
+You can also use:
+
+```javascript id="cu6"
+console.log(document.URL);
+```
+
+However:
+
+* `document.URL` is **read-only**.
+* `window.location.href` is generally preferred because it can be both **read and updated**.
+
+#### Updating the Current URL
+
+```javascript id="cu7"
+window.location.href =
+  "https://example.com";
+```
+
+This redirects the browser to the specified URL.
+
+#### Key Point
+
+> The recommended way to get the current page URL in JavaScript is by using `window.location.href`, which returns the complete URL of the current document. The `window.location` object also provides additional properties such as `hostname`, `pathname`, `search`, and `hash` for accessing specific parts of the URL.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+124. ### What are the various URL properties of the `location` object?
+
+The **`window.location`** object provides information about the current URL and allows you to access its individual components.
+
+Below are the commonly used properties of the `Location` object:
+
+| Property   | Description                                                  |
+| ---------- | ------------------------------------------------------------ |
+| `href`     | Returns the entire URL.                                      |
+| `protocol` | Returns the protocol used (`http:`, `https:`, etc.).         |
+| `host`     | Returns the hostname along with the port number.             |
+| `hostname` | Returns only the domain name.                                |
+| `port`     | Returns the port number of the URL.                          |
+| `pathname` | Returns the path portion of the URL.                         |
+| `search`   | Returns the query string, including the `?`.                 |
+| `hash`     | Returns the fragment identifier (anchor), including the `#`. |
+| `origin`   | Returns the protocol, hostname, and port.                    |
+
+#### Example URL
+
+Suppose the current URL is:
+
+```text id="url1"
+https://www.example.com:8080/products/item.html?id=10&sort=asc#reviews
+```
+
+Then the properties return the following values:
+
+```javascript id="url2"
+console.log(location.href);
+```
+
+```text id="url3"
+https://www.example.com:8080/products/item.html?id=10&sort=asc#reviews
+```
+
+```javascript id="url4"
+console.log(location.protocol);
+```
+
+```text id="url5"
+https:
+```
+
+```javascript id="url6"
+console.log(location.host);
+```
+
+```text id="url7"
+www.example.com:8080
+```
+
+```javascript id="url8"
+console.log(location.hostname);
+```
+
+```text id="url9"
+www.example.com
+```
+
+```javascript id="url10"
+console.log(location.port);
+```
+
+```text id="url11"
+8080
+```
+
+```javascript id="url12"
+console.log(location.pathname);
+```
+
+```text id="url13"
+/products/item.html
+```
+
+```javascript id="url14"
+console.log(location.search);
+```
+
+```text id="url15"
+?id=10&sort=asc
+```
+
+```javascript id="url16"
+console.log(location.hash);
+```
+
+```text id="url17"
+#reviews
+```
+
+```javascript id="url18"
+console.log(location.origin);
+```
+
+```text id="url19"
+https://www.example.com:8080
+```
+
+#### Visual Representation
+
+```text id="url20"
+https://www.example.com:8080/products/item.html?id=10&sort=asc#reviews
+│      │               │    │                     │               │
+│      │               │    │                     │               └─ hash
+│      │               │    │                     └───────────────── search
+│      │               │    └────────────────────────────────────── pathname
+│      │               └─────────────────────────────────────────── host
+│      └─────────────────────────────────────────────────────────── protocol
+└────────────────────────────────────────────────────────────────── href
+```
+
+#### Key Point
+
+> The `window.location` object provides several properties for accessing different parts of the current URL, such as `href`, `protocol`, `host`, `hostname`, `port`, `pathname`, `search`, and `hash`. These properties are commonly used for URL inspection, navigation, and client-side routing.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+125. ### How do you get query string values in JavaScript?
+
+You can use the **`URLSearchParams`** interface to easily access query string parameters from the current URL.
+
+#### Example
+
+Suppose the current URL is:
+
+```text id="qs1"
+https://example.com/dashboard?clientCode=ABC123&theme=dark
+```
+
+You can retrieve the query parameter values as follows:
+
+```javascript id="qs2"
+const urlParams =
+  new URLSearchParams(
+    window.location.search
+  );
+
+const clientCode =
+  urlParams.get("clientCode");
+
+console.log(clientCode);
+```
+
+**Output:**
+
+```text id="qs3"
+ABC123
+```
+
+#### Getting Multiple Parameters
+
+```javascript id="qs4"
+const params =
+  new URLSearchParams(
+    location.search
+  );
+
+console.log(
+  params.get("clientCode")
+); // ABC123
+
+console.log(
+  params.get("theme")
+); // dark
+```
+
+#### Checking if a Parameter Exists
+
+```javascript id="qs5"
+const params =
+  new URLSearchParams(
+    location.search
+  );
+
+console.log(
+  params.has("clientCode")
+); // true
+```
+
+#### Getting All Values of a Parameter
+
+If the same parameter appears multiple times:
+
+```text id="qs6"
+https://example.com?tag=js&tag=react&tag=node
+```
+
+Use `getAll()`:
+
+```javascript id="qs7"
+const params =
+  new URLSearchParams(
+    location.search
+  );
+
+console.log(
+  params.getAll("tag")
+);
+```
+
+**Output:**
+
+```text id="qs8"
+["js", "react", "node"]
+```
+
+#### Iterating Over All Query Parameters
+
+```javascript id="qs9"
+const params =
+  new URLSearchParams(
+    location.search
+  );
+
+for (const [key, value] of params) {
+  console.log(
+    `${key}: ${value}`
+  );
+}
+```
+
+#### Older Approach Using Regular Expressions
+
+Before `URLSearchParams`, developers often manually parsed query strings. However, this approach is more error-prone and harder to maintain.
+
+```javascript id="qs10"
+function getQueryParam(name) {
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  return params.get(name);
+}
+```
+
+#### Browser Support
+
+`URLSearchParams` is supported in all modern browsers. If support for very old browsers is required, a polyfill or custom parsing logic may be necessary.
+
+#### Key Point
+
+> The recommended way to retrieve query string values in modern JavaScript is by using the `URLSearchParams` interface. It provides convenient methods such as `get()`, `has()`, and `getAll()` to access and work with URL query parameters.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+126. ### How do you check if a key exists in an object?
+
+There are several ways to check whether a property (key) exists in a JavaScript object.
+
+#### 1. Using the `in` Operator
+
+The **`in`** operator checks whether a property exists in an object, including properties inherited through the prototype chain.
+
+```javascript id="ke1"
+const user = {
+  name: "John",
+};
+
+console.log("name" in user); // true
+console.log("age" in user); // false
+```
+
+To check whether a property **does not exist**, use parentheses:
+
+```javascript id="ke2"
+!("age" in user); // true
+```
+
+#### 2. Using `hasOwnProperty()`
+
+The **`hasOwnProperty()`** method checks whether the property exists **directly on the object itself**, excluding inherited properties.
+
+```javascript id="ke3"
+const user = {
+  name: "John",
+};
+
+console.log(
+  user.hasOwnProperty("name")
+); // true
+
+console.log(
+  user.hasOwnProperty("toString")
+); // false
+```
+
+#### 3. Using `Object.hasOwn()` (Recommended)
+
+Modern JavaScript provides **`Object.hasOwn()`**, which is safer because it works even when `hasOwnProperty` has been overridden.
+
+```javascript id="ke4"
+const user = {
+  name: "John",
+};
+
+console.log(
+  Object.hasOwn(user, "name")
+); // true
+
+console.log(
+  Object.hasOwn(user, "age")
+); // false
+```
+
+#### 4. Using `undefined` Comparison
+
+Accessing a non-existent property returns `undefined`.
+
+```javascript id="ke5"
+const user = {
+  name: "John",
+};
+
+console.log(
+  user.name !== undefined
+); // true
+
+console.log(
+  user.nickName !== undefined
+); // false
+```
+
+⚠️ **Be careful:** This approach can produce incorrect results if the property exists but its value is explicitly set to `undefined`.
+
+```javascript id="ke6"
+const user = {
+  age: undefined,
+};
+
+console.log(
+  user.age !== undefined
+); // false
+```
+
+Even though the `age` property exists, the check returns `false`.
+
+#### Comparison
+
+| Method                      | Checks Own Properties | Checks Inherited Properties |
+| --------------------------- | --------------------- | --------------------------- |
+| `"key" in obj`              | ✅ Yes                 | ✅ Yes                       |
+| `obj.hasOwnProperty("key")` | ✅ Yes                 | ❌ No                        |
+| `Object.hasOwn(obj, "key")` | ✅ Yes                 | ❌ No                        |
+| `obj.key !== undefined`     | ⚠️ Not reliable       | Depends                     |
+
+#### Example with Inherited Properties
+
+```javascript id="ke7"
+const parent = {
+  role: "Admin",
+};
+
+const child =
+  Object.create(parent);
+
+child.name = "John";
+
+console.log(
+  "role" in child
+); // true
+
+console.log(
+  child.hasOwnProperty("role")
+); // false
+
+console.log(
+  Object.hasOwn(child, "role")
+); // false
+```
+
+#### Key Point
+
+> To check whether a key exists in an object, you can use the `in` operator, `hasOwnProperty()`, or `Object.hasOwn()`. The `in` operator checks both own and inherited properties, whereas `hasOwnProperty()` and `Object.hasOwn()` check only the object's own properties. Comparing against `undefined` is generally not recommended because properties can explicitly have `undefined` as their value.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+127. ### How do you loop through or enumerate a JavaScript object?
+
+You can use the **`for...in`** loop to iterate over the enumerable properties of a JavaScript object. Since `for...in` also iterates over inherited enumerable properties, it is recommended to combine it with `hasOwnProperty()` to ensure that only the object's own properties are processed.
+
+```javascript id="obj1"
+const object = {
+  k1: "value1",
+  k2: "value2",
+  k3: "value3",
+};
+
+for (const key in object) {
+  if (
+    object.hasOwnProperty(key)
+  ) {
+    console.log(
+      `${key} -> ${object[key]}`
+    );
+  }
+}
+```
+
+**Output:**
+
+```text id="obj2"
+k1 -> value1
+k2 -> value2
+k3 -> value3
+```
+
+#### Why use `hasOwnProperty()`?
+
+The `for...in` loop iterates over both:
+
+* The object's **own enumerable properties**
+* **Inherited enumerable properties** from its prototype chain
+
+```javascript id="obj3"
+const parent = {
+  role: "Admin",
+};
+
+const child =
+  Object.create(parent);
+
+child.name = "John";
+
+for (const key in child) {
+  console.log(key);
+}
+```
+
+**Output:**
+
+```text id="obj4"
+name
+role
+```
+
+To avoid iterating over inherited properties:
+
+```javascript id="obj5"
+for (const key in child) {
+  if (
+    child.hasOwnProperty(key)
+  ) {
+    console.log(key);
+  }
+}
+```
+
+**Output:**
+
+```text id="obj6"
+name
+```
+
+#### Modern Alternatives
+
+You can also use `Object.keys()`, `Object.values()`, or `Object.entries()` to iterate over an object's own properties.
+
+```javascript id="obj7"
+Object.entries(object).forEach(
+  ([key, value]) => {
+    console.log(
+      `${key} -> ${value}`
+    );
+  }
+);
+```
+
+#### Key Point
+
+> You can use the `for...in` loop to enumerate the properties of a JavaScript object. Since `for...in` also iterates over inherited enumerable properties, it is a common practice to use `hasOwnProperty()` to ensure that only the object's own properties are processed.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+128. ### How do you test for an empty object?
+
+An object is considered **empty** if it has **no own enumerable properties**.
+
+There are several ways to check whether an object is empty, depending on the JavaScript version you are targeting.
+
+#### 1. Using `Object.keys()` (ES5+) ✅ Recommended
+
+`Object.keys()` returns an array of an object's own enumerable property names.
+
+```javascript id="eo1"
+Object.keys(obj).length === 0 &&
+obj.constructor === Object;
+```
+
+**Example:**
+
+```javascript id="eo2"
+const obj = {};
+
+console.log(
+  Object.keys(obj).length === 0 &&
+  obj.constructor === Object
+); // true
+```
+
+#### 2. Using `Object.entries()` (ES2017+)
+
+`Object.entries()` returns an array of an object's own enumerable key-value pairs.
+
+```javascript id="eo3"
+Object.entries(obj).length === 0 &&
+obj.constructor === Object;
+```
+
+**Example:**
+
+```javascript id="eo4"
+const obj = {};
+
+console.log(
+  Object.entries(obj).length === 0 &&
+  obj.constructor === Object
+); // true
+```
+
+#### Why Check the Constructor?
+
+Objects such as `Date` instances also have no enumerable properties:
+
+```javascript id="eo5"
+const date = new Date();
+
+console.log(
+  Object.keys(date).length
+); // 0
+```
+
+Without the constructor check:
+
+```javascript id="eo6"
+Object.keys(date).length === 0; // true ❌
+```
+
+Adding the constructor check:
+
+```javascript id="eo7"
+Object.keys(date).length === 0 &&
+date.constructor === Object; // false ✅
+```
+
+#### 3. Using `for...in` (Pre-ES5)
+
+For older environments, you can use a `for...in` loop with `hasOwnProperty()`.
+
+```javascript id="eo8"
+function isEmpty(obj) {
+  for (const key in obj) {
+    if (
+      obj.hasOwnProperty(key)
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+```
+
+**Example:**
+
+```javascript id="eo9"
+console.log(isEmpty({})); // true
+
+console.log(
+  isEmpty({ name: "John" })
+); // false
+```
+
+#### Comparison
+
+| Method                             | ECMAScript Version | Recommended       |
+| ---------------------------------- | ------------------ | ----------------- |
+| `Object.keys(obj).length === 0`    | ES5+               | ✅ Yes             |
+| `Object.entries(obj).length === 0` | ES2017+            | ✅ Yes             |
+| `for...in` + `hasOwnProperty()`    | Pre-ES5            | ⚠️ Legacy Support |
+
+#### Important Note
+
+The following approach is **not recommended**:
+
+```javascript id="eo10"
+JSON.stringify(obj) ===
+JSON.stringify({});
+```
+
+Although it works in many cases, it is:
+
+* Less efficient.
+* Dependent on serialization behavior.
+* Not intended for checking object emptiness.
+
+#### Key Point
+
+> The recommended way to check if an object is empty is to use `Object.keys(obj).length === 0`. If you want to ensure that the value is a plain object, you can additionally check `obj.constructor === Object`. For older JavaScript environments, a `for...in` loop combined with `hasOwnProperty()` can be used.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+129. ### What is an `arguments` object?
+
+The **`arguments` object** is an **array-like object** available inside **regular functions** that contains the values of the arguments passed to that function.
+
+It allows you to access all arguments supplied to a function, even if the function does not explicitly define parameters.
+
+#### Example
+
+```javascript id="arg1"
+function sum() {
+  let total = 0;
+
+  for (
+    let i = 0;
+    i < arguments.length;
+    i++
+  ) {
+    total += arguments[i];
+  }
+
+  return total;
+}
+
+console.log(sum(1, 2, 3)); // 6
+```
+
+**Output:**
+
+```text id="arg2"
+6
+```
+
+#### Properties of `arguments`
+
+| Property           | Description                                                             |
+| ------------------ | ----------------------------------------------------------------------- |
+| `arguments.length` | Returns the number of arguments passed.                                 |
+| `arguments[index]` | Accesses an argument by its index.                                      |
+| `arguments.callee` | Refers to the currently executing function (deprecated in strict mode). |
+
+#### Example
+
+```javascript id="arg3"
+function greet() {
+  console.log(
+    arguments.length
+  ); // 2
+
+  console.log(
+    arguments[0]
+  ); // John
+
+  console.log(
+    arguments[1]
+  ); // Doe
+}
+
+greet("John", "Doe");
+```
+
+#### Why Is It Called "Array-like"?
+
+The `arguments` object has:
+
+* Indexed elements (`arguments[0]`, `arguments[1]`, ...)
+* A `length` property
+
+However, it is **not a real Array**.
+
+```javascript id="arg4"
+function demo() {
+  console.log(
+    Array.isArray(arguments)
+  );
+}
+
+demo(1, 2, 3);
+```
+
+**Output:**
+
+```text id="arg5"
+false
+```
+
+Therefore, array methods such as `map()`, `filter()`, and `forEach()` cannot be used directly.
+
+#### Converting `arguments` to an Array
+
+**ES5:**
+
+```javascript id="arg6"
+function demo() {
+  const argsArray =
+    Array.prototype.slice.call(
+      arguments
+    );
+
+  console.log(argsArray);
+}
+
+demo(1, 2, 3);
+```
+
+**ES6:**
+
+```javascript id="arg7"
+function demo() {
+  const argsArray =
+    Array.from(arguments);
+
+  console.log(argsArray);
+}
+
+demo(1, 2, 3);
+```
+
+#### Modern Alternative: Rest Parameters (Recommended)
+
+In modern JavaScript, **rest parameters** are preferred over `arguments`.
+
+```javascript id="arg8"
+function sum(...args) {
+  return args.reduce(
+    (total, num) => total + num,
+    0
+  );
+}
+
+console.log(sum(1, 2, 3)); // 6
+```
+
+Rest parameters provide a **real array**, allowing direct use of array methods.
+
+#### `arguments` and Arrow Functions
+
+Arrow functions **do not have their own `arguments` object**.
+
+```javascript id="arg9"
+const demo = () => {
+  console.log(arguments);
+};
+
+demo(1, 2, 3);
+```
+
+This results in a `ReferenceError` (or accesses the enclosing function's `arguments`).
+
+Use rest parameters instead:
+
+```javascript id="arg10"
+const demo = (...args) => {
+  console.log(args);
+};
+
+demo(1, 2, 3);
+```
+
+#### Key Point
+
+> The `arguments` object is an array-like object available inside regular functions that contains all arguments passed to the function. Although it provides indexed access and a `length` property, it is not a true array. In modern JavaScript, rest parameters (`...args`) are generally preferred because they provide a real array and offer better readability and flexibility.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+130. ### How do you make the first letter of a string uppercase?
+
+You can capitalize the first letter of a string by combining the **`charAt()`**, **`toUpperCase()`**, and **`slice()`** string methods.
+
+```javascript id="cap1"
+function capitalizeFirstLetter(
+  str
+) {
+  return (
+    str.charAt(0).toUpperCase() +
+    str.slice(1)
+  );
+}
+```
+
+#### Example
+
+```javascript id="cap2"
+console.log(
+  capitalizeFirstLetter("hello")
+);
+```
+
+**Output:**
+
+```text id="cap3"
+Hello
+```
+
+#### How It Works
+
+```javascript id="cap4"
+str.charAt(0);       // Gets the first character
+str.charAt(0).toUpperCase(); // Converts it to uppercase
+str.slice(1);        // Gets the rest of the string
+```
+
+These parts are then concatenated:
+
+```javascript id="cap5"
+"H" + "ello"; // "Hello"
+```
+
+#### Handling Empty Strings
+
+To avoid errors with empty strings, you can add a guard clause:
+
+```javascript id="cap6"
+function capitalizeFirstLetter(
+  str
+) {
+  if (!str) {
+    return str;
+  }
+
+  return (
+    str.charAt(0).toUpperCase() +
+    str.slice(1)
+  );
+}
+```
+
+#### Example
+
+```javascript id="cap7"
+console.log(
+  capitalizeFirstLetter("")
+); // ""
+
+console.log(
+  capitalizeFirstLetter("javascript")
+); // "Javascript"
+```
+
+#### Alternative Using Destructuring (ES6)
+
+```javascript id="cap8"
+function capitalizeFirstLetter(
+  str
+) {
+  if (!str) {
+    return str;
+  }
+
+  const [first, ...rest] = str;
+
+  return (
+    first.toUpperCase() +
+    rest.join("")
+  );
+}
+```
+
+#### Key Point
+
+> You can capitalize the first letter of a string by converting the first character to uppercase using `toUpperCase()` and concatenating it with the remaining part of the string using `slice()`. A common implementation is `str.charAt(0).toUpperCase() + str.slice(1)`.
+
+
+**[⬆ Back to Top](#table-of-contents)**
 
 131. ### What are the pros and cons of for loops
 
@@ -8384,7 +11311,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       4. Imperative
       5. You might face off-by-one errors.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 132. ### How do you display the current date in javascript
 
@@ -8400,7 +11327,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       document.write(today);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 133. ### How do you compare two date objects
 
@@ -8413,7 +11340,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(d1 === d2); // False
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 134. ### How do you check if a string starts with another string
 
@@ -8424,7 +11351,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       "Good morning".startsWith("morning"); // false
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 135. ### How do you trim a string in javascript
 
@@ -8448,7 +11375,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 136. ### How do you add a key value pair in javascript
 
@@ -8475,7 +11402,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       obj["key3"] = "value3";
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 137. ### Is the !-- notation represents a special operator
 
@@ -8486,7 +11413,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       At first, the value decremented by one and then tested to see if it is equal to zero or not for determining the truthy/falsy value.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 138. ### How do you assign default values to variables
 
@@ -8498,7 +11425,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       As per the above expression, variable 'a 'will get the value of 'c' only if 'b' is falsy (if is null, false, undefined, 0, empty string, or NaN), otherwise 'a' will get the value of 'b'.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 139. ### How do you define multiline strings
 
@@ -8511,13 +11438,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       But if you have a space after the '\n' character, there will be indentation inconsistencies.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 140. ### What is an app shell model
 
       An application shell (or app shell) architecture is one way to build a Progressive Web App that reliably and instantly loads on your users' screens, similar to what you see in native applications. It is useful for getting some initial HTML to the screen fast without a network.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 141. ### Can we define properties for functions
 
@@ -8535,7 +11462,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       };
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 142. ### What is the way to find the number of parameters expected by a function
 
@@ -8548,7 +11475,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       sum.length; // 4 is the number of parameters expected.
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 143. ### What is a polyfill
 
@@ -8559,7 +11486,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       1. **Core.js**: It is a modular javascript library used for cutting-edge ECMAScript features.
       2. **Polyfill.io:** It provides polyfills that are required for browser needs.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 144. ### What are break and continue statements
 
@@ -8585,7 +11512,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 145. ### What are js labels
 
@@ -8609,7 +11536,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       //   "i = 2, j = 1"
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 146. ### What are the benefits of keeping declarations at the top
 
@@ -8620,7 +11547,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. Easy to avoid unwanted global variables
       4. It reduces the possibility of unwanted re-declarations
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 147. ### What are the benefits of initializing variables
 
@@ -8630,7 +11557,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       2. It provides a single place to initialize variables
       3. Avoid undefined values in the code
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 148. ### What are the recommendations to create new object
 
@@ -8656,7 +11583,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       var v7 = function () {};
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 149. ### How do you define JSON arrays
 
@@ -8670,7 +11597,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       ]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 150. ### How do you generate random integers
 
@@ -8683,7 +11610,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** `Math.random()` returns a random number between 0 (inclusive), and 1 (exclusive)
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 151. ### Can you write a random integers function to print integers within a range
 
@@ -8697,25 +11624,25 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       randomInteger(1, 1000); // returns a random integer from 1 to 1000
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 152. ### What is tree shaking
 
       Tree shaking is a form of dead code elimination. It means that unused modules will not be included in the bundle during the build process and for that it relies on the static structure of ES2015 module syntax,( i.e. import and export). Initially this has been popularized by the ES2015 module bundler `rollup`, these days practically all bundlers use this technique.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 153. ### What is the need of tree shaking
 
       Tree Shaking can significantly reduce the code size in any application. i.e, The less code we send over the wire the more performant the application will be. For example, if we just want to create a “Hello World” Application using SPA frameworks then it will take around a few MBs, but by tree shaking it can bring down the size to just a few hundred KBs. Tree shaking is implemented in Rollup and Webpack bundlers.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 154. ### Is it recommended to use eval
 
       No, it allows arbitrary code to be run which causes a security problem. As we know that the eval() function is used to run text as code. In most of the cases, it should not be necessary to use it.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 155. ### What is a Regular Expression
 
@@ -8731,7 +11658,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       /John/i;
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 156. ### What are the string methods that accept Regular expression
 
@@ -8767,7 +11694,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       var n = msg.split(/\s/); // ["Hello", "John"]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 157. ### What are modifiers in regular expression
 
@@ -8787,7 +11714,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       var result = text.match(pattern); // one,one
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 158. ### What are regular expression patterns
 
@@ -8809,7 +11736,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
          2. n\*: Used to find matches for any string that contains zero or more occurrences of n
          3. n?: Used to find matches for any string that contains zero or one occurrences of n
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 159. ### What is a RegExp object
 
@@ -8821,7 +11748,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       // expected output: /\w+/
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 160. ### How do you search a string for a pattern
 
@@ -8832,7 +11759,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(pattern.test("How are you?")); //true
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 161. ### What is the purpose of exec method
 
@@ -8843,7 +11770,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(pattern.exec("How are you?")); //["you", index: 8, input: "How are you?", groups: undefined]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 162. ### How do you change the style of a HTML element
 
@@ -8861,13 +11788,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       document.getElementById("title").className = "custom-title";
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 163. ### What would be the result of 1+2+'3'
 
       The output is going to be `33`. Since `1` and `2` are numeric values, the result of the first two digits is going to be a numeric value `3`. The next digit is a string type value because of that the addition of numeric value `3` and string type value `3` is just going to be a concatenation value `33`. Other operations like `3 * '3'` do yield correct results because the string is coerced into a number.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 164. ### What is a debugger statement
 
@@ -8883,13 +11810,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 165. ### What is the purpose of breakpoints in debugging
 
       You can set breakpoints in the javascript code once the debugger statement is executed and the debugger window pops up. At each breakpoint, javascript will stop executing, and let you examine the JavaScript values. After examining values, you can resume the execution of code using the play button.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 166. ### Can I use reserved words as identifiers
 
@@ -8899,7 +11826,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       var else = "hello"; // Uncaught SyntaxError: Unexpected token else
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 167. ### How do you detect a mobile browser
 
@@ -8923,7 +11850,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       };
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 168. ### How do you detect a mobile browser without regexp
 
@@ -8947,7 +11874,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 169. ### How do you get the image width and height using JS
 
@@ -8961,7 +11888,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       img.src = "http://www.google.com/intl/en_ALL/images/logo.gif";
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 170. ### How do you make synchronous HTTP request
 
@@ -8976,7 +11903,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 171. ### How do you make asynchronous HTTP request
 
@@ -8996,7 +11923,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       Today this is considered deprecated, because an async `fetch` call (in browsers later than 2016) is simpler and more robust.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 172. ### How do you convert date to another timezone in javascript
 
@@ -9006,7 +11933,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(new Date().toLocaleString("en-GB", { timeZone: "UTC" })); //29/06/2019, 09:56:00
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 173. ### What are the properties used to get size of window
 
@@ -9024,7 +11951,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
         document.body.clientHeight;
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 174. ### What is a conditional operator in javascript
 
@@ -9037,7 +11964,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       ); // Sorry, you are not authenticated
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 175. ### Can you apply chaining on conditional operator
 
@@ -9069,7 +11996,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 176. ### What are the ways to execute javascript after a page load
 
@@ -9093,7 +12020,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       <body onload="script();">
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 177. ### What is the difference between proto and prototype
 
@@ -9113,7 +12040,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       | ECMAScript | Introduced in ES6                                            | Introduced in ES5                                          |
       | Usage      | Frequently used                                              | Rarely used                                                |
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 178. ### Can you give an example of when you really need a semicolon
 
@@ -9145,7 +12072,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       In this case, we are passing the second function as an argument to the first function and then trying to call the result of the first function call as a function. Hence, the second function will fail with a "... is not a function" error at runtime.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 179. ### What is the freeze method
 
@@ -9179,7 +12106,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** It causes a TypeError if the argument passed is not an object.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 180. ### What is the purpose of the freeze method
 
@@ -9188,13 +12115,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       1. It is used for freezing objects and arrays.
       2. It is used to make an object immutable.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 181. ### Why do I need to use the freeze method
 
       In the Object-oriented paradigm, an existing API contains certain elements that are not intended to be extended, modified, or re-used outside of their current context. Hence it works as the `final` keyword which is used in various languages.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 182. ### How do you detect a browser language preference
 
@@ -9209,7 +12136,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(language);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 183. ### How to convert a string to title case with javascript
 
@@ -9224,7 +12151,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       toTitleCase("good morning john"); // Good Morning John
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 184. ### How do you detect if javascript is disabled on the page
 
@@ -9239,7 +12166,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       </noscript>
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 185. ### What are various operators supported by javascript
 
@@ -9252,7 +12179,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       5. **Ternary Operators:** It includes conditional(: ?) Operator
       6. **typeof Operator:** It uses to find type of variable. The syntax looks like `typeof variable`
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 186. ### What is a rest parameter
 
@@ -9283,7 +12210,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** Rest parameter is added in ES2015 or ES6
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 187. ### What happens if you do not use rest parameter as a last argument
 
@@ -9296,7 +12223,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 188. ### What are the bitwise operators available in javascript
 
@@ -9310,7 +12237,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       6. Sign Propagating Right Shift ( >> )
       7. Zero fill Right Shift ( >>> )
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 189. ### What is a spread operator
 
@@ -9326,7 +12253,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(calculateSum(...numbers)); // 6
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 190. ### How do you determine whether object is frozen or not
 
@@ -9345,7 +12272,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(Object.isFrozen(object));
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 191. ### How do you determine two values same or not using object
 
@@ -9370,7 +12297,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
          both NaN
          both non-zero and both not NaN and both have the same value.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 192. ### What is the purpose of using object is method
 
@@ -9381,7 +12308,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. It is used for comparing the polarity of two numbers.
       4. It is used for comparison of two objects.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 193. ### How do you copy properties from one object to other
 
@@ -9406,7 +12333,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       As observed in the above code, there is a common property(`b`) from source to target so it's value has been overwritten.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 194. ### What are the applications of the assign method
 
@@ -9415,7 +12342,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       1. It is used for cloning an object.
       2. It is used to merge objects with the same properties.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 195. ### What is a proxy object
 
@@ -9473,7 +12400,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** This feature was introduced with ES6.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 196. ### What is the purpose of the seal method
 
@@ -9490,7 +12417,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(object.property); //Welcome to object world
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 197. ### What are the applications of the seal method
 
@@ -9499,13 +12426,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       1. It is used for sealing objects and arrays.
       2. It is used to make properties of an object non-configurable.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 198. ### What are the differences between the freeze and seal methods
 
       If an object is frozen using the `Object.freeze()` method then its properties become immutable and no changes can be made in them whereas if an object is sealed using the `Object.seal()` method then the changes can be made in the existing properties of the object.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 199. ### How do you determine if an object is sealed or not
 
@@ -9526,7 +12453,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(Object.isSealed(object)); // checking whether the object is sealed or not
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 200. ### How do you get enumerable key and value pairs
 
@@ -9546,7 +12473,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** The order is not guaranteed as object defined.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 201. ### What is the main difference between Object.values and Object.entries method
 
@@ -9563,7 +12490,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 202. ### How can you get the list of keys of any object
 
@@ -9579,7 +12506,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(Object.keys(user)); //['name', 'gender', 'age']
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 203. ### How do you create an object with a prototype
 
@@ -9600,7 +12527,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       admin.printInfo(); // My name is Nick
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 204. ### What is a WeakSet
 
@@ -9621,7 +12548,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       ws.has(user); // false, user has been removed
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 205. ### What are the differences between WeakSet and Set
 
@@ -9633,7 +12560,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. `WeakSet` does not have methods such as clear, keys, values, entries, forEach.
       4. `WeakSet` is not iterable.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 206. ### List down the collection of methods available on WeakSet
 
@@ -9656,7 +12583,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       weakSetObject.delete(secondObject);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 207. ### What is a WeakMap
 
@@ -9677,7 +12604,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       ws.has(user); // false, user has been removed
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 208. ### What are the differences between WeakMap and Map
 
@@ -9689,7 +12616,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. `WeakMap` does not have methods such as clear, keys, values, entries, forEach.
       4. `WeakMap` is not iterable.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 209. ### List down the collection of methods available on WeakMap
 
@@ -9713,7 +12640,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       weakMapObject.delete(secondObject);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 210. ### What is the purpose of uneval
 
@@ -9732,7 +12659,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(user.toString()); // returns "(function user(){})"
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 211. ### How do you encode an URL
 
@@ -9744,7 +12671,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(encoded); // https://mozilla.org/?x=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 212. ### How do you decode an URL
 
@@ -9762,7 +12689,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 213. ### How do you print the contents of web page
 
@@ -9774,7 +12701,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** In most browsers, it will block while the print dialog is open.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 214. ### What is the difference between uneval and eval
 
@@ -9788,7 +12715,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       greeting(); // returns "Hello, Good morning"
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 215. ### What is an anonymous function
 
@@ -9818,7 +12745,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(z); // 50
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 216. ### What is the precedence order between local and global variables
 
@@ -9833,7 +12760,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       greeting();
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 217. ### What are javascript accessors
 
@@ -9856,7 +12783,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(user.lang); // setter used to set lang as fr
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 218. ### How do you define property on Object constructor
 
@@ -9875,13 +12802,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       newObject.newProperty = 200; // It throws an error in strict mode due to writable setting
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 219. ### What is the difference between get and defineProperty
 
       Both have similar results unless you use classes. If you use `get` the property will be defined on the prototype of the object whereas using `Object.defineProperty()` the property will be defined on the instance it is applied to.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 220. ### What are the advantages of Getters and Setters
 
@@ -9893,7 +12820,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       4. They can provide better data quality
       5. Useful for doing things behind the scenes with the encapsulated logic.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 221. ### Can I add getters and setters using defineProperty method
 
@@ -9934,7 +12861,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(obj.decrement); //5
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 222. ### What is the purpose of switch-case
 
@@ -9961,7 +12888,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       The above multi-way branch statement provides an easy way to dispatch execution to different parts of code based on the value of the expression.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 223. ### What are the conventions to be followed for the usage of switch case
 
@@ -9973,7 +12900,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       4. The break statement is used inside the switch to terminate a statement sequence.
       5. The break statement is optional. But if it is omitted, the execution will continue on into the next case.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 224. ### What are primitive data types
 
@@ -9987,7 +12914,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       6. bigint
       7. symbol
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 225. ### What are the different ways to access object properties
 
@@ -10011,7 +12938,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       objectName[expression];
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 226. ### What are the function parameter rules
 
@@ -10029,7 +12956,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       functionName(1);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 227. ### What is an error object
 
@@ -10043,7 +12970,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 228. ### When do you get a syntax error
 
@@ -10057,7 +12984,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 229. ### What are the different error names from error object
 
@@ -10072,7 +12999,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       | `TypeError` | An error due to a type error |
       | `URIError` | An error due to encodeURI() |
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 230. ### What are the various statements in error handling
 
@@ -10083,26 +13010,26 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. **throw:** This statement is used to create custom errors.
       4. **finally:** This statement is used to execute code after try and catch regardless of the result.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 231. ### What are the two types of loops in javascript
 
       1. **Entry Controlled loops:** In this kind of loop type, the test condition is tested before entering the loop body. For example, For Loop and While Loop comes under this category.
       2. **Exit Controlled Loops:** In this kind of loop type, the test condition is tested or evaluated at the end of the loop body. i.e, the loop body will execute at least once irrespective of test condition true or false. For example, do-while loop comes under this category.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 232. ### What is nodejs
 
       Node.js is a server-side platform built on Chrome's JavaScript runtime for easily building fast and scalable network applications. It is an event-based, non-blocking, asynchronous I/O runtime that uses Google's V8 JavaScript engine and libuv library.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 233. ### What is the Intl object
 
       The `Intl` object is the namespace for the ECMAScript Internationalization API, which provides language sensitive string comparison, number formatting, and date and time formatting. It provides access to several constructors and language sensitive functions.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 234. ### How do you perform language specific date and time formatting
 
@@ -10114,13 +13041,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(new Intl.DateTimeFormat("en-AU").format(date)); // 07/08/2019
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 235. ### What is an Iterator
 
       An iterator is an object which defines a sequence and a return value upon its termination. It implements the Iterator protocol with a `next()` method which returns an object with two properties: `value` (the next value in the sequence) and `done` (which is true if the last value in the sequence has been consumed).
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 236. ### How does synchronous iteration works
 
@@ -10143,7 +13070,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(iterator.next()); // { value: 'undefined, done: true }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 237. ### What is the event loop
 
@@ -10151,7 +13078,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** The event loop allows Node.js to perform non-blocking I/O operations, even though JavaScript is single-threaded, by offloading operations to the system kernel whenever possible. Since most modern kernels are multi-threaded, they can handle multiple operations executing in the background.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 238. ### What is the call stack
 
@@ -10183,7 +13110,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       ![Screenshot](images/call-stack.png)
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 239. ### What is the event queue
 
@@ -10193,7 +13120,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       The event loop constantly checks whether or not the call stack is empty. Once the call stack is empty and there is a callback in the event queue, the event loop moves the callback into the call stack. But if there is a callback in the microtask queue as well, it is moved first. The microtask queue has a higher priority than the event queue.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 240. ### What is a decorator
 
@@ -10217,7 +13144,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
        console.log(User.isAdmin); //false
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 241. ### What are the properties of the Intl object
 
@@ -10230,7 +13157,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       5. **PluralRules:** Objects that enable plural-sensitive formatting and language-specific rules for plurals.
       6. **RelativeTimeFormat:** Objects that enable language-sensitive relative time formatting.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 242. ### What is an Unary operator
 
@@ -10246,7 +13173,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(typeof a, typeof b, b); // string, number, NaN
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 243. ### How do you sort elements in an array
 
@@ -10260,7 +13187,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Beware:** `sort()` is changing the original array.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 244. ### What is the purpose of compareFunction while sorting arrays
 
@@ -10274,7 +13201,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(numbers); // [5, 4, 3, 2, 1]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 245. ### How do you reverse an array
 
@@ -10287,7 +13214,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(numbers); // [1, 2, 3, 4 ,5]
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 246. ### How do you find the min and max values in an array
 
@@ -10306,7 +13233,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(findMax(marks));
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 247. ### How do you find the min and max values without Math functions
 
@@ -10340,7 +13267,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(findMax(marks));
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 248. ### What is an empty statement and purpose of it
 
@@ -10351,7 +13278,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       for (let i = 0; i < a.length; a[i++] = 0);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 249. ### How do you get the metadata of a module
 
@@ -10362,7 +13289,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(import.meta); // { url: "file:///home/user/welcome-module.js" }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 250. ### What is the comma operator
 
@@ -10375,7 +13302,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(x); // 2
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 251. ### What is the advantage of the comma operator
 
@@ -10394,7 +13321,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 252. ### What is typescript
 
@@ -10419,7 +13346,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       The greeting method allows only string type as argument.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 253. ### What are the differences between javascript and typescript
 
@@ -10433,7 +13360,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       | Interface           | It has interfaces concept             | Doesn't support interfaces                      |
       | Optional parameters | Functions support optional parameters | No support of optional parameters for functions |
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 254. ### What are the advantages of typescript over javascript
 
@@ -10443,7 +13370,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       2. TypeScript is strongly-typed or supports static typing which allows for checking type correctness at compile time. This is not available in javascript.
       3. TypeScript compiler can compile the .ts files into ES3,ES4 and ES5 unlike ES6 features of javascript which may not be supported in some browsers.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 255. ### What is an object initializer
 
@@ -10455,7 +13382,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(initObject.a); // John
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 256. ### What is a constructor method
 
@@ -10473,7 +13400,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(employeeObject.name); // John
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 257. ### What happens if you write constructor more than once in a class
 
@@ -10496,7 +13423,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       This constructor is called by using the special function call `new` (see example above).
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 258. ### How do you call the constructor of a parent class
 
@@ -10519,7 +13446,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 259. ### How do you get the prototype of an object
 
@@ -10532,7 +13459,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       console.log(Object.getPrototypeOf(newObject) === newPrototype); // true
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 260. ### What happens If I pass string type for getPrototype method
 
@@ -10545,7 +13472,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       Object.getPrototypeOf("James"); // String.prototype
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 261. ### How do you set the prototype of one object to another
 
@@ -10556,7 +13483,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       Object.setPrototypeOf({}, null);
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 262. ### How do you check whether an object can be extended or not
 
@@ -10569,7 +13496,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
 
       **Note:** By default, all the objects are extendable. i.e, The new properties can be added or modified.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 263. ### How do you prevent an object from being extend
 
@@ -10589,7 +13516,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 264. ### What are the different ways to make an object non-extensible
 
@@ -10612,7 +13539,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       Object.isExtensible(frozenObject); // false
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 265. ### How do you define multiple properties on an object
 
@@ -10630,13 +13557,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       });
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 266. ### What is the MEAN stack
 
       The MEAN (MongoDB, Express, AngularJS, and Node.js) stack is the most popular open-source JavaScript software tech stack available for building dynamic web apps where you can write both the server-side and client-side halves of the web project entirely in JavaScript.
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 267. ### What is obfuscation in javascript
 
@@ -10688,7 +13615,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       );
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 268. ### Why do you need Obfuscation
 
@@ -10699,13 +13626,13 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       3. Reverse engineering is highly difficult
       4. The download time will be reduced
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 269. ### What is Minification
 
       Minification is the process of removing all unnecessary characters(empty spaces are removed) and variables will be renamed without changing it's functionality. It is also a type of obfuscation .
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 270. ### What are the advantages of minification
 
@@ -10714,7 +13641,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       1. Decreases loading times of a web page
       2. Saves bandwidth usages
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 271. ### What are the differences between obfuscation and Encryption
 
@@ -10726,7 +13653,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       | A key to decode    | It can be decoded without any key               | It is required                                                          |
       | Target data format | It will be converted to a complex form          | Converted into an unreadable format                                     |
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 272. ### What are the common tools used for minification
 
@@ -10738,7 +13665,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       4. javascript-minifier.com/
       5. prettydiff.com
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 273. ### How do you perform form validation using javascript
 
@@ -10765,7 +13692,7 @@ Java requires explicit types, whereas JavaScript determines types at runtime.
       }
       ```
 
-      **[⬆ Back to Top](#table-of-contents)**
+**[⬆ Back to Top](#table-of-contents)**
 
 274. ### How do you perform form validation without javascript
 
