@@ -11846,674 +11846,1256 @@ for (const [key, value] of Object.entries(user)) {
 
 201. ### What is the main difference between Object.values and Object.entries method
 
-      The `Object.values()` method's behavior is similar to `Object.entries()` method but it returns an array of values instead [key,value] pairs.
+Both methods are used to extract data from an object and return it as an array, but they extract different parts of the data.
 
-      ```javascript
-      const object = {
-        a: "Good morning",
-        b: 100,
-      };
+* **`Object.values()`**: Returns an array containing **only the values** of the object's enumerable properties.
+* **`Object.entries()`**: Returns a two-dimensional array containing **both the keys and the values** as `[key, value]` pairs.
 
-      for (let value of Object.values(object)) {
-        console.log(`${value}`); // 'Good morning \n100'
-      }
-      ```
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+const user = {
+  name: "John",
+  age: 30
+};
+
+// Object.values() extracts just the values
+console.log(Object.values(user)); 
+// Output: ["John", 30]
+
+// Object.entries() extracts key-value pairs
+console.log(Object.entries(user)); 
+// Output: [ ["name", "John"], ["age", 30] ]
+```
+
+#### Key Note
+
+> `Object.values(obj)` returns a flat array of the object's property values, while `Object.entries(obj)` returns an array of `[key, value]` arrays.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 202. ### How can you get the list of keys of any object
 
-      You can use the `Object.keys()` method which is used to return an array of a given object's own property names, in the same order as we get with a normal loop. For example, you can get the keys of a user object,
+You can use the **`Object.keys()`** method to extract a list of an object's keys. It returns an array of a given object's own enumerable string-keyed property names.
 
-      ```javascript
-      const user = {
-        name: "John",
-        gender: "male",
-        age: 40,
-      };
+The order of the keys in the resulting array is the exact same order as if you iterated over the object manually using a `for...in` loop.
 
-      console.log(Object.keys(user)); //['name', 'gender', 'age']
-      ```
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+const user = {
+  name: "John",
+  gender: "male",
+  age: 40
+};
+
+const keys = Object.keys(user);
+console.log(keys); // ["name", "gender", "age"]
+
+// Often used to iterate over an object's properties:
+keys.forEach(key => {
+  console.log(`Key: ${key}, Value: ${user[key]}`);
+});
+```
+
+#### Key Note
+
+> Use the `Object.keys(obj)` method to quickly retrieve an array containing all of an object's enumerable property names (keys).
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 203. ### How do you create an object with a prototype
 
-      The `Object.create()` method is used to create a new object with the specified prototype object and properties. i.e, It uses an existing object as the prototype of the newly created object. It returns a new object with the specified prototype object and properties.
+The **`Object.create()`** method is used to create a brand new object, using an existing object as the newly created object's prototype (its `__proto__`).
 
-      ```javascript
-      const user = {
-        name: "John",
-        printInfo: function () {
-          console.log(`My name is ${this.name}.`);
-        },
-      };
+This is a powerful way to implement prototypal inheritance without needing constructor functions or ES6 classes.
 
-      const admin = Object.create(user);
+#### Example
 
-      admin.name = "Nick"; // Remember that "name" is a property set on "admin" but not on "user" object
+```javascript
+// The blueprint/prototype object
+const animalPrototype = {
+  type: "Unknown",
+  makeSound: function() {
+    console.log(`${this.type} makes a sound.`);
+  }
+};
 
-      admin.printInfo(); // My name is Nick
-      ```
+// Create a new object using animalPrototype as its prototype
+const dog = Object.create(animalPrototype);
 
-    **[⬆ Back to Top](#table-of-contents)**
+// Set properties specific to the new object
+dog.type = "Dog";
+
+dog.makeSound(); // "Dog makes a sound."
+
+// Verifying the prototype chain
+console.log(Object.getPrototypeOf(dog) === animalPrototype); // true
+```
+
+#### Key Note
+
+> `Object.create(proto)` creates a new object and explicitly assigns the passed `proto` object as its internal `[[Prototype]]` (`__proto__`), enabling direct prototypal inheritance.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 204. ### What is a WeakSet
 
-      A `WeakSet` is used to store a collection of weakly(weak references) held objects. The syntax would be as follows,
+A **`WeakSet`** is a built-in JavaScript collection used to store unique objects. 
 
-      ```javascript
-      new WeakSet([iterable]);
-      ```
+Unlike a standard `Set`, a `WeakSet` only holds **weak references** to the objects inside it. This means if an object stored in a `WeakSet` has no other references pointing to it elsewhere in your application, the JavaScript Garbage Collector will automatically delete it from memory to prevent memory leaks.
 
-      Let's see the below example to explain it's behavior,
+#### Syntax and Rules
+* It can **only store objects**, not primitive values (like strings or numbers).
+* It is **not iterable** (you cannot loop over it).
 
-      ```javascript
-      var ws = new WeakSet();
-      var user = {};
-      ws.add(user);
-      ws.has(user); // true
-      ws.delete(user); // removes user from the set
-      ws.has(user); // false, user has been removed
-      ```
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+let ws = new WeakSet();
+let user = { name: "John" };
+
+ws.add(user);
+console.log(ws.has(user)); // true
+
+// Remove the only strong reference to the object
+user = null;
+
+// The object originally stored in the WeakSet is now eligible for 
+// garbage collection because the WeakSet only holds a "weak" reference.
+```
+
+#### Key Note
+
+> A `WeakSet` is a collection of objects held by weak references, allowing those objects to be garbage collected automatically when they are no longer referenced elsewhere.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 205. ### What are the differences between WeakSet and Set
 
-      The main difference is that references to objects in `Set` are strong while references to objects in `WeakSet` are weak. i.e, An object in `WeakSet` can be garbage collected if there is no other reference to it.
-      Other differences are:
+While both store unique values, they are fundamentally different in memory management and functionality.
 
-      1. `Set` can store any value whereas `WeakSet` can store only collections of objects
-      2. `WeakSet` does not have size property unlike `Set`
-      3. `WeakSet` does not have methods such as clear, keys, values, entries, forEach.
-      4. `WeakSet` is not iterable.
+| Feature | `Set` | `WeakSet` |
+| :--- | :--- | :--- |
+| **Reference Type** | **Strong:** Prevents garbage collection. | **Weak:** Allows garbage collection if no other references exist. |
+| **Accepted Values** | Any value (Objects and Primitives). | **Objects only.** |
+| **Iterable?** | ✅ Yes (`for...of`, `forEach`). | ❌ No (Cannot be looped over). |
+| **Size Property** | Has `.size` property. | Lacks `.size` property (because the garbage collector can alter it at any time). |
+| **Methods** | `.add()`, `.has()`, `.delete()`, `.clear()`, `.keys()`, etc. | Only `.add()`, `.has()`, and `.delete()`. |
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Note
+
+> A `Set` holds strong references to any data type and is fully iterable. A `WeakSet` holds weak references exclusively to objects, preventing memory leaks, but sacrificing iterability and the `.size` property.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 206. ### List down the collection of methods available on WeakSet
 
-      Below are the list of methods available on `WeakSet`,
+Because a `WeakSet` is not iterable and its contents are subject to spontaneous garbage collection, its API is intentionally very limited. 
 
-      1. `add(value)`: A new object is appended with the given value
-      2. `delete(value)`: Deletes the value from the collection.
-      3. `has(value)`: It returns true if the value is present in the collection, otherwise it returns false.
+#### Available Methods
 
-      Let's see the functionality of all the above methods in an example,
+1. **`add(value)`**: Appends a new object to the `WeakSet`. Returns the `WeakSet` object itself (allowing chaining).
+2. **`delete(value)`**: Removes the specified object from the collection. Returns `true` if it was removed, `false` if it wasn't there.
+3. **`has(value)`**: Returns a boolean indicating whether the specified object exists in the `WeakSet`.
 
-      ```javascript
-      var weakSetObject = new WeakSet();
-      var firstObject = {};
-      var secondObject = {};
-      // add(value)
-      weakSetObject.add(firstObject);
-      weakSetObject.add(secondObject);
-      console.log(weakSetObject.has(firstObject)); //true
-      weakSetObject.delete(secondObject);
-      ```
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+const weakSet = new WeakSet();
+const obj1 = { id: 1 };
+const obj2 = { id: 2 };
+
+// add()
+weakSet.add(obj1).add(obj2); // Chaining is possible
+
+// has()
+console.log(weakSet.has(obj1)); // true
+
+// delete()
+weakSet.delete(obj2);
+console.log(weakSet.has(obj2)); // false
+```
+
+#### Key Note
+
+> Because of garbage collection unpredictability, a `WeakSet` only exposes three methods: `.add()`, `.has()`, and `.delete()`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 207. ### What is a WeakMap
 
-      A `WeakMap` object is a collection of key/value pairs in which the keys are weakly referenced. In this case, keys must be objects and the values can be arbitrary values. The syntax looks like the following:
+A **`WeakMap`** is a collection of key-value pairs where the **keys must be objects** and are held weakly. The values can be of any data type (objects or primitives).
 
-      ```javascript
-      new WeakMap([iterable]);
-      ```
+Just like a `WeakSet`, if there are no other references to a key object in a `WeakMap`, that object (and its associated value) will be automatically removed by the Garbage Collector.
 
-      Let's see the below example to explain it's behavior,
+#### Common Use Case
+`WeakMap` is frequently used to store private data for an object or to attach metadata to DOM nodes without worrying about memory leaks when the DOM nodes are removed.
 
-      ```javascript
-      var ws = new WeakMap();
-      var user = {};
-      ws.set(user);
-      ws.has(user); // true
-      ws.delete(user); // removes user from the map
-      ws.has(user); // false, user has been removed
-      ```
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+let weakMap = new WeakMap();
+let domNode = document.getElementById("btn");
+
+// Attach metadata to the DOM node
+weakMap.set(domNode, { clickCount: 0 });
+
+console.log(weakMap.has(domNode)); // true
+
+// If the DOM node is removed from the page and nullified:
+domNode = null;
+// The node and its metadata in the WeakMap are garbage collected!
+```
+
+#### Key Note
+
+> A `WeakMap` is a key-value store where the keys must be objects held by weak references, making it ideal for attaching temporary metadata to objects or DOM elements without causing memory leaks.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 208. ### What are the differences between WeakMap and Map
 
-      The main difference is that references to key objects in `Map` are strong while references to key objects in `WeakMap` are weak. i.e, A key object in `WeakMap` can be garbage collected if there is no other reference to it.
-      Other differences are,
+The distinction between a `Map` and a `WeakMap` centers around memory management and iterability.
 
-      1. `Map` can store any key type whereas `WeakMap` can store only collections of key objects
-      2. `WeakMap` does not have size property unlike `Map`
-      3. `WeakMap` does not have methods such as clear, keys, values, entries, forEach.
-      4. `WeakMap` is not iterable.
+| Feature | `Map` | `WeakMap` |
+| :--- | :--- | :--- |
+| **Key Types** | Any value (Objects or Primitives). | **Objects only.** |
+| **Key References**| **Strong:** Keys will not be garbage collected. | **Weak:** Keys are garbage collected if not referenced elsewhere. |
+| **Iterable?** | ✅ Yes (`for...of`, `.keys()`, `.entries()`). | ❌ No (Cannot iterate over keys or values). |
+| **Size Property** | Has `.size` property. | Lacks `.size` property. |
+| **Clear Method** | Has `.clear()` method. | Lacks `.clear()` method. |
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Note
+
+> A `Map` is a fully iterable key-value store that accepts any data type as a key. A `WeakMap` only accepts objects as keys, holds them weakly to prevent memory leaks, and is strictly non-iterable.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 209. ### List down the collection of methods available on WeakMap
 
-      Below are the list of methods available on `WeakMap`,
+Due to the nature of garbage collection, you cannot iterate over a `WeakMap` or check its size. Therefore, it has a very limited set of methods.
 
-      1. `set(key, value)`: Sets the value for the key in the `WeakMap` object. Returns the `WeakMap` object.
-      2. `delete(key)`: Removes any value associated to the key.
-      3. `has(key)`: Returns a Boolean asserting whether a value has been associated to the key in the `WeakMap` object or not.
-      4. `get(key)`: Returns the value associated to the key, or undefined if there is none.
-         Let's see the functionality of all the above methods in an example,
+#### Available Methods
 
-      ```javascript
-      var weakMapObject = new WeakMap();
-      var firstObject = {};
-      var secondObject = {};
-      // set(key, value)
-      weakMapObject.set(firstObject, "John");
-      weakMapObject.set(secondObject, 100);
-      console.log(weakMapObject.has(firstObject)); //true
-      console.log(weakMapObject.get(firstObject)); // John
-      weakMapObject.delete(secondObject);
-      ```
+1. **`set(key, value)`**: Sets the value for the key object. Returns the `WeakMap` object (allows chaining).
+2. **`get(key)`**: Returns the value associated with the key object, or `undefined` if the key doesn't exist.
+3. **`has(key)`**: Returns a boolean indicating whether the key object exists in the `WeakMap`.
+4. **`delete(key)`**: Removes the key-value pair. Returns `true` if successful.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example
+
+```javascript
+const weakMap = new WeakMap();
+const userObj = { id: 1 };
+
+// set()
+weakMap.set(userObj, "Admin");
+
+// has() and get()
+if (weakMap.has(userObj)) {
+  console.log(weakMap.get(userObj)); // "Admin"
+}
+
+// delete()
+weakMap.delete(userObj);
+console.log(weakMap.has(userObj)); // false
+```
+
+#### Key Note
+
+> A `WeakMap` exposes only four methods for interaction: `.set()`, `.get()`, `.has()`, and `.delete()`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 210. ### What is the purpose of uneval
 
-      The `uneval()` is an builtin function which is used to create a string representation of the source code of an Object. It is a top-level function and is not associated with any object. Let's see the below example to know more about it's functionality,
+*Warning: The `uneval()` function is non-standard, **deprecated**, and should not be used in modern JavaScript. It was primarily specific to Firefox.*
 
-      ```javascript
-      var a = 1;
-      uneval(a); // returns a String containing 1
-      uneval(function user() {}); // returns "(function user(){})"
-      ```
+The intended purpose of `uneval()` was to create a string representation of the source code of an object or value, essentially acting as the opposite of the `eval()` function.
 
-      The `uneval()` function has been deprecated. It is recommended to use `toString()` for functions and `JSON.stringify()` for other cases.
+#### Example (Legacy Firefox Only)
 
-      ```javascript
-      function user() {}
-      console.log(user.toString()); // returns "(function user(){})"
-      ```
+```javascript
+var a = 1;
+uneval(a); // Returns string "1"
 
-    **[⬆ Back to Top](#table-of-contents)**
+var obj = { a: 1 };
+uneval(obj); // Returns string "({a:1})"
+```
+
+#### Modern Alternatives
+Since `uneval()` is deprecated and heavily unsupported across browsers, modern code relies on standardized methods:
+* Use **`JSON.stringify(obj)`** to convert objects to string representations.
+* Use **`Function.prototype.toString()`** to get the source code of a function.
+
+#### Key Note
+
+> `uneval()` was a non-standard, now-deprecated function used to generate a string representation of an object. Today, developers use `JSON.stringify()` for objects and `.toString()` for functions.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 211. ### How do you encode an URL
 
-      The `encodeURI()` function is used to encode complete URI which has special characters except (, / ? : @ & = + $ #) characters.
+You encode a URL in JavaScript to ensure that special characters (like spaces or non-ASCII characters) are safely translated into a format that can be transmitted over the internet.
 
-      ```javascript
-      var uri = "https://mozilla.org/?x=шеллы";
-      var encoded = encodeURI(uri);
-      console.log(encoded); // https://mozilla.org/?x=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B
-      ```
+JavaScript provides two main functions for this:
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### 1. `encodeURI()` (For full URLs)
+Use this when you are encoding a completely formed URL. It leaves characters that have special meaning in a URL alone (like `:`, `/`, `?`, `&`, `=`).
+
+```javascript
+const url = "https://example.com/search?query=hello world";
+const encodedFull = encodeURI(url);
+console.log(encodedFull); 
+// "https://example.com/search?query=hello%20world" (only space is encoded)
+```
+
+#### 2. `encodeURIComponent()` (For specific parameters)
+Use this when you are encoding a specific query parameter value. It encodes *everything*, including `/`, `?`, and `&`.
+
+```javascript
+const param = "hello/world?&=";
+const encodedParam = encodeURIComponent(param);
+console.log(encodedParam); 
+// "hello%2Fworld%3F%26%3D" (all special chars are encoded)
+```
+
+#### Key Note
+
+> Use `encodeURI()` to safely encode an entire URL string, and use `encodeURIComponent()` to encode specific, individual variable values before injecting them into a URL's query string.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 212. ### How do you decode an URL
 
-      The `decodeURI()` function is used to decode a Uniform Resource Identifier (URI) previously created by `encodeURI()`.
+To revert an encoded URL back into a human-readable format, you use the decoding counterparts to the encoding functions.
 
-      ```javascript
-      var uri = "https://mozilla.org/?x=шеллы";
-      var encoded = encodeURI(uri);
-      console.log(encoded); // https://mozilla.org/?x=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B
-      try {
-        console.log(decodeURI(encoded)); // "https://mozilla.org/?x=шеллы"
-      } catch (e) {
-        // catches a malformed URI
-        console.error(e);
-      }
-      ```
+#### 1. `decodeURI()`
+Used to decode a full URL string that was previously encoded with `encodeURI()`.
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+const encodedUrl = "https://example.com/?query=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B";
+const decodedUrl = decodeURI(encodedUrl);
+
+console.log(decodedUrl); // "https://example.com/?query=шеллы"
+```
+
+#### 2. `decodeURIComponent()`
+Used to decode a specific URI component that was previously encoded with `encodeURIComponent()`.
+
+```javascript
+const encodedParam = "hello%20world%26universe";
+const decodedParam = decodeURIComponent(encodedParam);
+
+console.log(decodedParam); // "hello world&universe"
+```
+
+#### Key Note
+
+> Use `decodeURI()` to translate a full encoded URL string back to its original state, and `decodeURIComponent()` to decode specific query parameter strings.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 213. ### How do you print the contents of web page
 
-      The `window` object provides a `print()` method which is used to print the contents of the current window. It opens a Print dialog box which lets you choose between various printing options. Let's see the usage of print method in an example,
+You can print the contents of the current web page using the **`window.print()`** method. 
 
-      ```html
-      <input type="button" value="Print" onclick="window.print()" />
-      ```
+When executed, this method pauses script execution and opens the browser's native Print Dialog box, allowing the user to select their printer, save to PDF, and adjust print settings.
 
-      **Note:** In most browsers, it will block while the print dialog is open.
+#### Example: Button Trigger
 
-    **[⬆ Back to Top](#table-of-contents)**
+You typically attach this method to a button click event in your HTML:
+
+```html
+<!-- Inline event handler -->
+<button onclick="window.print()">Print this page</button>
+
+<!-- Or via JavaScript -->
+<button id="printBtn">Print</button>
+<script>
+  document.getElementById("printBtn").addEventListener("click", () => {
+    window.print();
+  });
+</script>
+```
+
+*Note: In modern web development, you should also pair this with a CSS `@media print` query to format the page specifically for paper (e.g., hiding navigation bars).*
+
+#### Key Note
+
+> Calling the `window.print()` method triggers the browser's native print interface, allowing the user to print or save the current document as a PDF.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 214. ### What is the difference between uneval and eval
 
-      The `uneval` function returns the source of a given object; whereas the `eval` function does the opposite, by evaluating that source code in a different memory area. Let's see an example to clarify the difference,
+While `uneval()` is deprecated and non-standard, understanding the historical difference between the two helps clarify their intended purposes. They are essentially opposites.
 
-      ```javascript
-      var msg = uneval(function greeting() {
-        return "Hello, Good morning";
-      });
-      var greeting = eval(msg);
-      greeting(); // returns "Hello, Good morning"
-      ```
+#### 1. `eval()` (Executes strings)
+Takes a string and actively evaluates/executes it as JavaScript code within the current scope. (Highly discouraged due to security and performance issues).
+```javascript
+eval("var x = 5; console.log(x);"); // Logs: 5
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### 2. `uneval()` (Creates strings)
+*(Deprecated)* Takes a JavaScript object or function and returns a string representation of its source code.
+```javascript
+var funcStr = uneval(function add(a, b) { return a + b; });
+console.log(funcStr); // "(function add(a, b) { return a + b; })"
+```
+
+#### Key Note
+
+> `eval()` takes a string and executes it as code, whereas `uneval()` (which is deprecated) takes code/objects and turns them into a string representation.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 215. ### What is an anonymous function
 
-      An anonymous function is a function without a name! Anonymous functions are commonly assigned to a variable name or used as a callback function. The syntax would be as below,
+An **anonymous function** is a function that is declared without any named identifier. 
 
-      ```javascript
-      function (optionalParameters) {
-        //do something
-      }
+Because they don't have a name, they cannot be called independently later in the script. Instead, they are usually assigned to a variable, passed as a callback argument to another function, or executed immediately (IIFE).
 
-      const myFunction = function(){ //Anonymous function assigned to a variable
-        //do something
-      };
+#### Example: Assigned to a variable (Function Expression)
+```javascript
+const multiply = function(a, b) {
+  return a * b;
+};
 
-      [1, 2, 3].map(function(element){ //Anonymous function used as a callback function
-        //do something
-      });
-      ```
+console.log(multiply(5, 10)); // 50
+```
 
-      Let's see the above anonymous function in an example,
+#### Example: Used as a Callback
+Anonymous functions (especially ES6 Arrow Functions) are heavily used in array methods like `map` or `forEach`.
+```javascript
+const numbers = [1, 2, 3];
 
-      ```javascript
-      var x = function (a, b) {
-        return a * b;
-      };
-      var z = x(5, 10);
-      console.log(z); // 50
-      ```
+// The function inside map() has no name
+const doubled = numbers.map(function(num) {
+  return num * 2;
+});
+```
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example: IIFE (Immediately Invoked Function Expression)
+```javascript
+(function() {
+  console.log("I ran immediately!");
+})();
+```
+
+#### Key Note
+
+> An anonymous function is a function declared without a name. It is typically used for short-lived logic, such as callback functions or assigning a function expression to a variable.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 216. ### What is the precedence order between local and global variables
 
-      A local variable takes precedence over a global variable with the same name. Let's see this behavior in an example.
+In JavaScript, **local variables take precedence over global variables** if they share the exact same name. 
 
-      ```javascript
-      var msg = "Good morning";
-      function greeting() {
-        msg = "Good Evening";
-        console.log(msg); // Good Evening
-      }
-      greeting();
-      ```
+This concept is known as **Variable Shadowing**. When the JavaScript engine looks for a variable, it searches the immediate local scope first. If it finds the variable there, it uses it and stops searching. If it doesn't, it moves up the "Scope Chain" to the outer/global scope.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example: Variable Shadowing
+
+```javascript
+let message = "Global message";
+
+function showMessage() {
+  // This local variable "shadows" the global one
+  let message = "Local message"; 
+  console.log(message); 
+}
+
+showMessage(); // Output: "Local message"
+console.log(message); // Output: "Global message"
+```
+
+#### Example: Modifying the Global Variable
+If you do *not* use a declaration keyword (`let`, `const`, `var`) inside the function, you will modify the global variable instead.
+
+```javascript
+let count = 0;
+
+function updateCount() {
+  count = 10; // No 'let', so it modifies the global variable
+}
+
+updateCount();
+console.log(count); // Output: 10
+```
+
+#### Key Note
+
+> When a local variable shares the same name as a global variable, the local variable takes precedence within its scope, a behavior known as variable shadowing.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 217. ### What are javascript accessors
 
-      ECMAScript 5 introduced javascript object accessors or computed properties through getters and setters. Getters uses the `get` keyword whereas Setters uses the `set` keyword.
+JavaScript Accessors, also known as **Computed Properties**, are special methods that allow you to define custom logic that executes when a property is read (Getters) or assigned a value (Setters).
 
-      ```javascript
-      var user = {
-        firstName: "John",
-        lastName: "Abraham",
-        language: "en",
-        get lang() {
-          return this.language;
-        },
-        set lang(lang) {
-          this.language = lang;
-        },
-      };
-      console.log(user.lang); // getter access lang as en
-      user.lang = "fr";
-      console.log(user.lang); // setter used to set lang as fr
-      ```
+* **`get`**: Binds an object property to a function that will be called when that property is looked up.
+* **`set`**: Binds an object property to a function to be called when there is an attempt to set that property.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example
+
+```javascript
+const user = {
+  firstName: "John",
+  lastName: "Doe",
+  
+  // Getter
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  },
+  
+  // Setter
+  set fullName(name) {
+    const parts = name.split(" ");
+    this.firstName = parts[0];
+    this.lastName = parts[1];
+  }
+};
+
+// Accessing the getter (notice there are no parentheses)
+console.log(user.fullName); // "John Doe"
+
+// Assigning to the setter
+user.fullName = "Jane Smith";
+
+console.log(user.firstName); // "Jane"
+```
+
+#### Key Note
+
+> Accessors are created using the `get` and `set` keywords, allowing you to encapsulate logic behind what appears to be standard property access and assignment syntax.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 218. ### How do you define property on Object constructor
 
-      The `Object.defineProperty()` static method is used to define a new property directly on an object, or modify an existing property on an object, and returns the object. Let's see an example to know how to define property,
+You can define a new property (or modify an existing one) directly on an object using the **`Object.defineProperty()`** static method.
 
-      ```javascript
-      const newObject = {};
+This method gives you fine-grained control over the property's behavior (its "descriptor"), such as making it read-only or hiding it from loops.
 
-      Object.defineProperty(newObject, "newProperty", {
-        value: 100,
-        writable: false,
-      });
+#### Syntax
+```javascript
+Object.defineProperty(obj, propName, descriptorObject);
+```
 
-      console.log(newObject.newProperty); // 100
+#### Descriptor Configuration Options
+* **`value`**: The actual data value.
+* **`writable`**: If `false`, the value cannot be changed.
+* **`enumerable`**: If `false`, it won't show up in `for...in` loops or `Object.keys()`.
+* **`configurable`**: If `false`, the property cannot be deleted or reconfigured.
 
-      newObject.newProperty = 200; // It throws an error in strict mode due to writable setting
-      ```
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+const car = {};
+
+Object.defineProperty(car, "brand", {
+  value: "Toyota",
+  writable: false,     // Makes it read-only
+  enumerable: true,
+  configurable: false  // Cannot be deleted
+});
+
+console.log(car.brand); // "Toyota"
+
+// Attempting to overwrite fails silently (or throws in Strict Mode)
+car.brand = "Honda"; 
+console.log(car.brand); // Still "Toyota"
+```
+
+#### Key Note
+
+> `Object.defineProperty()` allows you to precisely define or modify a property on an object, giving you strict control over its mutability, enumerability, and configurability.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 219. ### What is the difference between get and defineProperty
 
-      Both have similar results unless you use classes. If you use `get` the property will be defined on the prototype of the object whereas using `Object.defineProperty()` the property will be defined on the instance it is applied to.
+While both can be used to create getter and setter accessors on objects, they are used in different contexts and provide different levels of control.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### 1. The `get` keyword
+* Used declaratively **inside an object literal** or an ES6 Class.
+* It is simpler syntax.
+* Properties created this way are implicitly configurable and enumerable.
+
+```javascript
+const obj = {
+  get name() { return "John"; }
+};
+```
+
+#### 2. `Object.defineProperty()`
+* Used imperatively to define a property on an **already existing object**.
+* It allows you to strictly define the property's metadata (descriptor), such as making it non-enumerable or non-configurable.
+
+```javascript
+const obj = {};
+Object.defineProperty(obj, "name", {
+  get() { return "John"; },
+  enumerable: false,   // Extra control provided by defineProperty
+  configurable: false
+});
+```
+
+#### Key Note
+
+> The `get` keyword provides simple syntax for defining accessors inside object literals or classes, while `Object.defineProperty()` is used on existing objects and offers strict control over the property's underlying behavior attributes.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 220. ### What are the advantages of Getters and Setters
 
-      Below are the list of benefits of Getters and Setters,
+Getters and setters (Accessors) offer several significant architectural advantages over standard property assignment.
 
-      1. They provide simpler syntax
-      2. They are used for defining computed properties, or accessors in JS.
-      3. Useful to provide equivalence relation between properties and methods
-      4. They can provide better data quality
-      5. Useful for doing things behind the scenes with the encapsulated logic.
+#### Advantages
 
-    **[⬆ Back to Top](#table-of-contents)**
+1. **Simpler Syntax:** They allow developers to interact with complex logic using simple property assignment syntax (`user.name = "John"`) rather than calling methods (`user.setName("John")`).
+2. **Computed Properties:** They allow a property to be generated on-the-fly dynamically based on other data (e.g., generating `fullName` based on `firstName` and `lastName`).
+3. **Data Validation:** Setters allow you to intercept an assignment to validate or sanitize the data before it is saved to the object.
+4. **Encapsulation:** They hide the internal structure of the object from the outside world. You can change how data is stored internally without breaking the API used by other developers.
+5. **Lazy Evaluation:** Getters allow you to delay the execution of an expensive calculation until the exact moment the property is actually requested.
+
+#### Example: Data Validation
+
+```javascript
+const bankAccount = {
+  _balance: 100, // Private variable convention
+  
+  set balance(amount) {
+    if (amount < 0) {
+      console.error("Balance cannot be negative!");
+      return;
+    }
+    this._balance = amount;
+  },
+  
+  get balance() {
+    return this._balance;
+  }
+};
+
+bankAccount.balance = -50; // "Balance cannot be negative!"
+console.log(bankAccount.balance); // 100
+```
+
+#### Key Note
+
+> Getters and setters provide a clean syntax for accessing data while allowing you to encapsulate validation logic, compute properties dynamically, and protect the internal state of an object.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 221. ### Can I add getters and setters using defineProperty method
 
-      Yes, You can use the `Object.defineProperty()` method to add Getters and Setters. For example, the below counter object uses increment, decrement, add and subtract properties,
+Yes, you can absolutely use the `Object.defineProperty()` method to add **getters** and **setters** to an already existing object. 
 
-      ```javascript
-      var obj = { counter: 0 };
+This is particularly useful when you need to attach dynamic logic to an object that you did not create initially, or when you need strict control over the property's enumerability or configurability.
 
-      // Define getters
-      Object.defineProperty(obj, "increment", {
-        get: function () {
-          this.counter++;
-          return this.counter;
-        },
-      });
-      Object.defineProperty(obj, "decrement", {
-        get: function () {
-          this.counter--;
-          return this.counter;
-        },
-      });
+#### Example
 
-      // Define setters
-      Object.defineProperty(obj, "add", {
-        set: function (value) {
-          this.counter += value;
-        },
-      });
-      Object.defineProperty(obj, "subtract", {
-        set: function (value) {
-          this.counter -= value;
-        },
-      });
+```javascript
+const counterObj = { count: 0 };
 
-      obj.add = 10;
-      obj.subtract = 5;
-      console.log(obj.increment); //6
-      console.log(obj.decrement); //5
-      ```
+// Adding a getter
+Object.defineProperty(counterObj, "increment", {
+  get: function () {
+    this.count++;
+    return this.count;
+  },
+  enumerable: true // Optional configuration
+});
 
-    **[⬆ Back to Top](#table-of-contents)**
+// Adding a setter
+Object.defineProperty(counterObj, "add", {
+  set: function (value) {
+    this.count += value;
+  }
+});
+
+// Usage
+console.log(counterObj.increment); // 1
+console.log(counterObj.increment); // 2
+
+counterObj.add = 10;
+console.log(counterObj.count); // 12
+```
+
+#### Key Note
+
+> Use `Object.defineProperty(obj, prop, { get() {}, set() {} })` to attach complex getter and setter accessors to an object after it has already been created.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 222. ### What is the purpose of switch-case
 
-      The `switch case` statement in JavaScript is used for decision making purposes. In a few cases, using the `switch case` statement is going to be more convenient than `if-else` statements. The syntax would be as below,
+The **`switch-case`** statement is used for decision-making purposes in JavaScript. 
 
-      ```javascript
-      switch (expression)
-      {
-          case value1:
-              statement1;
-              break;
-          case value2:
-              statement2;
-              break;
-          .
-          .
-          case valueN:
-              statementN;
-              break;
-          default:
-              statementDefault;
-      }
-      ```
+It provides an efficient, highly readable way to dispatch execution to different blocks of code based on the value of a single expression. It is generally preferred over a long chain of `if...else if` statements when you are comparing one specific variable against many possible exact values.
 
-      The above multi-way branch statement provides an easy way to dispatch execution to different parts of code based on the value of the expression.
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+const day = 3;
+let dayName;
+
+switch (day) {
+  case 1:
+    dayName = "Monday";
+    break;
+  case 2:
+    dayName = "Tuesday";
+    break;
+  case 3:
+    dayName = "Wednesday";
+    break;
+  default:
+    dayName = "Unknown Day";
+}
+
+console.log(dayName); // "Wednesday"
+```
+
+#### Key Note
+
+> The `switch-case` statement evaluates an expression once and matches its value strictly (`===`) against multiple `case` clauses, executing the corresponding code block.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 223. ### What are the conventions to be followed for the usage of switch case
 
-      Below are the list of conventions should be taken care,
+To write robust and bug-free `switch-case` statements, several conventions and rules must be followed:
 
-      1. The expression can be of type either number or string.
-      2. Duplicate values are not allowed for the expression.
-      3. The default statement is optional. If the expression passed to switch does not match with any case value then the statement within default case will be executed.
-      4. The break statement is used inside the switch to terminate a statement sequence.
-      5. The break statement is optional. But if it is omitted, the execution will continue on into the next case.
+1. **Strict Equality:** The switch expression evaluates against cases using strict equality (`===`). Types must match exactly (`3` does not match `"3"`).
+2. **The `break` statement:** You must explicitly use `break;` at the end of a case block to terminate the switch. If omitted, execution will "fall through" into the next case regardless of whether it matches.
+3. **The `default` statement:** It is a best practice to always include a `default:` case at the end to handle unexpected values or catch edge cases.
+4. **Scoping:** If you need to declare block-scoped variables (`let`/`const`) specific to a single case, you must wrap the case logic in curly braces `{}`.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example: Fall-through Behavior
+
+```javascript
+const fruit = "Apple";
+
+switch (fruit) {
+  case "Apple":
+  case "Pear":
+  case "Banana":
+    console.log("It is a fruit.");
+    break; // This break covers all three cases above
+  default:
+    console.log("Unknown.");
+}
+```
+
+#### Key Note
+
+> Always use `break` to prevent accidental fall-through execution, always include a `default` case as a fallback, and remember that comparisons are made using strict equality (`===`).
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 224. ### What are primitive data types
 
-      A primitive data type is data that has a primitive value (which has no properties or methods). There are 7 types of primitive data types.
+A **primitive data type** is basic data that is not an object and has no methods or properties of its own.
 
-      1. string
-      2. number
-      3. boolean
-      4. null
-      5. undefined
-      6. bigint
-      7. symbol
+In JavaScript, all primitives are **immutable** (they cannot be altered). When you "change" a primitive variable, you are actually reassigning it to a completely new value in memory.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### The 7 Primitive Types
+
+1. **`string`**: Text data (e.g., `"Hello"`).
+2. **`number`**: Integer or floating-point numbers (e.g., `42`, `3.14`).
+3. **`boolean`**: Logical entity (`true` or `false`).
+4. **`null`**: Intentional absence of any object value.
+5. **`undefined`**: A variable that has been declared but not yet assigned a value.
+6. **`symbol`**: A unique, immutable identifier (introduced in ES6).
+7. **`bigint`**: Extremely large integers beyond the safe limit of `number` (introduced in ES2020).
+
+#### Key Note
+
+> JavaScript has 7 primitive (non-object, immutable) data types: String, Number, Boolean, Null, Undefined, Symbol, and BigInt.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 225. ### What are the different ways to access object properties
 
-      There are 3 possible ways for accessing the property of an object.
+There are three primary ways to access the properties of a JavaScript object.
 
-      1. **Dot notation:** It uses dot for accessing the properties
+#### 1. Dot Notation
+The most common, readable, and preferred way. The property name must be a valid JavaScript identifier (no spaces, cannot start with a number).
+```javascript
+const user = { name: "John", age: 30 };
+console.log(user.name); // "John"
+```
 
-      ```javascript
-      objectName.property;
-      ```
+#### 2. Bracket Notation
+Required when the property name contains invalid identifier characters (like spaces or hyphens), or when the property key is stored dynamically inside a variable.
+```javascript
+const user = { "first-name": "John" };
+console.log(user["first-name"]); // "John"
 
-      2. **Square brackets notation:** It uses square brackets for property access
+const dynamicKey = "age";
+// user.dynamicKey would fail, looking for literal "dynamicKey"
+console.log(user[dynamicKey]); // 30 
+```
 
-      ```javascript
-      objectName["property"];
-      ```
+#### 3. Object Destructuring (ES6+)
+A modern way to extract multiple properties from an object and bind them directly to local variables.
+```javascript
+const user = { name: "John", age: 30 };
+const { name, age } = user;
+console.log(name); // "John"
+```
 
-      3. **Expression notation:** It uses expression in the square brackets
+#### Key Note
 
-      ```javascript
-      objectName[expression];
-      ```
+> Use Dot notation (`obj.prop`) for standard access, Bracket notation (`obj["prop"]`) for dynamic or special-character keys, and Destructuring (`const { prop } = obj`) to extract data into variables.
 
-    **[⬆ Back to Top](#table-of-contents)**
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 226. ### What are the function parameter rules
 
-      JavaScript functions follow below rules for parameters,
+JavaScript functions are extremely flexible regarding parameters, which can be both an advantage and a source of bugs if not handled carefully.
 
-      1. The function definitions do not specify data types for parameters.
-      2. Do not perform type checking on the passed arguments.
-      3. Do not check the number of arguments received.
-         i.e, The below function follows the above rules,
+#### Core Rules & Behaviors
+1. **No Type Checking:** Function definitions do not specify data types. You can pass a string to a parameter intended for a number, and the engine won't stop you.
+2. **No Arity Checking:** You can pass more arguments than the function expects (excess arguments are ignored but available in the `arguments` object) or fewer arguments than expected (missing parameters default to `undefined`).
+3. **Pass-by-Value vs Reference:** Primitive parameters are passed by value (a copy). Object and Array parameters are passed by "copy of a reference" (mutating the object inside the function mutates the original outside).
 
-      ```javascript
-      function functionName(parameter1, parameter2, parameter3) {
-        console.log(parameter1); // 1
-      }
-      functionName(1);
-      ```
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+function calculate(param1, parameter2) {
+  console.log(param1);    // 10
+  console.log(parameter2); // undefined (because it was missing)
+}
+
+// Allowed in JS without errors
+calculate(10); 
+calculate(10, 20, 30); // 30 is ignored
+```
+
+#### Key Note
+
+> JavaScript functions do not enforce parameter data types or the number of arguments passed. Missing arguments evaluate to `undefined`, while excess arguments are safely ignored.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 227. ### What is an error object
 
-      An error object is a built in error object that provides error information when an error occurs. It has two properties: name and message. For example, the below function logs error details,
+The **`Error` object** is a built-in object in JavaScript that provides detailed information when an error occurs during runtime.
 
-      ```javascript
-      try {
-        greeting("Welcome");
-      } catch (err) {
-        console.log(err.name + "<br>" + err.message);
-      }
-      ```
+When code throws an error (or you manually `throw new Error()`), an instance of the Error object is generated. It typically contains two main properties:
+1. **`name`**: The type/category of the error (e.g., `TypeError`, `SyntaxError`).
+2. **`message`**: A human-readable description of what went wrong.
+*(It also usually contains a `stack` property tracing the execution path that led to the error).*
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example
+
+```javascript
+try {
+  // Deliberately calling an undefined function
+  fakeFunction(); 
+} catch (error) {
+  console.log("Error Name:", error.name);       // "ReferenceError"
+  console.log("Error Message:", error.message); // "fakeFunction is not defined"
+}
+```
+
+#### Key Note
+
+> The `Error` object is instantiated whenever an exception occurs, capturing vital debugging information inside its `name`, `message`, and `stack` properties.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 228. ### When do you get a syntax error
 
-      A SyntaxError is thrown if you try to evaluate code with a syntax error. For example, the below missing quote for the function parameter throws a syntax error
+A **`SyntaxError`** is thrown when the JavaScript engine encounters code that violates the fundamental grammatical rules of the language.
 
-      ```javascript
-      try {
-        eval("greeting('welcome)"); // Missing ' will produce an error
-      } catch (err) {
-        console.log(err.name);
-      }
-      ```
+Because syntax errors indicate that the code cannot even be parsed, they usually halt the execution of the entire script immediately, before the code actually runs. (The exception is when parsing happens dynamically, such as using `eval` or `JSON.parse`).
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Common Causes
+* Missing quotes, brackets, or parentheses.
+* Using reserved keywords improperly.
+* Trailing commas in JSON.
+
+#### Example
+
+```javascript
+// ❌ This will stop the script immediately before running
+// const x = [1, 2, 3 ; 
+
+try {
+  // Dynamically evaluating bad syntax
+  eval("console.log('Hello)"); // Missing closing quote
+} catch (err) {
+  console.log(err.name); // "SyntaxError"
+}
+```
+
+#### Key Note
+
+> A `SyntaxError` occurs when code violates JavaScript's grammatical rules (like missing brackets or quotes), preventing the engine from parsing and executing the script.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 229. ### What are the different error names from error object
 
-      There are 7 different types of error names returned from error object,
-      | Error Name | Description |
-      |---- | ---------
-      | `AggregateError` | An error indicating that multiple errors occurred |
-      | `EvalError` | An error has occurred in the eval() function |
-      | `RangeError` | An error has occurred with a number "out of range" |
-      | `ReferenceError` | An error due to an illegal reference|
-      | `SyntaxError` | An error due to a syntax error|
-      | `TypeError` | An error due to a type error |
-      | `URIError` | An error due to encodeURI() |
+JavaScript categorizes exceptions into several core `Error` object constructors depending on the specific nature of the failure.
 
-    **[⬆ Back to Top](#table-of-contents)**
+| Error Name | Description | Common Cause |
+| :--- | :--- | :--- |
+| **`Error`** | Generic base error object. | Manually thrown via `new Error()`. |
+| **`SyntaxError`** | Code violates JS grammar. | Missing brackets/quotes. |
+| **`ReferenceError`** | Illegal reference to a variable. | Using a variable that is not declared. |
+| **`TypeError`** | Value is not the expected type. | Calling a method on `undefined` or trying to invoke a string as a function. |
+| **`RangeError`** | A number is out of its allowable range. | Passing a negative length to an Array constructor or excessive recursion. |
+| **`URIError`** | Malformed URI handling. | Passing an invalid string to `decodeURIComponent()`. |
+| **`EvalError`** | Error in the `eval()` function. | *(Largely deprecated/unused in modern JS)* |
+| **`AggregateError`** | Multiple errors wrapped in one. | `Promise.any()` failing all promises. |
+
+#### Key Note
+
+> JavaScript provides specific error types like `TypeError` (wrong data type), `ReferenceError` (undeclared variable), and `SyntaxError` (bad grammar) to help developers quickly identify the cause of a crash.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 230. ### What are the various statements in error handling
 
-      Below are the list of statements used in an error handling,
+Robust error handling in JavaScript relies on a combination of four distinct statements that manage the flow of code when exceptions occur.
 
-      1. **try:** This statement is used to test a block of code for errors
-      2. **catch:** This statement is used to handle the error
-      3. **throw:** This statement is used to create custom errors.
-      4. **finally:** This statement is used to execute code after try and catch regardless of the result.
+1. **`try`**: Wraps a block of code to test for errors during its execution.
+2. **`catch(error)`**: Executes a block of code to handle the error if one is thrown inside the `try` block.
+3. **`throw`**: Used by the developer to manually generate custom errors and halt the current function.
+4. **`finally`**: Executes a block of code regardless of whether an error occurred or not. It is generally used for cleanup tasks (like closing a database connection or hiding a loading spinner).
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Example
+
+```javascript
+function checkAge(age) {
+  try {
+    if (age < 18) {
+      throw new Error("User is too young."); // Manually trigger an error
+    }
+    console.log("Access granted.");
+  } catch (error) {
+    console.error("Access denied:", error.message); // Handle the error gracefully
+  } finally {
+    console.log("Age verification process complete."); // Always runs
+  }
+}
+
+checkAge(16);
+```
+
+#### Key Note
+
+> Use `try` to test code, `catch` to handle failures, `throw` to create custom exceptions, and `finally` to run cleanup logic regardless of the outcome.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 231. ### What are the two types of loops in javascript
 
-      1. **Entry Controlled loops:** In this kind of loop type, the test condition is tested before entering the loop body. For example, For Loop and While Loop comes under this category.
-      2. **Exit Controlled Loops:** In this kind of loop type, the test condition is tested or evaluated at the end of the loop body. i.e, the loop body will execute at least once irrespective of test condition true or false. For example, do-while loop comes under this category.
+Loops in JavaScript (and programming in general) can be categorized based on *when* they evaluate their test condition.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### 1. Entry-Controlled Loops
+The condition is tested **before** entering the loop body. If the condition is false initially, the loop body will *never* execute.
+* **Examples:** `for` loop, `while` loop.
+```javascript
+let x = 10;
+// Condition is false immediately, body never runs.
+while (x < 5) {
+  console.log(x); 
+}
+```
+
+#### 2. Exit-Controlled Loops
+The condition is tested **after** executing the loop body. This guarantees that the loop body will execute **at least once**, even if the condition evaluates to false.
+* **Examples:** `do...while` loop.
+```javascript
+let y = 10;
+do {
+  console.log(y); // Output: 10 (It runs once!)
+} while (y < 5);  // Checks condition at the end
+```
+
+#### Key Note
+
+> Entry-controlled loops (`for`, `while`) check the condition before running, meaning they might not run at all. Exit-controlled loops (`do...while`) check the condition at the end, guaranteeing at least one execution.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 232. ### What is nodejs
 
-      Node.js is a server-side platform built on Chrome's JavaScript runtime for easily building fast and scalable network applications. It is an event-based, non-blocking, asynchronous I/O runtime that uses Google's V8 JavaScript engine and libuv library.
+**Node.js** is an open-source, cross-platform, back-end JavaScript runtime environment. 
 
-    **[⬆ Back to Top](#table-of-contents)**
+It executes JavaScript code outside of a web browser. Historically, JavaScript was used primarily for client-side scripting (in the browser). Node.js allowed developers to use JavaScript to write command line tools and for server-side scripting (running scripts server-side to produce dynamic web page content before the page is sent to the user's web browser).
+
+#### Core Characteristics
+* **V8 Engine:** Built on Google Chrome's highly optimized V8 JavaScript engine.
+* **Asynchronous & Non-Blocking:** All APIs of the Node.js library are asynchronous. It never waits for an API to return data, moving on to the next task immediately, making it highly scalable for I/O heavy tasks.
+* **Single-Threaded but Highly Scalable:** Uses a single-threaded model with event looping.
+
+#### Key Note
+
+> Node.js is a runtime environment that allows JavaScript to be executed on the server-side, utilizing a non-blocking, event-driven architecture to build highly scalable backend applications.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 233. ### What is the Intl object
 
-      The `Intl` object is the namespace for the ECMAScript Internationalization API, which provides language sensitive string comparison, number formatting, and date and time formatting. It provides access to several constructors and language sensitive functions.
+The **`Intl`** object is the global namespace for the ECMAScript Internationalization API. 
 
-    **[⬆ Back to Top](#table-of-contents)**
+Building global applications requires formatting numbers, dates, and strings according to local cultural conventions. The `Intl` object provides robust, language-sensitive formatters, eliminating the need for heavy third-party libraries like `moment.js` for basic formatting.
+
+#### Core Constructors provided by `Intl`
+* **`Intl.DateTimeFormat`**: Formatting dates and times.
+* **`Intl.NumberFormat`**: Formatting numbers, currencies, and percentages.
+* **`Intl.Collator`**: Language-sensitive string comparison (sorting).
+* **`Intl.RelativeTimeFormat`**: Formatting relative time (e.g., "3 days ago").
+
+#### Example: Currency Formatting
+
+```javascript
+const price = 12345.67;
+
+// Format for US Dollars
+const usFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+console.log(usFormat); // "$12,345.67"
+
+// Format for German Euros
+const deFormat = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(price);
+console.log(deFormat); // "12.345,67 €"
+```
+
+#### Key Note
+
+> The `Intl` object is a built-in API providing language-sensitive string comparison, number formatting (currencies), and date/time formatting to easily support internationalization in applications.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 234. ### How do you perform language specific date and time formatting
 
-      You can use the `Intl.DateTimeFormat` object which is a constructor for objects that enable language-sensitive date and time formatting. Let's see this behavior with an example,
+You perform language-specific date formatting using the **`Intl.DateTimeFormat()`** constructor. It accepts a locale string (e.g., `"en-US"`, `"en-GB"`, `"ja-JP"`) and an optional configuration object to specify exactly how the date should be presented.
 
-      ```javascript
-      var date = new Date(Date.UTC(2019, 07, 07, 3, 0, 0));
-      console.log(new Intl.DateTimeFormat("en-GB").format(date)); // 07/08/2019
-      console.log(new Intl.DateTimeFormat("en-AU").format(date)); // 07/08/2019
-      ```
+#### Example
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+const date = new Date(Date.UTC(2026, 6, 7, 3, 0, 0)); // July 7, 2026
+
+// British English Format (DD/MM/YYYY)
+console.log(new Intl.DateTimeFormat("en-GB").format(date)); // "07/07/2026"
+
+// US English Format (MM/DD/YYYY)
+console.log(new Intl.DateTimeFormat("en-US").format(date)); // "7/7/2026"
+
+// Verbose Japanese Format with options
+const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+console.log(new Intl.DateTimeFormat("ja-JP", options).format(date)); 
+// "2026年7月7日火曜日"
+```
+
+#### Key Note
+
+> Instantiate `new Intl.DateTimeFormat('locale')` and call its `.format(date)` method to securely and accurately format dates according to local cultural standards without relying on external libraries.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 235. ### What is an Iterator
 
-      An iterator is an object which defines a sequence and a return value upon its termination. It implements the Iterator protocol with a `next()` method which returns an object with two properties: `value` (the next value in the sequence) and `done` (which is true if the last value in the sequence has been consumed).
+An **Iterator** is an object in JavaScript that is designed to traverse a sequence of data (like an array or custom collection) one item at a time. 
 
-    **[⬆ Back to Top](#table-of-contents)**
+It implements the **Iterator Protocol**, which dictates that the object must have a `next()` method. 
+
+When `next()` is called, it returns a specific "IteratorResult" object containing two properties:
+1. **`value`**: The actual data element in the sequence.
+2. **`done`**: A boolean that is `false` while iterating, and becomes `true` when the final element in the sequence has been consumed.
+
+#### Key Note
+
+> An iterator is an object containing a `next()` method that traverses a sequence of data, returning `{ value: data, done: boolean }` upon each call.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 236. ### How does synchronous iteration works
 
-      Synchronous iteration was introduced in ES6 and it works with below set of components,
+Synchronous iteration (introduced in ES6) is the mechanism that powers modern loops like `for...of` and the spread operator `...`. It involves three distinct but connected components working together.
 
-      **Iterable:** It is an object which can be iterated over via a method whose key is Symbol.iterator.
+#### The Three Components
+1. **The Iterable:** An object (like an Array, Map, or String) that has a special method assigned to the `[Symbol.iterator]` key. This method's job is to create and return an Iterator.
+2. **The Iterator:** The object returned by the iterable. It contains the `next()` method responsible for keeping track of the current position in the sequence.
+3. **The IteratorResult:** The object returned every time `next()` is called (`{ value: any, done: boolean }`).
 
-      **Iterator:** It is an object returned by invoking `[Symbol.iterator]()` on an iterable. This iterator object wraps each iterated element in an object and returns it via `next()` method one by one.
+#### Example: Manual Iteration Under the Hood
 
-      **IteratorResult:** It is an object returned by `next()` method. The object contains two properties; the `value` property contains an iterated element and the `done` property determines whether the element is the last element or not.
+```javascript
+const myIterableArray = ["apple", "banana"];
 
-      Let's demonstrate synchronous iteration with an array as below
+// 1. Get the iterator from the iterable
+const iterator = myIterableArray[Symbol.iterator]();
 
-      ```javascript
-      const iterable = ["one", "two", "three"];
-      const iterator = iterable[Symbol.iterator]();
-      console.log(iterator.next()); // { value: 'one', done: false }
-      console.log(iterator.next()); // { value: 'two', done: false }
-      console.log(iterator.next()); // { value: 'three', done: false }
-      console.log(iterator.next()); // { value: 'undefined, done: true }
-      ```
+// 2. Call next() to get IteratorResult objects
+console.log(iterator.next()); // { value: "apple", done: false }
+console.log(iterator.next()); // { value: "banana", done: false }
+console.log(iterator.next()); // { value: undefined, done: true }
+```
+*(When you write `for (const fruit of myIterableArray)`, the JavaScript engine runs the exact code shown above behind the scenes).*
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Key Note
+
+> Synchronous iteration works by calling an object's `[Symbol.iterator]()` method to generate an iterator, then repeatedly calling `next()` on that iterator until it returns `done: true`.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 237. ### What is the event loop
 
-      The event loop is a process that continuously monitors both the call stack and the event queue and checks whether or not the call stack is empty. If the call stack is empty and there are pending events in the event queue, the event loop dequeues the event from the event queue and pushes it to the call stack. The call stack executes the event, and any additional events generated during the execution are added to the end of the event queue.
+The **Event Loop** is the core mechanism that allows Node.js and the Browser to perform non-blocking, asynchronous operations, despite JavaScript being a fundamentally single-threaded language.
 
-      **Note:** The event loop allows Node.js to perform non-blocking I/O operations, even though JavaScript is single-threaded, by offloading operations to the system kernel whenever possible. Since most modern kernels are multi-threaded, they can handle multiple operations executing in the background.
+#### How it works:
+JavaScript executes code synchronously in the **Call Stack**. However, when an asynchronous operation occurs (like fetching data, reading a file, or a `setTimeout`), it is handed off to the browser's Web APIs (or Node's C++ APIs) to run in the background.
 
-    **[⬆ Back to Top](#table-of-contents)**
+When that background task finishes, its callback function is pushed into the **Event Queue** (or Callback Queue). 
+
+The **Event Loop** is a continuous process that asks one question endlessly: *"Is the Call Stack currently empty?"*
+* If the stack is NOT empty, it waits.
+* If the stack IS empty, the Event Loop takes the first callback waiting in the Event Queue and pushes it onto the Call Stack to be executed.
+
+#### Key Note
+
+> The Event Loop is the orchestration mechanism that monitors the Call Stack and the Event Queue. When the stack is empty, it pushes waiting asynchronous callbacks from the queue onto the stack for execution.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 238. ### What is the call stack
 
-      Call Stack is a data structure for javascript interpreters to keep track of function calls(creates execution context) in the program. It has two major actions,
+The **Call Stack** is a fundamental data structure used by the JavaScript engine to keep track of its place in the execution of a program. It follows a **LIFO (Last In, First Out)** principle.
 
-      1. Whenever you call a function for its execution, you are pushing it to the stack.
-      2. Whenever the execution is completed, the function is popped out of the stack.
+#### How it works:
+1. When a script starts, the global execution context is pushed onto the stack.
+2. Whenever a function is invoked, an execution context for that function is pushed onto the top of the stack.
+3. If that function calls another function, the new function is pushed on top of it.
+4. When a function finishes executing (returns), it is popped off the top of the stack, and execution resumes where the code left off below it.
 
-      Let's take an example and it's state representation in a diagram format
+#### Example
 
-      ```javascript
-      function hungry() {
-        eatFruits();
-      }
-      function eatFruits() {
-        return "I'm eating fruits";
-      }
+```javascript
+function multiply(x, y) {
+  return x * y; // 3. Executed and popped off stack
+}
 
-      // Invoke the `hungry` function
-      hungry();
-      ```
+function printSquare(x) {
+  const result = multiply(x, x); // 2. Pushes multiply() onto stack
+  console.log(result);           // 4. Executed and popped off stack
+}
 
-      The above code processed in a call stack as below,
+printSquare(5); // 1. Pushes printSquare() onto stack
+```
 
-      3. Add the `hungry()` function to the call stack list and execute the code.
-      4. Add the `eatFruits()` function to the call stack list and execute the code.
-      5. Delete the `eatFruits()` function from our call stack list.
-      6. Delete the `hungry()` function from the call stack list since there are no items anymore.
+*(If functions call each other infinitely without returning, the stack runs out of memory, resulting in a "Maximum call stack size exceeded" error — a Stack Overflow).*
 
-      ![Screenshot](images/call-stack.png)
+#### Key Note
 
-    **[⬆ Back to Top](#table-of-contents)**
+> The Call Stack is a LIFO data structure that the JavaScript interpreter uses to keep track of function execution contexts; pushing functions on invocation and popping them off upon completion.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 239. ### What is the event queue
 
-      The event queue follows the queue data structure. It stores async callbacks to be added to the call stack. It is also known as the Callback Queue or Macrotask Queue.
+The **Event Queue** (also known as the Callback Queue or Macrotask Queue) is a data structure that temporarily stores the callback functions of completed asynchronous operations. It follows a **FIFO (First In, First Out)** principle.
 
-      Whenever the call stack receives an async function, it is moved into the Web API. Based on the function, Web API executes it and awaits the result. Once it is finished, it moves the callback into the event queue (the callback of a promise is moved into the microtask queue).
+#### The Flow
+When an async Web API task (like a `setTimeout` delay or an HTTP request) finishes its background work, it doesn't just interrupt the main thread immediately. Instead, it places its callback function at the back of the Event Queue. 
 
-      The event loop constantly checks whether or not the call stack is empty. Once the call stack is empty and there is a callback in the event queue, the event loop moves the callback into the call stack. But if there is a callback in the microtask queue as well, it is moved first. The microtask queue has a higher priority than the event queue.
+The Event Queue politely waits until the Event Loop signals that the main Call Stack is completely empty before sending its callbacks forward for execution.
 
-    **[⬆ Back to Top](#table-of-contents)**
+#### Macrotasks vs Microtasks
+There are actually two queues:
+1. **Macrotask Queue:** Holds standard callbacks like `setTimeout`, `setInterval`, and DOM events.
+2. **Microtask Queue:** Holds Promises (`.then()`) and MutationObservers. 
+*The Event Loop strictly prioritizes the Microtask queue; it will empty the entire Microtask queue before executing a single Macrotask.*
+
+#### Key Note
+
+> The Event Queue stores the callback functions of completed asynchronous tasks, holding them in a FIFO line until the Event Loop confirms the Call Stack is empty and ready to execute them.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 240. ### What is a decorator
 
-      A decorator is an expression that evaluates to a function and that takes the target, name, and decorator descriptor as arguments. Also, it optionally returns a decorator descriptor to install on the target object. Let's define admin decorator for user class at design time,
+A **Decorator** is an advanced programming pattern and a proposed JavaScript feature (currently used heavily in TypeScript and frameworks like Angular or NestJS) that allows you to modify or observe the behavior of classes, methods, or properties at design time.
 
-      ```javascript
-      function admin(isAdmin) {
-         return function(target) {
-             target.isAdmin = isAdmin;
-         }
-      }
+It is essentially a function that wraps another piece of code (like a class or a method) to extend its functionality declaratively, using the `@` syntax.
 
-      @admin(true)
-      class User() {
-      }
-      console.log(User.isAdmin); //true
+#### Example: Class Decorator
 
-       @admin(false)
-       class User() {
-       }
-       console.log(User.isAdmin); //false
-      ```
+Imagine we want to easily add a timestamp to various classes when they are defined.
 
-    **[⬆ Back to Top](#table-of-contents)**
+```javascript
+// 1. Define the decorator function
+function withTimestamp(targetClass) {
+  // Add a static property to the target class
+  targetClass.createdAt = new Date();
+}
+
+// 2. Apply it using the @ symbol
+@withTimestamp
+class User {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+// The class was modified by the decorator!
+console.log(User.createdAt); 
+```
+
+#### Key Note
+
+> A Decorator (`@decoratorName`) is an expression that evaluates to a function, allowing you to intercept and modify the behavior or properties of classes and methods declaratively.
+
+
+  **[⬆ Back to Top](#table-of-contents)**
 
 241. ### What are the properties of the Intl object
 
