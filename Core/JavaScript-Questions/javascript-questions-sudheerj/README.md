@@ -11296,1182 +11296,13384 @@ function capitalizeFirstLetter(
 
 **[⬆ Back to Top](#table-of-contents)**
 
-131. ### What are the pros and cons of for loops
+131. ### What are the pros and cons of `for` loops?
 
-      The for-loop is a commonly used iteration syntax in javascript. It has both pros and cons
+The **`for` loop** is one of the most commonly used iteration constructs in JavaScript. It provides fine-grained control over the iteration process but also comes with some drawbacks.
 
-      #### Pros
+#### Syntax
 
-      1. Works on every environment
-      2. You can use break and continue flow control statements
+```javascript id="for1"
+for (
+  let i = 0;
+  i < 5;
+  i++
+) {
+  console.log(i);
+}
+```
 
-      #### Cons
+---
 
-      3. Too verbose
-      4. Imperative
-      5. You might face off-by-one errors.
+## Pros
+
+### 1. Works in All JavaScript Environments
+
+The `for` loop has been part of JavaScript since its early versions and is supported in all browsers and JavaScript runtimes.
+
+```javascript id="for2"
+for (
+  let i = 0;
+  i < 3;
+  i++
+) {
+  console.log(i);
+}
+```
+
+### 2. Supports `break` and `continue`
+
+You can control the loop flow using:
+
+* `break` – exits the loop completely.
+* `continue` – skips the current iteration.
+
+```javascript id="for3"
+for (
+  let i = 1;
+  i <= 5;
+  i++
+) {
+  if (i === 3) {
+    continue;
+  }
+
+  if (i === 5) {
+    break;
+  }
+
+  console.log(i);
+}
+```
+
+**Output:**
+
+```text id="for4"
+1
+2
+4
+```
+
+### 3. Fine-Grained Control
+
+You have explicit control over:
+
+* Initialization
+* Condition checking
+* Increment/decrement logic
+
+```javascript id="for5"
+for (
+  let i = 10;
+  i > 0;
+  i -= 2
+) {
+  console.log(i);
+}
+```
+
+### 4. Efficient for Index-Based Operations
+
+Useful when you need direct access to array indices.
+
+```javascript id="for6"
+const arr = ["a", "b", "c"];
+
+for (
+  let i = 0;
+  i < arr.length;
+  i++
+) {
+  console.log(i, arr[i]);
+}
+```
+
+---
+
+## Cons
+
+### 1. Verbose Syntax
+
+A `for` loop requires multiple components, making it more verbose than modern alternatives.
+
+```javascript id="for7"
+for (
+  let i = 0;
+  i < arr.length;
+  i++
+) {
+  console.log(arr[i]);
+}
+```
+
+Compared to:
+
+```javascript id="for8"
+arr.forEach((item) => {
+  console.log(item);
+});
+```
+
+### 2. Imperative Style
+
+`for` loops focus on **how** to perform an operation rather than **what** needs to be done.
+
+```javascript id="for9"
+let doubled = [];
+
+for (
+  let i = 0;
+  i < numbers.length;
+  i++
+) {
+  doubled.push(
+    numbers[i] * 2
+  );
+}
+```
+
+A declarative approach:
+
+```javascript id="for10"
+const doubled =
+  numbers.map(
+    (num) => num * 2
+  );
+```
+
+### 3. Prone to Off-by-One Errors
+
+Incorrect loop conditions can lead to bugs.
+
+```javascript id="for11"
+const arr = [1, 2, 3];
+
+for (
+  let i = 0;
+  i <= arr.length;
+  i++
+) {
+  console.log(arr[i]);
+}
+```
+
+**Output:**
+
+```text id="for12"
+1
+2
+3
+undefined
+```
+
+The condition should be:
+
+```javascript id="for13"
+i < arr.length
+```
+
+### 4. Manual Index Management
+
+Developers must explicitly maintain the loop counter.
+
+```javascript id="for14"
+for (
+  let i = 0;
+  i < arr.length;
+  i++
+) {
+  // manage i manually
+}
+```
+
+Modern alternatives abstract this away.
+
+---
+
+## Comparison with Modern Alternatives
+
+| Feature                   | `for` Loop | `for...of`      | `forEach()` |
+| ------------------------- | ---------- | --------------- | ----------- |
+| Browser Support           | Excellent  | ES6+            | ES5+        |
+| Access to Index           | ✅ Yes      | ❌ No (directly) | ✅ Yes       |
+| `break` Support           | ✅ Yes      | ✅ Yes           | ❌ No        |
+| `continue` Support        | ✅ Yes      | ✅ Yes           | ❌ No        |
+| Declarative Style         | ❌ No       | ⚠️ Partial      | ✅ Yes       |
+| Risk of Off-by-One Errors | ✅ Yes      | ❌ No            | ❌ No        |
+
+---
+
+#### Key Point
+
+> The `for` loop is a powerful and universally supported iteration construct that provides explicit control over the looping process and supports flow-control statements such as `break` and `continue`. However, it is more verbose, follows an imperative style, and is susceptible to off-by-one errors compared to modern iteration techniques such as `for...of`, `forEach()`, and array methods like `map()` and `filter()`.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-132. ### How do you display the current date in javascript
+132. ### How do you display the current date in JavaScript?
 
-      You can use `new Date()` to generate a new Date object containing the current date and time. For example, let's display the current date in mm/dd/yyyy
+You can use the **`Date`** object to get the current date and time. Calling `new Date()` creates a `Date` instance representing the current date and time according to the user's local timezone.
 
-      ```javascript
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, "0");
-      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-      var yyyy = today.getFullYear();
+#### Example: Display Current Date in `MM/DD/YYYY` Format
 
-      today = mm + "/" + dd + "/" + yyyy;
-      document.write(today);
-      ```
+```javascript id="date1"
+const today = new Date();
+
+const dd = String(
+  today.getDate()
+).padStart(2, "0");
+
+const mm = String(
+  today.getMonth() + 1
+).padStart(2, "0");
+// January is 0
+
+const yyyy =
+  today.getFullYear();
+
+const formattedDate =
+  `${mm}/${dd}/${yyyy}`;
+
+console.log(formattedDate);
+```
+
+**Example Output:**
+
+```text id="date2"
+06/13/2026
+```
+
+#### Explanation
+
+```javascript id="date3"
+today.getDate();      // Day of the month (1–31)
+
+today.getMonth();     // Month (0–11)
+
+today.getFullYear();  // Four-digit year
+```
+
+> **Note:** `getMonth()` returns values from `0` to `11`, where `0` represents January and `11` represents December. Therefore, `1` is added to get the actual month number.
+
+#### Alternative: Using `toLocaleDateString()`
+
+For locale-aware formatting:
+
+```javascript id="date4"
+const today = new Date();
+
+console.log(
+  today.toLocaleDateString(
+    "en-US"
+  )
+);
+```
+
+**Output (US format):**
+
+```text id="date5"
+6/13/2026
+```
+
+You can customize the format:
+
+```javascript id="date6"
+const options = {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+};
+
+console.log(
+  today.toLocaleDateString(
+    "en-US",
+    options
+  )
+);
+```
+
+#### Avoid Using `document.write()`
+
+Instead of:
+
+```javascript id="date7"
+document.write(formattedDate);
+```
+
+Prefer:
+
+```javascript id="date8"
+document.getElementById(
+  "date"
+).textContent =
+  formattedDate;
+```
+
+```html id="date9"
+<p id="date"></p>
+```
+
+`document.write()` can overwrite the entire page if executed after the document has finished loading.
+
+#### Key Point
+
+> You can display the current date in JavaScript by creating a new `Date` object using `new Date()` and extracting the required components using methods such as `getDate()`, `getMonth()`, and `getFullYear()`. For locale-specific formatting, `toLocaleDateString()` provides a more flexible and modern approach.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-133. ### How do you compare two date objects
+133. ### How do you compare two `Date` objects?
 
-      You need to use date.getTime() method in order to compare unix timestamp values
+In JavaScript, **`Date` objects cannot be compared directly using `===` or `==`** because they are objects, and object comparison checks **reference equality**, not whether they represent the same date and time.
 
-      ```javascript
-      var d1 = new Date();
-      var d2 = new Date(d1);
-      console.log(d1.getTime() === d2.getTime()); //True
-      console.log(d1 === d2); // False
-      ```
+To compare the actual date values, you should use the **`getTime()`** method, which returns the number of milliseconds elapsed since **January 1, 1970, 00:00:00 UTC** (Unix timestamp).
+
+#### Example
+
+```javascript id="dc1"
+const d1 = new Date();
+
+const d2 = new Date(d1);
+
+console.log(
+  d1.getTime() ===
+  d2.getTime()
+); // true
+
+console.log(
+  d1 === d2
+); // false
+```
+
+#### Why Does `===` Return `false`?
+
+```javascript id="dc2"
+const d1 = new Date();
+
+const d2 = new Date(d1);
+```
+
+Although `d1` and `d2` represent the **same point in time**, they are **different object instances**.
+
+```javascript id="dc3"
+console.log(d1 === d2);
+```
+
+**Output:**
+
+```text id="dc4"
+false
+```
+
+Object comparison checks memory references:
+
+```text id="dc5"
+d1 ──► Date Object A
+d2 ──► Date Object B
+```
+
+Since they reference different objects, the result is `false`.
+
+#### Comparing Date Values
+
+```javascript id="dc6"
+console.log(
+  d1.getTime() ===
+  d2.getTime()
+);
+```
+
+**Output:**
+
+```text id="dc7"
+true
+```
+
+Because `getTime()` returns primitive numeric values, the timestamps can be compared directly.
+
+#### Using Relational Operators
+
+You can also compare dates chronologically:
+
+```javascript id="dc8"
+const date1 =
+  new Date("2025-01-01");
+
+const date2 =
+  new Date("2026-01-01");
+
+console.log(date1 < date2); // true
+console.log(date1 > date2); // false
+```
+
+This works because `Date` objects are automatically converted to their numeric timestamp values.
+
+#### Alternative Using `valueOf()`
+
+`valueOf()` returns the same timestamp as `getTime()`.
+
+```javascript id="dc9"
+console.log(
+  d1.valueOf() ===
+  d2.valueOf()
+); // true
+```
+
+#### Summary
+
+| Comparison                      | Result                            |
+| ------------------------------- | --------------------------------- |
+| `d1 === d2`                     | Compares object references        |
+| `d1.getTime() === d2.getTime()` | Compares actual date/time values  |
+| `d1 < d2`                       | Checks if `d1` occurs before `d2` |
+| `d1 > d2`                       | Checks if `d1` occurs after `d2`  |
+
+#### Key Point
+
+> To compare two `Date` objects in JavaScript, use `getTime()` (or `valueOf()`) to compare their timestamp values. Using `===` compares object references rather than the actual date and time represented by the objects.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-134. ### How do you check if a string starts with another string
+134. ### How do you check if a string starts with another string?
 
-      You can use ECMAScript 6's `String.prototype.startsWith()` method to check if a string starts with another string or not. But it is not yet supported in all browsers. Let's see an example to see this usage,
+You can use the **`String.prototype.startsWith()`** method to determine whether a string begins with a specified substring.
 
-      ```javascript
-      "Good morning".startsWith("Good"); // true
-      "Good morning".startsWith("morning"); // false
-      ```
+#### Syntax
+
+```javascript id="sw1"
+str.startsWith(
+  searchString,
+  position
+);
+```
+
+* **`searchString`** – The string to search for.
+* **`position`** *(optional)* – The position in the string at which to begin searching. The default value is `0`.
+
+#### Example
+
+```javascript id="sw2"
+console.log(
+  "Good morning".startsWith(
+    "Good"
+  )
+); // true
+
+console.log(
+  "Good morning".startsWith(
+    "morning"
+  )
+); // false
+```
+
+#### Using the `position` Parameter
+
+```javascript id="sw3"
+console.log(
+  "Good morning".startsWith(
+    "morning",
+    5
+  )
+); // true
+```
+
+Here, the search starts from index `5`:
+
+```text id="sw4"
+Good morning
+     ^
+     5
+```
+
+#### Case Sensitivity
+
+`startsWith()` is **case-sensitive**.
+
+```javascript id="sw5"
+console.log(
+  "Hello".startsWith("he")
+); // false
+
+console.log(
+  "Hello".startsWith("He")
+); // true
+```
+
+For a case-insensitive comparison:
+
+```javascript id="sw6"
+const str = "Hello";
+
+console.log(
+  str
+    .toLowerCase()
+    .startsWith("he")
+); // true
+```
+
+#### Alternative for Older Environments
+
+If `startsWith()` is unavailable, you can use `indexOf()`:
+
+```javascript id="sw7"
+const str = "Good morning";
+
+console.log(
+  str.indexOf("Good") === 0
+); // true
+```
+
+Or using `slice()`:
+
+```javascript id="sw8"
+const str = "Good morning";
+
+console.log(
+  str.slice(0, 4) === "Good"
+); // true
+```
+
+#### Browser Support
+
+`startsWith()` was introduced in **ECMAScript 2015 (ES6)** and is supported in all modern browsers.
+
+#### Key Point
+
+> The `String.prototype.startsWith()` method is the recommended way to check whether a string begins with a specified substring. It returns `true` if the string starts with the given text and `false` otherwise. For older JavaScript environments, similar behavior can be achieved using `indexOf()` or `slice()`.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-135. ### How do you trim a string in javascript
+135. ### How do you trim a string in JavaScript?
 
-      JavaScript provided a trim method on string types to trim any whitespaces present at the beginning or ending of the string.
+You can use the **`String.prototype.trim()`** method to remove whitespace characters from **both the beginning and the end** of a string.
 
-      ```javascript
-      "  Hello World   ".trim(); //Hello World
-      ```
+#### Example
 
-      If your browser(<IE9) doesn't support this method then you can use below polyfill.
+```javascript id="trim1"
+const str =
+  "  Hello World   ";
 
-      ```javascript
-      if (!String.prototype.trim) {
-        (function () {
-          // Make sure we trim BOM and NBSP
-          var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-          String.prototype.trim = function () {
-            return this.replace(rtrim, "");
-          };
-        })();
-      }
-      ```
+console.log(str.trim());
+```
 
-**[⬆ Back to Top](#table-of-contents)**
+**Output:**
 
-136. ### How do you add a key value pair in javascript
+```text id="trim2"
+Hello World
+```
 
-      There are two possible solutions to add new properties to an object.
+#### What Does `trim()` Remove?
 
-      Let's take a simple object to explain these solutions.
+`trim()` removes:
 
-      ```javascript
-      var object = {
-        key1: value1,
-        key2: value2,
+* Spaces (` `)
+* Tabs (`\t`)
+* Newline characters (`\n`)
+* Carriage returns (`\r`)
+* Other Unicode whitespace characters
+
+```javascript id="trim3"
+const str =
+  "\n\t Hello World \t\n";
+
+console.log(str.trim());
+```
+
+**Output:**
+
+```text id="trim4"
+Hello World
+```
+
+#### `trim()` Does Not Modify the Original String
+
+Strings are immutable in JavaScript.
+
+```javascript id="trim5"
+const str =
+  "  Hello  ";
+
+const trimmed =
+  str.trim();
+
+console.log(str); // "  Hello  "
+console.log(trimmed); // "Hello"
+```
+
+#### Related Methods
+
+JavaScript also provides methods to trim only one side of a string:
+
+```javascript id="trim6"
+const str =
+  "  Hello World  ";
+
+console.log(
+  str.trimStart()
+); // "Hello World  "
+
+console.log(
+  str.trimEnd()
+); // "  Hello World"
+```
+
+#### Polyfill for Older Browsers
+
+If you need to support older browsers (such as **Internet Explorer 8 and below**) that do not implement `trim()`, you can use the following polyfill:
+
+```javascript id="trim7"
+if (
+  !String.prototype.trim
+) {
+  (function () {
+    const rtrim =
+      /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+
+    String.prototype.trim =
+      function () {
+        return this.replace(
+          rtrim,
+          ""
+        );
       };
-      ```
+  })();
+}
+```
 
-      1. **Using dot notation:** This solution is useful when you know the name of the property
+#### How the Polyfill Works
 
-      ```javascript
-      object.key3 = "value3";
-      ```
+```javascript id="trim8"
+"  Hello World   ".replace(
+  /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
+  ""
+);
+```
 
-      2. **Using square bracket notation:** This solution is useful when the name of the property is dynamically determined or the key's name is non-JS like "user-name"
+* `^[\s\uFEFF\xA0]+` → Matches leading whitespace.
+* `[\s\uFEFF\xA0]+$` → Matches trailing whitespace.
+* `g` → Performs a global replacement.
 
-      ```javascript
-      obj["key3"] = "value3";
-      ```
+#### Key Point
 
-**[⬆ Back to Top](#table-of-contents)**
+> The `trim()` method removes whitespace characters from both the beginning and end of a string and returns a new string without modifying the original one. For older environments that do not support `trim()`, a regular expression-based polyfill can be used.
 
-137. ### Is the !-- notation represents a special operator
-
-      No,that's not a special operator. But it is a combination of 2 standard operators one after the other,
-
-      1. A logical not (!)
-      2. A prefix decrement (--)
-
-      At first, the value decremented by one and then tested to see if it is equal to zero or not for determining the truthy/falsy value.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-138. ### How do you assign default values to variables
+136. ### How do you add a key-value pair in JavaScript?
 
-      You can use the logical or operator `||` in an assignment expression to provide a default value. The syntax looks like as below,
+You can add new properties (key-value pairs) to a JavaScript object using either **dot notation** or **bracket notation**.
 
-      ```javascript
-      var a = b || c;
-      ```
+Let's start with an object:
 
-      As per the above expression, variable 'a 'will get the value of 'c' only if 'b' is falsy (if is null, false, undefined, 0, empty string, or NaN), otherwise 'a' will get the value of 'b'.
+```javascript id="kv1"
+const object = {
+  key1: "value1",
+  key2: "value2",
+};
+```
+
+#### 1. Using Dot Notation
+
+Use **dot notation** when you know the property name in advance and it is a valid JavaScript identifier.
+
+```javascript id="kv2"
+object.key3 = "value3";
+
+console.log(object);
+```
+
+**Output:**
+
+```javascript id="kv3"
+{
+  key1: "value1",
+  key2: "value2",
+  key3: "value3"
+}
+```
+
+#### 2. Using Bracket Notation
+
+Use **bracket notation** when:
+
+* The property name is determined dynamically.
+* The property name contains spaces or special characters.
+* The property name is stored in a variable.
+
+```javascript id="kv4"
+object["key4"] = "value4";
+
+console.log(object);
+```
+
+**Output:**
+
+```javascript id="kv5"
+{
+  key1: "value1",
+  key2: "value2",
+  key3: "value3",
+  key4: "value4"
+}
+```
+
+#### Dynamic Property Names
+
+```javascript id="kv6"
+const propertyName = "age";
+
+object[propertyName] = 25;
+
+console.log(object.age); // 25
+```
+
+#### Non-Standard Property Names
+
+Properties containing spaces or hyphens must use bracket notation.
+
+```javascript id="kv7"
+object["user-name"] =
+  "John";
+
+object["first name"] =
+  "John";
+
+console.log(
+  object["user-name"]
+);
+```
+
+#### Updating Existing Properties
+
+If the key already exists, its value is overwritten.
+
+```javascript id="kv8"
+object.key1 =
+  "newValue";
+
+console.log(object.key1);
+```
+
+**Output:**
+
+```text id="kv9"
+newValue
+```
+
+#### Using `Object.assign()`
+
+You can also add multiple properties at once:
+
+```javascript id="kv10"
+Object.assign(object, {
+  city: "London",
+  country: "UK",
+});
+```
+
+#### Using the Spread Operator (Immutable Approach)
+
+```javascript id="kv11"
+const updatedObject = {
+  ...object,
+  city: "London",
+};
+
+console.log(updatedObject);
+```
+
+This creates a **new object** instead of modifying the original one.
+
+#### Key Point
+
+> You can add a key-value pair to a JavaScript object using **dot notation** (`obj.key = value`) when the property name is known and valid, or **bracket notation** (`obj[key] = value`) when the property name is dynamic or contains special characters. If the property already exists, its value is updated.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-139. ### How do you define multiline strings
+137. ### Does the `!--` notation represent a special operator?
 
-      You can define multiline string literals using the '\n' character followed by line terminator('\').
+**No, `!--` is not a special JavaScript operator.** It is simply a combination of two existing unary operators used together:
 
-      ```javascript
-      var str = "This is a \n very lengthy \n sentence!";
-      console.log(str);
-      ```
+1. **Logical NOT (`!`)**
+2. **Prefix decrement (`--`)**
 
-      But if you have a space after the '\n' character, there will be indentation inconsistencies.
+The expression is parsed as:
+
+```javascript
+!(--value)
+```
+
+#### Example
+
+```javascript id="not1"
+let count = 2;
+
+console.log(!--count);
+console.log(count);
+```
+
+#### Step-by-Step Evaluation
+
+```javascript id="not2"
+// Initial value
+count = 2;
+
+// Prefix decrement
+--count; // 1
+
+// Logical NOT
+!1; // false
+```
+
+**Output:**
+
+```text id="not3"
+false
+1
+```
+
+#### Another Example
+
+```javascript id="not4"
+let count = 1;
+
+console.log(!--count);
+console.log(count);
+```
+
+#### Evaluation
+
+```javascript id="not5"
+// Initial value
+count = 1;
+
+// Prefix decrement
+--count; // 0
+
+// Logical NOT
+!0; // true
+```
+
+**Output:**
+
+```text id="not6"
+true
+0
+```
+
+#### Common Usage
+
+This pattern is sometimes seen in loops:
+
+```javascript id="not7"
+let count = 3;
+
+while (count) {
+  console.log(count);
+
+  if (!--count) {
+    console.log("Done");
+  }
+}
+```
+
+However, this style is generally considered **less readable** than writing the operations explicitly.
+
+#### Equivalent Code
+
+Instead of:
+
+```javascript id="not8"
+if (!--count) {
+  // ...
+}
+```
+
+You can write:
+
+```javascript id="not9"
+--count;
+
+if (!count) {
+  // ...
+}
+```
+
+which is often easier to understand.
+
+#### Important Note
+
+The expression:
+
+```javascript
+!--value
+```
+
+is **different from**:
+
+```javascript
+!value--
+```
+
+because:
+
+* `!--value` → decrement first, then apply logical NOT.
+* `!value--` → apply logical NOT to the current value, then decrement afterward (postfix decrement).
+
+#### Key Point
+
+> The `!--` notation is **not a special JavaScript operator**. It is interpreted as `!(--value)`, where the variable is first decremented using the prefix decrement operator (`--`) and then converted to a boolean and negated using the logical NOT operator (`!`).
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-140. ### What is an app shell model
+138. ### How do you assign default values to variables?
 
-      An application shell (or app shell) architecture is one way to build a Progressive Web App that reliably and instantly loads on your users' screens, similar to what you see in native applications. It is useful for getting some initial HTML to the screen fast without a network.
+There are several ways to assign default values in JavaScript.
+
+#### 1. Using the Logical OR (`||`) Operator
+
+You can use the **logical OR (`||`)** operator to provide a fallback value when the left-hand side is **falsy**.
+
+```javascript id="dv1"
+const a = b || c;
+```
+
+In this expression:
+
+* If `b` is **truthy**, `a` gets the value of `b`.
+* If `b` is **falsy**, `a` gets the value of `c`.
+
+Falsy values in JavaScript include:
+
+* `false`
+* `0`
+* `""` (empty string)
+* `null`
+* `undefined`
+* `NaN`
+
+#### Example
+
+```javascript id="dv2"
+const username = "";
+
+const displayName =
+  username || "Guest";
+
+console.log(displayName);
+```
+
+**Output:**
+
+```text id="dv3"
+Guest
+```
+
+#### Limitation of `||`
+
+Sometimes values like `0` or `""` are valid and should **not** be replaced by the default value.
+
+```javascript id="dv4"
+const count = 0;
+
+const result =
+  count || 10;
+
+console.log(result);
+```
+
+**Output:**
+
+```text id="dv5"
+10
+```
+
+Even though `0` is a valid value, it is treated as falsy.
+
+---
+
+### 2. Using the Nullish Coalescing Operator (`??`) ✅ Recommended
+
+The **nullish coalescing operator (`??`)** assigns the default value **only when the left-hand side is `null` or `undefined`**.
+
+```javascript id="dv6"
+const a = b ?? c;
+```
+
+#### Example
+
+```javascript id="dv7"
+const count = 0;
+
+const result =
+  count ?? 10;
+
+console.log(result);
+```
+
+**Output:**
+
+```text id="dv8"
+0
+```
+
+Another example:
+
+```javascript id="dv9"
+const username =
+  null;
+
+const displayName =
+  username ?? "Guest";
+
+console.log(displayName);
+```
+
+**Output:**
+
+```text id="dv10"
+Guest
+```
+
+---
+
+### 3. Using Default Function Parameters
+
+You can assign default values directly in function parameters.
+
+```javascript id="dv11"
+function greet(
+  name = "Guest"
+) {
+  console.log(
+    `Hello, ${name}`
+  );
+}
+
+greet();
+```
+
+**Output:**
+
+```text id="dv12"
+Hello, Guest
+```
+
+---
+
+### Comparison
+
+| Operator           | Uses Default For                          |   |                                                                  |
+| ------------------ | ----------------------------------------- | - | ---------------------------------------------------------------- |
+| `                  |                                           | ` | Any falsy value (`false`, `0`, `""`, `null`, `undefined`, `NaN`) |
+| `??`               | Only `null` and `undefined`               |   |                                                                  |
+| Default Parameters | Missing or `undefined` function arguments |   |                                                                  |
+
+---
+
+#### Key Point
+
+> You can assign default values using the logical OR operator (`||`), but it treats all falsy values as missing values. In modern JavaScript, the nullish coalescing operator (`??`) is often preferred because it only falls back to the default value when the original value is `null` or `undefined`. Default function parameters provide another convenient way to specify fallback values for function arguments.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-141. ### Can we define properties for functions
+139. ### How do you define multiline strings in JavaScript?
 
-      Yes, we can define properties for functions because functions are also objects.
+There are multiple ways to define multiline strings in JavaScript.
 
-      ```javascript
-      fn = function (x) {
-        //Function code goes here
-      };
+#### 1. Using Template Literals (ES6+) ✅ Recommended
 
-      fn.name = "John";
+The modern and recommended approach is to use **template literals**, which are enclosed by backticks (`` ` ``).
 
-      fn.profile = function (y) {
-        //Profile code goes here
-      };
-      ```
+```javascript id="ml1"
+const str = `This is a
+very lengthy
+sentence!`;
+
+console.log(str);
+```
+
+**Output:**
+
+```text id="ml2"
+This is a
+very lengthy
+sentence!
+```
+
+Template literals preserve line breaks exactly as written.
+
+#### 2. Using the Newline Character (`\n`)
+
+You can insert newline characters explicitly within the string.
+
+```javascript id="ml3"
+const str =
+  "This is a\nvery lengthy\nsentence!";
+
+console.log(str);
+```
+
+**Output:**
+
+```text id="ml4"
+This is a
+very lengthy
+sentence!
+```
+
+#### 3. Using the Line Continuation Character (`\`) (Legacy)
+
+Before ES6, multiline strings were sometimes created using a backslash (`\`) at the end of each line.
+
+```javascript id="ml5"
+const str =
+  "This is a \
+very lengthy \
+sentence!";
+
+console.log(str);
+```
+
+**Output:**
+
+```text id="ml6"
+This is a very lengthy sentence!
+```
+
+> **Note:** This approach **does not insert line breaks**. It merely continues the string literal onto the next line in the source code.
+
+#### Important Note About `\n`
+
+The statement:
+
+> "You can define multiline string literals using the '\n' character followed by line terminator ('')."
+
+is **not entirely accurate**.
+
+These are two different concepts:
+
+* `\n` → Inserts an actual newline character into the string.
+* `\` at the end of a line → Continues the string literal in the source code without adding a newline.
+
+Example:
+
+```javascript id="ml7"
+const str =
+  "Hello\nWorld";
+
+console.log(str);
+```
+
+**Output:**
+
+```text id="ml8"
+Hello
+World
+```
+
+Whereas:
+
+```javascript id="ml9"
+const str =
+  "Hello\
+World";
+
+console.log(str);
+```
+
+**Output:**
+
+```text id="ml10"
+HelloWorld
+```
+
+#### Comparison
+
+| Method                      | Preserves New Lines | Recommended |
+| --------------------------- | ------------------- | ----------- |
+| Template Literals (`` ` ``) | ✅ Yes               | ✅ Yes       |
+| `\n` Escape Sequence        | ✅ Yes               | ✅ Yes       |
+| Line Continuation (`\`)     | ❌ No                | ❌ No        |
+
+#### Key Point
+
+> The recommended way to define multiline strings in modern JavaScript is to use **template literals** (backticks), which allow strings to span multiple lines naturally. Alternatively, you can use the `\n` escape sequence to insert newline characters explicitly. The legacy line continuation character (`\`) only splits the string literal across multiple lines in the source code and does not preserve line breaks in the resulting string.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-142. ### What is the way to find the number of parameters expected by a function
+140. ### What is an App Shell Model?
 
-      You can use `function.length` syntax to find the number of parameters expected by a function. Let's take an example of `sum` function to calculate the sum of numbers,
+The **App Shell Model** is an architectural approach commonly used in **Progressive Web Applications (PWAs)** to provide a **fast, reliable, and app-like user experience**.
 
-      ```javascript
-      function sum(num1, num2, num3, num4) {
-        return num1 + num2 + num3 + num4;
+The **app shell** consists of the **minimal HTML, CSS, and JavaScript required to render the basic structure of the user interface**. This shell is cached locally so that it can load instantly, even when the network is slow or unavailable.
+
+> In simple terms, the **app shell is the static part of the application**, while the **content is loaded dynamically**.
+
+#### How It Works
+
+1. The user visits the application for the first time.
+2. The browser downloads the app shell resources.
+3. A **Service Worker** caches these resources.
+4. On subsequent visits, the app shell is served directly from the cache.
+5. Dynamic content is fetched from the network and injected into the shell.
+
+#### App Shell Architecture
+
+```text
+┌─────────────────────────────┐
+│         App Shell           │
+│  (Cached Static Resources)  │
+│                             │
+│  - Header                   │
+│  - Navigation               │
+│  - Layout                   │
+│  - Basic UI Components      │
+└─────────────┬───────────────┘
+              │
+              ▼
+┌─────────────────────────────┐
+│      Dynamic Content        │
+│                             │
+│  - API Data                 │
+│  - User Information         │
+│  - Feed / Products          │
+└─────────────────────────────┘
+```
+
+#### Example
+
+Consider a news application:
+
+##### App Shell (Cached)
+
+* Logo
+* Header
+* Navigation menu
+* Sidebar
+* Page layout
+* Loading placeholders
+
+##### Dynamic Content (Fetched)
+
+* Latest news articles
+* User comments
+* Trending stories
+
+#### Benefits of the App Shell Model
+
+1. **Fast Initial Loading**
+
+   * The UI appears almost instantly after the first visit.
+
+2. **Offline Support**
+
+   * Since the shell is cached, users can still access the application's interface without a network connection.
+
+3. **Native App-Like Experience**
+
+   * Provides smooth transitions and responsiveness similar to installed mobile apps.
+
+4. **Improved Perceived Performance**
+
+   * Users see the application's structure immediately while content loads in the background.
+
+5. **Reduced Network Dependency**
+
+   * Only dynamic data needs to be fetched from the server.
+
+#### Role of Service Workers
+
+Service Workers are typically used to cache the app shell.
+
+```text
+First Visit
+     ↓
+Download App Shell
+     ↓
+Cache Static Assets
+     ↓
+Subsequent Visits
+     ↓
+Serve Shell from Cache
+     ↓
+Fetch Dynamic Content
+```
+
+#### What Should Be in the App Shell?
+
+✅ Include:
+
+* Header
+* Navigation bars
+* Footer
+* Layout structure
+* Static stylesheets
+* Core JavaScript bundles
+
+❌ Avoid including:
+
+* Frequently changing data
+* API responses
+* User-specific content
+* Large media assets that are not essential
+
+#### App Shell vs Traditional Web Applications
+
+| Feature               | Traditional Web App | App Shell Model  |
+| --------------------- | ------------------- | ---------------- |
+| Initial Rendering     | Server-dependent    | Cached locally   |
+| Offline Support       | Limited             | Strong           |
+| Perceived Performance | Slower              | Faster           |
+| Native App Feel       | Limited             | Better           |
+| Dynamic Data Loading  | Mixed with UI       | Separate from UI |
+
+#### Key Point
+
+> The **App Shell Model** is a design pattern used in Progressive Web Applications where the minimal UI required to run the application is cached locally using technologies such as Service Workers. This allows the application to load quickly, work reliably even under poor network conditions, and deliver an experience similar to native mobile applications.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+141. ### Can we define properties for functions?
+
+**Yes. In JavaScript, functions are first-class objects, which means you can assign properties and methods to them just like any other object.**
+
+Since functions are objects, they can:
+
+* Be assigned to variables.
+* Be passed as arguments.
+* Be returned from other functions.
+* Have their own properties and methods.
+
+#### Example
+
+```javascript id="fp1"
+function greet(name) {
+  return `Hello, ${name}`;
+}
+
+greet.language =
+  "English";
+
+console.log(
+  greet.language
+);
+```
+
+**Output:**
+
+```text id="fp2"
+English
+```
+
+#### Adding Methods to Functions
+
+```javascript id="fp3"
+function calculator(a, b) {
+  return a + b;
+}
+
+calculator.description =
+  "Performs addition";
+
+calculator.reset =
+  function () {
+    console.log(
+      "Calculator reset"
+    );
+  };
+
+console.log(
+  calculator.description
+);
+
+calculator.reset();
+```
+
+**Output:**
+
+```text id="fp4"
+Performs addition
+Calculator reset
+```
+
+#### Function Expressions
+
+```javascript id="fp5"
+const fn = function (x) {
+  return x * 2;
+};
+
+fn.nameProperty =
+  "John";
+
+fn.profile =
+  function () {
+    console.log(
+      "Profile method"
+    );
+  };
+
+console.log(
+  fn.nameProperty
+);
+
+fn.profile();
+```
+
+#### Important Note About `name`
+
+The original example uses:
+
+```javascript id="fp6"
+fn.name = "John";
+```
+
+However, **`name` is a built-in, read-only property of functions** that represents the function's name.
+
+```javascript id="fp7"
+function greet() {}
+
+console.log(greet.name);
+```
+
+**Output:**
+
+```text id="fp8"
+greet
+```
+
+Attempting to modify it may not work as expected:
+
+```javascript id="fp9"
+function greet() {}
+
+greet.name = "John";
+
+console.log(greet.name);
+```
+
+**Output:**
+
+```text id="fp10"
+greet
+```
+
+Therefore, it is better to use a custom property name:
+
+```javascript id="fp11"
+greet.displayName =
+  "John";
+```
+
+#### Functions Are Objects
+
+```javascript id="fp12"
+function demo() {}
+
+console.log(
+  typeof demo
+); // "function"
+
+console.log(
+  demo instanceof Object
+); // true
+```
+
+This demonstrates that functions are a special type of object.
+
+#### Real-World Example
+
+```javascript id="fp13"
+function counter() {
+  counter.count++;
+
+  return counter.count;
+}
+
+counter.count = 0;
+
+console.log(counter()); // 1
+console.log(counter()); // 2
+console.log(counter()); // 3
+```
+
+#### Key Point
+
+> Yes, properties and methods can be defined on functions because functions in JavaScript are objects. However, you should avoid overwriting built-in function properties such as `name`. Instead, use custom property names when attaching additional data or behavior to functions.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+142. ### What is the way to find the number of parameters expected by a function?
+
+You can use the **`function.length`** property to determine the number of parameters a function **expects**.
+
+The `length` property returns the number of **formal parameters** defined in the function declaration **before the first parameter with a default value**. It does **not** indicate how many arguments were actually passed when the function was called.
+
+#### Example
+
+```javascript id="fl1"
+function sum(
+  num1,
+  num2,
+  num3,
+  num4
+) {
+  return (
+    num1 +
+    num2 +
+    num3 +
+    num4
+  );
+}
+
+console.log(sum.length);
+```
+
+**Output:**
+
+```text id="fl2"
+4
+```
+
+#### Actual Arguments vs Expected Parameters
+
+```javascript id="fl3"
+function greet(
+  firstName,
+  lastName
+) {
+  console.log(
+    `${firstName} ${lastName}`
+  );
+}
+
+console.log(greet.length); // 2
+
+greet("John");
+```
+
+The function expects **2 parameters**, even though only **1 argument** is provided.
+
+#### Default Parameters
+
+Parameters after the **first default parameter** are **not counted**.
+
+```javascript id="fl4"
+function example(
+  a,
+  b = 10,
+  c
+) {}
+
+console.log(
+  example.length
+);
+```
+
+**Output:**
+
+```text id="fl5"
+1
+```
+
+Only `a` is counted because `b` is the first parameter with a default value.
+
+#### Rest Parameters
+
+Rest parameters are **not included** in the count.
+
+```javascript id="fl6"
+function log(...args) {}
+
+console.log(log.length);
+```
+
+**Output:**
+
+```text id="fl7"
+0
+```
+
+#### Arrow Functions
+
+The `length` property also works with arrow functions.
+
+```javascript id="fl8"
+const multiply = (
+  a,
+  b,
+  c
+) => a * b * c;
+
+console.log(
+  multiply.length
+);
+```
+
+**Output:**
+
+```text id="fl9"
+3
+```
+
+#### Comparison with `arguments.length`
+
+| Property           | Description                                               |
+| ------------------ | --------------------------------------------------------- |
+| `function.length`  | Number of parameters defined in the function declaration. |
+| `arguments.length` | Number of arguments actually passed to the function call. |
+
+```javascript id="fl10"
+function demo(a, b, c) {
+  console.log(demo.length);
+
+  console.log(
+    arguments.length
+  );
+}
+
+demo(1, 2);
+```
+
+**Output:**
+
+```text id="fl11"
+3
+2
+```
+
+#### Key Point
+
+> The `function.length` property returns the number of formal parameters expected by a function. It counts parameters declared before the first default parameter and excludes rest parameters. It does **not** represent the number of arguments actually passed during function invocation.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+143. ### What is a polyfill?
+
+A **polyfill** is a piece of JavaScript code that **implements modern features on older environments that do not natively support them**.
+
+In other words, a polyfill **fills the gap** between newer JavaScript APIs and older browsers.
+
+> **A polyfill allows developers to use modern JavaScript features while maintaining compatibility with older browsers.**
+
+#### Example
+
+Suppose an older browser does not support `Array.prototype.includes()`.
+
+Modern usage:
+
+```javascript id="pf1"
+const numbers = [1, 2, 3];
+
+console.log(
+  numbers.includes(2)
+); // true
+```
+
+A polyfill could provide the same functionality:
+
+```javascript id="pf2"
+if (
+  !Array.prototype.includes
+) {
+  Array.prototype.includes =
+    function (searchElement) {
+      return (
+        this.indexOf(
+          searchElement
+        ) !== -1
+      );
+    };
+}
+```
+
+Now, older browsers can use `includes()` as if it were built in.
+
+#### Another Example: `String.prototype.trim()`
+
+```javascript id="pf3"
+if (
+  !String.prototype.trim
+) {
+  String.prototype.trim =
+    function () {
+      return this.replace(
+        /^\s+|\s+$/g,
+        ""
+      );
+    };
+}
+```
+
+#### Polyfill vs Transpiler
+
+| Polyfill                               | Transpiler                                      |
+| -------------------------------------- | ----------------------------------------------- |
+| Adds missing APIs and methods.         | Converts modern syntax into older syntax.       |
+| Handles runtime features.              | Handles language syntax features.               |
+| Example: `Promise`, `Array.includes()` | Example: Arrow functions, classes               |
+| Implemented using JavaScript code.     | Tools such as Babel perform the transformation. |
+
+For example:
+
+```javascript id="pf4"
+// Modern syntax
+const add = (a, b) => a + b;
+```
+
+Babel transpiles it to:
+
+```javascript id="pf5"
+var add = function (a, b) {
+  return a + b;
+};
+```
+
+However, Babel **cannot** add missing APIs like `Promise`. That's where polyfills come in.
+
+#### Popular Polyfill Libraries
+
+1. **Core-js**
+
+   * A modular library that provides polyfills for many ECMAScript features.
+   * Commonly used with Babel.
+
+2. **Polyfill.io**
+
+   * A service that delivers only the polyfills required by the requesting browser.
+
+#### Important Note
+
+The statement:
+
+> "Silverlight plugin polyfill can be used to mimic the functionality of an HTML Canvas element"
+
+is **historical and outdated**. Modern JavaScript development primarily relies on libraries such as **Core-js** and build tools like **Babel** for compatibility.
+
+#### When Do You Need Polyfills?
+
+You need polyfills when:
+
+* Supporting older browsers.
+* Using newer JavaScript APIs not available in the target environment.
+* Maintaining backward compatibility in legacy applications.
+
+#### Key Point
+
+> A polyfill is JavaScript code that provides modern functionality in environments that do not support it natively. It enables developers to use newer APIs, such as `Promise`, `Array.prototype.includes()`, and `String.prototype.trim()`, while preserving compatibility with older browsers. Popular polyfill solutions include **Core-js** and **Polyfill.io**.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+144. ### What are `break` and `continue` statements?
+
+The **`break`** and **`continue`** statements are loop control statements used to alter the normal flow of loops in JavaScript.
+
+---
+
+## `break` Statement
+
+The **`break`** statement is used to **immediately terminate a loop** and transfer control to the first statement following the loop.
+
+### Example
+
+```javascript id="bc1"
+for (
+  let i = 0;
+  i < 10;
+  i++
+) {
+  if (i === 5) {
+    break;
+  }
+
+  console.log(
+    "Number:",
+    i
+  );
+}
+```
+
+**Output:**
+
+```text id="bc2"
+Number: 0
+Number: 1
+Number: 2
+Number: 3
+Number: 4
+```
+
+When `i` becomes `5`, the `break` statement exits the loop completely.
+
+#### Flow
+
+```text id="bc3"
+0 → 1 → 2 → 3 → 4 → break
+                     ↓
+              Exit Loop
+```
+
+---
+
+## `continue` Statement
+
+The **`continue`** statement is used to **skip the current iteration** of a loop and proceed with the next iteration.
+
+### Example
+
+```javascript id="bc4"
+for (
+  let i = 0;
+  i < 10;
+  i++
+) {
+  if (i === 5) {
+    continue;
+  }
+
+  console.log(
+    "Number:",
+    i
+  );
+}
+```
+
+**Output:**
+
+```text id="bc5"
+Number: 0
+Number: 1
+Number: 2
+Number: 3
+Number: 4
+Number: 6
+Number: 7
+Number: 8
+Number: 9
+```
+
+When `i` becomes `5`, the `continue` statement skips the remaining code in that iteration and moves to the next one.
+
+#### Flow
+
+```text id="bc6"
+0 → 1 → 2 → 3 → 4 → 5 (skip)
+                         ↓
+6 → 7 → 8 → 9
+```
+
+---
+
+## Comparison
+
+| Statement  | Behavior                                                     |
+| ---------- | ------------------------------------------------------------ |
+| `break`    | Terminates the entire loop immediately.                      |
+| `continue` | Skips the current iteration and continues with the next one. |
+
+---
+
+## Using `break` in a `while` Loop
+
+```javascript id="bc7"
+let i = 0;
+
+while (true) {
+  if (i === 3) {
+    break;
+  }
+
+  console.log(i);
+
+  i++;
+}
+```
+
+**Output:**
+
+```text id="bc8"
+0
+1
+2
+```
+
+---
+
+## Using `continue` in a `while` Loop
+
+```javascript id="bc9"
+let i = 0;
+
+while (i < 5) {
+  i++;
+
+  if (i === 3) {
+    continue;
+  }
+
+  console.log(i);
+}
+```
+
+**Output:**
+
+```text id="bc10"
+1
+2
+4
+5
+```
+
+---
+
+## Important Notes
+
+* Both `break` and `continue` can be used with:
+
+  * `for`
+  * `while`
+  * `do...while`
+  * `for...of`
+  * `for...in`
+
+* `break` can also be used inside a `switch` statement to prevent fall-through.
+
+```javascript id="bc11"
+switch (day) {
+  case "Monday":
+    console.log("Start");
+
+    break;
+
+  case "Friday":
+    console.log("End");
+
+    break;
+}
+```
+
+---
+
+#### Key Point
+
+> The `break` statement immediately exits a loop (or `switch` statement), whereas the `continue` statement skips the current iteration of a loop and proceeds with the next iteration. They are commonly used to control loop execution based on specific conditions.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+145. ### What are JavaScript labels?
+
+**Labels** are identifiers followed by a colon (`:`) that allow you to **name loops or blocks of code**. They are primarily used with the `break` and `continue` statements to control the flow of nested loops.
+
+#### Syntax
+
+```javascript id="lbl1"
+labelName: statement;
+```
+
+A label can be attached to:
+
+* `for` loops
+* `while` loops
+* `do...while` loops
+* Blocks of code
+
+---
+
+## Using Labels with `continue`
+
+The `continue` statement can use a label to skip to the **next iteration of the labeled loop**.
+
+### Example
+
+```javascript id="lbl2"
+let i, j;
+
+loop1: for (
+  i = 0;
+  i < 3;
+  i++
+) {
+  loop2: for (
+    j = 0;
+    j < 3;
+    j++
+  ) {
+    if (i === j) {
+      continue loop1;
+    }
+
+    console.log(
+      `i = ${i}, j = ${j}`
+    );
+  }
+}
+```
+
+**Output:**
+
+```text id="lbl3"
+i = 1, j = 0
+i = 2, j = 0
+i = 2, j = 1
+```
+
+### How It Works
+
+When `i === j`:
+
+```javascript id="lbl4"
+continue loop1;
+```
+
+JavaScript immediately skips the **rest of the current iteration of `loop1`** and starts its next iteration.
+
+---
+
+## Using Labels with `break`
+
+Labels can also be used to **exit an outer loop directly**.
+
+### Example
+
+```javascript id="lbl5"
+outer: for (
+  let i = 0;
+  i < 3;
+  i++
+) {
+  for (
+    let j = 0;
+    j < 3;
+    j++
+  ) {
+    if (
+      i === 1 &&
+      j === 1
+    ) {
+      break outer;
+    }
+
+    console.log(
+      `i = ${i}, j = ${j}`
+    );
+  }
+}
+```
+
+**Output:**
+
+```text id="lbl6"
+i = 0, j = 0
+i = 0, j = 1
+i = 0, j = 2
+i = 1, j = 0
+```
+
+When `i === 1 && j === 1`, execution jumps completely out of the outer loop.
+
+---
+
+## Without Labels
+
+Without labels, `break` and `continue` only affect the **innermost loop**.
+
+```javascript id="lbl7"
+for (
+  let i = 0;
+  i < 3;
+  i++
+) {
+  for (
+    let j = 0;
+    j < 3;
+    j++
+  ) {
+    if (
+      i === 1 &&
+      j === 1
+    ) {
+      break;
+    }
+
+    console.log(
+      `i = ${i}, j = ${j}`
+    );
+  }
+}
+```
+
+Here, `break` exits only the inner loop.
+
+---
+
+## Labels on Blocks
+
+Labels can also be attached to blocks:
+
+```javascript id="lbl8"
+myBlock: {
+  console.log("Start");
+
+  break myBlock;
+
+  console.log("End");
+}
+
+console.log("Done");
+```
+
+**Output:**
+
+```text id="lbl9"
+Start
+Done
+```
+
+---
+
+## Important Notes
+
+* Labels **do not create loops**; they simply provide names for statements.
+* `continue` can only target **iteration statements** (loops).
+* Excessive use of labels can make code harder to read and maintain.
+* Labels are relatively uncommon in modern JavaScript code.
+
+---
+
+#### Key Point
+
+> JavaScript labels are identifiers attached to loops or blocks that allow `break` and `continue` statements to control the flow of nested structures. They are especially useful for exiting or continuing outer loops directly, although they should be used sparingly to preserve code readability.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+146. ### What are the benefits of keeping declarations at the top?
+
+Traditionally, JavaScript developers recommended placing **variable and function declarations at the beginning of a function or script**. This practice became common because of JavaScript's **hoisting behavior**, especially when using `var`.
+
+Some benefits of this approach include:
+
+1. **Cleaner and more organized code**
+2. **Provides a single place to identify local variables**
+3. **Helps avoid accidentally creating global variables**
+4. **Reduces the chance of unintended re-declarations**
+5. **Makes hoisting behavior more predictable**
+
+#### Example
+
+```javascript id="decl1"
+function calculate() {
+  var total;
+  var tax;
+  var finalAmount;
+
+  total = 100;
+  tax = 10;
+
+  finalAmount = total + tax;
+
+  return finalAmount;
+}
+```
+
+All declarations are grouped at the top, making it easier to understand which variables are used within the function.
+
+---
+
+### Relation to Hoisting
+
+With `var`, declarations are **hoisted** to the top of their scope.
+
+```javascript id="decl2"
+function example() {
+  console.log(message);
+
+  var message = "Hello";
+}
+```
+
+JavaScript interprets it approximately as:
+
+```javascript id="decl3"
+function example() {
+  var message;
+
+  console.log(message);
+
+  message = "Hello";
+}
+```
+
+**Output:**
+
+```text id="decl4"
+undefined
+```
+
+Keeping `var` declarations at the top helped developers avoid confusion caused by hoisting.
+
+---
+
+### Modern JavaScript (`let` and `const`)
+
+In modern JavaScript, the recommendation has changed.
+
+Instead of placing **all declarations at the top**, it is generally considered better to:
+
+> **Declare variables as close as possible to where they are first used.**
+
+```javascript id="decl5"
+function calculate() {
+  const total = 100;
+  const tax = 10;
+
+  const finalAmount =
+    total + tax;
+
+  return finalAmount;
+}
+```
+
+This approach:
+
+* Improves readability.
+* Reduces the lifetime of variables.
+* Encourages the use of `const`.
+* Prevents access before initialization due to the **Temporal Dead Zone (TDZ)** associated with `let` and `const`.
+
+---
+
+### Comparison
+
+| Traditional Approach                  | Modern Approach                           |
+| ------------------------------------- | ----------------------------------------- |
+| Declare all variables at the top.     | Declare variables near their usage.       |
+| Mainly relevant for `var`.            | Preferred with `let` and `const`.         |
+| Helps understand hoisting.            | Improves readability and maintainability. |
+| Common in older JavaScript codebases. | Recommended in modern JavaScript.         |
+
+---
+
+### Important Note
+
+The statement:
+
+> "It is recommended to keep all declarations at the top of each script or function."
+
+was **widely accepted in the era of `var`**, but it is **not the primary recommendation for modern JavaScript**.
+
+Today, the preferred practice is:
+
+* Use `const` by default.
+* Use `let` only when reassignment is necessary.
+* Declare variables as close as possible to their point of use.
+
+---
+
+#### Key Point
+
+> Keeping declarations at the top was historically recommended to improve code organization and avoid issues caused by `var` hoisting. However, in modern JavaScript, it is generally better to use `let` and `const` and declare variables close to where they are needed, resulting in clearer and more maintainable code.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+147. ### What are the benefits of initializing variables?
+
+**Variable initialization** means assigning an initial value to a variable at the time it is declared.
+
+```javascript id="init1"
+let count = 0;
+
+const name = "John";
+
+let isLoggedIn = false;
+```
+
+Initializing variables provides several benefits:
+
+1. **Improves code readability**
+2. **Provides a clear starting value for variables**
+3. **Helps avoid unexpected `undefined` values**
+4. **Makes code behavior more predictable**
+5. **Reduces the likelihood of runtime errors caused by uninitialized variables**
+
+#### Example
+
+Without initialization:
+
+```javascript id="init2"
+let total;
+
+console.log(total);
+```
+
+**Output:**
+
+```text id="init3"
+undefined
+```
+
+With initialization:
+
+```javascript id="init4"
+let total = 0;
+
+console.log(total);
+```
+
+**Output:**
+
+```text id="init5"
+0
+```
+
+#### Avoiding `undefined` Values
+
+```javascript id="init6"
+let message;
+
+console.log(
+  message.toUpperCase()
+);
+```
+
+**Output:**
+
+```text id="init7"
+TypeError: Cannot read properties of undefined
+```
+
+Initializing the variable prevents this issue:
+
+```javascript id="init8"
+let message = "";
+
+console.log(
+  message.toUpperCase()
+);
+```
+
+**Output:**
+
+```text id="init9"
+```
+
+#### Providing Meaningful Defaults
+
+```javascript id="init10"
+let users = [];
+
+let score = 0;
+
+let isActive = false;
+```
+
+These initial values clearly communicate the intended type and purpose of the variables.
+
+#### Important Note
+
+While initialization is generally beneficial, variables should be initialized with **meaningful default values**.
+
+Avoid unnecessary initialization such as:
+
+```javascript id="init11"
+let user = undefined;
+```
+
+Instead:
+
+```javascript id="init12"
+let user;
+```
+
+or initialize it with an appropriate value when one is available.
+
+Similarly, with modern JavaScript:
+
+```javascript id="init13"
+const API_URL =
+  "https://api.example.com";
+```
+
+Using `const` for values that should not change improves code safety.
+
+#### Key Point
+
+> Initializing variables improves code clarity, establishes a well-defined starting state, and helps prevent bugs caused by unexpected `undefined` values. In modern JavaScript, variables should be initialized with meaningful default values whenever appropriate, while `const` should be preferred for values that do not need reassignment.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+148. ### What are the recommendations for creating new objects?
+
+In JavaScript, it is generally **recommended to use literals instead of object wrapper constructors** such as `new Object()`, `new String()`, or `new Array()`.
+
+Literals are:
+
+* More concise
+* Easier to read
+* Faster to create
+* Less error-prone
+
+#### Recommended Approaches
+
+| Avoid            | Prefer                              |
+| ---------------- | ----------------------------------- |
+| `new Object()`   | `{}`                                |
+| `new String()`   | `""`                                |
+| `new Number()`   | `0`                                 |
+| `new Boolean()`  | `false`                             |
+| `new Array()`    | `[]`                                |
+| `new RegExp()`   | `/pattern/`                         |
+| `new Function()` | `function () {}` or arrow functions |
+
+#### Examples
+
+```javascript id="obj1"
+const obj = {};
+
+const str = "";
+
+const num = 0;
+
+const bool = false;
+
+const arr = [];
+
+const regex = /()/;
+
+const fn = function () {};
+```
+
+---
+
+## Why Avoid Wrapper Constructors?
+
+### 1. `Object`
+
+Prefer:
+
+```javascript id="obj2"
+const person = {};
+```
+
+Instead of:
+
+```javascript id="obj3"
+const person =
+  new Object();
+```
+
+Both create plain objects, but the literal syntax is simpler.
+
+---
+
+### 2. `String`
+
+Prefer:
+
+```javascript id="obj4"
+const name = "John";
+```
+
+Instead of:
+
+```javascript id="obj5"
+const name =
+  new String("John");
+```
+
+#### Problem
+
+```javascript id="obj6"
+console.log(
+  typeof "John"
+); // "string"
+
+console.log(
+  typeof new String(
+    "John"
+  )
+); // "object"
+```
+
+Wrapper objects can lead to unexpected behavior.
+
+---
+
+### 3. `Number`
+
+Prefer:
+
+```javascript id="obj7"
+const count = 5;
+```
+
+Instead of:
+
+```javascript id="obj8"
+const count =
+  new Number(5);
+```
+
+```javascript id="obj9"
+console.log(
+  typeof 5
+); // "number"
+
+console.log(
+  typeof new Number(5)
+); // "object"
+```
+
+---
+
+### 4. `Boolean`
+
+Prefer:
+
+```javascript id="obj10"
+const isAdmin = false;
+```
+
+Instead of:
+
+```javascript id="obj11"
+const isAdmin =
+  new Boolean(false);
+```
+
+#### Problem
+
+```javascript id="obj12"
+if (
+  new Boolean(false)
+) {
+  console.log("Runs!");
+}
+```
+
+**Output:**
+
+```text id="obj13"
+Runs!
+```
+
+Because **all objects are truthy**, even `new Boolean(false)`.
+
+---
+
+### 5. `Array`
+
+Prefer:
+
+```javascript id="obj14"
+const numbers = [];
+```
+
+Instead of:
+
+```javascript id="obj15"
+const numbers =
+  new Array();
+```
+
+#### Problem
+
+```javascript id="obj16"
+new Array(3);
+```
+
+Creates:
+
+```javascript id="obj17"
+[empty × 3]
+```
+
+Whereas:
+
+```javascript id="obj18"
+[3];
+```
+
+Creates:
+
+```javascript id="obj19"
+[3]
+```
+
+The literal syntax is clearer.
+
+---
+
+### 6. `RegExp`
+
+Prefer:
+
+```javascript id="obj20"
+const regex = /\d+/;
+```
+
+Instead of:
+
+```javascript id="obj21"
+const regex =
+  new RegExp("\\d+");
+```
+
+The literal form is more readable.
+
+---
+
+### 7. `Function`
+
+Prefer:
+
+```javascript id="obj22"
+const greet =
+  function () {
+    console.log("Hi");
+  };
+```
+
+or
+
+```javascript id="obj23"
+const greet = () => {
+  console.log("Hi");
+};
+```
+
+Instead of:
+
+```javascript id="obj24"
+const greet =
+  new Function(
+    "console.log('Hi')"
+  );
+```
+
+#### Problem
+
+`new Function()`:
+
+* Parses code at runtime.
+* Is slower.
+* Has security concerns similar to `eval()`.
+* Loses access to the local lexical scope.
+
+---
+
+## Important Note
+
+Using constructors such as `Object()`, `Array()`, or `RegExp()` **without `new`** is different:
+
+```javascript id="obj25"
+Object();
+Array();
+RegExp();
+```
+
+However, **literal syntax is still preferred** for readability and consistency.
+
+---
+
+#### Key Point
+
+> In JavaScript, it is recommended to use literals (`{}`, `[]`, `""`, `0`, `false`, `/pattern/`) instead of wrapper constructors (`new Object()`, `new Array()`, `new String()`, etc.). Literals are more concise, improve readability, avoid unexpected behavior associated with wrapper objects, and represent modern JavaScript best practices.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+149. ### How do you define JSON arrays?
+
+A **JSON array** is an ordered collection of values enclosed within **square brackets (`[]`)**. The values inside a JSON array can be:
+
+* Strings
+* Numbers
+* Booleans
+* Objects
+* Arrays
+* `null`
+
+#### Syntax
+
+```json
+{
+  "key": [
+    value1,
+    value2,
+    value3
+  ]
+}
+```
+
+#### Example: JSON Array of Objects
+
+```json
+{
+  "users": [
+    {
+      "firstName": "John",
+      "lastName": "Abraham"
+    },
+    {
+      "firstName": "Anna",
+      "lastName": "Smith"
+    },
+    {
+      "firstName": "Shane",
+      "lastName": "Warne"
+    }
+  ]
+}
+```
+
+In this example:
+
+* `"users"` is a property name.
+* Its value is a **JSON array**.
+* Each element of the array is a **JSON object**.
+
+#### Accessing JSON Arrays in JavaScript
+
+After parsing the JSON string:
+
+```javascript id="json1"
+const jsonString = `
+{
+  "users": [
+    {
+      "firstName": "John",
+      "lastName": "Abraham"
+    },
+    {
+      "firstName": "Anna",
+      "lastName": "Smith"
+    }
+  ]
+}`;
+
+const data =
+  JSON.parse(jsonString);
+
+console.log(
+  data.users[0].firstName
+);
+```
+
+**Output:**
+
+```text id="json2"
+John
+```
+
+#### JSON Array with Primitive Values
+
+JSON arrays do not have to contain only objects.
+
+```json
+{
+  "numbers": [1, 2, 3, 4],
+  "colors": ["red", "green", "blue"],
+  "flags": [true, false, true]
+}
+```
+
+#### Nested JSON Arrays
+
+Arrays can contain other arrays.
+
+```json
+{
+  "matrix": [
+    [1, 2, 3],
+    [4, 5, 6]
+  ]
+}
+```
+
+#### Important Notes
+
+* JSON arrays use **square brackets (`[]`)**.
+* Elements are separated by **commas**.
+* JSON property names and string values **must use double quotes (`"`).**
+* Unlike JavaScript arrays, JSON **does not allow**:
+
+  * Single quotes
+  * Functions
+  * `undefined`
+  * Trailing commas
+
+❌ Invalid JSON:
+
+```json
+{
+  "users": [
+    {"name": "John"},
+  ]
+}
+```
+
+✅ Valid JSON:
+
+```json
+{
+  "users": [
+    {"name": "John"}
+  ]
+}
+```
+
+#### Key Point
+
+> JSON arrays are defined using square brackets (`[]`) and represent ordered collections of values. They commonly contain JSON objects, allowing structured data such as lists of users to be represented and exchanged between applications. Unlike JavaScript object literals, JSON requires double quotes around property names and string values.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+150. ### How do you generate random integers?
+
+You can generate random integers in JavaScript using a combination of **`Math.random()`** and **`Math.floor()`**.
+
+The **`Math.random()`** method returns a pseudo-random floating-point number in the range:
+
+```text id="ri1"
+0 (inclusive) to 1 (exclusive)
+```
+
+That is:
+
+```text id="ri2"
+0 ≤ Math.random() < 1
+```
+
+#### Generating Random Integers Between 1 and 10
+
+```javascript id="ri3"
+Math.floor(
+  Math.random() * 10
+) + 1;
+```
+
+**Possible Output:**
+
+```text id="ri4"
+1, 2, 3, ..., 10
+```
+
+#### How It Works
+
+```javascript id="ri5"
+Math.random();       // 0 ≤ n < 1
+
+Math.random() * 10;  // 0 ≤ n < 10
+
+Math.floor(...);     // 0 ≤ n ≤ 9
+
++ 1;                 // 1 ≤ n ≤ 10
+```
+
+---
+
+### Random Integer Between 1 and 100
+
+```javascript id="ri6"
+Math.floor(
+  Math.random() * 100
+) + 1;
+```
+
+**Possible Output:**
+
+```text id="ri7"
+1, 2, 3, ..., 100
+```
+
+---
+
+### Generate a Random Integer Within a Custom Range
+
+To generate a random integer between **`min`** and **`max`** (both inclusive):
+
+```javascript id="ri8"
+function getRandomInt(
+  min,
+  max
+) {
+  return (
+    Math.floor(
+      Math.random() *
+      (max - min + 1)
+    ) + min
+  );
+}
+```
+
+#### Example
+
+```javascript id="ri9"
+console.log(
+  getRandomInt(5, 15)
+);
+```
+
+**Possible Output:**
+
+```text id="ri10"
+5, 6, 7, ..., 15
+```
+
+---
+
+### Formula
+
+For an inclusive range `[min, max]`:
+
+```javascript id="ri11"
+Math.floor(
+  Math.random() *
+  (max - min + 1)
+) + min;
+```
+
+---
+
+### Random Integer Between 0 and 9
+
+```javascript id="ri12"
+Math.floor(
+  Math.random() * 10
+);
+```
+
+**Possible Output:**
+
+```text id="ri13"
+0, 1, 2, ..., 9
+```
+
+---
+
+### Important Note
+
+`Math.random()` generates **pseudo-random numbers**, which means they are **not suitable for cryptographic purposes**.
+
+For security-sensitive applications (such as generating tokens or passwords), use the **Web Crypto API**:
+
+```javascript id="ri14"
+const array =
+  new Uint32Array(1);
+
+crypto.getRandomValues(
+  array
+);
+
+console.log(array[0]);
+```
+
+---
+
+#### Key Point
+
+> You can generate random integers in JavaScript by combining `Math.random()` with `Math.floor()`. The general formula for generating a random integer between `min` and `max` (inclusive) is:
+>
+> ```javascript
+> Math.floor(
+>   Math.random() *
+>   (max - min + 1)
+> ) + min;
+> ```
+>
+> Remember that `Math.random()` returns a pseudo-random number greater than or equal to `0` and less than `1`.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+151. ### Can you write a random integer function to generate integers within a range?
+
+Yes. You can create a function that generates a **random integer between a minimum and maximum value (both inclusive)** by combining `Math.random()` and `Math.floor()`.
+
+```javascript id="rand1"
+function randomInteger(
+  min,
+  max
+) {
+  return (
+    Math.floor(
+      Math.random() *
+      (max - min + 1)
+    ) + min
+  );
+}
+```
+
+#### Usage
+
+```javascript id="rand2"
+console.log(
+  randomInteger(1, 100)
+);
+// Random integer from 1 to 100
+
+console.log(
+  randomInteger(1, 1000)
+);
+// Random integer from 1 to 1000
+```
+
+#### How It Works
+
+Suppose `min = 5` and `max = 10`:
+
+```javascript id="rand3"
+Math.random();
+```
+
+Returns:
+
+```text id="rand4"
+0 ≤ n < 1
+```
+
+Multiply by the size of the range:
+
+```javascript id="rand5"
+Math.random() *
+(max - min + 1);
+```
+
+```text id="rand6"
+0 ≤ n < 6
+```
+
+Apply `Math.floor()`:
+
+```javascript id="rand7"
+Math.floor(...);
+```
+
+```text id="rand8"
+0 ≤ n ≤ 5
+```
+
+Add `min`:
+
+```javascript id="rand9"
+Math.floor(...) + min;
+```
+
+```text id="rand10"
+5 ≤ n ≤ 10
+```
+
+#### Formula
+
+For generating a random integer in the inclusive range **`[min, max]`**:
+
+```javascript id="rand11"
+Math.floor(
+  Math.random() *
+  (max - min + 1)
+) + min;
+```
+
+#### Examples
+
+```javascript id="rand12"
+console.log(
+  randomInteger(10, 15)
+);
+```
+
+**Possible Output:**
+
+```text id="rand13"
+10, 11, 12, 13, 14, or 15
+```
+
+```javascript id="rand14"
+console.log(
+  randomInteger(-5, 5)
+);
+```
+
+**Possible Output:**
+
+```text id="rand15"
+-5, -4, -3, ..., 5
+```
+
+#### Input Validation (Optional)
+
+To make the function more robust:
+
+```javascript id="rand16"
+function randomInteger(
+  min,
+  max
+) {
+  if (min > max) {
+    throw new Error(
+      "min must be less than or equal to max"
+    );
+  }
+
+  return (
+    Math.floor(
+      Math.random() *
+      (max - min + 1)
+    ) + min
+  );
+}
+```
+
+#### Important Note
+
+> `Math.random()` generates **pseudo-random numbers** and should **not** be used for cryptographic purposes such as generating passwords or security tokens. For those use cases, use the **Web Crypto API** (`crypto.getRandomValues()`).
+
+#### Key Point
+
+> You can generate a random integer within a specified range using:
+>
+> ```javascript
+> function randomInteger(min, max) {
+>   return Math.floor(Math.random() * (max - min + 1)) + min;
+> }
+> ```
+>
+> This formula ensures that both the `min` and `max` values are included in the possible results.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+152. ### What is tree shaking?
+
+**Tree shaking** is a form of **dead code elimination** used by modern JavaScript bundlers to remove **unused code** from the final bundle during the build process.
+
+It works by analyzing the application's **ES Modules (`import` and `export`)** and determining which exports are actually used. Any unused exports can then be safely excluded from the generated bundle.
+
+> In simple terms, **tree shaking "shakes" the unused branches off the dependency tree**, resulting in smaller bundle sizes.
+
+#### Example
+
+Suppose you have the following module:
+
+```javascript id="ts1"
+// math.js
+
+export function add(a, b) {
+  return a + b;
+}
+
+export function subtract(a, b) {
+  return a - b;
+}
+
+export function multiply(a, b) {
+  return a * b;
+}
+```
+
+If you only import `add`:
+
+```javascript id="ts2"
+// app.js
+
+import { add } from "./math.js";
+
+console.log(add(2, 3));
+```
+
+After tree shaking, the bundled code will contain only:
+
+```javascript id="ts3"
+function add(a, b) {
+  return a + b;
+}
+
+console.log(add(2, 3));
+```
+
+The unused `subtract` and `multiply` functions are removed.
+
+#### Why Does Tree Shaking Work with ES Modules?
+
+Tree shaking relies on the **static structure** of ES Modules.
+
+```javascript id="ts4"
+import { add } from "./math.js";
+```
+
+Because imports and exports are known **at build time**, bundlers can determine exactly which code is used.
+
+This is harder to achieve with CommonJS:
+
+```javascript id="ts5"
+const math =
+  require("./math");
+
+math[someVariable]();
+```
+
+Since CommonJS allows dynamic imports, static analysis becomes less reliable.
+
+#### Benefits of Tree Shaking
+
+1. **Smaller bundle sizes**
+2. **Faster application loading**
+3. **Reduced network bandwidth usage**
+4. **Improved application performance**
+5. **Better user experience**
+
+#### Bundlers That Support Tree Shaking
+
+* **Rollup** (popularized the concept)
+* **Webpack** (production mode)
+* **Vite** (uses Rollup internally for builds)
+* **esbuild**
+* **Parcel**
+
+#### Example in Webpack
+
+```javascript id="ts6"
+// package.json
+
+{
+  "sideEffects": false
+}
+```
+
+Setting `"sideEffects": false` informs Webpack that modules do not have side effects, enabling more aggressive tree shaking.
+
+#### What Are Side Effects?
+
+A **side effect** is code that performs actions simply by being imported.
+
+```javascript id="ts7"
+console.log(
+  "Module loaded"
+);
+
+export const PI = 3.14;
+```
+
+Even if `PI` is unused, the `console.log` has a side effect, so the bundler may preserve the module.
+
+#### Tree Shaking vs Minification
+
+| Tree Shaking                     | Minification                                                           |
+| -------------------------------- | ---------------------------------------------------------------------- |
+| Removes unused code              | Reduces code size by shortening variable names and removing whitespace |
+| Happens during bundling          | Happens during optimization                                            |
+| Focuses on dead code elimination | Focuses on compressing existing code                                   |
+
+#### Important Note
+
+Tree shaking is **most effective when using ES Modules (`import`/`export`)**.
+
+```javascript id="ts8"
+export function helper() {}
+
+import { helper } from "./utils.js";
+```
+
+Using CommonJS (`require`/`module.exports`) can limit a bundler's ability to eliminate unused code.
+
+#### Key Point
+
+> Tree shaking is a build optimization technique that removes unused exports from the final JavaScript bundle. It relies on the static nature of ES Module syntax (`import` and `export`) to identify dead code, resulting in smaller bundles and improved application performance. Modern bundlers such as Rollup, Webpack, Vite, and esbuild support tree shaking.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+153. ### What is the need for tree shaking?
+
+The primary purpose of **tree shaking** is to **reduce the size of the final JavaScript bundle by eliminating unused code**.
+
+Modern applications often depend on large libraries and frameworks, but typically use only a small subset of their functionality. Without tree shaking, the entire library may be included in the bundle, increasing the amount of code that users need to download.
+
+> **The less JavaScript sent over the network, the faster the application loads and executes.**
+
+#### Why Is Tree Shaking Important?
+
+1. **Reduces bundle size**
+2. **Improves application performance**
+3. **Decreases download times**
+4. **Reduces bandwidth consumption**
+5. **Improves initial page load speed**
+6. **Enhances the user experience, especially on slower networks**
+
+#### Example
+
+Consider a utility module:
+
+```javascript id="nts1"
+// utils.js
+
+export function add(a, b) {
+  return a + b;
+}
+
+export function subtract(a, b) {
+  return a - b;
+}
+
+export function multiply(a, b) {
+  return a * b;
+}
+```
+
+If your application only imports `add`:
+
+```javascript id="nts2"
+import { add } from "./utils.js";
+
+console.log(add(2, 3));
+```
+
+Without tree shaking, the final bundle may include:
+
+```javascript id="nts3"
+add();
+subtract();
+multiply();
+```
+
+With tree shaking, only the used code remains:
+
+```javascript id="nts4"
+add();
+```
+
+The unused `subtract` and `multiply` functions are removed.
+
+#### Impact on Large Applications
+
+Large Single Page Applications (SPAs) often use third-party libraries such as:
+
+* Utility libraries
+* UI component libraries
+* Date manipulation libraries
+* Charting libraries
+
+Tree shaking ensures that **only the imported features actually used by the application are included in the production bundle**.
+
+For example:
+
+```javascript id="nts5"
+import { debounce } from "lodash-es";
+```
+
+Tree shaking can include only `debounce` instead of the entire library.
+
+#### Before and After Tree Shaking
+
+```text id="nts6"
+Without Tree Shaking
+↓
+Application Code
++ Entire Dependency Library
++ Unused Exports
+↓
+Large Bundle Size
+```
+
+```text id="nts7"
+With Tree Shaking
+↓
+Application Code
++ Only Used Exports
+↓
+Smaller Bundle Size
+```
+
+#### Tree Shaking and Performance
+
+Smaller bundles result in:
+
+```text id="nts8"
+Less Download Time
+        ↓
+Less Parsing Time
+        ↓
+Less JavaScript Execution Time
+        ↓
+Better User Experience
+```
+
+This benefit is especially noticeable on:
+
+* Mobile devices
+* Slow network connections
+* Large-scale applications
+
+#### Bundlers That Support Tree Shaking
+
+Modern bundlers implement tree shaking, including:
+
+* **Rollup**
+* **Webpack** (in production mode)
+* **Vite** (uses Rollup for production builds)
+* **esbuild**
+* **Parcel**
+
+#### Important Note
+
+Tree shaking relies on **ES Module syntax**:
+
+```javascript id="nts9"
+import { helper } from "./helper.js";
+
+export function helper() {}
+```
+
+Because ES Modules are statically analyzable, bundlers can determine which code is unused.
+
+#### Key Point
+
+> The need for tree shaking arises from the desire to ship less JavaScript to users. By eliminating unused code from the final bundle, tree shaking reduces bundle sizes, improves loading and execution performance, conserves bandwidth, and enhances the overall user experience. It is a key optimization technique supported by modern bundlers such as Rollup, Webpack, and Vite.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+154. ### Is it recommended to use `eval()`?
+
+**No, it is generally not recommended to use `eval()` in JavaScript.**
+
+The `eval()` function executes a string as JavaScript code. While it can be useful in very limited scenarios, its use is discouraged because it introduces **security risks**, **performance issues**, and **maintenance challenges**.
+
+#### Example
+
+```javascript id="ev1"
+console.log(
+  eval("2 + 3")
+); // 5
+```
+
+Here, the string `"2 + 3"` is interpreted and executed as JavaScript code.
+
+---
+
+## Why is `eval()` discouraged?
+
+### 1. Security Risks
+
+If `eval()` executes code from an untrusted source, it can lead to **code injection attacks**.
+
+```javascript id="ev2"
+const userInput =
+  "alert('Hacked!')";
+
+eval(userInput);
+```
+
+If `userInput` comes from an external source, an attacker could execute arbitrary JavaScript code.
+
+---
+
+### 2. Performance Issues
+
+JavaScript engines optimize code when its structure is known ahead of time.
+
+Since `eval()` executes code dynamically:
+
+```javascript id="ev3"
+eval(
+  "var x = 10;"
+);
+```
+
+the engine cannot efficiently optimize the surrounding code, resulting in slower execution.
+
+---
+
+### 3. Makes Code Harder to Read and Maintain
+
+```javascript id="ev4"
+eval(
+  "total = price + tax"
+);
+```
+
+This is harder to understand and debug than:
+
+```javascript id="ev5"
+total = price + tax;
+```
+
+Static analysis tools and IDEs also struggle to reason about dynamically generated code.
+
+---
+
+### 4. Scope Complications
+
+`eval()` can introduce or modify variables in the current scope.
+
+```javascript id="ev6"
+function demo() {
+  eval(
+    "var message = 'Hello';"
+  );
+
+  console.log(message);
+}
+
+demo();
+```
+
+**Output:**
+
+```text id="ev7"
+Hello
+```
+
+This behavior can make programs more difficult to reason about.
+
+---
+
+## Alternatives to `eval()`
+
+### Parsing JSON
+
+❌ Avoid:
+
+```javascript id="ev8"
+eval(
+  "(" + jsonString + ")"
+);
+```
+
+✅ Use:
+
+```javascript id="ev9"
+JSON.parse(
+  jsonString
+);
+```
+
+---
+
+### Dynamic Property Access
+
+❌ Avoid:
+
+```javascript id="ev10"
+eval(
+  "user.name"
+);
+```
+
+✅ Use:
+
+```javascript id="ev11"
+user["name"];
+```
+
+---
+
+### Function Dispatching
+
+❌ Avoid:
+
+```javascript id="ev12"
+eval(
+  functionName + "()"
+);
+```
+
+✅ Use:
+
+```javascript id="ev13"
+const actions = {
+  greet() {
+    console.log("Hello");
+  },
+};
+
+actions[functionName]();
+```
+
+---
+
+## Are There Any Legitimate Uses?
+
+`eval()` is rarely necessary in modern JavaScript.
+
+Some specialized tools, such as:
+
+* JavaScript interpreters
+* Debugging utilities
+* Code playgrounds
+
+may use controlled forms of dynamic evaluation.
+
+However, for typical application development, there is almost always a safer alternative.
+
+---
+
+#### Key Point
+
+> The use of `eval()` is generally discouraged because it executes arbitrary strings as JavaScript code, which can introduce serious security vulnerabilities, reduce performance, and make code harder to understand and maintain. In most cases, safer alternatives such as `JSON.parse()`, bracket notation, or object-based function dispatch should be preferred.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+155. ### What is a Regular Expression?
+
+A **Regular Expression (RegEx)** is a sequence of characters that defines a **search pattern**. It is commonly used to **search**, **match**, **validate**, **extract**, and **replace** text within strings.
+
+Regular expressions are widely used for tasks such as:
+
+* Validating email addresses
+* Searching for specific words or patterns
+* Replacing text
+* Extracting information from strings
+* Validating formats such as phone numbers, ZIP codes, etc.
+
+#### Syntax
+
+```javascript id="regex1"
+/pattern/modifiers;
+```
+
+* **`pattern`** – The text or rule to search for.
+* **`modifiers`** – Optional flags that control how the search is performed.
+
+#### Example
+
+A case-insensitive search for `"John"`:
+
+```javascript id="regex2"
+/John/i;
+```
+
+Here:
+
+* `John` → Pattern to match.
+* `i` → Modifier that makes the search **case-insensitive**.
+
+#### Using Regular Expressions
+
+##### `test()`
+
+Checks whether a pattern exists in a string.
+
+```javascript id="regex3"
+const regex = /John/i;
+
+console.log(
+  regex.test("john")
+); // true
+
+console.log(
+  regex.test("Mike")
+); // false
+```
+
+#### `match()`
+
+Returns the matched text.
+
+```javascript id="regex4"
+const str =
+  "Hello John";
+
+console.log(
+  str.match(/John/)
+);
+```
+
+**Output:**
+
+```text id="regex5"
+["John"]
+```
+
+#### `replace()`
+
+Replaces matching text.
+
+```javascript id="regex6"
+const str =
+  "Hello John";
+
+console.log(
+  str.replace(
+    /John/,
+    "Mike"
+  )
+);
+```
+
+**Output:**
+
+```text id="regex7"
+Hello Mike
+```
+
+#### Common Modifiers
+
+| Modifier | Description                      |
+| -------- | -------------------------------- |
+| `g`      | Global search (find all matches) |
+| `i`      | Case-insensitive search          |
+| `m`      | Multiline search                 |
+
+#### Examples
+
+```javascript id="regex8"
+/hello/g; // Find all occurrences
+
+/hello/i; // Ignore case
+
+/^hello/m; // Multiline mode
+```
+
+#### Common Patterns
+
+| Pattern | Meaning                                   |
+| ------- | ----------------------------------------- |
+| `.`     | Any character except newline              |
+| `\d`    | Any digit (`0-9`)                         |
+| `\D`    | Any non-digit                             |
+| `\w`    | Word character (`a-z`, `A-Z`, `0-9`, `_`) |
+| `\W`    | Non-word character                        |
+| `\s`    | Whitespace character                      |
+| `\S`    | Non-whitespace character                  |
+| `^`     | Start of a string                         |
+| `$`     | End of a string                           |
+| `*`     | Zero or more occurrences                  |
+| `+`     | One or more occurrences                   |
+| `?`     | Zero or one occurrence                    |
+
+#### Example: Email Validation Pattern
+
+```javascript id="regex9"
+const emailRegex =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+console.log(
+  emailRegex.test(
+    "john@example.com"
+  )
+); // true
+```
+
+#### Creating Regular Expressions
+
+Using literals:
+
+```javascript id="regex10"
+const regex =
+  /hello/i;
+```
+
+Using the `RegExp` constructor:
+
+```javascript id="regex11"
+const regex =
+  new RegExp(
+    "hello",
+    "i"
+  );
+```
+
+The constructor is useful when the pattern is generated dynamically.
+
+#### Key Point
+
+> A Regular Expression (RegEx) is a sequence of characters that defines a search pattern. It is used for matching, searching, validating, extracting, and replacing text within strings. In JavaScript, regular expressions can be created using the `/pattern/modifiers` syntax or the `RegExp` constructor and are commonly used with methods such as `test()`, `match()`, and `replace()`.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+156. ### What are the string methods that accept Regular Expressions?
+
+JavaScript provides several string methods that can work with **Regular Expressions (RegEx)** to perform searching, matching, replacing, and splitting operations.
+
+The commonly used string methods that accept regular expressions are:
+
+1. `search()`
+2. `replace()`
+3. `replaceAll()`
+4. `match()`
+5. `matchAll()`
+6. `split()`
+
+---
+
+## 1. `search()`
+
+The **`search()`** method searches a string for a match against a regular expression and returns the **index of the first match**. If no match is found, it returns `-1`.
+
+```javascript id="sm1"
+const msg =
+  "Hello John";
+
+const index =
+  msg.search(/John/i);
+
+console.log(index);
+```
+
+**Output:**
+
+```text id="sm2"
+6
+```
+
+---
+
+## 2. `replace()`
+
+The **`replace()`** method returns a **new string** with the **first match** replaced.
+
+```javascript id="sm3"
+const msg =
+  "ball bat";
+
+const result =
+  msg.replace(/b/i, "c");
+
+console.log(result);
+```
+
+**Output:**
+
+```text id="sm4"
+call bat
+```
+
+> Without the `g` flag, only the first occurrence is replaced.
+
+Using the global flag:
+
+```javascript id="sm5"
+console.log(
+  msg.replace(/b/g, "c")
+);
+```
+
+**Output:**
+
+```text id="sm6"
+call cat
+```
+
+---
+
+## 3. `replaceAll()`
+
+The **`replaceAll()`** method replaces **all occurrences** of the specified pattern.
+
+```javascript id="sm7"
+const msg =
+  "ball bat";
+
+const result =
+  msg.replaceAll(/b/g, "c");
+
+console.log(result);
+```
+
+**Output:**
+
+```text id="sm8"
+call cat
+```
+
+> **Note:** When using a regular expression with `replaceAll()`, it **must** have the global (`g`) flag.
+
+```javascript id="sm9"
+"hello".replaceAll(
+  /l/,
+  "x"
+);
+```
+
+This throws a `TypeError`.
+
+---
+
+## 4. `match()`
+
+The **`match()`** method retrieves the matches found in a string.
+
+```javascript id="sm10"
+const msg =
+  "Hello John";
+
+console.log(
+  msg.match(/[A-Z]/g)
+);
+```
+
+**Output:**
+
+```text id="sm11"
+["H", "J"]
+```
+
+Without the `g` flag:
+
+```javascript id="sm12"
+console.log(
+  msg.match(/[A-Z]/)
+);
+```
+
+**Output:**
+
+```javascript id="sm13"
+["H", index: 0, ...]
+```
+
+---
+
+## 5. `matchAll()`
+
+The **`matchAll()`** method returns an **iterator** containing all matches, including capturing groups.
+
+```javascript id="sm14"
+const msg =
+  "Hello John";
+
+const matches =
+  msg.matchAll(/[A-Z]/g);
+
+for (const match of matches) {
+  console.log(match[0]);
+}
+```
+
+**Output:**
+
+```text id="sm15"
+H
+J
+```
+
+> `matchAll()` requires the regular expression to have the `g` flag.
+
+---
+
+## 6. `split()`
+
+The **`split()`** method divides a string into an array using a regular expression as the separator.
+
+```javascript id="sm16"
+const msg =
+  "Hello John";
+
+console.log(
+  msg.split(/\s/)
+);
+```
+
+**Output:**
+
+```text id="sm17"
+["Hello", "John"]
+```
+
+Another example:
+
+```javascript id="sm18"
+console.log(
+  "apple,orange;banana"
+    .split(/[;,]/)
+);
+```
+
+**Output:**
+
+```text id="sm19"
+["apple", "orange", "banana"]
+```
+
+---
+
+## Summary
+
+| Method         | Purpose                                    | Return Value    |
+| -------------- | ------------------------------------------ | --------------- |
+| `search()`     | Finds the first match                      | Index or `-1`   |
+| `replace()`    | Replaces the first match (or all with `g`) | New string      |
+| `replaceAll()` | Replaces all matches                       | New string      |
+| `match()`      | Retrieves matches                          | Array or `null` |
+| `matchAll()`   | Retrieves all matches with an iterator     | Iterator        |
+| `split()`      | Splits a string using a pattern            | Array           |
+
+---
+
+#### Key Point
+
+> JavaScript string methods such as `search()`, `replace()`, `replaceAll()`, `match()`, `matchAll()`, and `split()` accept regular expressions to perform powerful text processing operations. These methods enable developers to efficiently search, extract, transform, and manipulate strings using pattern matching.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+157. ### What are modifiers in Regular Expressions?
+
+**Modifiers** (also called **flags**) are optional characters placed after a regular expression pattern to **change how the pattern matching is performed**.
+
+#### Syntax
+
+```javascript id="mod1"
+/pattern/modifiers
+```
+
+For example:
+
+```javascript id="mod2"
+/hello/gi
+```
+
+* `hello` → Pattern to search for.
+* `g` → Global search.
+* `i` → Case-insensitive search.
+
+---
+
+## Common Regular Expression Modifiers
+
+| Modifier | Description                                                                                                            |
+| -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `i`      | Performs **case-insensitive** matching.                                                                                |
+| `g`      | Performs a **global** search, finding **all matches** instead of stopping after the first match.                       |
+| `m`      | Enables **multiline** mode, causing `^` and `$` to match the start and end of each line rather than the entire string. |
+
+---
+
+## 1. `i` – Case-Insensitive Matching
+
+Without `i`, matching is case-sensitive.
+
+```javascript id="mod3"
+console.log(
+  /john/.test("John")
+);
+```
+
+**Output:**
+
+```text id="mod4"
+false
+```
+
+Using `i`:
+
+```javascript id="mod5"
+console.log(
+  /john/i.test("John")
+);
+```
+
+**Output:**
+
+```text id="mod6"
+true
+```
+
+---
+
+## 2. `g` – Global Matching
+
+By default, regular expressions stop after the **first match**.
+
+```javascript id="mod7"
+const text =
+  "one one one";
+
+console.log(
+  text.match(/one/)
+);
+```
+
+**Output:**
+
+```javascript id="mod8"
+["one", index: 0, ...]
+```
+
+Using `g`:
+
+```javascript id="mod9"
+console.log(
+  text.match(/one/g)
+);
+```
+
+**Output:**
+
+```text id="mod10"
+["one", "one", "one"]
+```
+
+### Example
+
+```javascript id="mod11"
+const text =
+  "Learn JS one by one";
+
+const pattern =
+  /one/g;
+
+const result =
+  text.match(pattern);
+
+console.log(result);
+```
+
+**Output:**
+
+```text id="mod12"
+["one", "one"]
+```
+
+---
+
+## 3. `m` – Multiline Matching
+
+Normally, `^` and `$` match only the start and end of the **entire string**.
+
+```javascript id="mod13"
+const text =
+  "Hello\nWorld";
+
+console.log(
+  /^World/.test(text)
+);
+```
+
+**Output:**
+
+```text id="mod14"
+false
+```
+
+Using `m`:
+
+```javascript id="mod15"
+console.log(
+  /^World/m.test(text)
+);
+```
+
+**Output:**
+
+```text id="mod16"
+true
+```
+
+Because `^` now matches the beginning of each line.
+
+---
+
+## Other Common Modifiers (Modern JavaScript)
+
+| Modifier | Description                                                        |
+| -------- | ------------------------------------------------------------------ |
+| `s`      | Enables **dotAll** mode, allowing `.` to match newline characters. |
+| `u`      | Enables **Unicode-aware** matching.                                |
+| `y`      | Performs a **sticky** search starting exactly at `lastIndex`.      |
+| `d`      | Returns match indices along with matches.                          |
+
+Example:
+
+```javascript id="mod17"
+/hello/s;
+```
+
+The `.` character can now match line breaks.
+
+---
+
+## Combining Modifiers
+
+Multiple modifiers can be used together.
+
+```javascript id="mod18"
+const regex =
+  /hello/gi;
+```
+
+This expression:
+
+* Ignores case (`i`)
+* Finds all occurrences (`g`)
+
+```javascript id="mod19"
+console.log(
+  "Hello hello HELLO".match(
+    /hello/gi
+  )
+);
+```
+
+**Output:**
+
+```text id="mod20"
+["Hello", "hello", "HELLO"]
+```
+
+---
+
+#### Key Point
+
+> Regular expression modifiers (flags) control how pattern matching behaves. The most commonly used modifiers are `i` for case-insensitive matching, `g` for global matching, and `m` for multiline matching. Multiple modifiers can be combined to perform more flexible and powerful text searches.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+158. ### What are regular expression patterns?
+
+**Regular expression patterns** are special symbols and character combinations used to define **what text should be matched** in a string.
+
+These patterns help you search, validate, extract, or replace text efficiently.
+
+Regular expression patterns can be broadly categorized into the following groups:
+
+1. **Character Classes (Brackets)**
+2. **Metacharacters**
+3. **Quantifiers**
+
+---
+
+## 1. Character Classes (Brackets)
+
+Character classes are used to **match a set or range of characters**.
+
+### Examples
+
+| Pattern       | Description                                    |
+| ------------- | ---------------------------------------------- |
+| `[abc]`       | Matches any one of `a`, `b`, or `c`.           |
+| `[^abc]`      | Matches any character except `a`, `b`, or `c`. |
+| `[0-9]`       | Matches any digit from `0` to `9`.             |
+| `[a-z]`       | Matches any lowercase letter.                  |
+| `[A-Z]`       | Matches any uppercase letter.                  |
+| `[a-zA-Z]`    | Matches any alphabetic character.              |
+| `[a-zA-Z0-9]` | Matches any alphanumeric character.            |
+
+### Examples
+
+```javascript id="rp1"
+/[abc]/.test("apple");
+```
+
+**Output:**
+
+```text id="rp2"
+true
+```
+
+```javascript id="rp3"
+/[0-9]/.test("abc123");
+```
+
+**Output:**
+
+```text id="rp4"
+true
+```
+
+### Alternation
+
+The pipe symbol (`|`) acts like a logical OR.
+
+```javascript id="rp5"
+/(cat|dog)/.test("I have a dog");
+```
+
+**Output:**
+
+```text id="rp6"
+true
+```
+
+---
+
+## 2. Metacharacters
+
+Metacharacters are characters with **special meanings** in regular expressions.
+
+### Common Metacharacters
+
+| Pattern | Description                                                |
+| ------- | ---------------------------------------------------------- |
+| `.`     | Matches any character except a newline.                    |
+| `\d`    | Matches any digit (`0-9`).                                 |
+| `\D`    | Matches any non-digit character.                           |
+| `\w`    | Matches word characters (`a-z`, `A-Z`, `0-9`, `_`).        |
+| `\W`    | Matches non-word characters.                               |
+| `\s`    | Matches whitespace characters.                             |
+| `\S`    | Matches non-whitespace characters.                         |
+| `\b`    | Matches a word boundary.                                   |
+| `\B`    | Matches a non-word boundary.                               |
+| `^`     | Matches the start of a string (or line in multiline mode). |
+| `$`     | Matches the end of a string (or line in multiline mode).   |
+
+### Examples
+
+```javascript id="rp7"
+/\d/.test("abc123");
+```
+
+**Output:**
+
+```text id="rp8"
+true
+```
+
+```javascript id="rp9"
+/\s/.test("Hello World");
+```
+
+**Output:**
+
+```text id="rp10"
+true
+```
+
+```javascript id="rp11"
+/\bcat\b/.test("The cat sat");
+```
+
+**Output:**
+
+```text id="rp12"
+true
+```
+
+---
+
+## 3. Quantifiers
+
+Quantifiers specify **how many times a character or group should occur**.
+
+### Common Quantifiers
+
+| Pattern  | Description                                 |
+| -------- | ------------------------------------------- |
+| `n+`     | Matches one or more occurrences of `n`.     |
+| `n*`     | Matches zero or more occurrences of `n`.    |
+| `n?`     | Matches zero or one occurrence of `n`.      |
+| `n{3}`   | Matches exactly 3 occurrences of `n`.       |
+| `n{2,5}` | Matches between 2 and 5 occurrences of `n`. |
+| `n{2,}`  | Matches at least 2 occurrences of `n`.      |
+
+### Examples
+
+```javascript id="rp13"
+/a+/.test("caaat");
+```
+
+**Output:**
+
+```text id="rp14"
+true
+```
+
+```javascript id="rp15"
+/ab*/.test("a");
+```
+
+**Output:**
+
+```text id="rp16"
+true
+```
+
+```javascript id="rp17"
+/colou?r/.test("color");
+```
+
+**Output:**
+
+```text id="rp18"
+true
+```
+
+```javascript id="rp19"
+/colou?r/.test("colour");
+```
+
+**Output:**
+
+```text id="rp20"
+true
+```
+
+---
+
+## Example: Email Validation Pattern
+
+```javascript id="rp21"
+const emailRegex =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+```
+
+This pattern combines:
+
+* `^` → Start of string
+* `[]` → Character classes
+* `+` → Quantifier
+* `$` → End of string
+
+---
+
+## Summary
+
+| Category                              | Purpose                                       |
+| ------------------------------------- | --------------------------------------------- |
+| Character Classes (`[]`)              | Match specific characters or ranges           |
+| Metacharacters (`\d`, `\s`, `^`, `$`) | Match special character types or positions    |
+| Quantifiers (`+`, `*`, `?`, `{}`)     | Specify how many times a pattern should occur |
+
+---
+
+#### Key Point
+
+> Regular expression patterns define the rules used to match text. They commonly include **character classes** for matching specific sets of characters, **metacharacters** for special matching behavior, and **quantifiers** for specifying how many times a pattern should occur. By combining these elements, complex text-processing tasks can be performed efficiently.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+159. ### What is a `RegExp` object?
+
+The **`RegExp` object** represents a **regular expression** in JavaScript. It is used to define search patterns for matching text and provides several built-in properties and methods for performing pattern-based operations.
+
+You can create a regular expression using either:
+
+1. **Regular expression literal syntax**
+2. **The `RegExp` constructor**
+
+---
+
+## 1. Using Regular Expression Literals
+
+```javascript id="re1"
+const regex = /\w+/;
+
+console.log(regex);
+```
+
+**Output:**
+
+```text id="re2"
+/\w+/
+```
+
+This is the most common and readable way to create regular expressions.
+
+---
+
+## 2. Using the `RegExp` Constructor
+
+```javascript id="re3"
+const regex =
+  new RegExp("\\w+");
+
+console.log(regex);
+```
+
+**Output:**
+
+```text id="re4"
+/\w+/
+```
+
+### Why Double Backslashes?
+
+In JavaScript strings, the backslash (`\`) is an escape character.
+
+Therefore:
+
+```javascript id="re5"
+"\\w+"
+```
+
+becomes:
+
+```text id="re6"
+\w+
+```
+
+which is then interpreted by `RegExp` as the regex pattern.
+
+---
+
+## When to Use `RegExp()`
+
+The constructor is useful when the pattern needs to be built dynamically.
+
+```javascript id="re7"
+const word =
+  "hello";
+
+const regex =
+  new RegExp(word, "i");
+
+console.log(
+  regex.test("Hello")
+);
+```
+
+**Output:**
+
+```text id="re8"
+true
+```
+
+Equivalent literal:
+
+```javascript id="re9"
+/hello/i;
+```
+
+However, literals cannot be constructed dynamically.
+
+---
+
+## Common `RegExp` Methods
+
+### `test()`
+
+Returns `true` if a match is found.
+
+```javascript id="re10"
+const regex =
+  /\d+/;
+
+console.log(
+  regex.test("123")
+);
+```
+
+**Output:**
+
+```text id="re11"
+true
+```
+
+---
+
+### `exec()`
+
+Executes the search and returns match information.
+
+```javascript id="re12"
+const regex =
+  /\d+/;
+
+console.log(
+  regex.exec("abc123")
+);
+```
+
+**Output:**
+
+```javascript id="re13"
+["123", index: 3, ...]
+```
+
+---
+
+## Common `RegExp` Properties
+
+### `source`
+
+Returns the pattern as a string.
+
+```javascript id="re14"
+const regex =
+  /\d+/;
+
+console.log(
+  regex.source
+);
+```
+
+**Output:**
+
+```text id="re15"
+\d+
+```
+
+---
+
+### `flags`
+
+Returns the modifiers used.
+
+```javascript id="re16"
+const regex =
+  /\d+/gi;
+
+console.log(
+  regex.flags
+);
+```
+
+**Output:**
+
+```text id="re17"
+gi
+```
+
+---
+
+### `lastIndex`
+
+Used with global (`g`) or sticky (`y`) regexes to track the next search position.
+
+```javascript id="re18"
+const regex =
+  /\d/g;
+
+regex.exec("1a2");
+
+console.log(
+  regex.lastIndex
+);
+```
+
+**Output:**
+
+```text id="re19"
+1
+```
+
+---
+
+## Literal vs Constructor
+
+| Approach    | Example                   | Use Case                                       |
+| ----------- | ------------------------- | ---------------------------------------------- |
+| Literal     | `/\d+/g`                  | Preferred when the pattern is known beforehand |
+| Constructor | `new RegExp("\\d+", "g")` | Useful for dynamically generated patterns      |
+
+---
+
+## Example
+
+```javascript id="re20"
+const regex =
+  new RegExp(
+    "\\w+",
+    "g"
+  );
+
+const text =
+  "Hello World";
+
+console.log(
+  text.match(regex)
+);
+```
+
+**Output:**
+
+```text id="re21"
+["Hello", "World"]
+```
+
+---
+
+#### Key Point
+
+> The `RegExp` object represents a regular expression in JavaScript and is used to define text search patterns. It can be created using either literal syntax (`/pattern/flags`) or the `RegExp` constructor (`new RegExp(pattern, flags)`). The `RegExp` object provides methods such as `test()` and `exec()` and is commonly used for validating, searching, extracting, and replacing text.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+160. ### How do you search a string for a pattern?
+
+You can use the **`test()`** method of a `RegExp` object to determine whether a string contains a pattern. The method returns **`true`** if a match is found and **`false`** otherwise.
+
+#### Syntax
+
+```javascript id="sp1"
+regex.test(string);
+```
+
+#### Example
+
+```javascript id="sp2"
+const pattern =
+  /you/;
+
+console.log(
+  pattern.test(
+    "How are you?"
+  )
+);
+```
+
+**Output:**
+
+```text id="sp3"
+true
+```
+
+Since the string contains the word `"you"`, `test()` returns `true`.
+
+---
+
+## Case-Sensitive Search
+
+By default, regular expressions are **case-sensitive**.
+
+```javascript id="sp4"
+const pattern =
+  /john/;
+
+console.log(
+  pattern.test("John")
+);
+```
+
+**Output:**
+
+```text id="sp5"
+false
+```
+
+Using the `i` modifier:
+
+```javascript id="sp6"
+const pattern =
+  /john/i;
+
+console.log(
+  pattern.test("John")
+);
+```
+
+**Output:**
+
+```text id="sp7"
+true
+```
+
+---
+
+## Searching for Digits
+
+```javascript id="sp8"
+const pattern =
+  /\d+/;
+
+console.log(
+  pattern.test(
+    "Order #123"
+  )
+);
+```
+
+**Output:**
+
+```text id="sp9"
+true
+```
+
+---
+
+## Alternative: Using `search()`
+
+If you need the **position of the match** instead of just `true` or `false`, use `String.prototype.search()`.
+
+```javascript id="sp10"
+const str =
+  "How are you?";
+
+console.log(
+  str.search(/you/)
+);
+```
+
+**Output:**
+
+```text id="sp11"
+8
+```
+
+If no match is found:
+
+```javascript id="sp12"
+console.log(
+  str.search(/hello/)
+);
+```
+
+**Output:**
+
+```text id="sp13"
+-1
+```
+
+---
+
+## Alternative: Using `match()`
+
+If you need the **actual matched text**, use `match()`.
+
+```javascript id="sp14"
+const str =
+  "How are you?";
+
+console.log(
+  str.match(/you/)
+);
+```
+
+**Output:**
+
+```javascript id="sp15"
+["you", index: 8, ...]
+```
+
+---
+
+## Summary
+
+| Method              | Purpose                               | Return Value      |
+| ------------------- | ------------------------------------- | ----------------- |
+| `regex.test(str)`   | Checks whether a pattern exists       | `true` or `false` |
+| `str.search(regex)` | Finds the position of the first match | Index or `-1`     |
+| `str.match(regex)`  | Retrieves the matched text            | Array or `null`   |
+
+---
+
+#### Key Point
+
+> To search a string for a pattern and determine whether it exists, you can use the `test()` method of a `RegExp` object. It returns `true` if the pattern is found and `false` otherwise. For obtaining the match position or matched text, methods such as `search()` and `match()` can be used instead.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+161. ### What is the purpose of the `exec()` method?
+
+The **`exec()`** method of the `RegExp` object is used to **execute a search for a match in a specified string**. Unlike `test()`, which only returns `true` or `false`, `exec()` returns **detailed information about the match**.
+
+If a match is found, it returns a **match array**; otherwise, it returns **`null`**.
+
+#### Syntax
+
+```javascript id="exec1"
+regex.exec(string);
+```
+
+#### Example
+
+```javascript id="exec2"
+const pattern =
+  /you/;
+
+console.log(
+  pattern.exec(
+    "How are you?"
+  )
+);
+```
+
+**Output:**
+
+```javascript id="exec3"
+[
+  "you",
+  index: 8,
+  input: "How are you?",
+  groups: undefined
+]
+```
+
+---
+
+## Understanding the Result
+
+Given:
+
+```javascript id="exec4"
+const result =
+  /you/.exec(
+    "How are you?"
+  );
+```
+
+The returned array contains:
+
+```javascript id="exec5"
+console.log(result[0]);      // "you"
+console.log(result.index);   // 8
+console.log(result.input);   // "How are you?"
+console.log(result.groups);  // undefined
+```
+
+| Property        | Description                     |
+| --------------- | ------------------------------- |
+| `result[0]`     | The matched text                |
+| `result.index`  | The starting index of the match |
+| `result.input`  | The original input string       |
+| `result.groups` | Named capturing groups (if any) |
+
+---
+
+## No Match Found
+
+```javascript id="exec6"
+const pattern =
+  /hello/;
+
+console.log(
+  pattern.exec(
+    "How are you?"
+  )
+);
+```
+
+**Output:**
+
+```text id="exec7"
+null
+```
+
+---
+
+## `exec()` with Capturing Groups
+
+```javascript id="exec8"
+const regex =
+  /(\w+)\s(\w+)/;
+
+const result =
+  regex.exec(
+    "John Smith"
+  );
+
+console.log(result);
+```
+
+**Output:**
+
+```javascript id="exec9"
+[
+  "John Smith",
+  "John",
+  "Smith",
+  index: 0,
+  input: "John Smith",
+  groups: undefined
+]
+```
+
+```javascript id="exec10"
+console.log(result[1]); // "John"
+console.log(result[2]); // "Smith"
+```
+
+Capturing groups are included as additional elements in the returned array.
+
+---
+
+## `exec()` with the Global (`g`) Flag
+
+When the `g` flag is used, `exec()` remembers the position of the previous match using the `lastIndex` property.
+
+```javascript id="exec11"
+const regex =
+  /\d+/g;
+
+const text =
+  "123 456 789";
+
+let match;
+
+while (
+  (match =
+    regex.exec(text)) !==
+  null
+) {
+  console.log(
+    `Found ${match[0]} at index ${match.index}`
+  );
+}
+```
+
+**Output:**
+
+```text id="exec12"
+Found 123 at index 0
+Found 456 at index 4
+Found 789 at index 8
+```
+
+---
+
+## `exec()` vs `test()`
+
+| Method   | Return Value          | Purpose                                        |
+| -------- | --------------------- | ---------------------------------------------- |
+| `test()` | `true` or `false`     | Checks whether a match exists                  |
+| `exec()` | Match array or `null` | Retrieves detailed information about the match |
+
+Example:
+
+```javascript id="exec13"
+const regex =
+  /you/;
+
+regex.test(
+  "How are you?"
+); // true
+
+regex.exec(
+  "How are you?"
+);
+// ["you", index: 8, ...]
+```
+
+---
+
+#### Key Point
+
+> The `exec()` method executes a search for a match in a string and returns a match array containing details such as the matched text, its position in the string, and any captured groups. If no match is found, it returns `null`. Unlike `test()`, which only indicates whether a match exists, `exec()` provides detailed match information.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+162. ### How do you change the style of an HTML element?
+
+You can change the appearance of an HTML element in JavaScript by manipulating its **inline styles** or by **adding, removing, or replacing CSS classes** using DOM APIs.
+
+---
+
+## 1. Using the `style` Property
+
+The **`style`** property allows you to modify an element's **inline CSS styles**.
+
+```javascript id="style1"
+document
+  .getElementById("title")
+  .style.fontSize =
+  "30px";
+```
+
+### Example
+
+```html
+<h1 id="title">Hello World</h1>
+```
+
+```javascript id="style2"
+const title =
+  document.getElementById(
+    "title"
+  );
+
+title.style.color =
+  "blue";
+
+title.style.fontSize =
+  "30px";
+
+title.style.backgroundColor =
+  "yellow";
+```
+
+### Result
+
+```css
+color: blue;
+font-size: 30px;
+background-color: yellow;
+```
+
+> **Note:** CSS properties written with hyphens use **camelCase** in JavaScript.
+
+| CSS Property       | JavaScript Property |
+| ------------------ | ------------------- |
+| `font-size`        | `fontSize`          |
+| `background-color` | `backgroundColor`   |
+| `margin-top`       | `marginTop`         |
+
+---
+
+## 2. Using the `className` Property
+
+The **`className`** property allows you to **replace all existing classes** on an element.
+
+```javascript id="style3"
+document
+  .getElementById("title")
+  .className =
+  "custom-title";
+```
+
+### Example
+
+```html
+<h1 id="title">Hello World</h1>
+```
+
+```css
+.custom-title {
+  color: red;
+  font-size: 30px;
+}
+```
+
+```javascript id="style4"
+const title =
+  document.getElementById(
+    "title"
+  );
+
+title.className =
+  "custom-title";
+```
+
+---
+
+## 3. Using `classList` (Recommended)
+
+Modern JavaScript provides the **`classList`** API, which offers more flexibility.
+
+### Add a Class
+
+```javascript id="style5"
+element.classList.add(
+  "active"
+);
+```
+
+### Remove a Class
+
+```javascript id="style6"
+element.classList.remove(
+  "active"
+);
+```
+
+### Toggle a Class
+
+```javascript id="style7"
+element.classList.toggle(
+  "active"
+);
+```
+
+### Check for a Class
+
+```javascript id="style8"
+element.classList.contains(
+  "active"
+);
+```
+
+### Example
+
+```javascript id="style9"
+const title =
+  document.getElementById(
+    "title"
+  );
+
+title.classList.add(
+  "highlight"
+);
+```
+
+> **`classList` is generally preferred over `className`** because it allows you to manipulate individual classes without affecting others.
+
+---
+
+## Comparison
+
+| Approach            | Use Case                                                     |
+| ------------------- | ------------------------------------------------------------ |
+| `element.style`     | Applying or changing individual inline styles                |
+| `element.className` | Replacing all existing classes                               |
+| `element.classList` | Adding, removing, or toggling specific classes (recommended) |
+
+---
+
+## Example
+
+```html
+<h1 id="title">Hello World</h1>
+```
+
+```css
+.highlight {
+  color: white;
+  background-color: blue;
+}
+```
+
+```javascript id="style10"
+const title =
+  document.getElementById(
+    "title"
+  );
+
+title.style.fontSize =
+  "30px";
+
+title.classList.add(
+  "highlight"
+);
+```
+
+---
+
+#### Key Point
+
+> You can change the style of an HTML element in JavaScript by modifying its inline styles using the `style` property or by applying CSS classes using `className` or the more flexible `classList` API. In modern applications, using `classList` is generally preferred because it keeps styling concerns in CSS while allowing dynamic class manipulation through JavaScript.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+163. ### What would be the result of `1 + 2 + '3'`?
+
+The result is:
+
+```javascript id="op1"
+1 + 2 + "3";
+```
+
+**Output:**
+
+```text id="op2"
+"33"
+```
+
+### Explanation
+
+JavaScript evaluates the expression **from left to right**.
+
+#### Step 1
+
+```javascript id="op3"
+1 + 2;
+```
+
+Since both operands are numbers, JavaScript performs **numeric addition**.
+
+```text id="op4"
+3
+```
+
+#### Step 2
+
+Now the expression becomes:
+
+```javascript id="op5"
+3 + "3";
+```
+
+Since one of the operands is a **string**, JavaScript converts the number `3` to a string and performs **string concatenation**.
+
+```text id="op6"
+"33"
+```
+
+Therefore:
+
+```javascript id="op7"
+console.log(
+  1 + 2 + "3"
+);
+```
+
+**Output:**
+
+```text id="op8"
+33
+```
+
+---
+
+## Similar Examples
+
+### Example 1
+
+```javascript id="op9"
+"1" + 2 + 3;
+```
+
+**Evaluation:**
+
+```javascript id="op10"
+"1" + 2;   // "12"
+"12" + 3;  // "123"
+```
+
+**Output:**
+
+```text id="op11"
+"123"
+```
+
+---
+
+### Example 2
+
+```javascript id="op12"
+1 + "2" + 3;
+```
+
+**Evaluation:**
+
+```javascript id="op13"
+1 + "2";   // "12"
+"12" + 3;  // "123"
+```
+
+**Output:**
+
+```text id="op14"
+"123"
+```
+
+---
+
+### Example 3
+
+```javascript id="op15"
+1 + 2 + 3;
+```
+
+**Evaluation:**
+
+```javascript id="op16"
+1 + 2; // 3
+3 + 3; // 6
+```
+
+**Output:**
+
+```text id="op17"
+6
+```
+
+---
+
+## What About Other Operators?
+
+Some operators perform **numeric coercion** instead of concatenation.
+
+```javascript id="op18"
+console.log(
+  3 * "3"
+);
+```
+
+**Output:**
+
+```text id="op19"
+9
+```
+
+```javascript id="op20"
+console.log(
+  10 - "2"
+);
+```
+
+**Output:**
+
+```text id="op21"
+8
+```
+
+```javascript id="op22"
+console.log(
+  12 / "3"
+);
+```
+
+**Output:**
+
+```text id="op23"
+4
+```
+
+This happens because operators such as `-`, `*`, and `/` convert strings to numbers when possible.
+
+However, the **`+` operator is special** because it is used for both **addition** and **string concatenation**.
+
+---
+
+#### Key Point
+
+> The expression `1 + 2 + "3"` evaluates to `"33"`. JavaScript processes the expression from left to right: first, `1 + 2` produces the number `3`, and then `3 + "3"` performs string concatenation because one operand is a string, resulting in `"33"`.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+164. ### What is a `debugger` statement?
+
+The **`debugger`** statement is used to **pause the execution of JavaScript code** and invoke any available debugging functionality, such as the browser's developer tools.
+
+When the JavaScript engine encounters a `debugger` statement **and a debugging tool is open**, execution stops at that line, allowing you to inspect variables, step through the code, and analyze the program's state.
+
+If no debugging functionality is available, the statement has **no effect**.
+
+#### Syntax
+
+```javascript id="dbg1"
+debugger;
+```
+
+#### Example
+
+```javascript id="dbg2"
+function getProfile() {
+  const user = {
+    name: "John",
+    age: 25,
+  };
+
+  debugger;
+
+  console.log(user);
+}
+
+getProfile();
+```
+
+When the execution reaches:
+
+```javascript id="dbg3"
+debugger;
+```
+
+the browser pauses the script, similar to hitting a **breakpoint** in the DevTools Sources panel.
+
+---
+
+## How It Works
+
+```text id="dbg4"
+JavaScript Execution
+         ↓
+Encounter debugger Statement
+         ↓
+DevTools Open?
+    ↙          ↘
+  Yes           No
+   ↓             ↓
+Pause        Continue
+Execution    Execution
+```
+
+---
+
+## Using `debugger` in the Browser
+
+1. Open the browser's **Developer Tools** (F12).
+2. Navigate to the **Sources** tab.
+3. Run the JavaScript code.
+4. When execution reaches the `debugger` statement, it pauses automatically.
+
+You can then:
+
+* Inspect variables
+* View the call stack
+* Evaluate expressions
+* Step into functions
+* Step over lines of code
+* Resume execution
+
+---
+
+## Example: Debugging a Bug
+
+```javascript id="dbg5"
+function divide(a, b) {
+  debugger;
+
+  return a / b;
+}
+
+console.log(divide(10, 0));
+```
+
+When execution pauses, you can inspect:
+
+```javascript id="dbg6"
+a; // 10
+b; // 0
+```
+
+to understand why the result might not be what you expected.
+
+---
+
+## `debugger` vs `console.log()`
+
+| Feature                 | `debugger` | `console.log()` |
+| ----------------------- | ---------- | --------------- |
+| Pauses execution        | ✅ Yes      | ❌ No            |
+| Inspect current scope   | ✅ Yes      | Limited         |
+| Step through code       | ✅ Yes      | ❌ No            |
+| View call stack         | ✅ Yes      | ❌ No            |
+| Print values to console | ❌ No       | ✅ Yes           |
+
+---
+
+## Important Notes
+
+* The `debugger` statement is **ignored** if no debugging tool is attached.
+* It is commonly used during development and troubleshooting.
+* It is generally recommended to **remove `debugger` statements before deploying production code**.
+
+Example:
+
+```javascript id="dbg7"
+function calculate() {
+  debugger;
+
+  return 10 + 20;
+}
+```
+
+If DevTools is closed, this behaves as if the `debugger` statement does not exist.
+
+---
+
+#### Key Point
+
+> The `debugger` statement pauses JavaScript execution and invokes available debugging tools, allowing developers to inspect variables, examine the call stack, and step through code line by line. It functions similarly to setting a breakpoint manually in browser developer tools and is a valuable aid during development and debugging.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+165. ### What is the purpose of breakpoints in debugging?
+
+**Breakpoints** are debugging tools that allow you to **pause the execution of JavaScript code at specific lines** so that you can inspect the program's state and understand how it is behaving.
+
+> Breakpoints help developers identify and fix bugs by stopping code execution at a chosen point and allowing detailed inspection of variables, the call stack, and program flow.
+
+#### Why Use Breakpoints?
+
+Breakpoints allow you to:
+
+1. **Pause code execution** at a specific line.
+2. **Inspect the values of variables and objects**.
+3. **Examine the call stack** to understand how the current code was reached.
+4. **Step through code line by line**.
+5. **Monitor how values change during execution**.
+6. **Identify and troubleshoot bugs more effectively**.
+
+---
+
+## Example
+
+```javascript id="bp1"
+function calculateTotal(
+  price,
+  tax
+) {
+  const total =
+    price + tax;
+
+  return total;
+}
+
+const result =
+  calculateTotal(
+    100,
+    20
+  );
+
+console.log(result);
+```
+
+If you place a breakpoint on:
+
+```javascript id="bp2"
+const total =
+  price + tax;
+```
+
+execution pauses before that line runs, allowing you to inspect:
+
+```javascript id="bp3"
+price; // 100
+tax;   // 20
+```
+
+---
+
+## Setting Breakpoints
+
+### 1. Using Browser Developer Tools
+
+1. Open **Developer Tools** (`F12`).
+2. Navigate to the **Sources** tab.
+3. Open the JavaScript file.
+4. Click the line number where you want execution to pause.
+
+A breakpoint marker appears on that line.
+
+---
+
+### 2. Using the `debugger` Statement
+
+```javascript id="bp4"
+function getProfile() {
+  debugger;
+
+  console.log(
+    "Debugging..."
+  );
+}
+
+getProfile();
+```
+
+When DevTools is open, execution pauses at the `debugger` statement.
+
+---
+
+## What Can You Do When Execution Pauses?
+
+### Inspect Variables
+
+```javascript id="bp5"
+console.log(user);
+```
+
+You can view the current values of variables in the **Scope** panel.
+
+---
+
+### Examine the Call Stack
+
+```text id="bp6"
+main()
+ ↓
+fetchData()
+ ↓
+processResponse()
+```
+
+The call stack shows the sequence of function calls that led to the current execution point.
+
+---
+
+### Step Through Code
+
+Most debuggers provide controls such as:
+
+| Action        | Purpose                                                    |
+| ------------- | ---------------------------------------------------------- |
+| **Resume**    | Continue execution until the next breakpoint               |
+| **Step Over** | Execute the current line without entering called functions |
+| **Step Into** | Move inside a function call                                |
+| **Step Out**  | Complete the current function and return to the caller     |
+
+---
+
+## Example Scenario
+
+```javascript id="bp7"
+function divide(a, b) {
+  const result =
+    a / b;
+
+  return result;
+}
+
+console.log(
+  divide(10, 0)
+);
+```
+
+By placing a breakpoint inside `divide()`, you can inspect:
+
+```javascript id="bp8"
+a; // 10
+b; // 0
+```
+
+to determine why the result is `Infinity`.
+
+---
+
+## Breakpoints vs `console.log()`
+
+| Feature                  | Breakpoints | `console.log()` |
+| ------------------------ | ----------- | --------------- |
+| Pause execution          | ✅ Yes       | ❌ No            |
+| Inspect variables        | ✅ Yes       | Limited         |
+| Step through code        | ✅ Yes       | ❌ No            |
+| Examine call stack       | ✅ Yes       | ❌ No            |
+| Output values to console | ❌ No        | ✅ Yes           |
+
+---
+
+#### Key Point
+
+> The purpose of breakpoints is to temporarily pause JavaScript execution at specific locations so developers can inspect variables, analyze the call stack, and step through code to identify and fix bugs. Breakpoints are one of the most powerful debugging tools available in modern browser developer tools.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+166. ### Can I use reserved words as identifiers?
+
+**No.** In JavaScript, **reserved words (keywords)** cannot be used as identifiers for variables, functions, classes, labels, or other user-defined names because they have special meanings in the language syntax.
+
+#### Example
+
+```javascript id="rw1"
+var else = "hello";
+```
+
+**Output:**
+
+```text id="rw2"
+Uncaught SyntaxError:
+Unexpected token 'else'
+```
+
+This error occurs because `else` is a reserved keyword used in conditional statements.
+
+---
+
+## What Are Identifiers?
+
+Identifiers are names used to identify:
+
+* Variables
+* Functions
+* Classes
+* Parameters
+* Labels
+
+For example:
+
+```javascript id="rw3"
+let userName =
+  "John";
+
+function greet() {}
+
+class Person {}
+```
+
+Here, `userName`, `greet`, and `Person` are valid identifiers.
+
+---
+
+## Examples of Reserved Words
+
+Some common JavaScript reserved words include:
+
+```text id="rw4"
+break
+case
+catch
+class
+const
+continue
+debugger
+default
+delete
+do
+else
+export
+extends
+finally
+for
+function
+if
+import
+new
+return
+super
+switch
+this
+throw
+try
+typeof
+var
+void
+while
+with
+yield
+```
+
+Using any of these as identifiers results in a syntax error.
+
+```javascript id="rw5"
+let return = 5;
+```
+
+```text id="rw6"
+SyntaxError
+```
+
+---
+
+## Valid Alternatives
+
+Instead of using reserved words directly, choose descriptive names:
+
+```javascript id="rw7"
+let elseValue =
+  "hello";
+
+let returnValue =
+  10;
+
+function classInfo() {}
+```
+
+These are valid because they are not exact matches for reserved keywords.
+
+---
+
+## Property Names Are Allowed
+
+Reserved words **can be used as object property names**.
+
+```javascript id="rw8"
+const user = {
+  class: "A",
+  default: true,
+  return: 100,
+};
+
+console.log(
+  user.class
+);
+```
+
+**Output:**
+
+```text id="rw9"
+A
+```
+
+This is valid in modern JavaScript.
+
+Bracket notation also works:
+
+```javascript id="rw10"
+console.log(
+  user["return"]
+);
+```
+
+**Output:**
+
+```text id="rw11"
+100
+```
+
+---
+
+## Context Matters
+
+```javascript id="rw12"
+const obj = {
+  for: "loop",
+};
+
+console.log(obj.for);
+```
+
+✅ Valid
+
+```javascript id="rw13"
+let for = "loop";
+```
+
+❌ Invalid
+
+---
+
+## Future Reserved Words
+
+JavaScript also defines some **future reserved words**, such as:
+
+```text id="rw14"
+enum
+implements
+interface
+package
+private
+protected
+public
+```
+
+These should also be avoided as identifiers to maintain compatibility.
+
+---
+
+#### Key Point
+
+> Reserved words are keywords that have predefined meanings in JavaScript and cannot be used as identifiers for variables, functions, classes, or labels. However, they can be used as object property names. To avoid syntax errors and improve code readability, choose descriptive identifier names that do not conflict with JavaScript keywords.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+167. ### How do you detect a mobile browser?
+
+There are several ways to detect whether a user is accessing your application from a mobile device. However, **user-agent sniffing is generally not recommended as the primary approach** because user-agent strings can be spoofed and may change over time.
+
+---
+
+## 1. Using the User-Agent String
+
+A common approach is to test the browser's `navigator.userAgent` against a regular expression.
+
+```javascript id="mob1"
+function isMobile() {
+  return (
+    /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+      navigator.userAgent
+    )
+  );
+}
+
+console.log(isMobile());
+```
+
+**Output:**
+
+```text id="mob2"
+true  // Mobile device
+false // Desktop device
+```
+
+---
+
+## 2. Using `navigator.userAgentData` (Modern Browsers)
+
+Some modern browsers expose structured device information.
+
+```javascript id="mob3"
+if (
+  navigator.userAgentData
+) {
+  console.log(
+    navigator.userAgentData.mobile
+  );
+}
+```
+
+**Output:**
+
+```text id="mob4"
+true  // Mobile
+false // Desktop
+```
+
+> **Note:** `userAgentData` is not supported in all browsers.
+
+---
+
+## 3. Using Media Queries (Recommended for Responsive Design)
+
+If your goal is to adapt the UI rather than identify the exact device type, **responsive design** is preferred.
+
+```javascript id="mob5"
+const isMobile =
+  window.matchMedia(
+    "(max-width: 768px)"
+  ).matches;
+
+console.log(isMobile);
+```
+
+**Output:**
+
+```text id="mob6"
+true  // Small screen
+false // Larger screen
+```
+
+---
+
+## Why User-Agent Detection Is Discouraged
+
+The original example uses a very large regular expression:
+
+```javascript id="mob7"
+/(android|iphone|...)/i
+```
+
+While this works in many cases, it has several drawbacks:
+
+* User-agent strings can be **spoofed**.
+* New devices require the regex to be updated.
+* Maintenance becomes difficult.
+* It detects **devices**, not **capabilities**.
+
+For example:
+
+```javascript id="mob8"
+navigator.userAgent;
+```
+
+might return:
+
+```text id="mob9"
+Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) ...
+```
+
+But the format can vary significantly between browsers and devices.
+
+---
+
+## Recommended Approach
+
+Choose the detection strategy based on your goal:
+
+| Goal                      | Recommended Approach                              |
+| ------------------------- | ------------------------------------------------- |
+| Responsive layouts        | CSS Media Queries                                 |
+| JavaScript layout changes | `window.matchMedia()`                             |
+| Mobile-specific behavior  | `navigator.userAgentData.mobile` (when supported) |
+| Legacy support            | User-agent regex                                  |
+
+---
+
+## Example: Responsive Detection
+
+```javascript id="mob10"
+if (
+  window.matchMedia(
+    "(pointer: coarse)"
+  ).matches
+) {
+  console.log(
+    "Touch device detected"
+  );
+}
+```
+
+This detects **input capability** rather than relying on device names.
+
+---
+
+#### Key Point
+
+> Mobile browser detection can be performed using the browser's user-agent string, but this approach has limitations and is generally discouraged for modern applications. For responsive behavior, feature detection and media queries are preferred. When device identification is necessary, APIs such as `navigator.userAgentData.mobile` or carefully maintained user-agent checks can be used.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+168. ### How do you detect a mobile browser without using a regular expression?
+
+You can detect mobile browsers by checking whether the browser's **user-agent string** contains certain device names. However, methods such as `String.prototype.includes()` are generally preferred over `match()` when you want to avoid explicitly working with regular expressions.
+
+#### Example
+
+```javascript id="mobnr1"
+function detectMobile() {
+  const userAgent =
+    navigator.userAgent;
+
+  return (
+    userAgent.includes(
+      "Android"
+    ) ||
+    userAgent.includes(
+      "webOS"
+    ) ||
+    userAgent.includes(
+      "iPhone"
+    ) ||
+    userAgent.includes(
+      "iPad"
+    ) ||
+    userAgent.includes(
+      "iPod"
+    ) ||
+    userAgent.includes(
+      "BlackBerry"
+    ) ||
+    userAgent.includes(
+      "Windows Phone"
+    )
+  );
+}
+
+console.log(
+  detectMobile()
+);
+```
+
+**Output:**
+
+```text id="mobnr2"
+true  // Mobile device
+false // Non-mobile device
+```
+
+---
+
+## Important Note About the Original Example
+
+The original example uses:
+
+```javascript id="mobnr3"
+navigator.userAgent.match(
+  /Android/i
+);
+```
+
+Although it avoids a large regular expression, it **still uses regular expressions internally** because `match()` is being passed a `RegExp` object.
+
+If the goal is truly to avoid regular expressions, use methods such as:
+
+* `includes()`
+* `indexOf()`
+
+---
+
+## Alternative Using `indexOf()`
+
+```javascript id="mobnr4"
+function detectMobile() {
+  const userAgent =
+    navigator.userAgent;
+
+  return (
+    userAgent.indexOf(
+      "Android"
+    ) !== -1 ||
+    userAgent.indexOf(
+      "iPhone"
+    ) !== -1 ||
+    userAgent.indexOf(
+      "iPad"
+    ) !== -1
+  );
+}
+```
+
+---
+
+## Modern Alternatives
+
+User-agent detection is not always reliable because:
+
+* User-agent strings can be spoofed.
+* New devices may not match your checks.
+* Tablets and hybrid devices blur the distinction between mobile and desktop.
+
+For many use cases, **feature detection** or **responsive design** is preferred.
+
+### Responsive Detection
+
+```javascript id="mobnr5"
+const isSmallScreen =
+  window.matchMedia(
+    "(max-width: 768px)"
+  ).matches;
+```
+
+### User-Agent Client Hints
+
+```javascript id="mobnr6"
+if (
+  navigator.userAgentData
+) {
+  console.log(
+    navigator.userAgentData.mobile
+  );
+}
+```
+
+> **Note:** `navigator.userAgentData` is not supported in all browsers.
+
+---
+
+## Comparison
+
+| Method                           | Uses RegEx | Recommended                |
+| -------------------------------- | ---------- | -------------------------- |
+| `userAgent.match(/.../)`         | ✅ Yes      | ⚠️ Legacy                  |
+| `userAgent.includes(...)`        | ❌ No       | ✅ Better                   |
+| `userAgent.indexOf(...)`         | ❌ No       | ✅ Older alternative        |
+| `navigator.userAgentData.mobile` | ❌ No       | ✅ Modern (limited support) |
+| CSS Media Queries                | ❌ No       | ✅ Best for responsive UI   |
+
+---
+
+#### Key Point
+
+> To detect mobile browsers without explicitly using regular expressions, you can check the browser's user-agent string using methods such as `includes()` or `indexOf()`. However, user-agent detection has limitations, and for responsive behavior, feature detection and media queries are generally preferred over device-based checks.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+169. ### How do you get the image width and height using JavaScript?
+
+You can obtain an image's dimensions using JavaScript in different ways, depending on whether the image already exists in the DOM or needs to be loaded programmatically.
+
+---
+
+## 1. Using an `Image` Object
+
+You can create a new `Image` object and access its dimensions once the image has finished loading.
+
+```javascript id="img1"
+const img =
+  new Image();
+
+img.onload =
+  function () {
+    console.log(
+      `${this.width} × ${this.height}`
+    );
+  };
+
+img.src =
+  "https://example.com/image.jpg";
+```
+
+**Output:**
+
+```text id="img2"
+200 × 100
+```
+
+### How It Works
+
+* `new Image()` creates an HTML image element in memory.
+* The `onload` event ensures the image has been fully loaded.
+* `width` and `height` return the image dimensions.
+
+---
+
+## 2. Getting Dimensions of an Existing Image Element
+
+If the image is already present in the HTML:
+
+```html id="kbnptt"
+<img
+  id="logo"
+  src="logo.png"
+  alt="Logo"
+/>
+```
+
+```javascript id="img3"
+const img =
+  document.getElementById(
+    "logo"
+  );
+
+console.log(img.width);
+console.log(img.height);
+```
+
+---
+
+## 3. Using `naturalWidth` and `naturalHeight` (Recommended)
+
+If you need the **original dimensions of the image file**, regardless of CSS scaling, use:
+
+```javascript id="img4"
+const img =
+  document.getElementById(
+    "logo"
+  );
+
+console.log(
+  img.naturalWidth
+);
+
+console.log(
+  img.naturalHeight
+);
+```
+
+### Example
+
+```html id="pspm0g"
+<img
+  id="photo"
+  src="photo.jpg"
+  width="200"
+/>
+```
+
+Suppose the actual image size is **800 × 600**.
+
+```javascript id="img5"
+const img =
+  document.getElementById(
+    "photo"
+  );
+
+console.log(img.width); // 200
+
+console.log(
+  img.naturalWidth
+); // 800
+```
+
+---
+
+## `width` vs `naturalWidth`
+
+| Property        | Description                                            |
+| --------------- | ------------------------------------------------------ |
+| `width`         | Rendered width of the image (may be affected by CSS).  |
+| `height`        | Rendered height of the image (may be affected by CSS). |
+| `naturalWidth`  | Original width of the image file.                      |
+| `naturalHeight` | Original height of the image file.                     |
+
+---
+
+## Important Note
+
+The original example:
+
+```javascript
+img.src =
+  "http://www.google.com/intl/en_ALL/images/logo.gif";
+```
+
+may not work reliably because:
+
+* Many websites block cross-origin requests.
+* The image URL may no longer exist.
+* Mixed-content restrictions may prevent loading HTTP resources on HTTPS pages.
+
+Using your own hosted images or images from trusted sources is recommended.
+
+---
+
+#### Key Point
+
+> You can determine an image's dimensions in JavaScript by creating an `Image` object and waiting for its `onload` event, or by accessing an existing `<img>` element. Use `width` and `height` for the displayed dimensions, and `naturalWidth` and `naturalHeight` to obtain the image's original file dimensions.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+170. ### How do you make a synchronous HTTP request?
+
+You can make a **synchronous HTTP request** using the **`XMLHttpRequest`** object by passing `false` as the third argument to the `open()` method.
+
+```javascript id="xhr1"
+function httpGet(
+  url
+) {
+  const xhr =
+    new XMLHttpRequest();
+
+  xhr.open(
+    "GET",
+    url,
+    false
+  ); // false = synchronous
+
+  xhr.send(null);
+
+  return xhr.responseText;
+}
+```
+
+#### Example
+
+```javascript id="xhr2"
+const response =
+  httpGet(
+    "https://example.com/api"
+  );
+
+console.log(response);
+```
+
+---
+
+## How It Works
+
+```javascript id="xhr3"
+xhr.open(
+  method,
+  url,
+  async
+);
+```
+
+The third parameter determines whether the request is asynchronous or synchronous.
+
+| Value            | Behavior             |
+| ---------------- | -------------------- |
+| `true` (default) | Asynchronous request |
+| `false`          | Synchronous request  |
+
+Using:
+
+```javascript id="xhr4"
+xhr.open(
+  "GET",
+  url,
+  false
+);
+```
+
+causes JavaScript execution to **block** until the request completes.
+
+---
+
+## Why Synchronous Requests Are Discouraged
+
+Synchronous requests have several drawbacks:
+
+1. **Block the main thread**
+2. **Freeze the user interface**
+3. **Prevent user interactions while waiting**
+4. **Degrade the user experience**
+5. **Have been deprecated in many browser contexts**
+
+Example:
+
+```javascript id="xhr5"
+console.log("Start");
+
+httpGet(
+  "/slow-api"
+);
+
+console.log("End");
+```
+
+If the server takes 10 seconds to respond, the browser becomes unresponsive during that period.
+
+---
+
+## Recommended Alternative: Asynchronous Requests
+
+### Using `XMLHttpRequest`
+
+```javascript id="xhr6"
+const xhr =
+  new XMLHttpRequest();
+
+xhr.open(
+  "GET",
+  "/api",
+  true
+);
+
+xhr.onload =
+  function () {
+    console.log(
+      xhr.responseText
+    );
+  };
+
+xhr.send();
+```
+
+---
+
+### Using `fetch()` (Modern Approach)
+
+```javascript id="xhr7"
+fetch("/api")
+  .then((response) =>
+    response.text()
+  )
+  .then((data) =>
+    console.log(data)
+  )
+  .catch((error) =>
+    console.error(error)
+  );
+```
+
+---
+
+### Using `async/await`
+
+```javascript id="xhr8"
+async function getData() {
+  try {
+    const response =
+      await fetch("/api");
+
+    const data =
+      await response.text();
+
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+```
+
+---
+
+## Comparison
+
+| Feature                     | Synchronous XHR | Asynchronous (`fetch`/XHR) |
+| --------------------------- | --------------- | -------------------------- |
+| Blocks execution            | ✅ Yes           | ❌ No                       |
+| Freezes UI                  | ✅ Yes           | ❌ No                       |
+| Better user experience      | ❌ No            | ✅ Yes                      |
+| Recommended for modern apps | ❌ No            | ✅ Yes                      |
+
+---
+
+#### Key Point
+
+> A synchronous HTTP request can be made using `XMLHttpRequest` by passing `false` as the third argument to `open()`. However, synchronous requests block the JavaScript thread and can make the browser unresponsive. For modern web applications, asynchronous approaches such as `fetch()`, Promises, and `async/await` are strongly recommended.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+171. ### How do you make an asynchronous HTTP request?
+
+You can make an **asynchronous HTTP request** using the **`XMLHttpRequest`** object by passing `true` as the third argument to the `open()` method.
+
+```javascript id="async1"
+function httpGetAsync(
+  url,
+  callback
+) {
+  const xhr =
+    new XMLHttpRequest();
+
+  xhr.onreadystatechange =
+    function () {
+      if (
+        xhr.readyState === 4 &&
+        xhr.status === 200
+      ) {
+        callback(
+          xhr.responseText
+        );
       }
-      sum.length; // 4 is the number of parameters expected.
-      ```
+    };
+
+  xhr.open(
+    "GET",
+    url,
+    true
+  ); // true = asynchronous
+
+  xhr.send(null);
+}
+```
+
+#### Usage
+
+```javascript id="async2"
+httpGetAsync(
+  "https://example.com/api",
+  function (response) {
+    console.log(response);
+  }
+);
+```
+
+---
+
+## How It Works
+
+```javascript id="async3"
+xhr.open(
+  method,
+  url,
+  async
+);
+```
+
+The third parameter determines whether the request is asynchronous.
+
+```javascript id="async4"
+xhr.open(
+  "GET",
+  url,
+  true
+);
+```
+
+Using `true` means:
+
+* The request is sent in the background.
+* JavaScript execution continues immediately.
+* The browser remains responsive.
+* A callback handles the response once it arrives.
+
+---
+
+## `readyState` Values
+
+The `readyState` property indicates the state of the request.
+
+| Value | State              | Description             |
+| ----- | ------------------ | ----------------------- |
+| `0`   | `UNSENT`           | Request not initialized |
+| `1`   | `OPENED`           | Connection established  |
+| `2`   | `HEADERS_RECEIVED` | Request received        |
+| `3`   | `LOADING`          | Downloading response    |
+| `4`   | `DONE`             | Request completed       |
+
+Example check:
+
+```javascript id="async5"
+if (
+  xhr.readyState === 4 &&
+  xhr.status === 200
+) {
+  // Success
+}
+```
+
+---
+
+## Modern Approach: `fetch()`
+
+While `XMLHttpRequest` is still supported, **`fetch()`** is generally preferred in modern JavaScript because it provides a cleaner Promise-based API.
+
+### Using Promises
+
+```javascript id="async6"
+fetch("/api")
+  .then((response) =>
+    response.json()
+  )
+  .then((data) =>
+    console.log(data)
+  )
+  .catch((error) =>
+    console.error(error)
+  );
+```
+
+---
+
+### Using `async/await`
+
+```javascript id="async7"
+async function getData() {
+  try {
+    const response =
+      await fetch("/api");
+
+    const data =
+      await response.json();
+
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+```
+
+---
+
+## Comparison
+
+| Feature                | `XMLHttpRequest` | `fetch()`   |
+| ---------------------- | ---------------- | ----------- |
+| Callback-based         | ✅ Yes            | ❌ No        |
+| Promise-based          | ❌ No             | ✅ Yes       |
+| Supports `async/await` | ❌ No             | ✅ Yes       |
+| Simpler syntax         | ❌ No             | ✅ Yes       |
+| Modern recommendation  | ⚠️ Legacy        | ✅ Preferred |
+
+---
+
+## Example Flow
+
+```text id="async8"
+Send Request
+       ↓
+Continue Executing Other Code
+       ↓
+Response Arrives
+       ↓
+Callback / Promise Executes
+```
+
+This non-blocking behavior is one of the reasons JavaScript applications remain responsive while waiting for network requests to complete.
+
+---
+
+#### Key Point
+
+> An asynchronous HTTP request can be made using `XMLHttpRequest` by passing `true` as the third argument to `open()`. The request executes in the background, allowing the browser to remain responsive while the response is handled through callbacks. In modern JavaScript, the `fetch()` API combined with Promises or `async/await` is the preferred approach for making asynchronous HTTP requests due to its simpler and more readable syntax.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-143. ### What is a polyfill
+172. ### How do you convert a date to another timezone in JavaScript?
 
-      A polyfill is a piece of JS code used to provide modern functionality on older browsers that do not natively support it. For example, Silverlight plugin polyfill can be used to mimic the functionality of an HTML Canvas element on Microsoft Internet Explorer 7.
+You can use the **`toLocaleString()`** method of the `Date` object with the **`timeZone`** option to display a date and time in a specific timezone.
 
-      There are two main polyfill libraries available,
+#### Syntax
 
-      1. **Core.js**: It is a modular javascript library used for cutting-edge ECMAScript features.
-      2. **Polyfill.io:** It provides polyfills that are required for browser needs.
+```javascript id="tz1"
+date.toLocaleString(
+  locale,
+  {
+    timeZone:
+      "TimeZone"
+  }
+);
+```
+
+---
+
+## Example: Convert to UTC
+
+```javascript id="tz2"
+console.log(
+  new Date().toLocaleString(
+    "en-GB",
+    {
+      timeZone: "UTC",
+    }
+  )
+);
+```
+
+**Possible Output:**
+
+```text id="tz3"
+13/06/2026, 12:30:45
+```
+
+Here:
+
+* `"en-GB"` specifies the British English date format (`DD/MM/YYYY`).
+* `"UTC"` specifies the target timezone.
+
+---
+
+## Convert to Different Timezones
+
+### New York
+
+```javascript id="tz4"
+console.log(
+  new Date().toLocaleString(
+    "en-US",
+    {
+      timeZone:
+        "America/New_York",
+    }
+  )
+);
+```
+
+---
+
+### London
+
+```javascript id="tz5"
+console.log(
+  new Date().toLocaleString(
+    "en-GB",
+    {
+      timeZone:
+        "Europe/London",
+    }
+  )
+);
+```
+
+---
+
+### Kolkata
+
+```javascript id="tz6"
+console.log(
+  new Date().toLocaleString(
+    "en-IN",
+    {
+      timeZone:
+        "Asia/Kolkata",
+    }
+  )
+);
+```
+
+---
+
+### Tokyo
+
+```javascript id="tz7"
+console.log(
+  new Date().toLocaleString(
+    "ja-JP",
+    {
+      timeZone:
+        "Asia/Tokyo",
+    }
+  )
+);
+```
+
+---
+
+## Formatting Specific Parts
+
+You can customize the output format:
+
+```javascript id="tz8"
+console.log(
+  new Date().toLocaleString(
+    "en-US",
+    {
+      timeZone: "UTC",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    }
+  )
+);
+```
+
+**Possible Output:**
+
+```text id="tz9"
+June 13, 2026, 12:30:45 PM
+```
+
+---
+
+## Important Note
+
+`Date` objects internally store time as a **UTC timestamp**.
+
+```javascript id="tz10"
+const date =
+  new Date();
+
+console.log(date);
+```
+
+Methods like `toLocaleString()` **do not modify the original `Date` object**. They simply return a **formatted string representation** of that date in the specified timezone.
+
+```javascript id="tz11"
+const date =
+  new Date();
+
+const londonTime =
+  date.toLocaleString(
+    "en-GB",
+    {
+      timeZone:
+        "Europe/London",
+    }
+  );
+
+console.log(date); // Original date object
+console.log(londonTime); // Formatted string
+```
+
+---
+
+## Need a New `Date` Object?
+
+JavaScript's built-in `Date` API does **not directly create a new `Date` object in another timezone**. It always represents an absolute point in time.
+
+For advanced timezone manipulation, libraries such as:
+
+* `date-fns-tz`
+* `Luxon`
+* `Moment Timezone` (legacy)
+
+can be used.
+
+---
+
+#### Key Point
+
+> You can display a JavaScript `Date` object in another timezone using `toLocaleString()` and the `timeZone` option. This method formats the same point in time according to the specified timezone but does not change the underlying `Date` object itself.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-144. ### What are break and continue statements
+173. ### What are the properties used to get the size of a window?
 
-      The break statement is used to "jump out" of a loop. i.e, It breaks the loop and continues executing the code after the loop.
+JavaScript provides several properties to determine the **width and height of the browser window (viewport)** and the **document**.
 
-      ```javascript
-      for (i = 0; i < 10; i++) {
-        if (i === 5) {
-          break;
-        }
-        text += "Number: " + i + "<br>";
-      }
-      ```
+The most commonly used properties are:
 
-      The continue statement is used to "jump over" one iteration in the loop. i.e, It breaks one iteration (in the loop), if a specified condition occurs, and continues with the next iteration in the loop.
+* `window.innerWidth`
+* `window.innerHeight`
+* `document.documentElement.clientWidth`
+* `document.documentElement.clientHeight`
+* `document.body.clientWidth`
+* `document.body.clientHeight`
 
-      ```javascript
-      for (i = 0; i < 10; i++) {
-        if (i === 5) {
-          continue;
-        }
-        text += "Number: " + i + "<br>";
-      }
-      ```
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+## Getting the Viewport Size
 
-145. ### What are js labels
+The modern approach is to use `window.innerWidth` and `window.innerHeight`.
 
-      The label statement allows us to name loops and blocks in JavaScript. We can then use these labels to refer back to the code later. For example, the below code with labels avoids printing the numbers when they are same,
+```javascript id="ws1"
+console.log(
+  window.innerWidth
+);
 
-      ```javascript
-      var i, j;
+console.log(
+  window.innerHeight
+);
+```
 
-      loop1: for (i = 0; i < 3; i++) {
-        loop2: for (j = 0; j < 3; j++) {
-          if (i === j) {
-            continue loop1;
-          }
-          console.log("i = " + i + ", j = " + j);
-        }
-      }
+These return the size of the browser's **viewport** (the visible area of the web page).
 
-      // Output is:
-      //   "i = 1, j = 0"
-      //   "i = 2, j = 0"
-      //   "i = 2, j = 1"
-      ```
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+## Cross-Browser Fallback
 
-146. ### What are the benefits of keeping declarations at the top
+To support older browsers, you can use a combination of properties:
 
-      It is recommended to keep all declarations at the top of each script or function. The benefits of doing this are,
+```javascript id="ws2"
+const width =
+  window.innerWidth ||
+  document
+    .documentElement
+    .clientWidth ||
+  document.body
+    .clientWidth;
 
-      1. Gives cleaner code
-      2. It provides a single place to look for local variables
-      3. Easy to avoid unwanted global variables
-      4. It reduces the possibility of unwanted re-declarations
+const height =
+  window.innerHeight ||
+  document
+    .documentElement
+    .clientHeight ||
+  document.body
+    .clientHeight;
 
-**[⬆ Back to Top](#table-of-contents)**
+console.log(
+  `${width} × ${height}`
+);
+```
 
-147. ### What are the benefits of initializing variables
+---
 
-      It is recommended to initialize variables because of the below benefits,
+## Property Comparison
 
-      1. It gives cleaner code
-      2. It provides a single place to initialize variables
-      3. Avoid undefined values in the code
+| Property                                | Description                                                       |
+| --------------------------------------- | ----------------------------------------------------------------- |
+| `window.innerWidth`                     | Width of the viewport, including the scrollbar (if present).      |
+| `window.innerHeight`                    | Height of the viewport, including the scrollbar (if present).     |
+| `document.documentElement.clientWidth`  | Width of the HTML document's visible area, excluding scrollbars.  |
+| `document.documentElement.clientHeight` | Height of the HTML document's visible area, excluding scrollbars. |
+| `document.body.clientWidth`             | Width of the `<body>` element's visible area.                     |
+| `document.body.clientHeight`            | Height of the `<body>` element's visible area.                    |
 
-**[⬆ Back to Top](#table-of-contents)**
+---
 
-148. ### What are the recommendations to create new object
+## Viewport vs Document Size
 
-      It is recommended to avoid creating new objects using `new Object()`. Instead you can initialize values based on it's type to create the objects.
+### Viewport Size
 
-      1. Assign {} instead of new Object()
-      2. Assign "" instead of new String()
-      3. Assign 0 instead of new Number()
-      4. Assign false instead of new Boolean()
-      5. Assign [] instead of new Array()
-      6. Assign /()/ instead of new RegExp()
-      7. Assign function (){} instead of new Function()
+The visible area of the browser window:
 
-      You can define them as an example,
+```javascript id="ws3"
+console.log(
+  window.innerWidth
+);
 
-      ```javascript
-      var v1 = {};
-      var v2 = "";
-      var v3 = 0;
-      var v4 = false;
-      var v5 = [];
-      var v6 = /()/;
-      var v7 = function () {};
-      ```
+console.log(
+  window.innerHeight
+);
+```
 
-**[⬆ Back to Top](#table-of-contents)**
+---
 
-149. ### How do you define JSON arrays
+### Entire Document Size
 
-      JSON arrays are written inside square brackets and arrays contain javascript objects. For example, the JSON array of users would be as below,
+If you need the **full dimensions of the page**, including the parts that require scrolling:
 
-      ```javascript
-      "users":[
-        {"firstName":"John", "lastName":"Abrahm"},
-        {"firstName":"Anna", "lastName":"Smith"},
-        {"firstName":"Shane", "lastName":"Warn"}
-      ]
-      ```
+```javascript id="ws4"
+console.log(
+  document
+    .documentElement
+    .scrollWidth
+);
 
-**[⬆ Back to Top](#table-of-contents)**
+console.log(
+  document
+    .documentElement
+    .scrollHeight
+);
+```
 
-150. ### How do you generate random integers
+---
 
-      You can use `Math.random()` with `Math.floor()` to return random integers. For example, if you want generate random integers between 1 to 10, the multiplication factor should be 10,
+## Detecting Window Resize
 
-      ```javascript
-      Math.floor(Math.random() * 10) + 1; // returns a random integer from 1 to 10
-      Math.floor(Math.random() * 100) + 1; // returns a random integer from 1 to 100
-      ```
+You can listen for the `resize` event to respond when the window size changes.
 
-      **Note:** `Math.random()` returns a random number between 0 (inclusive), and 1 (exclusive)
+```javascript id="ws5"
+window.addEventListener(
+  "resize",
+  () => {
+    console.log(
+      window.innerWidth,
+      window.innerHeight
+    );
+  }
+);
+```
 
-**[⬆ Back to Top](#table-of-contents)**
+---
 
-151. ### Can you write a random integers function to print integers within a range
+## Modern Recommendation
 
-      Yes, you can create a proper random function to return a random number between min and max (both included)
+For most modern applications, use:
 
-      ```javascript
-      function randomInteger(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
-      randomInteger(1, 100); // returns a random integer from 1 to 100
-      randomInteger(1, 1000); // returns a random integer from 1 to 1000
-      ```
+```javascript id="ws6"
+const width =
+  window.innerWidth;
 
-**[⬆ Back to Top](#table-of-contents)**
+const height =
+  window.innerHeight;
+```
 
-152. ### What is tree shaking
+The fallback approach is primarily useful when supporting very old browsers.
 
-      Tree shaking is a form of dead code elimination. It means that unused modules will not be included in the bundle during the build process and for that it relies on the static structure of ES2015 module syntax,( i.e. import and export). Initially this has been popularized by the ES2015 module bundler `rollup`, these days practically all bundlers use this technique.
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+#### Key Point
 
-153. ### What is the need of tree shaking
+> The properties most commonly used to determine the size of the browser window are `window.innerWidth` and `window.innerHeight`, which represent the viewport dimensions. For broader compatibility, `document.documentElement.clientWidth`, `document.documentElement.clientHeight`, `document.body.clientWidth`, and `document.body.clientHeight` can be used as fallbacks. Additionally, `scrollWidth` and `scrollHeight` provide the dimensions of the entire document, including off-screen content.
 
-      Tree Shaking can significantly reduce the code size in any application. i.e, The less code we send over the wire the more performant the application will be. For example, if we just want to create a “Hello World” Application using SPA frameworks then it will take around a few MBs, but by tree shaking it can bring down the size to just a few hundred KBs. Tree shaking is implemented in Rollup and Webpack bundlers.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-154. ### Is it recommended to use eval
-
-      No, it allows arbitrary code to be run which causes a security problem. As we know that the eval() function is used to run text as code. In most of the cases, it should not be necessary to use it.
 
 **[⬆ Back to Top](#table-of-contents)**
 
-155. ### What is a Regular Expression
+174. ### What is a conditional operator in JavaScript?
 
-      A regular expression is a sequence of characters that forms a search pattern. You can use this search pattern for searching data in a text. These can be used to perform all types of text search and text replace operations. Let's see the syntax format now,
+The **conditional operator**, also known as the **ternary operator**, is the **only JavaScript operator that takes three operands**. It provides a concise way to write simple `if...else` statements.
 
-      ```javascript
-      /pattern/modifiers;
-      ```
+#### Syntax
 
-      For example, the regular expression or search pattern with case-insensitive username would be,
+```javascript id="tern1"
+condition
+  ? expressionIfTrue
+  : expressionIfFalse;
+```
 
-      ```javascript
-      /John/i;
-      ```
+It works as follows:
 
-**[⬆ Back to Top](#table-of-contents)**
+* If `condition` evaluates to **`true`**, `expressionIfTrue` is executed.
+* Otherwise, `expressionIfFalse` is executed.
 
-156. ### What are the string methods that accept Regular expression
+---
 
-      There are six string methods: `search()`, `replace()`, `replaceAll()`, `match()`, `matchAll()`, and `split()`.
+## Example
 
-      The `search()` method uses an expression to search for a match, and returns the position of the match.
+```javascript id="tern2"
+const isAuthenticated =
+  false;
 
-      ```javascript
-      var msg = "Hello John";
-      var n = msg.search(/John/i); // 6
-      ```
+console.log(
+  isAuthenticated
+    ? "Hello, welcome"
+    : "Sorry, you are not authenticated"
+);
+```
 
-      The `replace()` and `replaceAll()` methods are used to return a modified string where the pattern is replaced.
+**Output:**
 
-      ```javascript
-      var msg = "ball bat";
-      var n1 = msg.replace(/b/i, "c"); // call bat
-      var n2 = msg.replaceAll(/b/i, "c"); // call cat
-      ```
+```text id="tern3"
+Sorry, you are not authenticated
+```
 
-      The `match()` and `matchAll()` methods are used to return the matches when matching a string against a regular expression.
+---
 
-      ```javascript
-      var msg = "Hello John";
-      var n1 = msg.match(/[A-Z]/g); // ["H", "J"]
-      var n2 = msg.matchAll(/[A-Z]/g); // this returns an iterator
-      ```
+## Equivalent `if...else` Statement
 
-      The `split()` method is used to split a string into an array of substrings, and returns the new array.
+The above code is equivalent to:
 
-      ```javascript
-      var msg = "Hello John";
-      var n = msg.split(/\s/); // ["Hello", "John"]
-      ```
+```javascript id="tern4"
+const isAuthenticated =
+  false;
 
-**[⬆ Back to Top](#table-of-contents)**
+if (
+  isAuthenticated
+) {
+  console.log(
+    "Hello, welcome"
+  );
+} else {
+  console.log(
+    "Sorry, you are not authenticated"
+  );
+}
+```
 
-157. ### What are modifiers in regular expression
+---
 
-      Modifiers can be used to perform case-insensitive and global searches. Let's list some of the modifiers,
+## Using the Ternary Operator in Assignments
 
-      | Modifier | Description                                             |
-      | -------- | ------------------------------------------------------- |
-      | i        | Perform case-insensitive matching                       |
-      | g        | Perform a global match rather than stops at first match |
-      | m        | Perform multiline matching                              |
+```javascript id="tern5"
+const age = 20;
 
-      Let's take an example of global modifier,
+const status =
+  age >= 18
+    ? "Adult"
+    : "Minor";
 
-      ```javascript
-      var text = "Learn JS one by one";
-      var pattern = /one/g;
-      var result = text.match(pattern); // one,one
-      ```
+console.log(status);
+```
 
-**[⬆ Back to Top](#table-of-contents)**
+**Output:**
 
-158. ### What are regular expression patterns
+```text id="tern6"
+Adult
+```
 
-      Regular Expressions provide a group of patterns in order to match characters. Basically they are categorized into 3 types,
+---
 
-      1. **Brackets:** These are used to find a range of characters.
-         For example, below are some use cases,
-         1. [abc]: Used to find any of the characters between the brackets(a,b,c)
-         2. [0-9]: Used to find any of the digits between the brackets
-         3. (a|b): Used to find any of the alternatives separated with |
-      2. **Metacharacters:** These are characters with a special meaning.
-         For example, below are some use cases,
-         1. \\d: Used to find a digit
-         2. \\s: Used to find a whitespace character
-         3. \\b: Used to find a match at the beginning or ending of a word
-      3. **Quantifiers:** These are useful to define quantities.
-         For example, below are some use cases,
-         1. n+: Used to find matches for any string that contains at least one n
-         2. n\*: Used to find matches for any string that contains zero or more occurrences of n
-         3. n?: Used to find matches for any string that contains zero or one occurrences of n
+## Nested Ternary Operators
 
-**[⬆ Back to Top](#table-of-contents)**
+Multiple conditions can be evaluated using nested ternary operators.
 
-159. ### What is a RegExp object
+```javascript id="tern7"
+const score = 85;
 
-      RegExp object is a regular expression object with predefined properties and methods. Let's see the simple usage of RegExp object,
+const grade =
+  score >= 90
+    ? "A"
+    : score >= 80
+    ? "B"
+    : score >= 70
+    ? "C"
+    : "F";
 
-      ```javascript
-      var regexp = new RegExp("\\w+");
-      console.log(regexp);
-      // expected output: /\w+/
-      ```
+console.log(grade);
+```
 
-**[⬆ Back to Top](#table-of-contents)**
+**Output:**
 
-160. ### How do you search a string for a pattern
+```text id="tern8"
+B
+```
 
-      You can use the `test()` method of regular expression in order to search a string for a pattern, and return true or false depending on the result.
+> **Note:** Excessive nesting can reduce readability. In such cases, `if...else` statements are often preferred.
 
-      ```javascript
-      var pattern = /you/;
-      console.log(pattern.test("How are you?")); //true
-      ```
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+## Common Use Cases
 
-161. ### What is the purpose of exec method
+### Conditional Rendering
 
-      The purpose of exec method is similar to test method but it executes a search for a match in a specified string and returns a result array, or null instead of returning true/false.
+```javascript id="tern9"
+const isLoggedIn =
+  true;
 
-      ```javascript
-      var pattern = /you/;
-      console.log(pattern.exec("How are you?")); //["you", index: 8, input: "How are you?", groups: undefined]
-      ```
+const message =
+  isLoggedIn
+    ? "Welcome back!"
+    : "Please sign in.";
+```
 
-**[⬆ Back to Top](#table-of-contents)**
+---
 
-162. ### How do you change the style of a HTML element
+### Choosing Default Text
 
-      You can change inline style or classname of a HTML element using javascript DOM-manipulation
+```javascript id="tern10"
+const count = 5;
 
-      1. **Using style property:** You can modify inline style using style property
+console.log(
+  count > 0
+    ? `${count} items`
+    : "No items"
+);
+```
 
-      ```javascript
-      document.getElementById("title").style.fontSize = "30px";
-      ```
+---
 
-      2. **Using ClassName property:** It is easy to modify element class using className property
+## Comparison
 
-      ```javascript
-      document.getElementById("title").className = "custom-title";
-      ```
+| Ternary Operator                 | `if...else`                                      |
+| -------------------------------- | ------------------------------------------------ |
+| Concise syntax                   | More verbose                                     |
+| Best for simple conditions       | Better for complex logic                         |
+| Can be used within expressions   | Cannot be used directly inside expressions       |
+| Can reduce readability if nested | Generally easier to read for multiple conditions |
 
-**[⬆ Back to Top](#table-of-contents)**
+---
 
-163. ### What would be the result of 1+2+'3'
+#### Key Point
 
-      The output is going to be `33`. Since `1` and `2` are numeric values, the result of the first two digits is going to be a numeric value `3`. The next digit is a string type value because of that the addition of numeric value `3` and string type value `3` is just going to be a concatenation value `33`. Other operations like `3 * '3'` do yield correct results because the string is coerced into a number.
+> The conditional (ternary) operator (`?:`) is a shorthand alternative to simple `if...else` statements. It takes three operands: a condition, an expression to evaluate if the condition is `true`, and another expression to evaluate if the condition is `false`. It is best suited for concise conditional assignments and simple decision-making expressions.
 
-**[⬆ Back to Top](#table-of-contents)**
-
-164. ### What is a debugger statement
-
-      The debugger statement invokes any available debugging functionality, such as setting a breakpoint. If no debugging functionality is available, this statement has no effect.
-      For example, in the below function a debugger statement has been inserted. So
-      execution is paused at the debugger statement just like a breakpoint in the script source.
-
-      ```javascript
-      function getProfile() {
-        // code goes here
-        debugger;
-        // code goes here
-      }
-      ```
 
 **[⬆ Back to Top](#table-of-contents)**
 
-165. ### What is the purpose of breakpoints in debugging
+175. ### Can you apply chaining on the conditional operator?
 
-      You can set breakpoints in the javascript code once the debugger statement is executed and the debugger window pops up. At each breakpoint, javascript will stop executing, and let you examine the JavaScript values. After examining values, you can resume the execution of code using the play button.
+**Yes.** You can chain **conditional (ternary) operators** to represent logic similar to an `if...else if...else` statement.
 
-**[⬆ Back to Top](#table-of-contents)**
+#### Syntax
 
-166. ### Can I use reserved words as identifiers
+```javascript id="chain1"
+condition1
+  ? value1
+  : condition2
+  ? value2
+  : condition3
+  ? value3
+  : value4;
+```
 
-      No, you cannot use the reserved words as variables, labels, object or function names. Let's see one simple example,
+This is equivalent to:
 
-      ```javascript
-      var else = "hello"; // Uncaught SyntaxError: Unexpected token else
-      ```
+```javascript id="chain2"
+if (condition1) {
+  return value1;
+} else if (condition2) {
+  return value2;
+} else if (condition3) {
+  return value3;
+} else {
+  return value4;
+}
+```
 
-**[⬆ Back to Top](#table-of-contents)**
+---
 
-167. ### How do you detect a mobile browser
+## Example
 
-      You can use regex which returns a true or false value depending on whether or not the user is browsing with a mobile.
+```javascript id="chain3"
+function getGrade(
+  score
+) {
+  return score >= 90
+    ? "A"
+    : score >= 80
+    ? "B"
+    : score >= 70
+    ? "C"
+    : score >= 60
+    ? "D"
+    : "F";
+}
 
-      ```javascript
-      window.mobilecheck = function () {
-        var mobileCheck = false;
-        (function (a) {
-          if (
-            /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
-              a
-            ) ||
-            /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
-              a.substr(0, 4)
-            )
+console.log(
+  getGrade(85)
+);
+```
+
+**Output:**
+
+```text id="chain4"
+B
+```
+
+---
+
+## Equivalent `if...else if...else`
+
+```javascript id="chain5"
+function getGrade(
+  score
+) {
+  if (score >= 90) {
+    return "A";
+  } else if (
+    score >= 80
+  ) {
+    return "B";
+  } else if (
+    score >= 70
+  ) {
+    return "C";
+  } else if (
+    score >= 60
+  ) {
+    return "D";
+  } else {
+    return "F";
+  }
+}
+```
+
+---
+
+## How Chaining Works
+
+The ternary operator is **right-associative**, meaning it is evaluated from **right to left**.
+
+```javascript id="chain6"
+condition1
+  ? value1
+  : (
+      condition2
+        ? value2
+        : (
+            condition3
+              ? value3
+              : value4
           )
-            mobileCheck = true;
-        })(navigator.userAgent || navigator.vendor || window.opera);
-        return mobileCheck;
-      };
-      ```
+    );
+```
+
+So JavaScript interprets:
+
+```javascript id="chain7"
+a ? b : c ? d : e;
+```
+
+as:
+
+```javascript id="chain8"
+a
+  ? b
+  : c
+  ? d
+  : e;
+```
+
+**not as:**
+
+```javascript id="chain9"
+(a ? b : c)
+  ? d
+  : e;
+```
+
+---
+
+## When to Use Chained Ternaries
+
+### Good Use Case
+
+Simple value selection:
+
+```javascript id="chain10"
+const status =
+  age >= 18
+    ? "Adult"
+    : "Minor";
+```
+
+---
+
+### Acceptable Use Case
+
+A few related conditions:
+
+```javascript id="chain11"
+const message =
+  score >= 90
+    ? "Excellent"
+    : score >= 75
+    ? "Good"
+    : "Needs Improvement";
+```
+
+---
+
+### Avoid Excessive Chaining
+
+```javascript id="chain12"
+const result =
+  condition1
+    ? value1
+    : condition2
+    ? value2
+    : condition3
+    ? value3
+    : condition4
+    ? value4
+    : condition5
+    ? value5
+    : value6;
+```
+
+This can quickly become difficult to read and maintain.
+
+In such situations, prefer:
+
+```javascript id="chain13"
+if (condition1) {
+  ...
+} else if (
+  condition2
+) {
+  ...
+} else {
+  ...
+}
+```
+
+---
+
+## Comparison
+
+| Chained Ternary                    | `if...else if...else`           |
+| ---------------------------------- | ------------------------------- |
+| More concise                       | More verbose                    |
+| Useful for simple expressions      | Better for complex logic        |
+| Can reduce readability when nested | Easier to understand            |
+| Evaluates to a value               | Primarily used for control flow |
+
+---
+
+#### Key Point
+
+> Yes, conditional (ternary) operators can be chained to represent logic similar to `if...else if...else` statements. While this provides a concise syntax for simple value selection, deeply nested ternary expressions can reduce readability. For complex decision-making, traditional `if...else` statements are generally preferred.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-168. ### How do you detect a mobile browser without regexp
+176. ### What are the ways to execute JavaScript after a page load?
 
-      You can detect mobile browsers by simply running through a list of devices and checking if the useragent matches anything. This is an alternative solution for RegExp usage,
+There are several ways to execute JavaScript after the page or DOM has loaded. However, some approaches are **recommended**, while others are **outdated or incorrect**.
 
-      ```javascript
-      function detectmob() {
-        if (
-          navigator.userAgent.match(/Android/i) ||
-          navigator.userAgent.match(/webOS/i) ||
-          navigator.userAgent.match(/iPhone/i) ||
-          navigator.userAgent.match(/iPad/i) ||
-          navigator.userAgent.match(/iPod/i) ||
-          navigator.userAgent.match(/BlackBerry/i) ||
-          navigator.userAgent.match(/Windows Phone/i)
-        ) {
-          return true;
-        } else {
-          return false;
-        }
+---
+
+## 1. Using `window.onload`
+
+The `window.onload` event fires when the **entire page has finished loading**, including:
+
+* HTML
+* CSS
+* Images
+* Scripts
+* Iframes
+
+```javascript id="load1"
+window.onload =
+  function () {
+    console.log(
+      "Page fully loaded"
+    );
+  };
+```
+
+### Using `addEventListener`
+
+```javascript id="load2"
+window.addEventListener(
+  "load",
+  function () {
+    console.log(
+      "Page fully loaded"
+    );
+  }
+);
+```
+
+> `addEventListener` is preferred because it allows multiple listeners.
+
+---
+
+## 2. Using `DOMContentLoaded` (Recommended)
+
+The `DOMContentLoaded` event fires when the **HTML document has been completely parsed**, without waiting for images and other resources to finish loading.
+
+```javascript id="load3"
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+    console.log(
+      "DOM is ready"
+    );
+  }
+);
+```
+
+### Why is this preferred?
+
+It allows JavaScript to run earlier, improving performance.
+
+```text id="load4"
+HTML Parsed
+      ↓
+DOMContentLoaded
+      ↓
+Images/CSS Finish Loading
+      ↓
+window.load
+```
+
+---
+
+## 3. Using the `onload` Attribute on `<body>`
+
+```html id="pkn2ry"
+<body onload="initialize()">
+  ...
+</body>
+```
+
+```javascript id="load5"
+function initialize() {
+  console.log(
+    "Page loaded"
+  );
+}
+```
+
+> While valid, **inline event handlers are generally discouraged** because they mix HTML and JavaScript.
+
+---
+
+## 4. Using the `defer` Attribute (Modern Approach)
+
+Scripts with `defer` are downloaded in parallel but executed **after the HTML has been parsed**.
+
+```html id="0ylwpi"
+<script
+  src="app.js"
+  defer
+></script>
+```
+
+In `app.js`:
+
+```javascript id="load6"
+console.log(
+  "DOM is ready"
+);
+```
+
+> This is a clean and modern way to ensure the DOM is available.
+
+---
+
+## Important Correction
+
+The original statement:
+
+```javascript id="load7"
+document.onload =
+  function () {};
+```
+
+is **not a standard or commonly used event handler** for detecting page load.
+
+❌ Avoid:
+
+```javascript id="load8"
+document.onload =
+  function () {};
+```
+
+✅ Use instead:
+
+```javascript id="load9"
+window.onload =
+  function () {};
+```
+
+or:
+
+```javascript id="load10"
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {}
+);
+```
+
+---
+
+## Comparison
+
+| Method             | Waits for Images/CSS? | Recommended                       |
+| ------------------ | --------------------- | --------------------------------- |
+| `window.onload`    | ✅ Yes                 | ✅ When full page load is required |
+| `DOMContentLoaded` | ❌ No                  | ✅ Preferred for DOM manipulation  |
+| `<body onload="">` | ✅ Yes                 | ⚠️ Discouraged                    |
+| `document.onload`  | ❌ Not standard        | ❌ No                              |
+| `defer` scripts    | ❌ No                  | ✅ Modern approach                 |
+
+---
+
+#### Key Point
+
+> JavaScript can be executed after a page loads using `window.onload`, `DOMContentLoaded`, the `<body onload>` attribute, or deferred scripts. Among these, `DOMContentLoaded` and the `defer` attribute are generally preferred because they allow code to run as soon as the DOM is ready without waiting for all external resources to finish loading. The use of `document.onload` is not standard and should be avoided.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+177. ### What is the difference between `__proto__` and `prototype`?
+
+Although `__proto__` and `prototype` are related to JavaScript's prototype-based inheritance system, they serve **different purposes**.
+
+* **`prototype`** is a property that exists on **constructor functions**.
+* **`__proto__`** is a property that exists on **objects** and points to their prototype.
+
+---
+
+## `prototype`
+
+The **`prototype`** property belongs to **functions that can be used as constructors**.
+
+```javascript id="pp1"
+function Employee(
+  name
+) {
+  this.name = name;
+}
+
+Employee.prototype.sayHello =
+  function () {
+    console.log(
+      `Hello, ${this.name}`
+    );
+  };
+```
+
+When objects are created using `new`, JavaScript links the object's internal prototype to the constructor's `prototype` object.
+
+```javascript id="pp2"
+const emp =
+  new Employee(
+    "John"
+  );
+
+emp.sayHello();
+```
+
+**Output:**
+
+```text id="pp3"
+Hello, John
+```
+
+---
+
+## `__proto__`
+
+The **`__proto__`** property refers to an object's **prototype link**.
+
+```javascript id="pp4"
+const emp =
+  new Employee(
+    "John"
+  );
+
+console.log(
+  emp.__proto__ ===
+    Employee.prototype
+);
+```
+
+**Output:**
+
+```text id="pp5"
+true
+```
+
+---
+
+## Relationship Between Them
+
+When you write:
+
+```javascript id="pp6"
+const emp =
+  new Employee();
+```
+
+JavaScript approximately performs:
+
+```javascript id="pp7"
+const emp = {};
+
+emp.__proto__ =
+  Employee.prototype;
+```
+
+Therefore:
+
+```javascript id="pp8"
+console.log(
+  emp.__proto__ ===
+    Employee.prototype
+);
+```
+
+**Output:**
+
+```text id="pp9"
+true
+```
+
+---
+
+## Important Examples
+
+```javascript id="pp10"
+function Employee() {}
+
+const emp =
+  new Employee();
+
+console.log(
+  Employee.prototype
+);
+```
+
+**Output:**
+
+```text id="pp11"
+{}
+```
+
+```javascript id="pp12"
+console.log(
+  emp.__proto__
+);
+```
+
+**Output:**
+
+```text id="pp13"
+{}
+```
+
+```javascript id="pp14"
+console.log(
+  emp.__proto__ ===
+    Employee.prototype
+);
+```
+
+**Output:**
+
+```text id="pp15"
+true
+```
+
+```javascript id="pp16"
+console.log(
+  emp.prototype
+);
+```
+
+**Output:**
+
+```text id="pp17"
+undefined
+```
+
+Objects do **not** have a `prototype` property.
+
+---
+
+## Modern Alternative to `__proto__`
+
+Although `__proto__` is widely supported, it is considered **legacy**.
+
+Instead, use:
+
+```javascript id="pp18"
+Object.getPrototypeOf(
+  emp
+);
+```
+
+```javascript id="pp19"
+Object.setPrototypeOf(
+  emp,
+  newPrototype
+);
+```
+
+Example:
+
+```javascript id="pp20"
+console.log(
+  Object.getPrototypeOf(
+    emp
+  ) ===
+    Employee.prototype
+);
+```
+
+**Output:**
+
+```text id="pp21"
+true
+```
+
+---
+
+## Comparison
+
+| Feature                 | `prototype`                                    | `__proto__`                      |
+| ----------------------- | ---------------------------------------------- | -------------------------------- |
+| Exists on               | Constructor functions                          | Objects                          |
+| Purpose                 | Defines properties/methods shared by instances | References an object's prototype |
+| Used during `new`       | ✅ Yes                                          | ✅ Set automatically              |
+| Accessible on instances | ❌ No                                           | ✅ Yes                            |
+| Recommended modern API  | N/A                                            | `Object.getPrototypeOf()`        |
+| Common usage            | Frequently used                                | Rarely used directly             |
+
+---
+
+## Important Correction
+
+The statement:
+
+> **ECMAScript: `prototype` introduced in ES6 and `__proto__` introduced in ES5**
+
+is **incorrect**.
+
+* The **`prototype`** property has existed since the earliest versions of JavaScript.
+* **`__proto__`** originated as a browser extension and was later standardized in **ES2015 (ES6)** as a legacy accessor property in Annex B.
+
+---
+
+#### Key Point
+
+> `prototype` is a property of constructor functions that defines the methods and properties shared by all instances created with `new`. `__proto__` is a property of objects that points to the object's prototype and is used in the prototype chain lookup process. When an object is created using `new Constructor()`, JavaScript sets the object's `__proto__` to `Constructor.prototype`.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+178. ### Can you give an example of when you really need a semicolon?
+
+Yes. Although JavaScript has **Automatic Semicolon Insertion (ASI)**, there are situations where **omitting semicolons can lead to unexpected behavior or runtime errors**.
+
+One common example is when an **Immediately Invoked Function Expression (IIFE)** follows another statement.
+
+---
+
+## Problem Without a Semicolon
+
+```javascript id="semi1"
+const greeting =
+  "Hello"
+
+(function () {
+  console.log(
+    "IIFE executed"
+  );
+})();
+```
+
+JavaScript interprets this as:
+
+```javascript id="semi2"
+const greeting =
+  "Hello"(function () {
+    console.log(
+      "IIFE executed"
+    );
+  })();
+```
+
+**Output:**
+
+```text id="semi3"
+TypeError:
+"Hello" is not a function
+```
+
+Because the parser treats the IIFE as if it were being called on the previous expression.
+
+---
+
+## Correct Version
+
+```javascript id="semi4"
+const greeting =
+  "Hello";
+
+(function () {
+  console.log(
+    "IIFE executed"
+  );
+})();
+```
+
+**Output:**
+
+```text id="semi5"
+IIFE executed
+```
+
+The semicolon clearly terminates the previous statement.
+
+---
+
+## Another Common Pattern
+
+Many developers intentionally prefix IIFEs with a semicolon:
+
+```javascript id="semi6"
+;(function () {
+  console.log(
+    "Safe IIFE"
+  );
+})();
+```
+
+This protects the code in case the previous file or statement omitted a semicolon.
+
+---
+
+## Other Situations Where Semicolons Matter
+
+### Lines Starting With `[`
+
+```javascript id="semi7"
+const arr = [1, 2, 3]
+
+[4, 5].forEach(
+  console.log
+);
+```
+
+This can be interpreted incorrectly.
+
+Safer version:
+
+```javascript id="semi8"
+const arr = [1, 2, 3];
+
+[4, 5].forEach(
+  console.log
+);
+```
+
+---
+
+### Lines Starting With `(`
+
+```javascript id="semi9"
+const num = 42
+
+(function () {
+  console.log(num);
+})();
+```
+
+Use:
+
+```javascript id="semi10"
+const num = 42;
+
+(function () {
+  console.log(num);
+})();
+```
+
+---
+
+### Lines Starting With Template Literals
+
+```javascript id="semi11"
+const a = 10
+
+`Hello`;
+```
+
+Semicolons prevent accidental concatenation with the previous expression.
+
+---
+
+## About the Original Example
+
+The original example:
+
+```javascript id="semi12"
+var fn = (function () {
+  // ...
+})(
+  function () {
+    // ...
+  }
+)();
+```
+
+illustrates the same underlying problem: **the parser merges two separate statements into a single expression because a semicolon is missing**.
+
+This often results in errors such as:
+
+```text id="semi13"
+TypeError:
+... is not a function
+```
+
+---
+
+## Should You Always Use Semicolons?
+
+There are two common styles:
+
+### Always Use Semicolons
+
+```javascript id="semi14"
+const name = "John";
+
+console.log(name);
+```
+
+**Pros:**
+
+* Avoids ASI pitfalls.
+* More explicit.
+* Preferred by many style guides.
+
+---
+
+### Rely on ASI
+
+```javascript id="semi15"
+const name = "John"
+
+console.log(name)
+```
+
+**Pros:**
+
+* Less visual clutter.
+
+**Cons:**
+
+* Requires understanding ASI edge cases.
+
+---
+
+#### Key Point
+
+> JavaScript's Automatic Semicolon Insertion (ASI) usually inserts semicolons automatically, but there are situations where omitting them changes how the code is parsed. One important example is when an IIFE follows another statement. In such cases, a semicolon is necessary to separate the statements and prevent runtime errors like `TypeError: ... is not a function`. For this reason, many developers choose to always include semicolons.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+179. ### What is the `freeze()` method?
+
+The **`Object.freeze()`** method is used to **freeze an object**, making it immutable at the **top level**.
+
+When an object is frozen:
+
+1. **New properties cannot be added.**
+2. **Existing properties cannot be removed.**
+3. **Existing properties cannot be modified** (their values cannot be changed).
+4. **Property descriptors** such as `writable` and `configurable` cannot be changed.
+
+The method returns the **same object** that was passed to it; it does **not create a frozen copy**.
+
+#### Syntax
+
+```javascript id="freeze1"
+Object.freeze(obj);
+```
+
+---
+
+## Basic Example
+
+```javascript id="freeze2"
+const obj = {
+  prop: 100,
+};
+
+Object.freeze(obj);
+
+obj.prop = 200;
+
+console.log(obj.prop);
+```
+
+**Output:**
+
+```text id="freeze3"
+100
+```
+
+In **non-strict mode**, the assignment fails silently.
+
+In **strict mode**, it throws an error:
+
+```javascript id="freeze4"
+"use strict";
+
+const obj = {
+  prop: 100,
+};
+
+Object.freeze(obj);
+
+obj.prop = 200;
+```
+
+**Output:**
+
+```text id="freeze5"
+TypeError: Cannot assign to read only property 'prop'
+```
+
+---
+
+## Prevent Adding Properties
+
+```javascript id="freeze6"
+const user = {
+  name: "John",
+};
+
+Object.freeze(user);
+
+user.age = 25;
+
+console.log(user);
+```
+
+**Output:**
+
+```javascript id="freeze7"
+{ name: "John" }
+```
+
+---
+
+## Prevent Deleting Properties
+
+```javascript id="freeze8"
+const user = {
+  name: "John",
+};
+
+Object.freeze(user);
+
+delete user.name;
+
+console.log(user.name);
+```
+
+**Output:**
+
+```text id="freeze9"
+John
+```
+
+---
+
+## Shallow Freeze
+
+`Object.freeze()` performs a **shallow freeze**, meaning that **nested objects are not frozen**.
+
+```javascript id="freeze10"
+const user = {
+  name: "John",
+  employment: {
+    department: "IT",
+  },
+};
+
+Object.freeze(user);
+
+user.employment.department =
+  "HR";
+
+console.log(
+  user.employment.department
+);
+```
+
+**Output:**
+
+```text id="freeze11"
+HR
+```
+
+Although `user` is frozen, the nested `employment` object remains mutable.
+
+---
+
+## Deep Freeze Example
+
+If you need to freeze nested objects as well, you can recursively freeze them.
+
+```javascript id="freeze12"
+function deepFreeze(
+  obj
+) {
+  Object.keys(obj).forEach(
+    (key) => {
+      if (
+        typeof obj[key] ===
+          "object" &&
+        obj[key] !== null
+      ) {
+        deepFreeze(obj[key]);
       }
-      ```
+    }
+  );
+
+  return Object.freeze(obj);
+}
+```
+
+Usage:
+
+```javascript id="freeze13"
+const user = {
+  name: "John",
+  employment: {
+    department: "IT",
+  },
+};
+
+deepFreeze(user);
+
+user.employment.department =
+  "HR";
+
+console.log(
+  user.employment.department
+);
+```
+
+**Output:**
+
+```text id="freeze14"
+IT
+```
+
+---
+
+## Checking Whether an Object Is Frozen
+
+```javascript id="freeze15"
+const obj = {
+  a: 1,
+};
+
+Object.freeze(obj);
+
+console.log(
+  Object.isFrozen(obj)
+);
+```
+
+**Output:**
+
+```text id="freeze16"
+true
+```
+
+---
+
+## `freeze()` vs `seal()` vs `preventExtensions()`
+
+| Method                       | Add Properties | Delete Properties | Modify Existing Properties |
+| ---------------------------- | -------------- | ----------------- | -------------------------- |
+| `Object.preventExtensions()` | ❌ No           | ✅ Yes             | ✅ Yes                      |
+| `Object.seal()`              | ❌ No           | ❌ No              | ✅ Yes                      |
+| `Object.freeze()`            | ❌ No           | ❌ No              | ❌ No                       |
+
+Example:
+
+```javascript id="freeze17"
+const obj = {
+  a: 1,
+};
+
+Object.freeze(obj);
+```
+
+After freezing:
+
+```javascript id="freeze18"
+obj.a = 2;     // ❌
+obj.b = 3;     // ❌
+delete obj.a;  // ❌
+```
+
+---
+
+## Important Correction
+
+The statement:
+
+> **"It causes a TypeError if the argument passed is not an object."**
+
+is **incorrect**.
+
+In modern JavaScript, primitive values are simply returned unchanged:
+
+```javascript id="freeze19"
+console.log(
+  Object.freeze(42)
+);
+```
+
+**Output:**
+
+```text id="freeze20"
+42
+```
+
+No error is thrown.
+
+Only `null` and `undefined` cause a `TypeError`:
+
+```javascript id="freeze21"
+Object.freeze(null);
+Object.freeze(undefined);
+```
+
+**Output:**
+
+```text id="freeze22"
+TypeError
+```
+
+---
+
+#### Key Point
+
+> `Object.freeze()` makes an object immutable at the top level by preventing the addition, deletion, or modification of its properties. However, it performs only a **shallow freeze**, meaning nested objects remain mutable unless they are explicitly frozen as well. The method returns the original object rather than creating a new frozen copy.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-169. ### How do you get the image width and height using JS
+180. ### What is the purpose of the `freeze()` method?
 
-      You can programmatically get the image and check the dimensions(width and height) using JavaScript.
+The primary purpose of the **`Object.freeze()`** method is to make an object **immutable at the top level** by preventing any changes to its structure and properties.
 
-      ```javascript
-      var img = new Image();
-      img.onload = function () {
-        console.log(this.width + "x" + this.height);
-      };
-      img.src = "http://www.google.com/intl/en_ALL/images/logo.gif";
-      ```
+### Benefits of `Object.freeze()`
+
+1. **It is used to freeze objects and arrays.**
+2. **It is used to make an object immutable (shallow immutability).**
+3. **It prevents adding new properties or elements.**
+4. **It prevents deleting existing properties or elements.**
+5. **It prevents modifying existing property values.**
+6. **It helps protect configuration objects and constants from accidental changes.**
+
+---
+
+## Example: Freezing an Object
+
+```javascript id="pf1"
+const user = {
+  name: "John",
+  age: 30,
+};
+
+Object.freeze(user);
+
+user.age = 35;
+user.city = "London";
+delete user.name;
+
+console.log(user);
+```
+
+**Output:**
+
+```javascript id="pf2"
+{
+  name: "John",
+  age: 30
+}
+```
+
+The attempted modifications have no effect (or throw errors in strict mode).
+
+---
+
+## Example: Freezing an Array
+
+```javascript id="pf3"
+const numbers = [
+  1,
+  2,
+  3,
+];
+
+Object.freeze(numbers);
+
+numbers.push(4);
+numbers[0] = 10;
+
+console.log(numbers);
+```
+
+**Output:**
+
+```text id="pf4"
+[1, 2, 3]
+```
+
+Array elements cannot be added, removed, or modified.
+
+---
+
+## Important Note: Shallow Immutability
+
+`Object.freeze()` only freezes the **top-level properties**.
+
+```javascript id="pf5"
+const user = {
+  name: "John",
+  address: {
+    city: "New York",
+  },
+};
+
+Object.freeze(user);
+
+user.address.city =
+  "London";
+
+console.log(
+  user.address.city
+);
+```
+
+**Output:**
+
+```text id="pf6"
+London
+```
+
+The nested object remains mutable.
+
+---
+
+## Common Use Cases
+
+### Configuration Objects
+
+```javascript id="pf7"
+const CONFIG =
+  Object.freeze({
+    API_URL:
+      "https://api.example.com",
+    VERSION: "1.0",
+  });
+```
+
+---
+
+### Enum-like Constants
+
+```javascript id="pf8"
+const STATUS =
+  Object.freeze({
+    PENDING:
+      "PENDING",
+    SUCCESS:
+      "SUCCESS",
+    FAILED:
+      "FAILED",
+  });
+```
+
+---
+
+### Protecting Shared Data
+
+```javascript id="pf9"
+const settings =
+  Object.freeze({
+    theme: "dark",
+  });
+```
+
+This prevents accidental modifications by other parts of the application.
+
+---
+
+## Summary
+
+| Purpose                               | Effect      |
+| ------------------------------------- | ----------- |
+| Prevent adding properties             | ✅           |
+| Prevent deleting properties           | ✅           |
+| Prevent modifying existing properties | ✅           |
+| Make objects immutable                | ✅ (shallow) |
+| Freeze arrays                         | ✅           |
+| Freeze nested objects automatically   | ❌           |
+
+---
+
+#### Key Point
+
+> The purpose of `Object.freeze()` is to make objects and arrays immutable by preventing the addition, deletion, or modification of their top-level properties. It is commonly used to protect constants, configuration objects, and shared data from accidental changes. However, it performs only a **shallow freeze**, so nested objects remain mutable unless they are frozen separately.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-170. ### How do you make synchronous HTTP request
+181. ### Why do I need to use the `freeze()` method?
 
-      Browsers provide an XMLHttpRequest object which can be used to make synchronous HTTP requests from JavaScript.
+You use **`Object.freeze()`** when you want to **protect an object from being modified** after it has been created.
 
-      ```javascript
-      function httpGet(theUrl) {
-        var xmlHttpReq = new XMLHttpRequest();
-        xmlHttpReq.open("GET", theUrl, false); // false for synchronous request
-        xmlHttpReq.send(null);
-        return xmlHttpReq.responseText;
-      }
-      ```
+In object-oriented programming, there are situations where certain objects, configurations, or APIs **should remain unchanged** throughout the application's lifecycle. `Object.freeze()` helps enforce this constraint.
+
+### Why Use `Object.freeze()`?
+
+1. **Prevent accidental modifications** to important objects.
+2. **Protect application constants and configuration objects.**
+3. **Ensure data integrity** by making objects immutable.
+4. **Prevent adding or removing properties** from an object.
+5. **Prevent existing property values from being changed.**
+6. **Communicate intent** to other developers that an object should not be modified.
+
+---
+
+## Example: Protecting Configuration
+
+```javascript id="freeze_need1"
+const CONFIG =
+  Object.freeze({
+    API_URL:
+      "https://api.example.com",
+    VERSION: "1.0",
+  });
+
+CONFIG.API_URL =
+  "https://test-api.com";
+
+console.log(
+  CONFIG.API_URL
+);
+```
+
+**Output:**
+
+```text id="freeze_need2"
+https://api.example.com
+```
+
+The configuration remains unchanged.
+
+---
+
+## Example: Enum-like Objects
+
+JavaScript does not have built-in enums, but frozen objects can provide similar behavior.
+
+```javascript id="freeze_need3"
+const STATUS =
+  Object.freeze({
+    PENDING:
+      "PENDING",
+    SUCCESS:
+      "SUCCESS",
+    FAILED:
+      "FAILED",
+  });
+
+STATUS.SUCCESS =
+  "DONE";
+
+console.log(
+  STATUS.SUCCESS
+);
+```
+
+**Output:**
+
+```text id="freeze_need4"
+SUCCESS
+```
+
+---
+
+## Is It Like `final` in Other Languages?
+
+To some extent, **yes**.
+
+Languages such as Java provide the `final` keyword:
+
+```java
+final int MAX_SIZE = 100;
+```
+
+Similarly, `Object.freeze()` can be used to indicate that an object's state should not change.
+
+However, they are **not exactly the same**.
+
+| Feature                        | Java `final` | `Object.freeze()` |
+| ------------------------------ | ------------ | ----------------- |
+| Prevents reassignment          | ✅            | ❌                 |
+| Prevents property modification | N/A          | ✅                 |
+| Works on objects               | Limited      | ✅                 |
+| Shallow immutability           | N/A          | ✅                 |
+
+For example:
+
+```javascript id="freeze_need5"
+const user = {
+  name: "John",
+};
+
+Object.freeze(user);
+
+user.name = "Mike";
+```
+
+The modification is prevented.
+
+But:
+
+```javascript id="freeze_need6"
+let user = {
+  name: "John",
+};
+
+Object.freeze(user);
+
+user = {
+  name: "Mike",
+};
+```
+
+This reassignment is allowed because `freeze()` affects the **object**, not the **variable reference**.
+
+---
+
+## Common Use Cases
+
+### Constants
+
+```javascript id="freeze_need7"
+const COLORS =
+  Object.freeze({
+    RED: "#ff0000",
+    BLUE: "#0000ff",
+  });
+```
+
+---
+
+### Application Settings
+
+```javascript id="freeze_need8"
+const SETTINGS =
+  Object.freeze({
+    theme: "dark",
+    language: "en",
+  });
+```
+
+---
+
+### Shared Data Structures
+
+```javascript id="freeze_need9"
+const PERMISSIONS =
+  Object.freeze([
+    "read",
+    "write",
+    "delete",
+  ]);
+```
+
+---
+
+## Important Limitation
+
+`Object.freeze()` provides **shallow immutability**.
+
+```javascript id="freeze_need10"
+const user = {
+  profile: {
+    city: "London",
+  },
+};
+
+Object.freeze(user);
+
+user.profile.city =
+  "Paris";
+
+console.log(
+  user.profile.city
+);
+```
+
+**Output:**
+
+```text id="freeze_need11"
+Paris
+```
+
+Nested objects remain mutable unless they are frozen separately.
+
+---
+
+#### Key Point
+
+> `Object.freeze()` is useful when you need to ensure that an object's structure and top-level values remain unchanged. It helps prevent accidental modifications, protects constants and configuration objects, and communicates that certain APIs or data structures are intended to be immutable. While it serves a purpose similar to the `final` concept in other languages, it provides only **shallow immutability** and does not prevent reassignment of the variable holding the object reference.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-171. ### How do you make asynchronous HTTP request
+182. ### How do you detect a browser language preference?
 
-      Browsers provide an XMLHttpRequest object which can be used to make asynchronous HTTP requests from JavaScript by passing the 3rd parameter as true.
+You can use the **`navigator`** object to determine the user's preferred language settings configured in their browser.
 
-      ```javascript
-      function httpGetAsync(theUrl, callback) {
-        var xmlHttpReq = new XMLHttpRequest();
-        xmlHttpReq.onreadystatechange = function () {
-          if (xmlHttpReq.readyState == 4 && xmlHttpReq.status == 200)
-            callback(xmlHttpReq.responseText);
-        };
-        xmlHttpReq.open("GET", theUrl, true); // true for asynchronous
-        xmlHttpReq.send(null);
-      }
-      ```
+```javascript id="lang1"
+const language =
+  (navigator.languages &&
+    navigator.languages[0]) || // Chrome, Firefox, Edge, Safari
+  navigator.language || // Most modern browsers
+  navigator.userLanguage; // IE <= 10
 
-      Today this is considered deprecated, because an async `fetch` call (in browsers later than 2016) is simpler and more robust.
+console.log(language);
+```
+
+### Possible Output
+
+```text id="lang2"
+en-US
+```
+
+or
+
+```text id="lang3"
+en-GB
+```
+
+or
+
+```text id="lang4"
+fr-FR
+```
+
+---
+
+## Understanding the Properties
+
+### 1. `navigator.languages`
+
+Returns an array of the user's preferred languages, ordered by preference.
+
+```javascript id="lang5"
+console.log(
+  navigator.languages
+);
+```
+
+**Example Output:**
+
+```javascript id="lang6"
+["en-IN", "en-US", "hi-IN"]
+```
+
+To get the most preferred language:
+
+```javascript id="lang7"
+const language =
+  navigator.languages[0];
+```
+
+---
+
+### 2. `navigator.language`
+
+Returns the browser's primary language as a string.
+
+```javascript id="lang8"
+console.log(
+  navigator.language
+);
+```
+
+**Example Output:**
+
+```text id="lang9"
+en-IN
+```
+
+This property is supported by all modern browsers.
+
+---
+
+### 3. `navigator.userLanguage`
+
+```javascript id="lang10"
+console.log(
+  navigator.userLanguage
+);
+```
+
+This property was specific to **Internet Explorer (IE ≤ 10)**.
+
+**Example Output:**
+
+```text id="lang11"
+en-US
+```
+
+> **Note:** `navigator.userLanguage` is deprecated and should only be used for legacy browser support.
+
+---
+
+## Modern Recommendation
+
+For modern applications, prefer:
+
+```javascript id="lang12"
+const language =
+  navigator.languages?.[0] ||
+  navigator.language;
+
+console.log(language);
+```
+
+This uses:
+
+* The user's most preferred language if available.
+* Falls back to the browser's primary language.
+
+---
+
+## Language Codes
+
+Browser languages are typically represented using **BCP 47 language tags**.
+
+Examples:
+
+| Language                 | Code    |
+| ------------------------ | ------- |
+| English (United States)  | `en-US` |
+| English (United Kingdom) | `en-GB` |
+| English (India)          | `en-IN` |
+| French (France)          | `fr-FR` |
+| German (Germany)         | `de-DE` |
+| Hindi (India)            | `hi-IN` |
+| Japanese (Japan)         | `ja-JP` |
+
+---
+
+## Common Use Case: Localization
+
+```javascript id="lang13"
+const language =
+  navigator.language;
+
+if (
+  language.startsWith(
+    "fr"
+  )
+) {
+  console.log(
+    "Afficher le contenu en français"
+  );
+} else {
+  console.log(
+    "Display content in English"
+  );
+}
+```
+
+---
+
+## Important Note
+
+The browser language preference:
+
+* **Does not necessarily indicate the user's actual location.**
+* **Can be changed manually by the user.**
+* **Should be treated as a preference for localization**, not for determining geographic region.
+
+---
+
+#### Key Point
+
+> You can detect a browser's language preference using the `navigator` object. The most reliable approach is to check `navigator.languages[0]` for the user's preferred language and fall back to `navigator.language` if necessary. The `navigator.userLanguage` property exists only for older versions of Internet Explorer and is generally no longer needed in modern applications.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-172. ### How do you convert date to another timezone in javascript
+183. ### How do you convert a string to title case in JavaScript?
 
-      You can use the toLocaleString() method to convert dates in one timezone to another. For example, let's convert current date to British English timezone as below,
+**Title case** means that the **first letter of each word is capitalized**, while the remaining letters are converted to lowercase.
 
-      ```javascript
-      console.log(new Date().toLocaleString("en-GB", { timeZone: "UTC" })); //29/06/2019, 09:56:00
-      ```
+You can achieve this using the `replace()` method with a regular expression.
+
+```javascript id="tc1"
+function toTitleCase(
+  str
+) {
+  return str.replace(
+    /\w\S*/g,
+    function (txt) {
+      return (
+        txt
+          .charAt(0)
+          .toUpperCase() +
+        txt
+          .substring(1)
+          .toLowerCase()
+      );
+    }
+  );
+}
+
+console.log(
+  toTitleCase(
+    "good morning john"
+  )
+);
+```
+
+**Output:**
+
+```text id="tc2"
+Good Morning John
+```
+
+---
+
+## How It Works
+
+### Regular Expression
+
+```javascript id="tc3"
+/\w\S*/g
+```
+
+* `\w` → Matches the first word character.
+* `\S*` → Matches zero or more non-whitespace characters following it.
+* `g` → Performs a global search to process every word in the string.
+
+---
+
+### Capitalizing Each Word
+
+```javascript id="tc4"
+txt.charAt(0)
+```
+
+Gets the first character.
+
+```javascript id="tc5"
+txt.charAt(0)
+  .toUpperCase();
+```
+
+Converts the first character to uppercase.
+
+```javascript id="tc6"
+txt.substring(1)
+  .toLowerCase();
+```
+
+Converts the rest of the word to lowercase.
+
+---
+
+## Examples
+
+```javascript id="tc7"
+console.log(
+  toTitleCase(
+    "hello world"
+  )
+);
+```
+
+**Output:**
+
+```text id="tc8"
+Hello World
+```
+
+---
+
+```javascript id="tc9"
+console.log(
+  toTitleCase(
+    "JAVASCRIPT is AWESOME"
+  )
+);
+```
+
+**Output:**
+
+```text id="tc10"
+Javascript Is Awesome
+```
+
+---
+
+```javascript id="tc11"
+console.log(
+  toTitleCase(
+    "welcome TO the jungle"
+  )
+);
+```
+
+**Output:**
+
+```text id="tc12"
+Welcome To The Jungle
+```
+
+---
+
+## Alternative Using `split()` and `map()`
+
+A more readable approach is:
+
+```javascript id="tc13"
+function toTitleCase(
+  str
+) {
+  return str
+    .split(" ")
+    .map((word) => {
+      return (
+        word
+          .charAt(0)
+          .toUpperCase() +
+        word
+          .slice(1)
+          .toLowerCase()
+      );
+    })
+    .join(" ");
+}
+```
+
+```javascript id="tc14"
+console.log(
+  toTitleCase(
+    "good morning john"
+  )
+);
+```
+
+**Output:**
+
+```text id="tc15"
+Good Morning John
+```
+
+---
+
+## Handling Empty Strings
+
+```javascript id="tc16"
+function toTitleCase(
+  str
+) {
+  return str
+    .split(" ")
+    .map((word) =>
+      word
+        ? word
+            .charAt(0)
+            .toUpperCase() +
+          word
+            .slice(1)
+            .toLowerCase()
+        : word
+    )
+    .join(" ");
+}
+```
+
+This avoids issues with multiple spaces.
+
+---
+
+#### Key Point
+
+> To convert a string to title case in JavaScript, capitalize the first character of each word and convert the remaining characters to lowercase. This can be accomplished using `String.prototype.replace()` with a regular expression or by combining `split()`, `map()`, and `join()`. For example, `"good morning john"` becomes `"Good Morning John"`.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-173. ### What are the properties used to get size of window
+184. ### How do you detect if JavaScript is disabled on the page?
 
-      You can use innerWidth, innerHeight, clientWidth, clientHeight properties of windows, document element and document body objects to find the size of a window. Let's use a combination of these properties to calculate the size of a window or document,
+You can use the **`<noscript>`** HTML element to provide content that is displayed **only when JavaScript is disabled or unsupported** in the browser.
 
-      ```javascript
-      var width =
-        window.innerWidth ||
-        document.documentElement.clientWidth ||
-        document.body.clientWidth;
+```html id="xl3x0d"
+<noscript>
+  <p>
+    JavaScript is disabled.
+    Please enable JavaScript
+    to use this website.
+  </p>
+</noscript>
+```
 
-      var height =
-        window.innerHeight ||
-        document.documentElement.clientHeight ||
-        document.body.clientHeight;
-      ```
+If JavaScript is enabled, the content inside `<noscript>` is ignored. If JavaScript is disabled, the browser renders the content inside the `<noscript>` tag.
+
+---
+
+## Example
+
+```html id="3ihzfo"
+<script>
+  console.log(
+    "JavaScript is enabled"
+  );
+</script>
+
+<noscript>
+  <p>
+    JavaScript is disabled.
+    Some features of this
+    site may not work
+    correctly.
+  </p>
+</noscript>
+```
+
+### Behavior
+
+| JavaScript Status | Result                                                                      |
+| ----------------- | --------------------------------------------------------------------------- |
+| Enabled           | The `<script>` executes, and `<noscript>` content is ignored.               |
+| Disabled          | The `<script>` does not execute, and the `<noscript>` content is displayed. |
+
+---
+
+## Providing Alternative Navigation
+
+The original example demonstrates how you can provide fallback functionality:
+
+```html id="bbmjlwm"
+<noscript>
+  <a href="next_page.html?noJS=true">
+    JavaScript is disabled.
+    Please click here to
+    continue.
+  </a>
+</noscript>
+```
+
+This ensures users can still access important parts of the application even if JavaScript is unavailable.
+
+---
+
+## Important Correction
+
+The original example used:
+
+```html id="0kck3z"
+<script type="javascript">
+```
+
+This is **incorrect**.
+
+The correct syntax is either:
+
+```html id="77eclw"
+<script>
+  // JavaScript code
+</script>
+```
+
+or:
+
+```html id="a3jqu1"
+<script type="text/javascript">
+  // JavaScript code
+</script>
+```
+
+In modern HTML (HTML5), the `type` attribute is optional because JavaScript is the default scripting language.
+
+---
+
+## Can JavaScript Detect That It Is Disabled?
+
+No.
+
+If JavaScript is disabled, **JavaScript code cannot execute**, so it cannot detect its own absence.
+
+Therefore, the `<noscript>` element is the standard mechanism for handling this scenario.
+
+---
+
+## Common Use Cases
+
+* Displaying messages asking users to enable JavaScript.
+* Providing alternative navigation links.
+* Offering server-rendered fallbacks.
+* Informing users that certain features require JavaScript.
+
+Example:
+
+```html id="i26x5w"
+<noscript>
+  <div class="warning">
+    This application
+    requires JavaScript
+    to function properly.
+    Please enable it in
+    your browser settings.
+  </div>
+</noscript>
+```
+
+---
+
+#### Key Point
+
+> The `<noscript>` element is used to provide alternative content when JavaScript is disabled or unsupported by the browser. Since JavaScript cannot execute when it is disabled, it cannot detect its own absence. Therefore, `<noscript>` is the standard and recommended approach for handling users who browse with JavaScript turned off.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-174. ### What is a conditional operator in javascript
+185. ### What are the various operators supported by JavaScript?
 
-      The conditional (ternary) operator is the only JavaScript operator that takes three operands which acts as a shortcut for `if` statements.
+An **operator** is a symbol or keyword used to perform operations on one or more operands (values or variables). JavaScript supports a wide variety of operators for arithmetic, comparison, logical operations, assignments, and more.
 
-      ```javascript
-      var isAuthenticated = false;
+---
+
+## 1. Arithmetic Operators
+
+Used to perform mathematical calculations.
+
+| Operator | Description         | Example        |
+| -------- | ------------------- | -------------- |
+| `+`      | Addition            | `5 + 2` → `7`  |
+| `-`      | Subtraction         | `5 - 2` → `3`  |
+| `*`      | Multiplication      | `5 * 2` → `10` |
+| `/`      | Division            | `10 / 2` → `5` |
+| `%`      | Remainder (Modulus) | `5 % 2` → `1`  |
+| `**`     | Exponentiation      | `2 ** 3` → `8` |
+| `++`     | Increment           | `x++`          |
+| `--`     | Decrement           | `x--`          |
+
+```javascript id="op1"
+let x = 5;
+
+console.log(x + 2); // 7
+console.log(x % 2); // 1
+console.log(x ** 2); // 25
+```
+
+---
+
+## 2. Comparison Operators
+
+Used to compare values and return a boolean result.
+
+| Operator | Description                     |
+| -------- | ------------------------------- |
+| `==`     | Equal (with type coercion)      |
+| `!=`     | Not equal (with type coercion)  |
+| `===`    | Strictly equal (value and type) |
+| `!==`    | Strictly not equal              |
+| `>`      | Greater than                    |
+| `>=`     | Greater than or equal to        |
+| `<`      | Less than                       |
+| `<=`     | Less than or equal to           |
+
+```javascript id="op2"
+console.log(5 == "5");  // true
+console.log(5 === "5"); // false
+console.log(10 > 5);    // true
+```
+
+> **Note:** Prefer `===` and `!==` to avoid unexpected type coercion.
+
+---
+
+## 3. Logical Operators
+
+Used to combine or negate boolean expressions.
+
+| Operator | Description |
+| -------- | ----------- |
+| `&&`     | Logical AND |
+| `\|\|`   | Logical OR  |
+| `!`      | Logical NOT |
+
+```javascript id="op3"
+console.log(
+  true && false
+); // false
+
+console.log(
+  true || false
+); // true
+
+console.log(
+  !true
+); // false
+```
+
+---
+
+## 4. Assignment Operators
+
+Used to assign values to variables.
+
+| Operator | Example   | Equivalent To |
+| -------- | --------- | ------------- |
+| `=`      | `x = 5`   | Assign        |
+| `+=`     | `x += 2`  | `x = x + 2`   |
+| `-=`     | `x -= 2`  | `x = x - 2`   |
+| `*=`     | `x *= 2`  | `x = x * 2`   |
+| `/=`     | `x /= 2`  | `x = x / 2`   |
+| `%=`     | `x %= 2`  | `x = x % 2`   |
+| `**=`    | `x **= 2` | `x = x ** 2`  |
+
+```javascript id="op4"
+let x = 10;
+
+x += 5;
+
+console.log(x); // 15
+```
+
+---
+
+## 5. Conditional (Ternary) Operator
+
+A shorthand for `if...else`.
+
+```javascript id="op5"
+condition
+  ? valueIfTrue
+  : valueIfFalse;
+```
+
+Example:
+
+```javascript id="op6"
+const age = 20;
+
+const status =
+  age >= 18
+    ? "Adult"
+    : "Minor";
+
+console.log(status);
+```
+
+**Output:**
+
+```text id="op7"
+Adult
+```
+
+---
+
+## 6. `typeof` Operator
+
+Used to determine the type of a value.
+
+```javascript id="op8"
+console.log(
+  typeof "Hello"
+); // string
+
+console.log(
+  typeof 42
+); // number
+
+console.log(
+  typeof true
+); // boolean
+```
+
+---
+
+## 7. Bitwise Operators
+
+Operate on 32-bit integer representations.
+
+| Operator | Description          |
+| -------- | -------------------- |
+| `&`      | Bitwise AND          |
+| `\|`     | Bitwise OR           |
+| `^`      | Bitwise XOR          |
+| `~`      | Bitwise NOT          |
+| `<<`     | Left shift           |
+| `>>`     | Right shift          |
+| `>>>`    | Unsigned right shift |
+
+---
+
+## 8. String Operators
+
+The `+` operator can concatenate strings.
+
+```javascript id="op9"
+console.log(
+  "Hello" + " World"
+);
+```
+
+**Output:**
+
+```text id="op10"
+Hello World
+```
+
+---
+
+## 9. Relational Operators
+
+| Operator     | Description                                         |
+| ------------ | --------------------------------------------------- |
+| `in`         | Checks if a property exists in an object            |
+| `instanceof` | Checks if an object is an instance of a constructor |
+
+```javascript id="op11"
+const user = {
+  name: "John",
+};
+
+console.log(
+  "name" in user
+); // true
+
+console.log(
+  [] instanceof Array
+); // true
+```
+
+---
+
+## 10. Nullish and Optional Chaining Operators (ES2020+)
+
+### Nullish Coalescing (`??`)
+
+```javascript id="op12"
+const value =
+  null ?? "Default";
+
+console.log(value);
+```
+
+**Output:**
+
+```text id="op13"
+Default
+```
+
+---
+
+### Optional Chaining (`?.`)
+
+```javascript id="op14"
+const user = {};
+
+console.log(
+  user.address?.city
+);
+```
+
+**Output:**
+
+```text id="op15"
+undefined
+```
+
+---
+
+## Summary
+
+| Category    | Examples                           |
+| ----------- | ---------------------------------- |
+| Arithmetic  | `+`, `-`, `*`, `/`, `%`, `**`      |
+| Comparison  | `==`, `===`, `!=`, `!==`, `>`, `<` |
+| Logical     | `&&`, `\|\|`, `!`                  |
+| Assignment  | `=`, `+=`, `-=`, `*=`              |
+| Conditional | `?:`                               |
+| Type        | `typeof`                           |
+| Relational  | `in`, `instanceof`                 |
+| Bitwise     | `&`, `\|`, `^`, `<<`, `>>`         |
+| Modern      | `??`, `?.`                         |
+
+---
+
+#### Key Point
+
+> JavaScript provides a rich set of operators for performing arithmetic calculations, comparisons, logical operations, assignments, type checking, and more. Understanding these operators is fundamental to writing effective JavaScript code, with modern additions such as optional chaining (`?.`) and nullish coalescing (`??`) making code safer and more expressive.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+186. ### What is a rest parameter?
+
+A **rest parameter** allows a function to accept an **indefinite number of arguments** and collect them into a **real array**.
+
+It is represented using three dots (`...`) followed by a parameter name.
+
+#### Syntax
+
+```javascript id="rest1"
+function func(
+  param1,
+  param2,
+  ...restParams
+) {
+  // ...
+}
+```
+
+In this syntax:
+
+* `param1` and `param2` receive the first arguments.
+* `restParams` becomes an array containing all remaining arguments.
+
+---
+
+## Example
+
+```javascript id="rest2"
+function greet(
+  greeting,
+  ...names
+) {
+  console.log(greeting);
+
+  console.log(names);
+}
+
+greet(
+  "Hello",
+  "John",
+  "Jane",
+  "Mike"
+);
+```
+
+**Output:**
+
+```text id="rest3"
+Hello
+["John", "Jane", "Mike"]
+```
+
+---
+
+## Dynamic Sum Example
+
+```javascript id="rest4"
+function sum(
+  ...args
+) {
+  let total = 0;
+
+  for (const num of args) {
+    total += num;
+  }
+
+  return total;
+}
+
+console.log(sum(1, 2));
+console.log(sum(1, 2, 3));
+console.log(sum(1, 2, 3, 4));
+console.log(
+  sum(1, 2, 3, 4, 5)
+);
+```
+
+**Output:**
+
+```text id="rest5"
+3
+6
+10
+15
+```
+
+---
+
+## Rest Parameters vs `arguments` Object
+
+Before ES6, JavaScript used the `arguments` object to handle variable numbers of arguments.
+
+```javascript id="rest6"
+function sum() {
+  console.log(arguments);
+}
+
+sum(1, 2, 3);
+```
+
+However, `arguments` has limitations.
+
+### Comparison
+
+| Feature                      | Rest Parameters | `arguments` Object |
+| ---------------------------- | --------------- | ------------------ |
+| Type                         | Real Array      | Array-like Object  |
+| Supports Array Methods       | ✅ Yes           | ❌ No               |
+| Available in Arrow Functions | ✅ Yes           | ❌ No               |
+| Introduced In                | ES6 (ES2015)    | Older JavaScript   |
+| More Readable                | ✅ Yes           | ❌ No               |
+
+Example:
+
+```javascript id="rest7"
+function example(
+  ...args
+) {
+  console.log(
+    args.map(
+      (num) => num * 2
+    )
+  );
+}
+
+example(1, 2, 3);
+```
+
+**Output:**
+
+```text id="rest8"
+[2, 4, 6]
+```
+
+---
+
+## Rules for Rest Parameters
+
+### 1. Only One Rest Parameter Is Allowed
+
+✅ Valid:
+
+```javascript id="rest9"
+function fn(
+  a,
+  ...rest
+) {}
+```
+
+❌ Invalid:
+
+```javascript id="rest10"
+function fn(
+  ...rest1,
+  ...rest2
+) {}
+```
+
+---
+
+### 2. The Rest Parameter Must Be Last
+
+✅ Valid:
+
+```javascript id="rest11"
+function fn(
+  a,
+  b,
+  ...rest
+) {}
+```
+
+❌ Invalid:
+
+```javascript id="rest12"
+function fn(
+  ...rest,
+  a
+) {}
+```
+
+This produces a syntax error.
+
+---
+
+## Rest Parameters with Destructuring
+
+```javascript id="rest13"
+function print(
+  first,
+  ...others
+) {
+  console.log(first);
+
+  console.log(others);
+}
+
+print(
+  1,
+  2,
+  3,
+  4
+);
+```
+
+**Output:**
+
+```text id="rest14"
+1
+[2, 3, 4]
+```
+
+---
+
+## Rest Parameters vs Spread Syntax
+
+Although both use `...`, they serve different purposes.
+
+### Rest Parameter (Collect)
+
+```javascript id="rest15"
+function sum(
+  ...nums
+) {
+  return nums.reduce(
+    (a, b) => a + b,
+    0
+  );
+}
+```
+
+### Spread Syntax (Expand)
+
+```javascript id="rest16"
+const numbers = [
+  1,
+  2,
+  3,
+];
+
+console.log(
+  sum(...numbers)
+);
+```
+
+---
+
+## Summary
+
+| Concept                     | Purpose                                  |
+| --------------------------- | ---------------------------------------- |
+| Rest Parameter              | Collect multiple arguments into an array |
+| Syntax                      | `...parameterName`                       |
+| Introduced In               | ES2015 (ES6)                             |
+| Must Be Last Parameter      | ✅ Yes                                    |
+| Number Allowed Per Function | One                                      |
+
+---
+
+#### Key Point
+
+> A rest parameter (`...args`) allows a function to accept an indefinite number of arguments and stores them in a real array. Introduced in ES2015 (ES6), it provides a cleaner and more powerful alternative to the older `arguments` object, making it easier to work with functions that accept a variable number of parameters.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+187. ### What happens if you do not use a rest parameter as the last argument?
+
+A **rest parameter must always be the last parameter** in a function's parameter list.
+
+If you place another parameter **after** the rest parameter, JavaScript throws a **`SyntaxError`**.
+
+#### Invalid Syntax
+
+```javascript id="restlast1"
+function someFunc(
+  a,
+  ...b,
+  c
+) {
+  return;
+}
+```
+
+**Output:**
+
+```text id="restlast2"
+SyntaxError:
+Rest parameter must be last formal parameter
+```
+
+---
+
+## Why Must It Be Last?
+
+The purpose of a rest parameter is to **collect all remaining arguments into an array**.
+
+For example:
+
+```javascript id="restlast3"
+function print(
+  first,
+  ...others
+) {
+  console.log(first);
+
+  console.log(others);
+}
+
+print(
+  1,
+  2,
+  3,
+  4
+);
+```
+
+**Output:**
+
+```text id="restlast4"
+1
+[2, 3, 4]
+```
+
+If JavaScript allowed parameters after the rest parameter:
+
+```javascript id="restlast5"
+function print(
+  first,
+  ...others,
+  last
+) {}
+```
+
+and you called:
+
+```javascript id="restlast6"
+print(
+  1,
+  2,
+  3,
+  4
+);
+```
+
+it would be ambiguous:
+
+* Should `others` be `[2, 3, 4]` and `last` be `undefined`?
+* Or should `others` be `[2, 3]` and `last` be `4`?
+
+To eliminate this ambiguity, JavaScript requires the rest parameter to appear **last**.
+
+---
+
+## Valid Usage
+
+```javascript id="restlast7"
+function someFunc(
+  a,
+  b,
+  ...rest
+) {
+  console.log(a);
+
+  console.log(b);
+
+  console.log(rest);
+}
+
+someFunc(
+  1,
+  2,
+  3,
+  4,
+  5
+);
+```
+
+**Output:**
+
+```text id="restlast8"
+1
+2
+[3, 4, 5]
+```
+
+---
+
+## Other Invalid Examples
+
+### Rest Parameter Followed by a Normal Parameter
+
+```javascript id="restlast9"
+function fn(
+  ...args,
+  value
+) {}
+```
+
+❌ **SyntaxError**
+
+---
+
+### Default Parameter After Rest Parameter
+
+```javascript id="restlast10"
+function fn(
+  ...args,
+  value = 10
+) {}
+```
+
+❌ **SyntaxError**
+
+---
+
+### Destructured Parameter After Rest Parameter
+
+```javascript id="restlast11"
+function fn(
+  ...args,
+  { name }
+) {}
+```
+
+❌ **SyntaxError**
+
+---
+
+## Important Rule
+
+A function can have:
+
+* **Zero or one** rest parameter.
+* The rest parameter **must be the final parameter**.
+
+```javascript id="restlast12"
+function valid(
+  a,
+  b,
+  ...rest
+) {}
+```
+
+✅ Valid
+
+```javascript id="restlast13"
+function invalid(
+  ...rest,
+  a
+) {}
+```
+
+❌ Invalid
+
+---
+
+#### Key Point
+
+> A rest parameter (`...args`) must always be the **last parameter** in a function definition. Since its purpose is to collect all remaining arguments into an array, placing parameters after it creates ambiguity. Therefore, JavaScript throws a `SyntaxError: Rest parameter must be last formal parameter` when this rule is violated.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+188. ### What are the bitwise operators available in JavaScript?
+
+**Bitwise operators** operate on the **32-bit integer representation** of numbers. Before performing the operation, JavaScript converts the operands to **signed 32-bit integers**.
+
+JavaScript provides the following bitwise operators:
+
+| Operator | Name                         | Description                                                     |
+| -------- | ---------------------------- | --------------------------------------------------------------- |
+| `&`      | Bitwise AND                  | Sets each bit to `1` if both corresponding bits are `1`         |
+| `\|`     | Bitwise OR                   | Sets each bit to `1` if at least one corresponding bit is `1`   |
+| `^`      | Bitwise XOR                  | Sets each bit to `1` if the corresponding bits are different    |
+| `~`      | Bitwise NOT                  | Inverts all bits                                                |
+| `<<`     | Left Shift                   | Shifts bits to the left by a specified number of positions      |
+| `>>`     | Sign-Propagating Right Shift | Shifts bits to the right while preserving the sign bit          |
+| `>>>`    | Zero-Fill Right Shift        | Shifts bits to the right and fills the leftmost bits with zeros |
+
+---
+
+## 1. Bitwise AND (`&`)
+
+Returns `1` only if **both bits are `1`**.
+
+```javascript
+console.log(5 & 3);
+```
+
+Binary representation:
+
+```text
+5 = 0101
+3 = 0011
+------------
+    0001 = 1
+```
+
+**Output:**
+
+```text
+1
+```
+
+---
+
+## 2. Bitwise OR (`|`)
+
+Returns `1` if **at least one bit is `1`**.
+
+```javascript
+console.log(5 | 3);
+```
+
+Binary representation:
+
+```text
+5 = 0101
+3 = 0011
+------------
+    0111 = 7
+```
+
+**Output:**
+
+```text
+7
+```
+
+---
+
+## 3. Bitwise XOR (`^`)
+
+Returns `1` if the bits are **different**.
+
+```javascript
+console.log(5 ^ 3);
+```
+
+Binary representation:
+
+```text
+5 = 0101
+3 = 0011
+------------
+    0110 = 6
+```
+
+**Output:**
+
+```text
+6
+```
+
+---
+
+## 4. Bitwise NOT (`~`)
+
+Flips all the bits.
+
+```javascript
+console.log(~5);
+```
+
+Binary representation (32-bit):
+
+```text
+ 5 = 00000000 00000000 00000000 00000101
+~5 = 11111111 11111111 11111111 11111010
+```
+
+**Output:**
+
+```text
+-6
+```
+
+> **Note:** `~x` is equivalent to `-(x + 1)`.
+
+---
+
+## 5. Left Shift (`<<`)
+
+Shifts bits to the left by the specified number of positions.
+
+```javascript
+console.log(5 << 1);
+```
+
+Binary representation:
+
+```text
+5  = 0101
+<<1
+-----------
+    1010 = 10
+```
+
+**Output:**
+
+```text
+10
+```
+
+> Shifting left by `n` positions is approximately equivalent to multiplying by `2ⁿ`.
+
+---
+
+## 6. Sign-Propagating Right Shift (`>>`)
+
+Shifts bits to the right while preserving the **sign bit**.
+
+```javascript
+console.log(10 >> 1);
+```
+
+Binary representation:
+
+```text
+10 = 1010
+>>1
+-----------
+     0101 = 5
+```
+
+**Output:**
+
+```text
+5
+```
+
+Example with a negative number:
+
+```javascript
+console.log(-10 >> 1);
+```
+
+**Output:**
+
+```text
+-5
+```
+
+---
+
+## 7. Zero-Fill Right Shift (`>>>`)
+
+Shifts bits to the right and fills the leftmost bits with **zeros**, regardless of the sign.
+
+```javascript
+console.log(10 >>> 1);
+```
+
+**Output:**
+
+```text
+5
+```
+
+Example with a negative number:
+
+```javascript
+console.log(-10 >>> 1);
+```
+
+**Output:**
+
+```text
+2147483643
+```
+
+This happens because the negative number is treated as an **unsigned 32-bit integer**.
+
+---
+
+## Common Use Cases
+
+### Check if a Number is Even
+
+```javascript
+function isEven(num) {
+  return (num & 1) === 0;
+}
+
+console.log(isEven(4)); // true
+console.log(isEven(5)); // false
+```
+
+---
+
+### Swap Two Numbers Using XOR
+
+```javascript
+let a = 5;
+let b = 3;
+
+a = a ^ b;
+b = a ^ b;
+a = a ^ b;
+
+console.log(a, b);
+```
+
+**Output:**
+
+```text
+3 5
+```
+
+---
+
+## Important Note
+
+Bitwise operators work on **32-bit signed integers**.
+
+```javascript
+console.log(5.8 | 0);
+```
+
+**Output:**
+
+```text
+5
+```
+
+The decimal part is discarded because the value is converted to a 32-bit integer before the operation.
+
+---
+
+#### Key Point
+
+> JavaScript provides seven bitwise operators: `&`, `|`, `^`, `~`, `<<`, `>>`, and `>>>`. These operators work on the 32-bit integer representation of numbers and are useful for low-level operations such as flag manipulation, efficient arithmetic, and binary computations. However, because JavaScript automatically converts operands to signed 32-bit integers, their behavior with negative numbers and floating-point values should be carefully considered.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+189. ### What is a spread operator?
+
+The **spread operator (`...`)** allows an **iterable** (such as an array or string) or an **object** to be **expanded into individual elements or properties**.
+
+It was introduced in **ES6 (ES2015)** for arrays and function calls, and later extended to **objects in ES2018**.
+
+#### Syntax
+
+```javascript
+...value
+```
+
+---
+
+## 1. Spread Operator with Function Arguments
+
+It expands an array into individual arguments.
+
+```javascript
+function calculateSum(x, y, z) {
+  return x + y + z;
+}
+
+const numbers = [1, 2, 3];
+
+console.log(calculateSum(...numbers));
+```
+
+**Output:**
+
+```text
+6
+```
+
+Without the spread operator:
+
+```javascript
+calculateSum(numbers);
+```
+
+`x` would receive the entire array, while `y` and `z` would be `undefined`.
+
+---
+
+## 2. Spread Operator with Arrays
+
+### Copy an Array
+
+```javascript
+const original = [1, 2, 3];
+
+const copy = [...original];
+
+console.log(copy);
+```
+
+**Output:**
+
+```text
+[1, 2, 3]
+```
+
+---
+
+### Merge Arrays
+
+```javascript
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+
+const merged = [...arr1, ...arr2];
+
+console.log(merged);
+```
+
+**Output:**
+
+```text
+[1, 2, 3, 4]
+```
+
+---
+
+### Add Elements While Copying
+
+```javascript
+const numbers = [2, 3];
+
+const updated = [1, ...numbers, 4];
+
+console.log(updated);
+```
+
+**Output:**
+
+```text
+[1, 2, 3, 4]
+```
+
+---
+
+## 3. Spread Operator with Objects
+
+Object spread expands an object's own enumerable properties.
+
+### Copy an Object
+
+```javascript
+const user = {
+  name: "John",
+  age: 30,
+};
+
+const copy = { ...user };
+
+console.log(copy);
+```
+
+**Output:**
+
+```javascript
+{
+  name: "John",
+  age: 30
+}
+```
+
+---
+
+### Merge Objects
+
+```javascript
+const personal = {
+  name: "John",
+};
+
+const professional = {
+  role: "Developer",
+};
+
+const profile = {
+  ...personal,
+  ...professional,
+};
+
+console.log(profile);
+```
+
+**Output:**
+
+```javascript
+{
+  name: "John",
+  role: "Developer"
+}
+```
+
+---
+
+### Override Properties
+
+If duplicate keys exist, the **last value wins**.
+
+```javascript
+const obj1 = {
+  a: 1,
+};
+
+const obj2 = {
+  a: 2,
+};
+
+console.log({
+  ...obj1,
+  ...obj2,
+});
+```
+
+**Output:**
+
+```javascript
+{ a: 2 }
+```
+
+---
+
+## 4. Spread Operator with Strings
+
+Strings are iterable, so they can be expanded into characters.
+
+```javascript
+const chars = [..."hello"];
+
+console.log(chars);
+```
+
+**Output:**
+
+```text
+["h", "e", "l", "l", "o"]
+```
+
+---
+
+## Spread Operator vs Rest Parameter
+
+Although both use `...`, they serve different purposes.
+
+### Spread Operator (Expand)
+
+```javascript
+const numbers = [1, 2, 3];
+
+console.log(...numbers);
+```
+
+**Output:**
+
+```text
+1 2 3
+```
+
+---
+
+### Rest Parameter (Collect)
+
+```javascript
+function sum(...args) {
+  return args.reduce(
+    (total, num) => total + num,
+    0
+  );
+}
+
+console.log(sum(1, 2, 3));
+```
+
+**Output:**
+
+```text
+6
+```
+
+---
+
+## Comparison
+
+| Feature    | Spread Operator                 | Rest Parameter      |
+| ---------- | ------------------------------- | ------------------- |
+| Purpose    | Expands values                  | Collects values     |
+| Usage      | Function calls, arrays, objects | Function parameters |
+| Syntax     | `...array`                      | `function(...args)` |
+| Introduced | ES6 (Objects in ES2018)         | ES6                 |
+
+---
+
+## Important Note
+
+The spread operator performs a **shallow copy**.
+
+```javascript
+const user = {
+  profile: {
+    city: "London",
+  },
+};
+
+const copy = {
+  ...user,
+};
+
+copy.profile.city = "Paris";
+
+console.log(user.profile.city);
+```
+
+**Output:**
+
+```text
+Paris
+```
+
+Nested objects still share the same reference.
+
+---
+
+#### Key Point
+
+> The spread operator (`...`) expands iterables such as arrays and strings into individual elements, and objects into individual properties. It is commonly used for passing function arguments, copying arrays or objects, merging collections, and creating updated data structures in an immutable way. Despite its convenience, it performs only a **shallow copy**, so nested objects and arrays remain shared references.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+190. ### How do you determine whether an object is frozen or not?
+
+You can use the **`Object.isFrozen()`** method to determine whether an object has been frozen.
+
+#### Syntax
+
+```javascript
+Object.isFrozen(object);
+```
+
+It returns:
+
+* `true` → if the object is frozen.
+* `false` → otherwise.
+
+---
+
+## Example
+
+```javascript
+const object = {
+  property: "Welcome JS world",
+};
+
+Object.freeze(object);
+
+console.log(
+  Object.isFrozen(object)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+---
+
+## Example: Non-Frozen Object
+
+```javascript
+const object = {
+  property: "Welcome JS world",
+};
+
+console.log(
+  Object.isFrozen(object)
+);
+```
+
+**Output:**
+
+```text
+false
+```
+
+---
+
+## When Is an Object Considered Frozen?
+
+An object is considered **frozen** if **all** of the following conditions are true:
+
+1. **The object is not extensible.**
+
+   ```javascript
+   Object.isExtensible(obj); // false
+   ```
+
+2. **All of its own properties are non-configurable.**
+
+   ```javascript
+   Object.getOwnPropertyDescriptor(
+     obj,
+     "property"
+   ).configurable; // false
+   ```
+
+3. **All of its data properties are non-writable.**
+
+   ```javascript
+   Object.getOwnPropertyDescriptor(
+     obj,
+     "property"
+   ).writable; // false
+   ```
+
+---
+
+## Verifying the Conditions
+
+```javascript
+const user = {
+  name: "John",
+};
+
+Object.freeze(user);
+
+console.log(
+  Object.isExtensible(user)
+); // false
+
+console.log(
+  Object.getOwnPropertyDescriptor(
+    user,
+    "name"
+  )
+);
+```
+
+**Output:**
+
+```javascript
+{
+  value: "John",
+  writable: false,
+  enumerable: true,
+  configurable: false
+}
+```
+
+---
+
+## Frozen Objects Are Shallow
+
+`Object.isFrozen()` checks only the object itself.
+
+```javascript
+const user = {
+  profile: {
+    city: "London",
+  },
+};
+
+Object.freeze(user);
+
+console.log(
+  Object.isFrozen(user)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+However:
+
+```javascript
+console.log(
+  Object.isFrozen(
+    user.profile
+  )
+);
+```
+
+**Output:**
+
+```text
+false
+```
+
+The nested object is **not frozen**.
+
+```javascript
+user.profile.city =
+  "Paris";
+
+console.log(
+  user.profile.city
+);
+```
+
+**Output:**
+
+```text
+Paris
+```
+
+---
+
+## Related Methods
+
+| Method                       | Purpose                                            |
+| ---------------------------- | -------------------------------------------------- |
+| `Object.preventExtensions()` | Prevents adding new properties                     |
+| `Object.seal()`              | Prevents adding/removing properties                |
+| `Object.freeze()`            | Prevents adding, removing, or modifying properties |
+| `Object.isExtensible()`      | Checks if new properties can be added              |
+| `Object.isSealed()`          | Checks if an object is sealed                      |
+| `Object.isFrozen()`          | Checks if an object is frozen                      |
+
+---
+
+## Important Note
+
+Primitive values are always considered frozen because they are immutable.
+
+```javascript
+console.log(
+  Object.isFrozen(42)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+```javascript
+console.log(
+  Object.isFrozen("hello")
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+---
+
+#### Key Point
+
+> The `Object.isFrozen()` method determines whether an object is frozen. An object is considered frozen when it is non-extensible, all of its own properties are non-configurable, and all of its data properties are non-writable. Since `Object.freeze()` performs a **shallow freeze**, `Object.isFrozen()` does not guarantee that nested objects are also frozen.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+191. ### How do you determine whether two values are the same using `Object`?
+
+The **`Object.is()`** method determines whether **two values are the same value**. It returns `true` if the values are identical according to the **SameValue** comparison algorithm, otherwise it returns `false`.
+
+#### Syntax
+
+```javascript
+Object.is(value1, value2);
+```
+
+---
+
+## Examples
+
+```javascript
+Object.is("hello", "hello");
+```
+
+**Output:**
+
+```text
+true
+```
+
+```javascript
+Object.is(window, window);
+```
+
+**Output:**
+
+```text
+true
+```
+
+```javascript
+Object.is([], []);
+```
+
+**Output:**
+
+```text
+false
+```
+
+Two different arrays have different references.
+
+---
+
+## More Examples
+
+```javascript
+Object.is(10, 10);
+```
+
+**Output:**
+
+```text
+true
+```
+
+```javascript
+Object.is(true, false);
+```
+
+**Output:**
+
+```text
+false
+```
+
+```javascript
+Object.is(null, null);
+```
+
+**Output:**
+
+```text
+true
+```
+
+```javascript
+Object.is(undefined, undefined);
+```
+
+**Output:**
+
+```text
+true
+```
+
+---
+
+## `Object.is()` vs `===`
+
+`Object.is()` behaves similarly to strict equality (`===`), but there are **two important differences**.
+
+### 1. `NaN`
+
+```javascript
+console.log(NaN === NaN);
+```
+
+**Output:**
+
+```text
+false
+```
+
+```javascript
+console.log(Object.is(NaN, NaN));
+```
+
+**Output:**
+
+```text
+true
+```
+
+---
+
+### 2. `+0` and `-0`
+
+```javascript
+console.log(+0 === -0);
+```
+
+**Output:**
+
+```text
+true
+```
+
+```javascript
+console.log(Object.is(+0, -0));
+```
+
+**Output:**
+
+```text
+false
+```
+
+---
+
+## Comparison Table
+
+| Values                      | `===`   | `Object.is()` |
+| --------------------------- | ------- | ------------- |
+| `5` and `5`                 | `true`  | `true`        |
+| `"hello"` and `"hello"`     | `true`  | `true`        |
+| `NaN` and `NaN`             | `false` | `true`        |
+| `+0` and `-0`               | `true`  | `false`       |
+| `null` and `null`           | `true`  | `true`        |
+| `undefined` and `undefined` | `true`  | `true`        |
+| `{}` and `{}`               | `false` | `false`       |
+| `[]` and `[]`               | `false` | `false`       |
+
+---
+
+## Object Reference Comparison
+
+Objects are considered the same only if they refer to the **same object in memory**.
+
+```javascript
+const obj1 = {
+  name: "John",
+};
+
+const obj2 = {
+  name: "John",
+};
+
+console.log(
+  Object.is(obj1, obj2)
+);
+```
+
+**Output:**
+
+```text
+false
+```
+
+Even though the contents are identical, the references are different.
+
+```javascript
+const obj1 = {
+  name: "John",
+};
+
+const obj2 = obj1;
+
+console.log(
+  Object.is(obj1, obj2)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+---
+
+## Two Values Are Considered the Same If:
+
+1. Both are `undefined`.
+2. Both are `null`.
+3. Both are `true` or both are `false`.
+4. Both are strings with the same characters in the same order.
+5. Both refer to the **same object**.
+6. Both are numbers and:
+
+   * both are `NaN`, or
+   * both are `+0`, or
+   * both are `-0`, or
+   * both have the same numeric value (excluding the `+0`/`-0` distinction).
+
+---
+
+## When Should You Use `Object.is()`?
+
+Use `Object.is()` when you need **precise equality checks**, especially when dealing with:
+
+* `NaN`
+* `+0` and `-0`
+* Implementing custom comparison logic
+* Understanding React's internal state comparison behavior (React uses `Object.is()` for some update checks)
+
+---
+
+#### Key Point
+
+> `Object.is()` determines whether two values are the same according to JavaScript's **SameValue** algorithm. It behaves similarly to strict equality (`===`) but differs in two cases: `Object.is(NaN, NaN)` returns `true`, while `Object.is(+0, -0)` returns `false`. For objects and arrays, both values must reference the exact same object in memory to be considered identical.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+192. ### What is the purpose of using `Object.is()`?
+
+The **`Object.is()`** method is used to determine whether **two values are the same value** according to JavaScript's **SameValue** comparison algorithm.
+
+It is similar to the strict equality operator (`===`), but handles a few special cases differently.
+
+#### Syntax
+
+```javascript
+Object.is(value1, value2);
+```
+
+---
+
+## Uses of `Object.is()`
+
+### 1. Comparing Two Strings
+
+```javascript
+console.log(
+  Object.is(
+    "JavaScript",
+    "JavaScript"
+  )
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+```javascript
+console.log(
+  Object.is(
+    "JavaScript",
+    "javascript"
+  )
+);
+```
+
+**Output:**
+
+```text
+false
+```
+
+---
+
+### 2. Comparing Two Numbers
+
+```javascript
+console.log(
+  Object.is(10, 10)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+```javascript
+console.log(
+  Object.is(10, 20)
+);
+```
+
+**Output:**
+
+```text
+false
+```
+
+---
+
+### 3. Comparing the Polarity of Zero
+
+One of the main differences between `Object.is()` and `===` is how they treat `+0` and `-0`.
+
+```javascript
+console.log(
+  Object.is(+0, -0)
+);
+```
+
+**Output:**
+
+```text
+false
+```
+
+```javascript
+console.log(
+  +0 === -0
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+This makes `Object.is()` useful when the **sign of zero matters**.
+
+---
+
+### 4. Comparing `NaN`
+
+Another important use case is comparing `NaN`.
+
+```javascript
+console.log(
+  Object.is(NaN, NaN)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+With strict equality:
+
+```javascript
+console.log(
+  NaN === NaN
+);
+```
+
+**Output:**
+
+```text
+false
+```
+
+---
+
+### 5. Comparing Two Objects
+
+Objects are considered the same only if they reference the **same object in memory**.
+
+```javascript
+const obj1 = {
+  name: "John",
+};
+
+const obj2 = obj1;
+
+console.log(
+  Object.is(obj1, obj2)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+Different objects with identical contents are **not** considered the same.
+
+```javascript
+const obj1 = {
+  name: "John",
+};
+
+const obj2 = {
+  name: "John",
+};
+
+console.log(
+  Object.is(obj1, obj2)
+);
+```
+
+**Output:**
+
+```text
+false
+```
+
+---
+
+## `Object.is()` vs `===`
+
+| Comparison                          | `===`   | `Object.is()` |
+| ----------------------------------- | ------- | ------------- |
+| `5` and `5`                         | `true`  | `true`        |
+| `"abc"` and `"abc"`                 | `true`  | `true`        |
+| `NaN` and `NaN`                     | `false` | `true`        |
+| `+0` and `-0`                       | `true`  | `false`       |
+| Same object reference               | `true`  | `true`        |
+| Different objects with same content | `false` | `false`       |
+
+---
+
+## Common Use Cases
+
+* Performing precise equality checks.
+* Detecting `NaN` values through comparison.
+* Distinguishing between `+0` and `-0`.
+* Comparing object references.
+* Internal optimization checks in libraries such as React.
+
+---
+
+#### Key Point
+
+> The purpose of `Object.is()` is to determine whether two values are the **same value** according to JavaScript's SameValue algorithm. It can be used to compare strings, numbers, object references, and special numeric cases such as `NaN`, `+0`, and `-0`. Unlike strict equality (`===`), `Object.is()` treats `NaN` values as equal and distinguishes between positive and negative zero.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+193. ### How do you copy properties from one object to another?
+
+You can use the **`Object.assign()`** method to copy the **enumerable own properties** from one or more source objects to a target object.
+
+#### Syntax
+
+```javascript
+Object.assign(
+  target,
+  ...sources
+);
+```
+
+* **`target`** → The object that receives the copied properties.
+* **`sources`** → One or more objects whose properties are copied.
+
+The method **returns the target object**.
+
+---
+
+## Example: Copying Properties
+
+```javascript
+const target = {
+  a: 1,
+  b: 2,
+};
+
+const source = {
+  b: 3,
+  c: 4,
+};
+
+const returnedTarget =
+  Object.assign(
+    target,
+    source
+  );
+
+console.log(target);
+
+console.log(
+  returnedTarget
+);
+```
+
+**Output:**
+
+```javascript
+{
+  a: 1,
+  b: 3,
+  c: 4
+}
+
+{
+  a: 1,
+  b: 3,
+  c: 4
+}
+```
+
+Notice that the property `b` already existed in the target object, so its value was **overwritten** by the source object's value.
+
+---
+
+## Copying Multiple Source Objects
+
+```javascript
+const target = {
+  a: 1,
+};
+
+const source1 = {
+  b: 2,
+};
+
+const source2 = {
+  c: 3,
+};
+
+Object.assign(
+  target,
+  source1,
+  source2
+);
+
+console.log(target);
+```
+
+**Output:**
+
+```javascript
+{
+  a: 1,
+  b: 2,
+  c: 3
+}
+```
+
+---
+
+## Property Overwriting Order
+
+If multiple source objects contain the same property, the **last source wins**.
+
+```javascript
+const result =
+  Object.assign(
+    {},
+    { a: 1 },
+    { a: 2 },
+    { a: 3 }
+  );
+
+console.log(result);
+```
+
+**Output:**
+
+```javascript
+{ a: 3 }
+```
+
+---
+
+## Creating a Copy Without Modifying the Original
+
+`Object.assign()` modifies the target object. If you want to create a copy instead, use an empty object as the target.
+
+```javascript
+const source = {
+  name: "John",
+};
+
+const copy =
+  Object.assign(
+    {},
+    source
+  );
+
+console.log(copy);
+```
+
+**Output:**
+
+```javascript
+{
+  name: "John"
+}
+```
+
+---
+
+## Using the Spread Operator (Modern Alternative)
+
+The object spread syntax provides a concise way to copy properties.
+
+```javascript
+const source = {
+  name: "John",
+  age: 30,
+};
+
+const copy = {
+  ...source,
+};
+
+console.log(copy);
+```
+
+**Output:**
+
+```javascript
+{
+  name: "John",
+  age: 30
+}
+```
+
+Merging objects:
+
+```javascript
+const merged = {
+  ...source,
+  city: "London",
+};
+```
+
+---
+
+## Important Note: Shallow Copy
+
+Both `Object.assign()` and the spread operator perform a **shallow copy**.
+
+```javascript
+const source = {
+  profile: {
+    city: "London",
+  },
+};
+
+const copy =
+  Object.assign(
+    {},
+    source
+  );
+
+copy.profile.city =
+  "Paris";
+
+console.log(
+  source.profile.city
+);
+```
+
+**Output:**
+
+```text
+Paris
+```
+
+The nested object is still shared between the source and the copy.
+
+---
+
+## What Gets Copied?
+
+`Object.assign()` copies only:
+
+* ✅ Own properties
+* ✅ Enumerable properties
+* ❌ Inherited properties
+* ❌ Non-enumerable properties
+
+Example:
+
+```javascript
+const obj = Object.create({
+  inherited: true,
+});
+
+obj.own = true;
+
+const copy =
+  Object.assign(
+    {},
+    obj
+  );
+
+console.log(copy);
+```
+
+**Output:**
+
+```javascript
+{
+  own: true
+}
+```
+
+---
+
+## Comparison
+
+| Feature                          | `Object.assign()` | Spread Operator |
+| -------------------------------- | ----------------- | --------------- |
+| Copies own enumerable properties | ✅                 | ✅               |
+| Supports multiple source objects | ✅                 | ✅               |
+| Performs shallow copy            | ✅                 | ✅               |
+| Mutates target object            | ✅                 | ❌               |
+| Introduced in                    | ES2015 (ES6)      | ES2018          |
+
+---
+
+#### Key Point
+
+> `Object.assign()` is used to copy enumerable own properties from one or more source objects to a target object. If multiple objects contain the same property, later sources overwrite earlier ones. The method returns the modified target object and performs a **shallow copy**, meaning nested objects remain shared references. The object spread syntax (`{ ...obj }`) provides a modern alternative for many common use cases.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+194. ### What are the applications of the `Object.assign()` method?
+
+The **`Object.assign()`** method is commonly used to **copy properties from one or more source objects to a target object**. It has several practical applications in JavaScript.
+
+---
+
+## 1. Cloning an Object (Shallow Copy)
+
+`Object.assign()` can be used to create a **shallow copy** of an object.
+
+```javascript
+const user = {
+  name: "John",
+  age: 30,
+};
+
+const clonedUser =
+  Object.assign({}, user);
+
+console.log(clonedUser);
+```
+
+**Output:**
+
+```javascript
+{
+  name: "John",
+  age: 30
+}
+```
+
+> **Note:** This creates a **shallow clone**. Nested objects are still shared by reference.
+
+```javascript
+const user = {
+  profile: {
+    city: "London",
+  },
+};
+
+const clone =
+  Object.assign({}, user);
+
+clone.profile.city =
+  "Paris";
+
+console.log(
+  user.profile.city
+);
+```
+
+**Output:**
+
+```text
+Paris
+```
+
+---
+
+## 2. Merging Objects
+
+You can merge properties from multiple objects into a single object.
+
+```javascript
+const personalInfo = {
+  name: "John",
+};
+
+const contactInfo = {
+  email:
+    "john@example.com",
+};
+
+const merged =
+  Object.assign(
+    {},
+    personalInfo,
+    contactInfo
+  );
+
+console.log(merged);
+```
+
+**Output:**
+
+```javascript
+{
+  name: "John",
+  email: "john@example.com"
+}
+```
+
+---
+
+## 3. Overwriting Existing Properties
+
+When multiple source objects contain the same property, the **last source object's value overwrites the previous ones**.
+
+```javascript
+const defaults = {
+  theme: "light",
+};
+
+const userSettings = {
+  theme: "dark",
+};
+
+const settings =
+  Object.assign(
+    {},
+    defaults,
+    userSettings
+  );
+
+console.log(settings);
+```
+
+**Output:**
+
+```javascript
+{
+  theme: "dark"
+}
+```
+
+---
+
+## 4. Adding Properties to an Existing Object
+
+You can extend an existing object with new properties.
+
+```javascript
+const user = {
+  name: "John",
+};
+
+Object.assign(user, {
+  age: 30,
+  city: "London",
+});
+
+console.log(user);
+```
+
+**Output:**
+
+```javascript
+{
+  name: "John",
+  age: 30,
+  city: "London"
+}
+```
+
+---
+
+## 5. Applying Default Values
+
+`Object.assign()` is often used to combine default options with user-provided options.
+
+```javascript
+const defaultOptions = {
+  timeout: 5000,
+  retries: 3,
+};
+
+const userOptions = {
+  timeout: 10000,
+};
+
+const options =
+  Object.assign(
+    {},
+    defaultOptions,
+    userOptions
+  );
+
+console.log(options);
+```
+
+**Output:**
+
+```javascript
+{
+  timeout: 10000,
+  retries: 3
+}
+```
+
+---
+
+## Important Note
+
+`Object.assign()` **mutates the target object**.
+
+```javascript
+const target = {
+  a: 1,
+};
+
+Object.assign(target, {
+  b: 2,
+});
+
+console.log(target);
+```
+
+**Output:**
+
+```javascript
+{
+  a: 1,
+  b: 2
+}
+```
+
+If you want to avoid modifying the original object, use an empty object as the target:
+
+```javascript
+const result =
+  Object.assign(
+    {},
+    source
+  );
+```
+
+---
+
+## Modern Alternative: Spread Syntax
+
+Many developers now prefer object spread syntax for cloning and merging:
+
+```javascript
+const clone = {
+  ...user,
+};
+
+const merged = {
+  ...obj1,
+  ...obj2,
+};
+```
+
+---
+
+## Summary
+
+| Application                  | Example                              |
+| ---------------------------- | ------------------------------------ |
+| Clone an object              | `Object.assign({}, obj)`             |
+| Merge objects                | `Object.assign({}, obj1, obj2)`      |
+| Override properties          | Later sources overwrite earlier ones |
+| Extend existing objects      | `Object.assign(target, source)`      |
+| Apply default configurations | Merge defaults with user options     |
+
+---
+
+#### Key Point
+
+> The primary applications of `Object.assign()` are **cloning objects (shallow copies)** and **merging multiple objects into one**. It is also useful for extending objects and applying default configurations. Since it performs a **shallow copy** and mutates the target object, care should be taken when working with nested objects or when immutability is desired.
+
+
+**[⬆ Back to Top](#table-of-contents)**
+
+195. ### What is a Proxy object?
+
+The **`Proxy`** object enables you to define **custom behavior for fundamental operations** on another object, known as the **target object**.
+
+Using a proxy, you can intercept and customize operations such as:
+
+* Property lookup
+* Property assignment
+* Property deletion
+* Enumeration
+* Function invocation
+* Object construction
+* Checking property existence
+
+Proxies were introduced in **ES2015 (ES6)**.
+
+---
+
+## Syntax
+
+```javascript
+const proxy = new Proxy(
+  target,
+  handler
+);
+```
+
+Where:
+
+* **`target`** → The original object being proxied.
+* **`handler`** → An object containing **trap methods** that intercept operations.
+
+---
+
+## Example 1: Customizing Property Access
+
+```javascript
+const person = {
+  name: "Sudheer Jonna",
+  age: 35,
+};
+
+const handler = {
+  get(target, prop) {
+    if (prop === "name") {
+      return (
+        "Mr. " +
+        target[prop]
+      );
+    }
+
+    return target[prop];
+  },
+};
+
+const proxy =
+  new Proxy(
+    person,
+    handler
+  );
+
+console.log(proxy.name);
+console.log(proxy.age);
+```
+
+**Output:**
+
+```text
+Mr. Sudheer Jonna
+35
+```
+
+The `get` trap intercepts property access.
+
+---
+
+## Example 2: Default Values
+
+```javascript
+const handler = {
+  get(target, prop) {
+    return prop in target
+      ? target[prop]
+      : 100;
+  },
+};
+
+const proxy =
+  new Proxy({}, handler);
+
+proxy.a = 10;
+proxy.b = null;
+
+console.log(
+  proxy.a,
+  proxy.b
+);
+
+console.log(
+  "c" in proxy,
+  proxy.c
+);
+```
+
+**Output:**
+
+```text
+10 null
+false 100
+```
+
+Properties that do not exist return `100`.
+
+---
+
+## Common Proxy Traps
+
+| Trap               | Intercepts                             |
+| ------------------ | -------------------------------------- |
+| `get()`            | Reading properties                     |
+| `set()`            | Writing properties                     |
+| `has()`            | `in` operator                          |
+| `deleteProperty()` | `delete` operator                      |
+| `ownKeys()`        | `Object.keys()` and similar operations |
+| `apply()`          | Function calls                         |
+| `construct()`      | `new` operator                         |
+| `defineProperty()` | `Object.defineProperty()`              |
+| `getPrototypeOf()` | `Object.getPrototypeOf()`              |
+
+---
+
+## Example: Validation with `set`
+
+```javascript
+const user = {
+  age: 18,
+};
+
+const handler = {
+  set(target, prop, value) {
+    if (
+      prop === "age" &&
+      value < 0
+    ) {
+      throw new Error(
+        "Age cannot be negative"
+      );
+    }
+
+    target[prop] = value;
+
+    return true;
+  },
+};
+
+const proxy =
+  new Proxy(
+    user,
+    handler
+  );
+
+proxy.age = 25;
+
+console.log(proxy.age);
+```
+
+**Output:**
+
+```text
+25
+```
+
+Attempting:
+
+```javascript
+proxy.age = -5;
+```
+
+would throw:
+
+```text
+Error: Age cannot be negative
+```
+
+---
+
+## Example: Logging Property Access
+
+```javascript
+const user = {
+  name: "John",
+};
+
+const proxy =
+  new Proxy(user, {
+    get(target, prop) {
       console.log(
-        isAuthenticated ? "Hello, welcome" : "Sorry, you are not authenticated"
-      ); // Sorry, you are not authenticated
-      ```
+        `Accessing ${prop}`
+      );
+
+      return target[prop];
+    },
+  });
+
+console.log(proxy.name);
+```
+
+**Output:**
+
+```text
+Accessing name
+John
+```
+
+---
+
+## Function Proxy Example
+
+Proxies can also intercept function calls.
+
+```javascript
+function greet(name) {
+  return `Hello ${name}`;
+}
+
+const proxy =
+  new Proxy(greet, {
+    apply(
+      target,
+      thisArg,
+      args
+    ) {
+      console.log(
+        "Function called"
+      );
+
+      return target(
+        ...args
+      );
+    },
+  });
+
+console.log(proxy("John"));
+```
+
+**Output:**
+
+```text
+Function called
+Hello John
+```
+
+---
+
+## Common Use Cases
+
+Proxies are commonly used for cross-cutting concerns such as:
+
+1. **Logging**
+2. **Authentication and authorization**
+3. **Data validation**
+4. **Data binding and observables**
+5. **Function parameter validation**
+6. **Access control**
+7. **Framework reactivity systems**
+
+For example, frameworks like **Vue 3** use Proxies internally to implement their reactivity system.
+
+---
+
+## Important Note
+
+Operations performed directly on the **target object** bypass the proxy.
+
+```javascript
+const target = {
+  name: "John",
+};
+
+const proxy =
+  new Proxy(target, {
+    get() {
+      return "Intercepted";
+    },
+  });
+
+console.log(proxy.name);
+console.log(target.name);
+```
+
+**Output:**
+
+```text
+Intercepted
+John
+```
+
+Only interactions through the **proxy object** trigger the traps.
+
+---
+
+## Comparison
+
+| Feature                   | Normal Object   | Proxy Object |
+| ------------------------- | --------------- | ------------ |
+| Intercept property access | ❌               | ✅            |
+| Validate assignments      | ❌               | ✅            |
+| Intercept function calls  | ❌               | ✅            |
+| Customize object behavior | ❌               | ✅            |
+| Introduced in             | ES5 and earlier | ES2015 (ES6) |
+
+---
+
+#### Key Point
+
+> A `Proxy` object acts as an intermediary for another object and allows you to intercept and customize fundamental operations such as property access, assignment, deletion, and function invocation. By defining trap methods in a handler object, Proxies enable powerful patterns like logging, validation, access control, and reactive programming. This feature was introduced in **ES2015 (ES6)**.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-175. ### Can you apply chaining on conditional operator
+196. ### What is the purpose of the `Object.seal()` method?
 
-      Yes, you can apply chaining on conditional operators similar to **`if … else if … else if … else`** chain. The syntax is going to be as below,
+The **`Object.seal()`** method is used to **seal an object**, preventing changes to its structure while still allowing modifications to the values of existing writable properties.
 
-      ```javascript
-      function traceValue(someParam) {
-        return condition1
-          ? value1
-          : condition2
-          ? value2
-          : condition3
-          ? value3
-          : value4;
-      }
+When an object is sealed:
 
-      // The above conditional operator is equivalent to:
+1. **New properties cannot be added.**
+2. **Existing properties cannot be deleted.**
+3. **Existing properties become non-configurable.**
+4. **Values of existing writable properties can still be changed.**
 
-      function traceValue(someParam) {
-        if (condition1) {
-          return value1;
-        } else if (condition2) {
-          return value2;
-        } else if (condition3) {
-          return value3;
-        } else {
-          return value4;
-        }
-      }
-      ```
+The method returns the **same object** that was passed to it.
+
+#### Syntax
+
+```javascript
+Object.seal(obj);
+```
+
+---
+
+## Example
+
+```javascript
+const object = {
+  property: "Welcome JS world",
+};
+
+Object.seal(object);
+
+object.property =
+  "Welcome to object world";
+
+console.log(
+  Object.isSealed(object)
+);
+
+delete object.property;
+
+console.log(object.property);
+```
+
+**Output:**
+
+```text
+true
+Welcome to object world
+```
+
+The property value changes successfully, but the deletion fails.
+
+---
+
+## Prevent Adding New Properties
+
+```javascript
+const user = {
+  name: "John",
+};
+
+Object.seal(user);
+
+user.age = 30;
+
+console.log(user);
+```
+
+**Output:**
+
+```javascript
+{
+  name: "John"
+}
+```
+
+The new property `age` is not added.
+
+---
+
+## Prevent Deleting Properties
+
+```javascript
+const user = {
+  name: "John",
+};
+
+Object.seal(user);
+
+delete user.name;
+
+console.log(user.name);
+```
+
+**Output:**
+
+```text
+John
+```
+
+The property remains intact.
+
+---
+
+## Existing Properties Can Still Be Modified
+
+```javascript
+const user = {
+  name: "John",
+};
+
+Object.seal(user);
+
+user.name = "Mike";
+
+console.log(user.name);
+```
+
+**Output:**
+
+```text
+Mike
+```
+
+Because the property is still writable, its value can be changed.
+
+---
+
+## Checking Whether an Object Is Sealed
+
+You can use `Object.isSealed()` to determine whether an object has been sealed.
+
+```javascript
+const obj = {
+  a: 1,
+};
+
+Object.seal(obj);
+
+console.log(
+  Object.isSealed(obj)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+---
+
+## Property Descriptor Changes
+
+Before sealing:
+
+```javascript
+const obj = {
+  a: 1,
+};
+
+console.log(
+  Object.getOwnPropertyDescriptor(
+    obj,
+    "a"
+  )
+);
+```
+
+**Output:**
+
+```javascript
+{
+  value: 1,
+  writable: true,
+  enumerable: true,
+  configurable: true
+}
+```
+
+After sealing:
+
+```javascript
+Object.seal(obj);
+
+console.log(
+  Object.getOwnPropertyDescriptor(
+    obj,
+    "a"
+  )
+);
+```
+
+**Output:**
+
+```javascript
+{
+  value: 1,
+  writable: true,
+  enumerable: true,
+  configurable: false
+}
+```
+
+Notice that `configurable` becomes `false`.
+
+---
+
+## Shallow Operation
+
+Like `Object.freeze()`, `Object.seal()` is **shallow**.
+
+```javascript
+const user = {
+  profile: {
+    city: "London",
+  },
+};
+
+Object.seal(user);
+
+user.profile.city =
+  "Paris";
+
+console.log(
+  user.profile.city
+);
+```
+
+**Output:**
+
+```text
+Paris
+```
+
+Nested objects remain mutable unless they are explicitly sealed or frozen.
+
+---
+
+## `seal()` vs `freeze()` vs `preventExtensions()`
+
+| Method                       | Add Properties | Delete Properties | Modify Existing Properties |
+| ---------------------------- | -------------- | ----------------- | -------------------------- |
+| `Object.preventExtensions()` | ❌ No           | ✅ Yes             | ✅ Yes                      |
+| `Object.seal()`              | ❌ No           | ❌ No              | ✅ Yes                      |
+| `Object.freeze()`            | ❌ No           | ❌ No              | ❌ No                       |
+
+Example:
+
+```javascript
+const obj = {
+  a: 1,
+};
+
+Object.seal(obj);
+
+obj.a = 2;     // ✅ Allowed
+obj.b = 3;     // ❌ Not allowed
+delete obj.a;  // ❌ Not allowed
+```
+
+---
+
+## Purpose of `Object.seal()`
+
+The primary purposes of sealing an object are:
+
+1. To **prevent accidental addition of new properties**.
+2. To **prevent deletion of existing properties**.
+3. To **lock the structure of an object** while still allowing updates to existing values.
+4. To provide a level of immutability **between** `preventExtensions()` and `freeze()`.
+
+---
+
+#### Key Point
+
+> `Object.seal()` is used to lock an object's structure by preventing new properties from being added and existing properties from being removed. Unlike `Object.freeze()`, it still allows modification of existing writable property values. It provides a moderate level of immutability and is useful when the shape of an object should remain fixed while its data can continue to evolve.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-176. ### What are the ways to execute javascript after a page load
+197. ### What are the applications of the `Object.seal()` method?
 
-      You can execute javascript after page load in many different ways,
+The **`Object.seal()`** method is used when you want to **lock the structure of an object or array** while still allowing updates to the values of existing writable properties.
 
-      1. **window.onload:**
+### Applications of `Object.seal()`
 
-      ```javascript
-      window.onload = function ...
-      ```
+1. **Sealing objects and arrays**
 
-      2. **document.onload:**
+   * Prevents adding new properties or elements.
+   * Prevents deleting existing properties or elements.
 
-      ```javascript
-      document.onload = function ...
-      ```
+2. **Making object properties non-configurable**
 
-      3. **body onload:**
+   * Existing properties cannot be deleted.
+   * Property descriptors such as `configurable` cannot be changed.
 
-      ```javascript
-      <body onload="script();">
-      ```
+3. **Preserving the shape of an object**
 
-**[⬆ Back to Top](#table-of-contents)**
+   * Useful when an object's structure should remain fixed throughout the application.
 
-177. ### What is the difference between proto and prototype
+4. **Protecting configuration objects**
 
-      The `__proto__` object is the actual object that is used in the lookup chain to resolve methods, etc. Whereas `prototype` is the object that is used to build `__proto__` when you create an object with the `new` operator (a special variant of a function call).
+   * Prevents accidental addition or removal of configuration settings while still allowing updates to their values.
 
-      ```javascript
-      new Employee().__proto__ === Employee.prototype;
-      new Employee().prototype === undefined;
-      ```
+5. **Restricting modifications to API objects**
 
-      There are few more differences,
+   * Ensures that consumers of an API cannot extend or alter the object's structure.
 
-      | feature    | Prototype                                                    | proto                                                      |
-      | ---------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
-      | Access     | All function constructors have prototype properties.         | All objects have \_\_proto\_\_ property                    |
-      | Purpose    | Used to reduce memory wastage with a single copy of function | Used in lookup chain to resolve methods, constructors etc. |
-      | ECMAScript | Introduced in ES6                                            | Introduced in ES5                                          |
-      | Usage      | Frequently used                                              | Rarely used                                                |
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+## Example: Sealing an Object
 
-178. ### Can you give an example of when you really need a semicolon
+```javascript
+const user = {
+  name: "John",
+  age: 30,
+};
 
-      It is recommended to use semicolons after every statement in JavaScript. For example, in the below case (that is an IIFE = Immediately Invoked Function Expression) it throws an error ".. is not a function" at runtime due to missing semicolon.
+Object.seal(user);
 
-      ```javascript
-      // define a function
-      var fn = (function () {
-        //...
-      })(
-        // semicolon missing at this line
+user.age = 31;       // ✅ Allowed
+user.city = "Paris"; // ❌ Not allowed
+delete user.name;    // ❌ Not allowed
 
-        // then execute some code inside a closure
-        function () {
-          //...
-        }
-      )();
-      ```
+console.log(user);
+```
 
-      and it will be interpreted as
+**Output:**
 
-      ```javascript
-      var fn = (function () {
-        //...
-      })(function () {
-        //...
-      })();
-      ```
+```javascript
+{
+  name: "John",
+  age: 31
+}
+```
 
-      In this case, we are passing the second function as an argument to the first function and then trying to call the result of the first function call as a function. Hence, the second function will fail with a "... is not a function" error at runtime.
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+## Example: Sealing an Array
 
-179. ### What is the freeze method
+```javascript
+const numbers = [1, 2, 3];
 
-      The **`freeze()`** method is used to freeze an object. Freezing an object does not allow adding new properties to an object, prevents removing, and prevents changing the enumerability, configurability, or writability of existing properties. i.e. It returns the passed object and does not create a frozen copy.
+Object.seal(numbers);
 
-      ```javascript
-      const obj = {
-        prop: 100,
-      };
+numbers[0] = 10; // ✅ Allowed
+numbers.push(4); // ❌ Not allowed
 
-      Object.freeze(obj);
-      obj.prop = 200; // Throws an error in strict mode
+console.log(numbers);
+```
 
-      console.log(obj.prop); //100
-      ```
+**Output:**
 
-      Remember freezing is only applied to the top-level properties in objects but not for nested objects.
-      For example, let's try to freeze user object which has employment details as nested object and observe that details have been changed.
+```text
+[10, 2, 3]
+```
 
-      ```javascript
-      const user = {
-        name: "John",
-        employment: {
-          department: "IT",
-        },
-      };
+The existing elements can be modified, but the array cannot grow or shrink.
 
-      Object.freeze(user);
-      user.employment.department = "HR";
-      ```
+---
 
-      **Note:** It causes a TypeError if the argument passed is not an object.
+## Example: Non-Configurable Properties
 
-**[⬆ Back to Top](#table-of-contents)**
+```javascript
+const obj = {
+  message: "Hello",
+};
 
-180. ### What is the purpose of the freeze method
+Object.seal(obj);
 
-      Below are the main benefits of using freeze method,
+console.log(
+  Object.getOwnPropertyDescriptor(
+    obj,
+    "message"
+  )
+);
+```
 
-      1. It is used for freezing objects and arrays.
-      2. It is used to make an object immutable.
+**Output:**
 
-**[⬆ Back to Top](#table-of-contents)**
+```javascript
+{
+  value: "Hello",
+  writable: true,
+  enumerable: true,
+  configurable: false
+}
+```
 
-181. ### Why do I need to use the freeze method
+Notice that `configurable` becomes `false`.
 
-      In the Object-oriented paradigm, an existing API contains certain elements that are not intended to be extended, modified, or re-used outside of their current context. Hence it works as the `final` keyword which is used in various languages.
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+## Common Use Cases
 
-182. ### How do you detect a browser language preference
+### Fixed Configuration Objects
 
-      You can use the navigator object to detect a browser language preference as below,
+```javascript
+const settings = Object.seal({
+  theme: "light",
+  language: "en",
+});
 
-      ```javascript
-      var language =
-        (navigator.languages && navigator.languages[0]) || // Chrome / Firefox
-        navigator.language || // All browsers
-        navigator.userLanguage; // IE <= 10
+settings.theme = "dark"; // ✅
+settings.debug = true;   // ❌
+```
 
-      console.log(language);
-      ```
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+### Preventing Structural Changes
 
-183. ### How to convert a string to title case with javascript
+```javascript
+const employee = Object.seal({
+  id: 101,
+  role: "Developer",
+});
 
-      Title case means that the first letter of each word is capitalized. You can convert a string to title case using the below function,
+employee.role = "Senior Developer"; // ✅
+delete employee.id;                 // ❌
+```
 
-      ```javascript
-      function toTitleCase(str) {
-        return str.replace(/\w\S*/g, function (txt) {
-          return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
-        });
-      }
-      toTitleCase("good morning john"); // Good Morning John
-      ```
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+## `seal()` vs `freeze()`
 
-184. ### How do you detect if javascript is disabled on the page
+| Feature                          | `Object.seal()`     | `Object.freeze()` |
+| -------------------------------- | ------------------- | ----------------- |
+| Add new properties               | ❌ No                | ❌ No              |
+| Delete properties                | ❌ No                | ❌ No              |
+| Modify existing values           | ✅ Yes (if writable) | ❌ No              |
+| Make properties non-configurable | ✅ Yes               | ✅ Yes             |
 
-      You can use the `<noscript>` tag to detect javascript disabled or not. The code block inside `<noscript>` gets executed when JavaScript is disabled, and is typically used to display alternative content when the page generated in JavaScript.
+---
 
-      ```javascript
-      <script type="javascript">
-          // JS related code goes here
-      </script>
-      <noscript>
-          <a href="next_page.html?noJS=true">JavaScript is disabled in the page. Please click Next Page</a>
-      </noscript>
-      ```
+#### Key Point
+
+> The primary applications of `Object.seal()` are **sealing objects and arrays** and **making their existing properties non-configurable**. It is useful when you want to prevent structural changes—such as adding or deleting properties—while still allowing updates to the values of existing writable properties. This makes it ideal for preserving the shape of objects such as configuration settings and API contracts.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-185. ### What are various operators supported by javascript
+198. ### What are the differences between `Object.freeze()` and `Object.seal()`?
 
-      An operator is capable of manipulating(mathematical and logical computations) a certain value or operand. There are various operators supported by JavaScript as below,
+Both **`Object.freeze()`** and **`Object.seal()`** are used to restrict modifications to objects, but they provide **different levels of immutability**.
 
-      1. **Arithmetic Operators:** Includes + (Addition), – (Subtraction), \* (Multiplication), / (Division), % (Modulus), ++ (Increment) and – – (Decrement)
-      2. **Comparison Operators:** Includes == (Equal), != (Not Equal), === (Equal with type), > (Greater than), >= (Greater than or Equal to), < (Less than), <= (Less than or Equal to)
-      3. **Logical Operators:** Includes && (Logical AND), || (Logical OR), ! (Logical NOT)
-      4. **Assignment Operators:** Includes = (Assignment Operator), += (Add and Assignment Operator), –= (Subtract and Assignment Operator), \*= (Multiply and Assignment), /= (Divide and Assignment), %= (Modules and Assignment)
-      5. **Ternary Operators:** It includes conditional(: ?) Operator
-      6. **typeof Operator:** It uses to find type of variable. The syntax looks like `typeof variable`
+---
+
+## `Object.seal()`
+
+When an object is sealed:
+
+* ❌ New properties **cannot be added**.
+* ❌ Existing properties **cannot be deleted**.
+* ❌ Existing properties become **non-configurable**.
+* ✅ Existing property values **can still be modified** (if they are writable).
+
+```javascript id="sealfreeze1"
+const user = {
+  name: "John",
+};
+
+Object.seal(user);
+
+user.name = "Mike"; // Allowed
+user.age = 30;      // Not allowed
+delete user.name;   // Not allowed
+
+console.log(user);
+```
+
+**Output:**
+
+```javascript id="sealfreeze2"
+{
+  name: "Mike"
+}
+```
+
+---
+
+## `Object.freeze()`
+
+When an object is frozen:
+
+* ❌ New properties **cannot be added**.
+* ❌ Existing properties **cannot be deleted**.
+* ❌ Existing properties become **non-configurable**.
+* ❌ Existing property values **cannot be modified**.
+
+```javascript id="sealfreeze3"
+const user = {
+  name: "John",
+};
+
+Object.freeze(user);
+
+user.name = "Mike"; // Not allowed
+user.age = 30;      // Not allowed
+delete user.name;   // Not allowed
+
+console.log(user);
+```
+
+**Output:**
+
+```javascript id="sealfreeze4"
+{
+  name: "John"
+}
+```
+
+---
+
+## Comparison Table
+
+| Feature                           | `Object.seal()`     | `Object.freeze()` |
+| --------------------------------- | ------------------- | ----------------- |
+| Add new properties                | ❌ No                | ❌ No              |
+| Delete existing properties        | ❌ No                | ❌ No              |
+| Modify existing property values   | ✅ Yes (if writable) | ❌ No              |
+| Make properties non-configurable  | ✅ Yes               | ✅ Yes             |
+| Make data properties non-writable | ❌ No                | ✅ Yes             |
+| Level of immutability             | Partial             | Stronger          |
+
+---
+
+## Property Descriptor Comparison
+
+### Before Sealing or Freezing
+
+```javascript id="sealfreeze5"
+const obj = {
+  a: 1,
+};
+
+console.log(
+  Object.getOwnPropertyDescriptor(
+    obj,
+    "a"
+  )
+);
+```
+
+**Output:**
+
+```javascript id="sealfreeze6"
+{
+  value: 1,
+  writable: true,
+  enumerable: true,
+  configurable: true
+}
+```
+
+---
+
+### After `Object.seal()`
+
+```javascript id="sealfreeze7"
+Object.seal(obj);
+
+console.log(
+  Object.getOwnPropertyDescriptor(
+    obj,
+    "a"
+  )
+);
+```
+
+**Output:**
+
+```javascript id="sealfreeze8"
+{
+  value: 1,
+  writable: true,
+  enumerable: true,
+  configurable: false
+}
+```
+
+The property is still writable.
+
+---
+
+### After `Object.freeze()`
+
+```javascript id="sealfreeze9"
+Object.freeze(obj);
+
+console.log(
+  Object.getOwnPropertyDescriptor(
+    obj,
+    "a"
+  )
+);
+```
+
+**Output:**
+
+```javascript id="sealfreeze10"
+{
+  value: 1,
+  writable: false,
+  enumerable: true,
+  configurable: false
+}
+```
+
+The property is no longer writable.
+
+---
+
+## Arrays
+
+### Sealed Array
+
+```javascript id="sealfreeze11"
+const arr = [1, 2, 3];
+
+Object.seal(arr);
+
+arr[0] = 10; // Allowed
+arr.push(4); // Not allowed
+
+console.log(arr);
+```
+
+**Output:**
+
+```text id="sealfreeze12"
+[10, 2, 3]
+```
+
+---
+
+### Frozen Array
+
+```javascript id="sealfreeze13"
+const arr = [1, 2, 3];
+
+Object.freeze(arr);
+
+arr[0] = 10; // Not allowed
+arr.push(4); // Not allowed
+
+console.log(arr);
+```
+
+**Output:**
+
+```text id="sealfreeze14"
+[1, 2, 3]
+```
+
+---
+
+## Checking Their Status
+
+```javascript id="sealfreeze15"
+const sealedObj = {};
+
+Object.seal(sealedObj);
+
+console.log(
+  Object.isSealed(
+    sealedObj
+  )
+);
+```
+
+**Output:**
+
+```text id="sealfreeze16"
+true
+```
+
+```javascript id="sealfreeze17"
+const frozenObj = {};
+
+Object.freeze(frozenObj);
+
+console.log(
+  Object.isFrozen(
+    frozenObj
+  )
+);
+```
+
+**Output:**
+
+```text id="sealfreeze18"
+true
+```
+
+---
+
+## Important Note
+
+Both `Object.seal()` and `Object.freeze()` perform **shallow operations**.
+
+```javascript id="sealfreeze19"
+const user = {
+  profile: {
+    city: "London",
+  },
+};
+
+Object.freeze(user);
+
+user.profile.city =
+  "Paris";
+
+console.log(
+  user.profile.city
+);
+```
+
+**Output:**
+
+```text id="sealfreeze20"
+Paris
+```
+
+Nested objects remain mutable unless they are explicitly sealed or frozen.
+
+---
+
+#### Key Point
+
+> The main difference between `Object.seal()` and `Object.freeze()` is that **sealed objects allow modification of existing writable property values**, whereas **frozen objects do not**. Both methods prevent adding new properties and deleting existing ones, but `Object.freeze()` provides a stronger level of immutability by also making data properties non-writable.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-186. ### What is a rest parameter
+199. ### How do you determine if an object is sealed or not?
 
-      Rest parameter is an improved way to handle function parameters which allows us to represent an indefinite number of arguments as an array. The syntax would be as below,
+The **`Object.isSealed()`** method is used to determine whether an object has been **sealed**.
 
-      ```javascript
-      function f(a, b, ...theArgs) {
-        // ...
-      }
-      ```
+#### Syntax
 
-      For example, let's take a sum example to calculate on dynamic number of parameters,
+```javascript
+Object.isSealed(obj);
+```
 
-      ```javascript
-      function sum(...args) {
-        let total = 0;
-        for (const i of args) {
-          total += i;
-        }
-        return total;
-      }
+It returns:
 
-      console.log(sum(1, 2)); //3
-      console.log(sum(1, 2, 3)); //6
-      console.log(sum(1, 2, 3, 4)); //10
-      console.log(sum(1, 2, 3, 4, 5)); //15
-      ```
+* `true` → if the object is sealed.
+* `false` → otherwise.
 
-      **Note:** Rest parameter is added in ES2015 or ES6
+---
+
+## Example
+
+```javascript
+const object = {
+  property: "Hello, Good morning",
+};
+
+Object.seal(object);
+
+console.log(
+  Object.isSealed(object)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+---
+
+## Example: Non-Sealed Object
+
+```javascript
+const object = {
+  property: "Hello, Good morning",
+};
+
+console.log(
+  Object.isSealed(object)
+);
+```
+
+**Output:**
+
+```text
+false
+```
+
+---
+
+## When Is an Object Considered Sealed?
+
+An object is considered **sealed** if **all** of the following conditions are true:
+
+1. **The object is not extensible.**
+
+   * New properties cannot be added.
+
+   ```javascript
+   Object.isExtensible(obj); // false
+   ```
+
+2. **All of its own properties are non-configurable.**
+
+   * Existing properties cannot be deleted.
+   * Their descriptors cannot be reconfigured.
+
+3. **Its existing properties are not removable.**
+
+   * Since they are non-configurable, they cannot be deleted.
+   * However, **they may still be writable**.
+
+---
+
+## Verifying the Conditions
+
+```javascript
+const user = {
+  name: "John",
+};
+
+Object.seal(user);
+
+console.log(
+  Object.isExtensible(user)
+); // false
+
+console.log(
+  Object.getOwnPropertyDescriptor(
+    user,
+    "name"
+  )
+);
+```
+
+**Output:**
+
+```javascript
+{
+  value: "John",
+  writable: true,
+  enumerable: true,
+  configurable: false
+}
+```
+
+Notice that the property is still **writable**, but it is **non-configurable**.
+
+---
+
+## Sealed Objects Can Still Be Modified
+
+```javascript
+const user = {
+  name: "John",
+};
+
+Object.seal(user);
+
+user.name = "Mike";
+
+console.log(user.name);
+```
+
+**Output:**
+
+```text
+Mike
+```
+
+The value changes successfully because the property remains writable.
+
+---
+
+## But New Properties Cannot Be Added
+
+```javascript
+const user = {
+  name: "John",
+};
+
+Object.seal(user);
+
+user.age = 30;
+
+console.log(user.age);
+```
+
+**Output:**
+
+```text
+undefined
+```
+
+---
+
+## Existing Properties Cannot Be Deleted
+
+```javascript
+const user = {
+  name: "John",
+};
+
+Object.seal(user);
+
+delete user.name;
+
+console.log(user.name);
+```
+
+**Output:**
+
+```text
+John
+```
+
+---
+
+## `Object.isSealed()` vs `Object.isFrozen()`
+
+| Feature                | Sealed Object       | Frozen Object |
+| ---------------------- | ------------------- | ------------- |
+| Add new properties     | ❌ No                | ❌ No          |
+| Delete properties      | ❌ No                | ❌ No          |
+| Modify existing values | ✅ Yes (if writable) | ❌ No          |
+| `Object.isSealed()`    | ✅ `true`            | ✅ `true`      |
+| `Object.isFrozen()`    | ❌ Usually `false`   | ✅ `true`      |
+
+Example:
+
+```javascript
+const obj = {
+  a: 1,
+};
+
+Object.freeze(obj);
+
+console.log(
+  Object.isSealed(obj)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+A **frozen object is always sealed**, but a **sealed object is not necessarily frozen**.
+
+---
+
+## Important Note
+
+Primitive values are considered sealed because they have no configurable properties and are not extensible.
+
+```javascript
+console.log(
+  Object.isSealed(42)
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+```javascript
+console.log(
+  Object.isSealed("hello")
+);
+```
+
+**Output:**
+
+```text
+true
+```
+
+However:
+
+```javascript
+Object.isSealed(null);
+Object.isSealed(undefined);
+```
+
+**Output:**
+
+```text
+TypeError
+```
+
+---
+
+#### Key Point
+
+> The `Object.isSealed()` method determines whether an object is sealed. An object is sealed when it is **non-extensible** and all of its own properties are **non-configurable**, meaning new properties cannot be added and existing properties cannot be removed. Unlike frozen objects, sealed objects can still have their existing writable property values modified.
+
 
 **[⬆ Back to Top](#table-of-contents)**
 
-187. ### What happens if you do not use rest parameter as a last argument
+200. ### How do you get enumerable key-value pairs?
+
+The **`Object.entries()`** method is used to return an array containing a given object's **own enumerable string-keyed property `[key, value]` pairs**.
 
-      The rest parameter should be the last argument, as its job is to collect all the remaining arguments into an array. For example, if you define a function like below it doesn’t make any sense and will throw an error.
+#### Syntax
 
-      ```javascript
-      function someFunc(a,…b,c){
-      //You code goes here
-      return;
-      }
-      ```
+```javascript id="entries1"
+Object.entries(obj);
+```
 
-**[⬆ Back to Top](#table-of-contents)**
+It returns an array where each element is itself an array containing:
 
-188. ### What are the bitwise operators available in javascript
+```javascript id="entries2"
+[key, value]
+```
 
-      Below are the list of bitwise logical operators used in JavaScript
+---
+
+## Example
 
-      1. Bitwise AND ( & )
-      2. Bitwise OR ( | )
-      3. Bitwise XOR ( ^ )
-      4. Bitwise NOT ( ~ )
-      5. Left Shift ( << )
-      6. Sign Propagating Right Shift ( >> )
-      7. Zero fill Right Shift ( >>> )
+```javascript id="entries3"
+const object = {
+  a: "Good morning",
+  b: 100,
+};
 
-**[⬆ Back to Top](#table-of-contents)**
+for (const [
+  key,
+  value,
+] of Object.entries(
+  object
+)) {
+  console.log(
+    `${key}: ${value}`
+  );
+}
+```
 
-189. ### What is a spread operator
+**Output:**
 
-      Spread operator allows iterables( arrays / objects / strings ) to be expanded into single arguments/elements. Let's take an example to see this behavior,
+```text id="entries4"
+a: Good morning
+b: 100
+```
 
-      ```javascript
-      function calculateSum(x, y, z) {
-        return x + y + z;
-      }
+---
 
-      const numbers = [1, 2, 3];
+## What Does `Object.entries()` Return?
 
-      console.log(calculateSum(...numbers)); // 6
-      ```
+```javascript id="entries5"
+const object = {
+  a: "Good morning",
+  b: 100,
+};
 
-**[⬆ Back to Top](#table-of-contents)**
+console.log(
+  Object.entries(object)
+);
+```
 
-190. ### How do you determine whether object is frozen or not
+**Output:**
 
-      `Object.isFrozen()` method is used to determine if an object is frozen or not.An object is frozen if all of the below conditions hold true,
+```javascript id="entries6"
+[
+  ["a", "Good morning"],
+  ["b", 100]
+]
+```
 
-      1. If it is not extensible.
-      2. If all of its properties are non-configurable.
-      3. If all its data properties are non-writable.
-         The usage is going to be as follows,
+---
 
-      ```javascript
-      const object = {
-        property: "Welcome JS world",
-      };
-      Object.freeze(object);
-      console.log(Object.isFrozen(object));
-      ```
+## Using `for...of` with Destructuring
 
-**[⬆ Back to Top](#table-of-contents)**
+Since each entry is a `[key, value]` array, destructuring makes iteration more convenient.
 
-191. ### How do you determine two values same or not using object
+```javascript id="entries7"
+const person = {
+  name: "John",
+  age: 30,
+};
 
-      The `Object.is()` method determines whether two values are the same value. For example, the usage with different types of values would be,
+for (const [
+  key,
+  value,
+] of Object.entries(
+  person
+)) {
+  console.log(
+    key,
+    value
+  );
+}
+```
 
-      ```javascript
-      Object.is("hello", "hello"); // true
-      Object.is(window, window); // true
-      Object.is([], []); // false
-      ```
+**Output:**
 
-      Two values are considered identical if one of the following holds:
+```text id="entries8"
+name John
+age 30
+```
 
-      1. both undefined
-      2. both null
-      3. both true or both false
-      4. both strings of the same length with the same characters in the same order
-      5. both the same object (means both object have same reference)
-      6. both numbers and
-         both +0
-         both -0
-         both NaN
-         both non-zero and both not NaN and both have the same value.
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+## Converting an Object to a `Map`
 
-192. ### What is the purpose of using object is method
+`Object.entries()` can be used to create a `Map`.
 
-      Some of the applications of Object's `is` method are follows,
+```javascript id="entries9"
+const object = {
+  a: 1,
+  b: 2,
+};
 
-      1. It is used for comparison of two strings.
-      2. It is used for comparison of two numbers.
-      3. It is used for comparing the polarity of two numbers.
-      4. It is used for comparison of two objects.
+const map = new Map(
+  Object.entries(
+    object
+  )
+);
 
-**[⬆ Back to Top](#table-of-contents)**
+console.log(map);
+```
 
-193. ### How do you copy properties from one object to other
+**Output:**
 
-      You can use the `Object.assign()` method which is used to copy the values and properties from one or more source objects to a target object. It returns the target object which has properties and values copied from the source objects. The syntax would be as below,
+```text id="entries10"
+Map(2) { "a" => 1, "b" => 2 }
+```
 
-      ```javascript
-      Object.assign(target, ...sources);
-      ```
+---
 
-      Let's take example with one source and one target object,
+## Related Methods
 
-      ```javascript
-      const target = { a: 1, b: 2 };
-      const source = { b: 3, c: 4 };
+| Method                | Returns                       |
+| --------------------- | ----------------------------- |
+| `Object.keys(obj)`    | Array of keys                 |
+| `Object.values(obj)`  | Array of values               |
+| `Object.entries(obj)` | Array of `[key, value]` pairs |
 
-      const returnedTarget = Object.assign(target, source);
+Example:
 
-      console.log(target); // { a: 1, b: 3, c: 4 }
+```javascript id="entries11"
+const user = {
+  name: "John",
+  age: 30,
+};
 
-      console.log(returnedTarget); // { a: 1, b: 3, c: 4 }
-      ```
+console.log(
+  Object.keys(user)
+);
 
-      As observed in the above code, there is a common property(`b`) from source to target so it's value has been overwritten.
+console.log(
+  Object.values(user)
+);
 
-**[⬆ Back to Top](#table-of-contents)**
+console.log(
+  Object.entries(user)
+);
+```
 
-194. ### What are the applications of the assign method
+**Output:**
 
-      Below are the some of main applications of `Object.assign()` method,
+```javascript id="entries12"
+["name", "age"]
 
-      1. It is used for cloning an object.
-      2. It is used to merge objects with the same properties.
+["John", 30]
 
-**[⬆ Back to Top](#table-of-contents)**
+[
+  ["name", "John"],
+  ["age", 30]
+]
+```
 
-195. ### What is a proxy object
+---
 
-      The Proxy object is used to define custom behavior for fundamental operations such as property lookup, assignment, enumeration, function invocation, etc.
+## What Properties Are Included?
 
-      A proxy is created with two parameters: a target object which you want to proxy and a handler object which contains methods to intercept fundamental operations. The syntax would be as follows,
+`Object.entries()` returns only:
 
-      ```javascript
-      var p = new Proxy(target, handler);
-      ```
+* ✅ Own properties
+* ✅ Enumerable properties
+* ✅ String-keyed properties
+* ❌ Inherited properties
+* ❌ Non-enumerable properties
+* ❌ Symbol-keyed properties
 
-      Let's take a look at below examples of proxy object and how the get method which customize the lookup behavior,
+Example:
 
-      ```javascript
-      //Example1:
+```javascript id="entries13"
+const obj = Object.create({
+  inherited: true,
+});
 
-      const person = {
-        name: "Sudheer Jonna",
-        age: 35,
-      };
+obj.own = true;
 
-      const handler = {
-        get(target, prop) {
-          if (prop === "name") {
-            return "Mr. " + target[prop];
-          }
-          return target[prop];
-        },
-      };
+console.log(
+  Object.entries(obj)
+);
+```
 
-      const proxy = new Proxy(person, handler);
+**Output:**
 
-      //Example2:
+```javascript id="entries14"
+[
+  ["own", true]
+]
+```
 
-      var handler1 = {
-        get: function (obj, prop) {
-          return prop in obj ? obj[prop] : 100;
-        },
-      };
+---
 
-      var p = new Proxy({}, handler1);
-      p.a = 10;
-      p.b = null;
+## Property Order
 
-      console.log(p.a, p.b); // 10, null
-      console.log("c" in p, p.c); // false, 100
-      ```
+The original statement:
 
-      In the above code, it uses `get` handler which define the behavior of the proxy when an operation is performed on it. These proxies are mainly used for some of the below cross-cutting concerns.
+> **"The order is not guaranteed as object defined."**
 
-      1. Logging
-      2. Authentication or Authorization
-      3. Data binding and observables
-      4. Function parameter validation
+is **not entirely accurate** for modern JavaScript.
 
-      **Note:** This feature was introduced with ES6.
+According to the ECMAScript specification, the order is generally:
 
-**[⬆ Back to Top](#table-of-contents)**
+1. Integer-like keys in ascending numeric order.
+2. String keys in insertion order.
+3. Symbol keys (not included in `Object.entries()`).
 
-196. ### What is the purpose of the seal method
+Example:
 
-      The `Object.seal()` method is used to seal an object, by preventing new properties from being added to it and marking all existing properties as non-configurable. But **values of present properties can still be changed as long as they are writable**. The next level of immutability would be the [`Object.freeze()`](#what-is-a-freeze-method) method. Let's see the below example to understand more about `seal()` method
+```javascript id="entries15"
+const obj = {
+  2: "two",
+  1: "one",
+  a: "A",
+  b: "B",
+};
 
-      ```javascript
-      const object = {
-        property: "Welcome JS world",
-      };
-      Object.seal(object);
-      object.property = "Welcome to object world";
-      console.log(Object.isSealed(object)); // true
-      delete object.property; // You cannot delete when sealed
-      console.log(object.property); //Welcome to object world
-      ```
+console.log(
+  Object.entries(obj)
+);
+```
 
-**[⬆ Back to Top](#table-of-contents)**
+**Output:**
 
-197. ### What are the applications of the seal method
+```javascript id="entries16"
+[
+  ["1", "one"],
+  ["2", "two"],
+  ["a", "A"],
+  ["b", "B"]
+]
+```
 
-      Below are the main applications of `Object.seal()` method,
+Therefore, in modern JavaScript environments, the order is **predictable** and follows the specification.
 
-      1. It is used for sealing objects and arrays.
-      2. It is used to make properties of an object non-configurable.
+---
 
-**[⬆ Back to Top](#table-of-contents)**
+#### Key Point
 
-198. ### What are the differences between the freeze and seal methods
+> `Object.entries()` returns an array of an object's **own enumerable string-keyed `[key, value]` pairs**. It is useful for iterating over objects with `for...of`, converting objects into `Map` instances, and processing both keys and values together. Unlike `for...in`, it does not include inherited properties, and in modern JavaScript the order of returned entries follows the ECMAScript specification.
 
-      If an object is frozen using the `Object.freeze()` method then its properties become immutable and no changes can be made in them whereas if an object is sealed using the `Object.seal()` method then the changes can be made in the existing properties of the object.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-199. ### How do you determine if an object is sealed or not
-
-      The `Object.isSealed()` method is used to determine if an object is sealed or not. An object is sealed if all of the below conditions hold true
-
-      1. If it is not extensible.
-      2. If all of its properties are non-configurable.
-      3. If it is not removable (but not necessarily non-writable).
-         Let's see it in the action
-
-      ```javascript
-      const object = {
-        property: "Hello, Good morning",
-      };
-
-      Object.seal(object); // Using seal() method to seal the object
-
-      console.log(Object.isSealed(object)); // checking whether the object is sealed or not
-      ```
-
-**[⬆ Back to Top](#table-of-contents)**
-
-200. ### How do you get enumerable key and value pairs
-
-      The `Object.entries()` method is used to return an array of a given object's own enumerable string-keyed property [key, value] pairs, in the same order as that provided by a `for...in` loop. Let's see the functionality of `object.entries()` method in an example,
-
-      ```javascript
-      const object = {
-        a: "Good morning",
-        b: 100,
-      };
-
-      for (let [key, value] of Object.entries(object)) {
-        console.log(`${key}: ${value}`); // a: 'Good morning'
-        // b: 100
-      }
-      ```
-
-      **Note:** The order is not guaranteed as object defined.
 
 **[⬆ Back to Top](#table-of-contents)**
 
